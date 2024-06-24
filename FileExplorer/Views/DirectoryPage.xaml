@@ -7,6 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:systemIO="using:System.IO"
+    xmlns:viewModels="using:FileExplorer.ViewModels"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -16,7 +17,7 @@
             <GridView.ItemTemplate>
                 <DataTemplate x:Key="ItemTemplate" x:DataType="systemIO:FileSystemInfo">
                     <StackPanel Padding="10  25 10 10">
-                        <Image Source="../Resources/Folder.png" Height="95"/>
+                        <Image Source="../Resources/Folder.png" Height="95"  />
                         <TextBlock Text="{x:Bind Path=Name}" />
                     </StackPanel>
                 </DataTemplate>

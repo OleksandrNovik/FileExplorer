@@ -1,6 +1,9 @@
-﻿using FileExplorer.Helpers;
+﻿using FileExplorer.Contracts;
+using FileExplorer.Helpers;
+using FileExplorer.Services;
 using FileExplorer.ViewModels;
 using FileExplorer.Views;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.UI.Xaml;
 using System;
@@ -30,6 +33,7 @@ namespace FileExplorer
                 .ConfigureServices((context, services) =>
                 {
                     services.AddPageAndViewModel<DirectoryPage, DirectoryPageViewModel>();
+                    services.AddTransient<IPicturesService, PictureService>();
                 })
                 .Build();
             ;

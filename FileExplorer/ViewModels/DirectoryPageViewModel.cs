@@ -1,12 +1,14 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using FileExplorer.Contracts;
 using System.Collections.ObjectModel;
 using System.IO;
 
 namespace FileExplorer.ViewModels
 {
-
     public partial class DirectoryPageViewModel : ObservableRecipient
     {
+        private readonly IPicturesService _picturesService;
+
         [ObservableProperty]
         private DirectoryInfo currentDirectory = new DirectoryInfo(@"D:\Навчальння");
 
