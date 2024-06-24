@@ -6,9 +6,30 @@
     xmlns:local="using:FileExplorer"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:views="using:FileExplorer.Views"
     mc:Ignorable="d">
 
-    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-        <Button x:Name="myButton" Click="myButton_Click">Click Me</Button>
-    </StackPanel>
+    <Window.SystemBackdrop>
+        <MicaBackdrop />
+    </Window.SystemBackdrop>
+    <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="60" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Rectangle Fill="Blue" />
+            <Rectangle Grid.Row="1" Fill="Red" />
+            <Grid Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="220" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Rectangle Fill="Yellow" />
+                <views:DirectoryPage Grid.Column="1" />
+            </Grid>
+        </Grid>
+
+    </Grid>
 </Window>

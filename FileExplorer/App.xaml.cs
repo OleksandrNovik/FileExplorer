@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using FileExplorer.Helpers;
+using FileExplorer.ViewModels;
+using FileExplorer.Views;
+using Microsoft.Extensions.Hosting;
 using Microsoft.UI.Xaml;
 using System;
 using Hosting = Microsoft.Extensions.Hosting.Host;
@@ -26,6 +29,7 @@ namespace FileExplorer
                 .UseContentRoot(AppContext.BaseDirectory)
                 .ConfigureServices((context, services) =>
                 {
+                    services.AddPageAndViewModel<DirectoryPage, DirectoryPageViewModel>();
                 })
                 .Build();
             ;
