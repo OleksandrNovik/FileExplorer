@@ -11,13 +11,13 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
 
-    <Grid>
-        <GridView ItemsSource="{x:Bind Path=ViewModel.DirectoryItems}">
+    <Grid Padding="20 20 8 5">
+        <GridView ItemsSource="{x:Bind Path=ViewModel.DirectoryItems}" SelectionMode="Extended">
             <GridView.ItemTemplate>
                 <DataTemplate x:Key="ItemTemplate" x:DataType="systemIO:FileSystemInfo">
-                    <StackPanel>
+                    <StackPanel Padding="10  25 10 10">
+                        <Image Source="../Resources/Folder.png" Height="95"/>
                         <TextBlock Text="{x:Bind Path=Name}" />
-                        <TextBlock Text="{x:Bind Path=FullName}"/>
                     </StackPanel>
                 </DataTemplate>
             </GridView.ItemTemplate>

@@ -19,6 +19,7 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.5.240607001" />
+    <PackageReference Include="System.Drawing.Common" Version="8.0.6" />
     <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>
 
@@ -26,5 +27,9 @@
     <Page Update="Views\DirectoryPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Resources\" />
   </ItemGroup>
 </Project>
