@@ -10,7 +10,7 @@ namespace FileExplorer.ViewModels
         private readonly IPicturesService _picturesService;
 
         [ObservableProperty]
-        private DirectoryInfo currentDirectory = new DirectoryInfo(@"D:\Навчальння");
+        private DirectoryInfo currentDirectory = new DirectoryInfo(@"C:\Windows");
 
         [ObservableProperty]
         private ObservableCollection<FileSystemInfo> directoryItems;
