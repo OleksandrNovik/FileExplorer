@@ -35,6 +35,7 @@ namespace FileExplorer
                 {
                     services.AddPageAndViewModel<DirectoryPage, DirectoryPageViewModel>();
                     services.AddTransient<IPicturesService, PictureService>();
+                    services.AddTransient<IDirectoryManager, DirectoryManager>();
                 })
                 .Build();
             ;

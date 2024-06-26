@@ -4,6 +4,9 @@ using Microsoft.UI.Xaml.Input;
 
 namespace FileExplorer.UI
 {
+    /// <summary>
+    /// Grid splitter that has intuitive pointer when dragged
+    /// </summary>
     public class InteractiveGridSplitter : GridSplitter
     {
         protected override void OnPointerEntered(PointerRoutedEventArgs e)

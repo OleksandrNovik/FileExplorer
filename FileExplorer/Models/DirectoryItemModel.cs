@@ -1,12 +1,15 @@
 ﻿#nullable enable
 using CommunityToolkit.Mvvm.ComponentModel;
 using System;
+using System.ComponentModel;
 using System.IO;
 
 namespace FileExplorer.Models
 {
-    public partial class DirectoryItemModel : ObservableObject
+    public partial class DirectoryItemModel : ObservableObject, IEditableObject
     {
+        private string backUpName;
+
         [ObservableProperty]
         private string name;
 
@@ -43,5 +46,31 @@ namespace FileExplorer.Models
             isRenamed = false;
         }
 
+        public void BeginEdit()
+        {
+            if (!IsRenamed)
+            {
+                backUpName = name;
+                IsRenamed = true;
+            }
+        }
+
+        public void CancelEdit()
+        {
+            if (IsRenamed)
+            {
+                Name = backUpName;
+                IsRenamed = false;
+            }
+        }
+
+        public void EndEdit()
+        {
+            if (IsRenamed)
+            {
+                backUpName = string.Empty;
+                IsRenamed = false;
+            }
+        }
     }
 }

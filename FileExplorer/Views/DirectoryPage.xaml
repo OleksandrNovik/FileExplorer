@@ -8,6 +8,9 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     xmlns:models="using:FileExplorer.Models"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:behaviors="using:FileExplorer.UI.Behaviors"
+    xmlns:ui="using:FileExplorer.UI"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -15,7 +18,18 @@
         <DataTemplate x:Key="GridItemTemplate" x:DataType="models:DirectoryItemModel">
             <StackPanel  Padding="10  25 10 10">
                 <Image Source="../Resources/Folder.png" Height="95"  />
-                <TextBlock Text="{x:Bind Path=Name}" />
+                <TextBlock Text="{x:Bind Name}" 
+                           Visibility="{x:Bind IsRenamed, Mode=OneWay, 
+                                        Converter = {StaticResource BoolToVisibilityConverter}, 
+                                        ConverterParameter=True}" />
+                <TextBox Text="{x:Bind Name, Mode=TwoWay}"
+                                          AcceptsReturn="True"
+                                          Visibility="{x:Bind IsRenamed, Mode=OneWay,
+                                         Converter = {StaticResource BoolToVisibilityConverter}}">
+                    <interactivity:Interaction.Behaviors>
+                        <behaviors:RenameTextBoxBehavior IsRenamed="{x:Bind IsRenamed, Mode=TwoWay}" />
+                    </interactivity:Interaction.Behaviors>
+                </TextBox>
             </StackPanel>
         </DataTemplate>
         <Style x:Key="MenuButton" TargetType="Button">
@@ -69,6 +83,7 @@
                     <FontIcon FontSize="17" Glyph="&#xE77F;" />
                 </Button>
                 <Button 
+                    Command="{x:Bind ViewModel.RenameItemCommand}"
                     Style="{StaticResource MenuButton}"
                     ToolTipService.ToolTip="Rename"
                     ToolTipService.Placement="Bottom">
@@ -112,11 +127,15 @@
             </StackPanel>
         </Grid>
         <controls:AdaptiveGridView Grid.Row="1"
-            ItemsSource="{x:Bind Path=ViewModel.DirectoryItems}" 
+            ItemsSource="{x:Bind ViewModel.DirectoryItems}" 
             ItemTemplate="{StaticResource GridItemTemplate}"
             SelectionMode="Extended"
             DesiredWidth="160"
             >
+
+            <interactivity:Interaction.Behaviors>
+                <behaviors:MultiSelectionBehavior SelectedItems="{x:Bind ViewModel.SelectedItems}" />
+            </interactivity:Interaction.Behaviors>
         </controls:AdaptiveGridView>
 
     </Grid>
