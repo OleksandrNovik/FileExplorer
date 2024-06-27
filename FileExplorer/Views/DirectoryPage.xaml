@@ -27,7 +27,8 @@
                                           Visibility="{x:Bind IsRenamed, Mode=OneWay,
                                          Converter = {StaticResource BoolToVisibilityConverter}}">
                     <interactivity:Interaction.Behaviors>
-                        <behaviors:RenameTextBoxBehavior IsRenamed="{x:Bind IsRenamed, Mode=TwoWay}" />
+                        <behaviors:RenameTextBoxBehavior
+                            IsRenamed="{x:Bind IsRenamed, Mode=TwoWay}" />
                     </interactivity:Interaction.Behaviors>
                 </TextBox>
             </StackPanel>

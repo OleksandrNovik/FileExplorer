@@ -47,8 +47,8 @@ namespace FileExplorer.ViewModels
         private void EndRenamingItem(DirectoryItemModel item)
         {
             var newFullName = $@"{CurrentDirectory.FullName}\{item.Name}";
-            // File or folder already exists, so we can't rename item
-            if (Path.Exists(newFullName))
+            // File or folder already exists, so we can't rename item or name is empty
+            if (Path.Exists(newFullName) || item.Name == string.Empty)
             {
                 item.CancelEdit();
             }

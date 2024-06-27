@@ -28,6 +28,12 @@ namespace FileExplorer.UI.Behaviors
             AssociatedObject.LostFocus -= OnLostFocus;
         }
 
+        /// <summary>
+        /// Focuses <see cref="TextBox"/> when folder's or file's name is edited
+        /// Selects text inside of <see cref="TextBox"/>
+        /// </summary>
+        /// <param name="d"> <see cref="IsRenamed"/> new value </param>
+        /// <param name="e"> Event arguments </param>
         public static void OnRenamedPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is RenameTextBoxBehavior behaviour)
@@ -45,8 +51,9 @@ namespace FileExplorer.UI.Behaviors
         /// </summary>
         /// <param name="sender"> Event sender (TextBox) </param>
         /// <param name="e"> Event args </param>
-        public void OnLostFocus(object sender, RoutedEventArgs e)
+        private void OnLostFocus(object sender, RoutedEventArgs e)
         {
+            // TODO: End editing item in here
             IsRenamed = false;
         }
 
