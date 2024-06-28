@@ -34,9 +34,7 @@ namespace FileExplorer.ViewModels
             SelectedItems.CollectionChanged += (_, _) => BeginRenamingItemCommand.NotifyCanExecuteChanged();
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
+
         [RelayCommand(CanExecute = nameof(CanRename))]
         private void BeginRenamingItem()
         {

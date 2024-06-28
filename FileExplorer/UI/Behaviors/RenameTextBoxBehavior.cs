@@ -56,8 +56,10 @@ namespace FileExplorer.UI.Behaviors
         /// <param name="e"> Event args </param>
         private void OnLostFocus(object sender, RoutedEventArgs e)
         {
-            // TODO: End editing item in here
-            IsRenamed = false;
+            if (AssociatedObject.DataContext is DirectoryItemModel item)
+            {
+                EndRenamingCommand.Execute(item);
+            }
         }
 
     }

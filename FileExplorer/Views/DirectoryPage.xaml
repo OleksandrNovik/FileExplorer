@@ -12,6 +12,7 @@
     xmlns:behaviors="using:FileExplorer.UI.Behaviors"
     xmlns:viewModels="using:FileExplorer.ViewModels"
     xmlns:input="using:CommunityToolkit.Mvvm.Input"
+    xmlns:communityBehaviors="using:CommunityToolkit.WinUI.UI.Behaviors"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -30,6 +31,7 @@
                     <interactivity:Interaction.Behaviors>
                         <interactivity:BehaviorCollection>
                             <behaviors:RenameTextBoxBehavior
+                                EndRenamingCommand="{StaticResource EndRenamingCommand}"
                                 IsRenamed="{x:Bind IsRenamed, Mode=TwoWay}"  />
                         </interactivity:BehaviorCollection>
                     </interactivity:Interaction.Behaviors>

@@ -17,7 +17,6 @@ namespace FileExplorer.Views
             this.InitializeComponent();
             this.ViewModel = App.GetService<DirectoryPageViewModel>();
             this.Resources["EndRenamingCommand"] = this.ViewModel.EndRenamingItemCommand;
-            this.Resources["StaticViewModel"] = this.ViewModel;
         }
     }
 }
