@@ -54,7 +54,6 @@ namespace FileExplorer.Services
             {
                 Directory.Move(item.FullInfo.FullName, location);
             }
-
             return true;
         }
     }

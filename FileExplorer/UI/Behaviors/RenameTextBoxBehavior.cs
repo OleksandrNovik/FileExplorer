@@ -1,4 +1,6 @@
-﻿using Microsoft.UI.Xaml;
+﻿using CommunityToolkit.Mvvm.Input;
+using FileExplorer.Models;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Xaml.Interactivity;
 
@@ -6,6 +8,7 @@ namespace FileExplorer.UI.Behaviors
 {
     public class RenameTextBoxBehavior : Behavior<TextBox>
     {
+        public RelayCommand<DirectoryItemModel> EndRenamingCommand { get; set; }
         public bool IsRenamed
         {
             get => (bool)GetValue(IsRenamedProperty);

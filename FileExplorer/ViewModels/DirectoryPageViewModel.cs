@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FileExplorer.Contracts;
 using FileExplorer.Models;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -22,7 +21,7 @@ namespace FileExplorer.ViewModels
         private ObservableCollection<DirectoryItemModel> directoryItems;
 
         [ObservableProperty]
-        private List<DirectoryItemModel> selectedItems;
+        private ObservableCollection<DirectoryItemModel> selectedItems;
 
         public DirectoryPageViewModel(IDirectoryManager manager)
         {
@@ -31,37 +30,40 @@ namespace FileExplorer.ViewModels
                 .Select(info => new DirectoryItemModel(info, info is FileInfo));
 
             directoryItems = new ObservableCollection<DirectoryItemModel>(models);
-            selectedItems = new List<DirectoryItemModel>();
+            selectedItems = new ObservableCollection<DirectoryItemModel>();
+            SelectedItems.CollectionChanged += (_, _) => BeginRenamingItemCommand.NotifyCanExecuteChanged();
         }
 
-        public RelayCommand RenameItemCommand => new RelayCommand(BeginRenamingItem);
-
+        /// <summary>
+        /// 
+        /// </summary>
+        [RelayCommand(CanExecute = nameof(CanRename))]
         private void BeginRenamingItem()
         {
-            if (SelectedItems.Count > 0)
-            {
-                SelectedItems[0].BeginEdit();
-            }
+            SelectedItems[0].BeginEdit();
         }
 
+        private bool CanRename() => SelectedItems.Count > 0;
+
+
+        [RelayCommand]
         private void EndRenamingItem(DirectoryItemModel item)
         {
             var newFullName = $@"{CurrentDirectory.FullName}\{item.Name}";
             // File or folder already exists, so we can't rename item or name is empty
             if (Path.Exists(newFullName) || item.Name == string.Empty)
             {
+                //TODO: File exists message
                 item.CancelEdit();
             }
-            else
+
+            // Trying to move item (if it does not exist it means that new item has to be created)
+            if (!_manager.TryMove(item, newFullName))
             {
-                // Trying to move item (if it does not exist it means that new item has to be created)
-                if (!_manager.TryMove(item, newFullName))
-                {
-                    // Item is being created
-                    _manager.Create(item, CurrentDirectory.FullName);
-                }
-                item.EndEdit();
+                // Item is being created
+                _manager.Create(item, CurrentDirectory.FullName);
             }
+            item.EndEdit();
         }
     }
 }

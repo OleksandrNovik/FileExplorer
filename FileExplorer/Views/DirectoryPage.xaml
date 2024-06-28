@@ -10,7 +10,8 @@
     xmlns:models="using:FileExplorer.Models"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:behaviors="using:FileExplorer.UI.Behaviors"
-    xmlns:ui="using:FileExplorer.UI"
+    xmlns:viewModels="using:FileExplorer.ViewModels"
+    xmlns:input="using:CommunityToolkit.Mvvm.Input"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -27,8 +28,10 @@
                                           Visibility="{x:Bind IsRenamed, Mode=OneWay,
                                          Converter = {StaticResource BoolToVisibilityConverter}}">
                     <interactivity:Interaction.Behaviors>
-                        <behaviors:RenameTextBoxBehavior
-                            IsRenamed="{x:Bind IsRenamed, Mode=TwoWay}" />
+                        <interactivity:BehaviorCollection>
+                            <behaviors:RenameTextBoxBehavior
+                                IsRenamed="{x:Bind IsRenamed, Mode=TwoWay}"  />
+                        </interactivity:BehaviorCollection>
                     </interactivity:Interaction.Behaviors>
                 </TextBox>
             </StackPanel>
@@ -84,7 +87,7 @@
                     <FontIcon FontSize="17" Glyph="&#xE77F;" />
                 </Button>
                 <Button 
-                    Command="{x:Bind ViewModel.RenameItemCommand}"
+                    Command="{x:Bind ViewModel.BeginRenamingItemCommand}"
                     Style="{StaticResource MenuButton}"
                     ToolTipService.ToolTip="Rename"
                     ToolTipService.Placement="Bottom">

@@ -15,11 +15,10 @@ namespace FileExplorer.Contracts
         public bool TryCreateDirectory(DirectoryItemModel item, string location);
 
         /// <summary>
-        /// Ties to move physical file or folder to a different location
+        /// Moves physical file or folder to a different location
         /// </summary>
         /// <param name="item"> Wrapper <see cref="DirectoryItemModel"/> for a physical item in directory </param>
         /// <param name="location"> New location for an item </param>
-        /// <returns> True if item has been moved or False if physically item does not exist</returns>
         public bool TryMove(DirectoryItemModel item, string location);
     }
 }
