@@ -46,15 +46,19 @@ namespace FileExplorer.Services
             if (item.FullInfo is null)
                 return false;
 
-            if (item.IsFile)
+
+            if (item.FullInfo is FileInfo file)
             {
-                File.Move(item.FullInfo.FullName, location);
+                file.MoveTo(location);
+                return true;
             }
-            else
+            if (item.FullInfo is DirectoryInfo dir)
             {
-                Directory.Move(item.FullInfo.FullName, location);
+                dir.MoveTo(location);
+                return true;
             }
-            return true;
+
+            return false;
         }
     }
 }

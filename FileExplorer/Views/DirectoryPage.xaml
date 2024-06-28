@@ -20,7 +20,7 @@
         <DataTemplate x:Key="GridItemTemplate" x:DataType="models:DirectoryItemModel">
             <StackPanel  Padding="10  25 10 10">
                 <Image Source="../Resources/Folder.png" Height="95"  />
-                <TextBlock Text="{x:Bind Name}" 
+                <TextBlock Text="{x:Bind Name, Mode=OneWay}" 
                            Visibility="{x:Bind IsRenamed, Mode=OneWay, 
                                         Converter = {StaticResource BoolToVisibilityConverter}, 
                                         ConverterParameter=True}" />
