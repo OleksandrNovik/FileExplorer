@@ -65,8 +65,12 @@
                     </StackPanel>
                     <DropDownButton.Flyout>
                         <MenuFlyout Placement="Bottom">
-                            <MenuFlyoutItem Text="File" />
-                            <MenuFlyoutItem Text="Folder"/>
+                            <MenuFlyoutItem 
+                                Command="{x:Bind ViewModel.CreateFileCommand}"
+                                Text="File" />
+                            <MenuFlyoutItem 
+                                Command="{x:Bind ViewModel.CreateDirectoryCommand}"
+                                Text="Folder"/>
                         </MenuFlyout>
                     </DropDownButton.Flyout>
                 </DropDownButton>

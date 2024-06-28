@@ -21,44 +21,24 @@ namespace FileExplorer.Services
                 item.FullInfo = new DirectoryInfo(fullName);
             }
         }
-        public bool TryCreateFile(DirectoryItemModel item, string location)
-        {
-            if (File.Exists(location))
-            {
-                return false;
-            }
-            Create(item, location);
-            return true;
-        }
-
-        public bool TryCreateDirectory(DirectoryItemModel item, string location)
-        {
-            if (Directory.Exists(location))
-            {
-                return false;
-            }
-            Create(item, location);
-            return true;
-        }
 
         public bool TryMove(DirectoryItemModel item, string location)
         {
             if (item.FullInfo is null)
                 return false;
 
-
-            if (item.FullInfo is FileInfo file)
+            if (item.IsFile)
             {
-                file.MoveTo(location);
-                return true;
+                File.Move(item.FullInfo.FullName, location);
+                // Update information about physical item in directory
+                item.FullInfo = new FileInfo(location);
             }
-            if (item.FullInfo is DirectoryInfo dir)
+            else
             {
-                dir.MoveTo(location);
-                return true;
+                Directory.Move(item.FullInfo.FullName, location);
+                item.FullInfo = new DirectoryInfo(location);
             }
-
-            return false;
+            return true;
         }
     }
 }

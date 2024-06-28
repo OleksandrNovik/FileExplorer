@@ -11,7 +11,6 @@ namespace FileExplorer.ViewModels
 {
     public partial class DirectoryPageViewModel : ObservableRecipient
     {
-
         private readonly IDirectoryManager _manager;
 
         [ObservableProperty]
@@ -22,6 +21,8 @@ namespace FileExplorer.ViewModels
 
         [ObservableProperty]
         private ObservableCollection<DirectoryItemModel> selectedItems;
+
+        private DirectoryItemModel? previousEditedItem;
 
         public DirectoryPageViewModel(IDirectoryManager manager)
         {
@@ -34,11 +35,42 @@ namespace FileExplorer.ViewModels
             SelectedItems.CollectionChanged += (_, _) => BeginRenamingItemCommand.NotifyCanExecuteChanged();
         }
 
+        [RelayCommand]
+        private void CreateFile() => CreateItem(true);
+
+        [RelayCommand]
+        private void CreateDirectory() => CreateItem(false);
+
+        private void CreateItem(bool isFile)
+        {
+            var emptyWrapper = new DirectoryItemModel(isFile);
+            DirectoryItems.Insert(0, emptyWrapper);
+            RenameNewItem(emptyWrapper);
+        }
+
+        #region Renaming logic
 
         [RelayCommand(CanExecute = nameof(CanRename))]
         private void BeginRenamingItem()
         {
-            SelectedItems[0].BeginEdit();
+            RenameNewItem(SelectedItems[0]);
+        }
+
+        /// <summary>
+        /// Ends renaming previous item calling <see cref="EndRenamingItem"/>
+        /// and begins editing selected or created item
+        /// </summary>
+        /// <param name="item"> New item that is renamed </param>
+        private void RenameNewItem(DirectoryItemModel item)
+        {
+            // If item is being edited we should finish renaming it
+            if (previousEditedItem != null)
+            {
+                EndRenamingItem(previousEditedItem);
+            }
+
+            item.BeginEdit();
+            previousEditedItem = item;
         }
 
         private bool CanRename() => SelectedItems.Count > 0;
@@ -54,14 +86,16 @@ namespace FileExplorer.ViewModels
                 //TODO: File exists message
                 item.CancelEdit();
             }
-
             // Trying to move item (if it does not exist it means that new item has to be created)
             if (!_manager.TryMove(item, newFullName))
             {
                 // Item is being created
                 _manager.Create(item, CurrentDirectory.FullName);
             }
+
             item.EndEdit();
+            //TODO: New Sorting of items is required
         }
+        #endregion
     }
 }
