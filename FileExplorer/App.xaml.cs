@@ -35,7 +35,11 @@ namespace FileExplorer
                 .ConfigureServices((context, services) =>
                 {
                     services.AddPageAndViewModel<DirectoryPage, DirectoryPageViewModel>();
+
                     services.AddTransient<IPicturesService, PictureService>();
+                    services.AddTransient<IHistoryNavigationService, HistoryNavigationService>();
+
+                    services.AddTransient<DirectoriesNavigationViewModel>();
                 })
                 .Build();
             ;

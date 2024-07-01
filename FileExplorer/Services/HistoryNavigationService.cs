@@ -7,15 +7,10 @@ namespace FileExplorer.Services
     {
         private readonly Stack<string> _forwardStack = new Stack<string>();
         private readonly Stack<string> _backStack = new Stack<string>();
-        private string _currentDirectoryName;
+        private string _currentDirectoryName = @"D:\";
 
         public bool CanGoForward => _forwardStack.Count > 0;
         public bool CanGoBack => _backStack.Count > 0;
-
-        public HistoryNavigationService(string currentDirectoryName)
-        {
-            _currentDirectoryName = currentDirectoryName;
-        }
 
         public void GoForward(string location)
         {

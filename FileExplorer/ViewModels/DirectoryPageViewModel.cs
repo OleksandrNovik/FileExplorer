@@ -13,11 +13,11 @@ using ContentDialog = Microsoft.UI.Xaml.Controls.ContentDialog;
 
 namespace FileExplorer.ViewModels
 {
+    public record DirectoryOpenedMessage(string DirectoryPath);
+
     public partial class DirectoryPageViewModel : ObservableRecipient
     {
         private readonly IDirectoryManager _manager;
-
-        private readonly IHistoryNavigationService _directoryNavigation;
 
         [ObservableProperty]
         private DirectoryInfo _currentDirectory = new DirectoryInfo(@"D:\");
@@ -31,7 +31,11 @@ namespace FileExplorer.ViewModels
         public DirectoryPageViewModel()
         {
             _manager = new DirectoryManager(_currentDirectory);
-            _directoryNavigation = new HistoryNavigationService(_currentDirectory.FullName);
+
+            Messenger.Register<DirectoryPageViewModel, DirectoryOpenedMessage, int>(this, 1, (_, massage) =>
+            {
+                MoveToDirectory(massage.DirectoryPath);
+            });
             InitializeDirectory();
         }
 
@@ -65,8 +69,7 @@ namespace FileExplorer.ViewModels
             else
             {
                 MoveToDirectory(item.FullPath);
-                _directoryNavigation.GoForward(item.FullPath);
-
+                Messenger.Send(new DirectoryOpenedMessage(item.FullPath), 2);
             }
         }
 
@@ -75,26 +78,7 @@ namespace FileExplorer.ViewModels
             CurrentDirectory = new DirectoryInfo(dirName);
             _manager.MoveToNewDirectory(CurrentDirectory);
             InitializeDirectory();
-            MoveForwardCommand.NotifyCanExecuteChanged();
-            MoveBackCommand.NotifyCanExecuteChanged();
         }
-
-        [RelayCommand(CanExecute = nameof(CanGoForward))]
-        private void MoveForward()
-        {
-            var forwardDirectory = _directoryNavigation.GoForward();
-            MoveToDirectory(forwardDirectory);
-        }
-        private bool CanGoForward() => _directoryNavigation.CanGoForward;
-
-
-        [RelayCommand(CanExecute = nameof(CanGoBack))]
-        private void MoveBack()
-        {
-            var backDirectory = _directoryNavigation.GoBack();
-            MoveToDirectory(backDirectory);
-        }
-        private bool CanGoBack() => _directoryNavigation.CanGoBack;
 
 
         #region Creating logic

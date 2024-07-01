@@ -17,11 +17,13 @@
         <StackPanel Orientation="Horizontal">
             <Button 
                 ToolTipService.ToolTip="Back"
+                Command="{x:Bind ViewModel.MoveBackCommand}"
                 Style="{StaticResource SmallIconButton}">
                 <FontIcon FontSize="13" Glyph="&#xE72B;" />
             </Button>
             <Button
                 ToolTipService.ToolTip="Forward"
+                Command="{x:Bind ViewModel.MoveForwardCommand}"
                 Style="{StaticResource SmallIconButton}">
                 <FontIcon FontSize="13" Glyph="&#xF0D2;" />
             </Button>
