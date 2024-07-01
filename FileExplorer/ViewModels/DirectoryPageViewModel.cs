@@ -3,9 +3,13 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FileExplorer.Contracts;
 using FileExplorer.Models;
+using FileExplorer.Services;
+using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
+using ContentDialog = Microsoft.UI.Xaml.Controls.ContentDialog;
 
 namespace FileExplorer.ViewModels
 {
@@ -14,7 +18,7 @@ namespace FileExplorer.ViewModels
         private readonly IDirectoryManager _manager;
 
         [ObservableProperty]
-        private DirectoryInfo currentDirectory = new DirectoryInfo(@"D:\Навчальння");
+        private DirectoryInfo currentDirectory = new DirectoryInfo(@"D:\");
 
         [ObservableProperty]
         private ObservableCollection<DirectoryItemModel> directoryItems;
@@ -22,18 +26,25 @@ namespace FileExplorer.ViewModels
         [ObservableProperty]
         private ObservableCollection<DirectoryItemModel> selectedItems;
 
-        private DirectoryItemModel? previousEditedItem;
-
-        public DirectoryPageViewModel(IDirectoryManager manager)
+        public DirectoryPageViewModel()
         {
-            _manager = manager;
+            _manager = new DirectoryManager(currentDirectory);
             var models = CurrentDirectory.GetFileSystemInfos()
                 .Select(info => new DirectoryItemModel(info, info is FileInfo));
 
             directoryItems = new ObservableCollection<DirectoryItemModel>(models);
             selectedItems = new ObservableCollection<DirectoryItemModel>();
-            SelectedItems.CollectionChanged += (_, _) => BeginRenamingItemCommand.NotifyCanExecuteChanged();
+            SelectedItems.CollectionChanged += NotifyCommandsCanExecute;
         }
+
+        private void NotifyCommandsCanExecute(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            BeginRenamingItemCommand.NotifyCanExecuteChanged();
+            DeleteSelectedItemsCommand.NotifyCanExecuteChanged();
+        }
+
+
+        #region Creating logic
 
         [RelayCommand]
         private void CreateFile() => CreateItem(true);
@@ -43,41 +54,28 @@ namespace FileExplorer.ViewModels
 
         private void CreateItem(bool isFile)
         {
-            var emptyWrapper = new DirectoryItemModel(isFile);
+            var emptyWrapper = new DirectoryItemModel(_manager.GetDefaultName(isFile), isFile);
             DirectoryItems.Insert(0, emptyWrapper);
             RenameNewItem(emptyWrapper);
         }
 
+        #endregion
+
         #region Renaming logic
 
-        [RelayCommand(CanExecute = nameof(CanRename))]
+        [RelayCommand(CanExecute = nameof(HasSelectedItems))]
         private void BeginRenamingItem()
         {
             RenameNewItem(SelectedItems[0]);
         }
 
-        /// <summary>
-        /// Ends renaming previous item calling <see cref="EndRenamingItem"/>
-        /// and begins editing selected or created item
-        /// </summary>
-        /// <param name="item"> New item that is renamed </param>
-        private void RenameNewItem(DirectoryItemModel item)
-        {
-            // If item is being edited we should finish renaming it
-            if (previousEditedItem != null)
-            {
-                EndRenamingItem(previousEditedItem);
-            }
+        private void RenameNewItem(DirectoryItemModel item) => item.BeginEdit();
 
-            item.BeginEdit();
-            previousEditedItem = item;
-        }
-
-        private bool CanRename() => SelectedItems.Count > 0;
+        private bool HasSelectedItems() => SelectedItems.Count > 0;
 
 
         [RelayCommand]
-        private void EndRenamingItem(DirectoryItemModel item)
+        private async Task EndRenamingItem(DirectoryItemModel item)
         {
             var newFullName = $@"{CurrentDirectory.FullName}\{item.Name}";
             // File or folder already exists, so we can't rename item or name is empty
@@ -85,17 +83,70 @@ namespace FileExplorer.ViewModels
             {
                 //TODO: File exists message
                 item.CancelEdit();
-            }
-            // Trying to move item (if it does not exist it means that new item has to be created)
-            if (!_manager.TryMove(item, newFullName))
-            {
-                // Item is being created
-                _manager.Create(item, CurrentDirectory.FullName);
+                return;
             }
 
-            item.EndEdit();
-            //TODO: New Sorting of items is required
+            try
+            {
+                _manager.Move(item, newFullName);
+                item.EndEdit();
+                //TODO: New Sorting of items is required
+            }
+            // Case when item is empty wrapper and we should create file or folder first
+            catch (ArgumentNullException)
+            {
+                _manager.Create(item);
+                item.EndEdit();
+                //TODO: New Sorting of items is required
+            }
+            // Object is in use in other process
+            catch (IOException e)
+            {
+                item.CancelEdit();
+                var dialog = new ContentDialog
+                {
+                    Title = $"Cannot rename {(item.IsFile ? "File" : "Folder")}",
+                    Content = e.Message,
+                    CloseButtonText = "Ok"
+                };
+                await dialog.ShowAsync();
+            }
         }
         #endregion
+
+        [RelayCommand(CanExecute = nameof(HasSelectedItems))]
+        public async Task DeleteSelectedItems()
+        {
+            while (SelectedItems.Count > 0)
+            {
+                if (!TryDeleteItem(SelectedItems[0]))
+                {
+                    var dialog = new ContentDialog
+                    {
+                        Title = "Cannot Delete file",
+                        Content = $"Cannot access the \"{SelectedItems[0].Name}\" because it is being used by another process.",
+                        CloseButtonText = "Ok"
+                    };
+                    await dialog.ShowAsync();
+                }
+            }
+        }
+
+        private bool TryDeleteItem(DirectoryItemModel item)
+        {
+            if (item.IsRenamed)
+            {
+                EndRenamingItem(item);
+            }
+
+            var isItemDeleted = _manager.TryDelete(item);
+
+            if (isItemDeleted)
+            {
+                DirectoryItems.Remove(item);
+            }
+
+            return isItemDeleted;
+        }
     }
 }

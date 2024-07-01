@@ -28,6 +28,7 @@ namespace FileExplorer
         /// </summary>
         public App()
         {
+            this.UnhandledException += ExceptionOccured;
             this.InitializeComponent();
             this.Host = Hosting.CreateDefaultBuilder()
                 .UseContentRoot(AppContext.BaseDirectory)
@@ -35,10 +36,14 @@ namespace FileExplorer
                 {
                     services.AddPageAndViewModel<DirectoryPage, DirectoryPageViewModel>();
                     services.AddTransient<IPicturesService, PictureService>();
-                    services.AddTransient<IDirectoryManager, DirectoryManager>();
                 })
                 .Build();
             ;
+        }
+
+        private void ExceptionOccured(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
+        {
+            e.Handled = true;
         }
 
         /// <summary>

@@ -8,7 +8,7 @@ namespace FileExplorer.UI.Behaviors
 {
     public class RenameTextBoxBehavior : Behavior<TextBox>
     {
-        public RelayCommand<DirectoryItemModel> EndRenamingCommand { get; set; }
+        public IRelayCommand EndRenamingCommand { get; set; }
         public bool IsRenamed
         {
             get => (bool)GetValue(IsRenamedProperty);
@@ -56,7 +56,7 @@ namespace FileExplorer.UI.Behaviors
         /// <param name="e"> Event args </param>
         private void OnLostFocus(object sender, RoutedEventArgs e)
         {
-            if (AssociatedObject.DataContext is DirectoryItemModel item)
+            if (AssociatedObject.DataContext is DirectoryItemModel item && item.IsRenamed == true)
             {
                 EndRenamingCommand.Execute(item);
             }

@@ -12,7 +12,6 @@
     xmlns:behaviors="using:FileExplorer.UI.Behaviors"
     xmlns:viewModels="using:FileExplorer.ViewModels"
     xmlns:input="using:CommunityToolkit.Mvvm.Input"
-    xmlns:communityBehaviors="using:CommunityToolkit.WinUI.UI.Behaviors"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -20,22 +19,33 @@
         <DataTemplate x:Key="GridItemTemplate" x:DataType="models:DirectoryItemModel">
             <StackPanel  Padding="10  25 10 10">
                 <Image Source="../Resources/Folder.png" Height="95"  />
-                <TextBlock Text="{x:Bind Name, Mode=OneWay}" 
-                           Visibility="{x:Bind IsRenamed, Mode=OneWay, 
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="{x:Bind Name, Mode=OneWay}" 
+                               VerticalAlignment="Center"
+                               Visibility="{x:Bind IsRenamed, Mode=OneWay, 
                                         Converter = {StaticResource BoolToVisibilityConverter}, 
                                         ConverterParameter=True}" />
-                <TextBox Text="{x:Bind Name, Mode=TwoWay}"
-                                          AcceptsReturn="True"
-                                          Visibility="{x:Bind IsRenamed, Mode=OneWay,
-                                         Converter = {StaticResource BoolToVisibilityConverter}}">
-                    <interactivity:Interaction.Behaviors>
-                        <interactivity:BehaviorCollection>
-                            <behaviors:RenameTextBoxBehavior
-                                EndRenamingCommand="{StaticResource EndRenamingCommand}"
-                                IsRenamed="{x:Bind IsRenamed, Mode=TwoWay}"  />
-                        </interactivity:BehaviorCollection>
-                    </interactivity:Interaction.Behaviors>
-                </TextBox>
+                    <TextBox  Text="{x:Bind Name, Mode=TwoWay}"
+                              AcceptsReturn="True"
+                              Padding="0 5 0 0"
+                              Visibility="{x:Bind IsRenamed, Mode=OneWay,
+                                Converter = {StaticResource BoolToVisibilityConverter}}">
+
+
+                        <interactivity:Interaction.Behaviors>
+                            <interactivity:BehaviorCollection>
+
+                                <behaviors:RenameTextBoxBehavior
+                                    EndRenamingCommand="{StaticResource EndRenamingCommand}"
+                                    IsRenamed="{x:Bind IsRenamed, Mode=TwoWay}"  />
+
+                            </interactivity:BehaviorCollection>
+                        </interactivity:Interaction.Behaviors>
+                    </TextBox>
+                </Grid>
             </StackPanel>
         </DataTemplate>
         <Style x:Key="MenuButton" TargetType="Button">
@@ -101,7 +111,8 @@
                 </Button>
                 <Button 
                     Style="{StaticResource MenuButton}"
-                    ToolTipService.ToolTip="Delete"
+                    Command="{x:Bind ViewModel.DeleteSelectedItemsCommand}"
+                    ToolTipService.ToolTip="TryDelete"
                     ToolTipService.Placement="Bottom">
                     <FontIcon FontSize="17" Glyph="&#xE74D;" />
                 </Button>
@@ -148,6 +159,9 @@
             </interactivity:Interaction.Behaviors>
         </controls:AdaptiveGridView>
 
+        <interactivity:Interaction.Behaviors>
+            <behaviors:KeyPressedBehavior Key="Delete" Command="{x:Bind ViewModel.DeleteSelectedItemsCommand}" />
+        </interactivity:Interaction.Behaviors>
     </Grid>
 </Page>
 

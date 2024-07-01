@@ -32,6 +32,13 @@ namespace FileExplorer.Models
             isRenamed = true;
         }
 
+        public DirectoryItemModel(string name, bool isFile)
+        {
+            Name = name;
+            IsFile = isFile;
+            isRenamed = true;
+        }
+
         /// <summary>
         /// Constructor for an existing item in directory
         /// Using for viewing existing item in UI
@@ -50,7 +57,7 @@ namespace FileExplorer.Models
         {
             if (!IsRenamed)
             {
-                backUpName = name;
+                backUpName = Name;
                 IsRenamed = true;
             }
         }
@@ -68,7 +75,7 @@ namespace FileExplorer.Models
         {
             if (IsRenamed)
             {
-                backUpName = string.Empty;
+                backUpName = Name;
                 IsRenamed = false;
             }
         }

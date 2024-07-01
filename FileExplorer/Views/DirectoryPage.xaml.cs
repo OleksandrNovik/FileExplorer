@@ -14,9 +14,9 @@ namespace FileExplorer.Views
         public DirectoryPageViewModel ViewModel { get; }
         public DirectoryPage()
         {
-            this.InitializeComponent();
             this.ViewModel = App.GetService<DirectoryPageViewModel>();
             this.Resources["EndRenamingCommand"] = this.ViewModel.EndRenamingItemCommand;
+            this.InitializeComponent();
         }
     }
 }
