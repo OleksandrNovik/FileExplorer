@@ -1,22 +1,17 @@
-﻿using CommunityToolkit.Mvvm.Input;
-using Microsoft.UI.Xaml;
-using Microsoft.Xaml.Interactivity;
+﻿using Microsoft.UI.Xaml;
 using Windows.System;
 
 namespace FileExplorer.UI.Behaviors
 {
-    public class KeyPressedBehavior : Behavior<UIElement>
+    public class KeyPressedBehavior : BaseCommandBehavior<UIElement>
     {
         public VirtualKey Key { get; set; }
-        public IRelayCommand Command { get; set; }
-        public object CommandParameter { get; set; } = null;
 
         protected override void OnAttached()
         {
             base.OnAttached();
             AssociatedObject.KeyDown += OnKeyDown;
         }
-
 
         protected override void OnDetaching()
         {

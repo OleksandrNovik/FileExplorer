@@ -1,4 +1,5 @@
 ﻿using FileExplorer.Models;
+using System.IO;
 
 namespace FileExplorer.Contracts
 {
@@ -24,5 +25,7 @@ namespace FileExplorer.Contracts
         public bool TryDelete(DirectoryItemModel item);
 
         public string GetDefaultName(bool isFile);
+
+        public void MoveToNewDirectory(DirectoryInfo dir);
     }
 }

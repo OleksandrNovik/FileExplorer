@@ -46,6 +46,11 @@
                         </interactivity:Interaction.Behaviors>
                     </TextBox>
                 </Grid>
+
+                <interactivity:Interaction.Behaviors>
+                    <behaviors:DoubleClickBehavior Command="{StaticResource OpenCommand}" CommandParameter="{x:Bind}"  />
+                </interactivity:Interaction.Behaviors>
+
             </StackPanel>
         </DataTemplate>
         <Style x:Key="MenuButton" TargetType="Button">
@@ -148,7 +153,7 @@
             </StackPanel>
         </Grid>
         <controls:AdaptiveGridView Grid.Row="1"
-            ItemsSource="{x:Bind ViewModel.DirectoryItems}" 
+            ItemsSource="{x:Bind ViewModel.DirectoryItems, Mode=OneWay}" 
             ItemTemplate="{StaticResource GridItemTemplate}"
             SelectionMode="Extended"
             DesiredWidth="160"

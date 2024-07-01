@@ -17,24 +17,22 @@ namespace FileExplorer.ViewModels
     {
         private readonly IDirectoryManager _manager;
 
-        [ObservableProperty]
-        private DirectoryInfo currentDirectory = new DirectoryInfo(@"D:\");
+        private readonly IHistoryNavigationService _directoryNavigation;
 
         [ObservableProperty]
-        private ObservableCollection<DirectoryItemModel> directoryItems;
+        private DirectoryInfo _currentDirectory = new DirectoryInfo(@"D:\");
 
         [ObservableProperty]
-        private ObservableCollection<DirectoryItemModel> selectedItems;
+        private ObservableCollection<DirectoryItemModel> _directoryItems;
+
+        [ObservableProperty]
+        private ObservableCollection<DirectoryItemModel> _selectedItems;
 
         public DirectoryPageViewModel()
         {
-            _manager = new DirectoryManager(currentDirectory);
-            var models = CurrentDirectory.GetFileSystemInfos()
-                .Select(info => new DirectoryItemModel(info, info is FileInfo));
-
-            directoryItems = new ObservableCollection<DirectoryItemModel>(models);
-            selectedItems = new ObservableCollection<DirectoryItemModel>();
-            SelectedItems.CollectionChanged += NotifyCommandsCanExecute;
+            _manager = new DirectoryManager(_currentDirectory);
+            _directoryNavigation = new HistoryNavigationService(_currentDirectory.FullName);
+            InitializeDirectory();
         }
 
         private void NotifyCommandsCanExecute(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -42,6 +40,61 @@ namespace FileExplorer.ViewModels
             BeginRenamingItemCommand.NotifyCanExecuteChanged();
             DeleteSelectedItemsCommand.NotifyCanExecuteChanged();
         }
+
+        private void InitializeDirectory()
+        {
+            var models = CurrentDirectory.GetFileSystemInfos()
+                .Select(info => new DirectoryItemModel(info, info is FileInfo));
+
+            DirectoryItems = new ObservableCollection<DirectoryItemModel>(models);
+            SelectedItems = new ObservableCollection<DirectoryItemModel>();
+            SelectedItems.CollectionChanged += NotifyCommandsCanExecute;
+        }
+
+        [RelayCommand]
+        private void Open(DirectoryItemModel item)
+        {
+            if (item.IsRenamed)
+            {
+                EndRenamingItem(item);
+            }
+
+            if (item.IsFile)
+            {
+            }
+            else
+            {
+                MoveToDirectory(item.FullPath);
+                _directoryNavigation.GoForward(item.FullPath);
+
+            }
+        }
+
+        private void MoveToDirectory(string dirName)
+        {
+            CurrentDirectory = new DirectoryInfo(dirName);
+            _manager.MoveToNewDirectory(CurrentDirectory);
+            InitializeDirectory();
+            MoveForwardCommand.NotifyCanExecuteChanged();
+            MoveBackCommand.NotifyCanExecuteChanged();
+        }
+
+        [RelayCommand(CanExecute = nameof(CanGoForward))]
+        private void MoveForward()
+        {
+            var forwardDirectory = _directoryNavigation.GoForward();
+            MoveToDirectory(forwardDirectory);
+        }
+        private bool CanGoForward() => _directoryNavigation.CanGoForward;
+
+
+        [RelayCommand(CanExecute = nameof(CanGoBack))]
+        private void MoveBack()
+        {
+            var backDirectory = _directoryNavigation.GoBack();
+            MoveToDirectory(backDirectory);
+        }
+        private bool CanGoBack() => _directoryNavigation.CanGoBack;
 
 
         #region Creating logic
@@ -75,7 +128,7 @@ namespace FileExplorer.ViewModels
 
 
         [RelayCommand]
-        private async Task EndRenamingItem(DirectoryItemModel item)
+        private void EndRenamingItem(DirectoryItemModel item)
         {
             var newFullName = $@"{CurrentDirectory.FullName}\{item.Name}";
             // File or folder already exists, so we can't rename item or name is empty
@@ -90,29 +143,23 @@ namespace FileExplorer.ViewModels
             {
                 _manager.Move(item, newFullName);
                 item.EndEdit();
-                //TODO: New Sorting of items is required
             }
             // Case when item is empty wrapper and we should create file or folder first
             catch (ArgumentNullException)
             {
                 _manager.Create(item);
                 item.EndEdit();
-                //TODO: New Sorting of items is required
             }
             // Object is in use in other process
             catch (IOException e)
             {
                 item.CancelEdit();
-                var dialog = new ContentDialog
-                {
-                    Title = $"Cannot rename {(item.IsFile ? "File" : "Folder")}",
-                    Content = e.Message,
-                    CloseButtonText = "Ok"
-                };
-                await dialog.ShowAsync();
             }
+            //TODO: New Sorting of items is required
         }
         #endregion
+
+        #region Delete logic
 
         [RelayCommand(CanExecute = nameof(HasSelectedItems))]
         public async Task DeleteSelectedItems()
@@ -132,6 +179,11 @@ namespace FileExplorer.ViewModels
             }
         }
 
+        /// <summary>
+        /// Fully deletes item (if it is possible)
+        /// </summary>
+        /// <param name="item"> Wrapper item to delete </param>
+        /// <returns> true if item is successfully deleted, otherwise - false </returns>
         private bool TryDeleteItem(DirectoryItemModel item)
         {
             if (item.IsRenamed)
@@ -148,5 +200,7 @@ namespace FileExplorer.ViewModels
 
             return isItemDeleted;
         }
+
+        #endregion
     }
 }

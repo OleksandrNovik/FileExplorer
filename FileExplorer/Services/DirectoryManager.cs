@@ -107,5 +107,10 @@ namespace FileExplorer.Services
             }
             return true;
         }
+
+        public void MoveToNewDirectory(DirectoryInfo dir)
+        {
+            _currentDirectory = dir;
+        }
     }
 }
