@@ -6,13 +6,15 @@ namespace FileExplorer.ViewModels
 {
     public partial class DirectoriesNavigationViewModel : ObservableRecipient
     {
+        public const int NavigationRequiredChannelCode = 1;
         private readonly IHistoryNavigationService _navigation;
 
         public DirectoriesNavigationViewModel(IHistoryNavigationService navigation)
         {
             _navigation = navigation;
 
-            Messenger.Register<DirectoriesNavigationViewModel, DirectoryOpenedMessage, int>(this, 2, (_, message) =>
+            Messenger.Register<DirectoriesNavigationViewModel, DirectoryOpenedMessage, int>(this,
+                DirectoryPageViewModel.FolderOpenedChannelCode, (_, message) =>
             {
                 _navigation.GoForward(message.DirectoryPath);
                 NotifyCanExecute();
@@ -38,7 +40,7 @@ namespace FileExplorer.ViewModels
 
         private void SendMessage(string message)
         {
-            Messenger.Send(new DirectoryOpenedMessage(message), 1);
+            Messenger.Send(new DirectoryOpenedMessage(message), NavigationRequiredChannelCode);
             NotifyCanExecute();
         }
 

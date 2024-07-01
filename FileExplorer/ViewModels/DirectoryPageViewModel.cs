@@ -17,6 +17,8 @@ namespace FileExplorer.ViewModels
 
     public partial class DirectoryPageViewModel : ObservableRecipient
     {
+        public const int FolderOpenedChannelCode = 2;
+
         private readonly IDirectoryManager _manager;
 
         [ObservableProperty]
@@ -32,7 +34,8 @@ namespace FileExplorer.ViewModels
         {
             _manager = new DirectoryManager(_currentDirectory);
 
-            Messenger.Register<DirectoryPageViewModel, DirectoryOpenedMessage, int>(this, 1, (_, massage) =>
+            Messenger.Register<DirectoryPageViewModel, DirectoryOpenedMessage, int>(this,
+                DirectoriesNavigationViewModel.NavigationRequiredChannelCode, (_, massage) =>
             {
                 MoveToDirectory(massage.DirectoryPath);
             });
@@ -69,7 +72,7 @@ namespace FileExplorer.ViewModels
             else
             {
                 MoveToDirectory(item.FullPath);
-                Messenger.Send(new DirectoryOpenedMessage(item.FullPath), 2);
+                Messenger.Send(new DirectoryOpenedMessage(item.FullPath), FolderOpenedChannelCode);
             }
         }
 

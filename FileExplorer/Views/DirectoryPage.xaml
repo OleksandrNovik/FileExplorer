@@ -160,7 +160,7 @@
             >
 
             <interactivity:Interaction.Behaviors>
-                <behaviors:MultiSelectionBehavior SelectedItems="{x:Bind ViewModel.SelectedItems}" />
+                <behaviors:MultiSelectionBehavior SelectedItems="{x:Bind ViewModel.SelectedItems, Mode=OneWay}" />
             </interactivity:Interaction.Behaviors>
         </controls:AdaptiveGridView>
 
