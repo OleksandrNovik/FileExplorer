@@ -10,8 +10,6 @@
     xmlns:models="using:FileExplorer.Models"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:behaviors="using:FileExplorer.UI.Behaviors"
-    xmlns:viewModels="using:FileExplorer.ViewModels"
-    xmlns:input="using:CommunityToolkit.Mvvm.Input"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -38,9 +36,14 @@
                         <interactivity:Interaction.Behaviors>
                             <interactivity:BehaviorCollection>
 
-                                <behaviors:RenameTextBoxBehavior
-                                    EndRenamingCommand="{StaticResource EndRenamingCommand}"
-                                    IsRenamed="{x:Bind IsRenamed, Mode=TwoWay}"  />
+                                <behaviors:FocusOnConditionBehavior
+                                    Condition="{x:Bind IsRenamed, Mode=TwoWay}"
+                                    />
+
+                                <behaviors:LostFocusBehavior 
+                                    Command="{StaticResource EndRenamingCommand}"
+                                    CommandParameter="{x:Bind}"
+                                    />
 
                             </interactivity:BehaviorCollection>
                         </interactivity:Interaction.Behaviors>
