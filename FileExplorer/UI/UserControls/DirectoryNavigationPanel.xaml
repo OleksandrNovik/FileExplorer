@@ -6,6 +6,8 @@
     xmlns:local="using:FileExplorer.UI.UserControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:behaviors="using:FileExplorer.UI.Behaviors"
     mc:Ignorable="d">
 
     <Grid>
@@ -17,31 +19,50 @@
         <StackPanel Orientation="Horizontal">
             <Button 
                 ToolTipService.ToolTip="Back"
+                ToolTipService.Placement="Bottom"
                 Command="{x:Bind ViewModel.MoveBackCommand}"
                 Style="{StaticResource SmallIconButton}">
                 <FontIcon FontSize="13" Glyph="&#xE72B;" />
             </Button>
             <Button
                 ToolTipService.ToolTip="Forward"
+                ToolTipService.Placement="Bottom"
                 Command="{x:Bind ViewModel.MoveForwardCommand}"
                 Style="{StaticResource SmallIconButton}">
                 <FontIcon FontSize="13" Glyph="&#xF0D2;" />
             </Button>
             <Button 
                 ToolTipService.ToolTip="Refresh"
+                ToolTipService.Placement="Bottom"
                 Command="{x:Bind ViewModel.RefreshCommand}"
                 Style="{StaticResource SmallIconButton}">
                 <FontIcon FontSize="13" Glyph="&#xE72C;" />
             </Button>
             <Button
                 ToolTipService.ToolTip="Up to directory"
+                ToolTipService.Placement="Bottom"
                 Command="{x:Bind ViewModel.NavigateUpDirectoryCommand}"
                 Style="{StaticResource SmallIconButton}">
                 <FontIcon FontSize="13" Glyph="&#xE74A;" />
             </Button>
         </StackPanel>
         <Grid Column="1" Padding="10 0">
-            <TextBox VerticalAlignment="Center" />
+
+            <BreadcrumbBar ItemsSource="{x:Bind ViewModel.RouteItems, Mode=OneWay}" 
+                           VerticalAlignment="Center"
+                           Visibility="{x:Bind ViewModel.IsWritingRoute,Mode=OneWay, 
+                                              Converter={StaticResource BoolToVisibilityConverter}, 
+                                              ConverterParameter=True}">
+
+                <interactivity:Interaction.Behaviors>
+                    <behaviors:BreadcrumbBarItemClickedBehavior Command="{x:Bind ViewModel.UseNavigationBarCommand}" />
+                </interactivity:Interaction.Behaviors>
+
+            </BreadcrumbBar>
+
+            <TextBox VerticalAlignment="Center" Text="{x:Bind ViewModel.CurrentRoute, Mode=OneWay}"
+                     Visibility="{x:Bind ViewModel.IsWritingRoute, Mode=OneWay,
+                                    Converter={StaticResource BoolToVisibilityConverter}}"/>
         </Grid>
         <Grid Column="2" Padding="5 0">
             <Grid.ColumnDefinitions>

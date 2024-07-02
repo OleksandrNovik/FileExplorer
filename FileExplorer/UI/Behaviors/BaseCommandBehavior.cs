@@ -18,9 +18,19 @@ namespace FileExplorer.UI.Behaviors
         /// </summary>
         protected void ExecuteIfCan()
         {
-            if (Command.CanExecute(CommandParameter))
+            ExecuteIfCan(CommandParameter);
+        }
+
+        /// <summary>
+        /// Executes <see cref="Command"/> (if it can be executed) with provided <see cref="CommandParameter"/>
+        /// </summary>
+        /// <typeparam name="T"> Type of parameter </typeparam>
+        /// <param name="param"> Provided command parameter </param>
+        protected void ExecuteIfCan<T>(T param)
+        {
+            if (Command.CanExecute(param))
             {
-                Command.Execute(CommandParameter);
+                Command.Execute(param);
             }
         }
     }

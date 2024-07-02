@@ -37,6 +37,7 @@ namespace FileExplorer
 
                     services.AddTransient<IPicturesService, PictureService>();
                     services.AddTransient<IHistoryNavigationService, HistoryNavigationService>();
+                    services.AddTransient<IDirectoryRouteService, DirectoryRouteService>();
 
                     services.AddTransient<DirectoriesNavigationViewModel>();
 

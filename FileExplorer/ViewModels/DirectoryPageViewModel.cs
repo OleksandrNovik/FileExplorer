@@ -140,6 +140,7 @@ namespace FileExplorer.ViewModels
             // Object is in use in other process
             catch (IOException e)
             {
+                //TODO: File is occupied message
                 item.CancelEdit();
             }
             //TODO: New Sorting of items is required
@@ -155,6 +156,7 @@ namespace FileExplorer.ViewModels
             {
                 if (!TryDeleteItem(SelectedItems[0]))
                 {
+                    //TODO: Fix deleting
                     SelectedItems.Remove(SelectedItems[0]);
                 }
             }

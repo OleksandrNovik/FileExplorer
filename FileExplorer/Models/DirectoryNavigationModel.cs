@@ -21,7 +21,6 @@ namespace FileExplorer.Models
         {
             Name = info.Name;
             FullPath = info.FullName;
-            var p = info.Parent;
             ParentPath = info.Parent?.FullName;
         }
 
