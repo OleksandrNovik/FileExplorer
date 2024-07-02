@@ -97,6 +97,9 @@ namespace FileExplorer.ViewModels
             SendNavigationMessage(_router.CreatePathFrom(RouteItems));
         }
 
+        [RelayCommand]
+        private void SwitchNavigationBarMode() => IsWritingRoute = !IsWritingRoute;
+
         private void SendNavigationMessage(string path)
         {
             Messenger.Send(new NavigationRequiredMessage(path));

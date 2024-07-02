@@ -62,7 +62,22 @@
 
             <TextBox VerticalAlignment="Center" Text="{x:Bind ViewModel.CurrentRoute, Mode=OneWay}"
                      Visibility="{x:Bind ViewModel.IsWritingRoute, Mode=OneWay,
-                                    Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                    Converter={StaticResource BoolToVisibilityConverter}}">
+
+                <interactivity:Interaction.Behaviors>
+                    <interactivity:BehaviorCollection>
+
+                        <behaviors:FocusOnConditionBehavior Condition="{x:Bind ViewModel.IsWritingRoute, Mode=OneWay}"/>
+
+                        <behaviors:LostFocusBehavior Command="{x:Bind ViewModel.SwitchNavigationBarModeCommand}" />
+
+                    </interactivity:BehaviorCollection>
+                </interactivity:Interaction.Behaviors>
+
+            </TextBox>
+            <interactivity:Interaction.Behaviors>
+                <behaviors:ClickBehavior Command="{x:Bind ViewModel.SwitchNavigationBarModeCommand}" />
+            </interactivity:Interaction.Behaviors>
         </Grid>
         <Grid Column="2" Padding="5 0">
             <Grid.ColumnDefinitions>
