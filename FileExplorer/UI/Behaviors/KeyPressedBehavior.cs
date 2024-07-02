@@ -21,9 +21,9 @@ namespace FileExplorer.UI.Behaviors
 
         private void OnKeyDown(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
         {
-            if (Key == e.Key && Command.CanExecute(CommandParameter))
+            if (Key == e.Key)
             {
-                Command.Execute(CommandParameter);
+                ExecuteIfCan();
             }
         }
     }

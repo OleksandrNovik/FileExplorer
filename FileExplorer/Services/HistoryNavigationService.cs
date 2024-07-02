@@ -8,7 +8,7 @@ namespace FileExplorer.Services
     {
         private readonly Stack<DirectoryNavigationModel> _forwardStack = new Stack<DirectoryNavigationModel>();
         private readonly Stack<DirectoryNavigationModel> _backStack = new Stack<DirectoryNavigationModel>();
-        public DirectoryNavigationModel CurrentDirectory { get; private set; } = new("D Drive", @"D:\");
+        public DirectoryNavigationModel CurrentDirectory { get; private set; } = new(@"D:\");
         public bool CanGoForward => _forwardStack.Count > 0;
         public bool CanGoBack => _backStack.Count > 0;
 

@@ -70,7 +70,9 @@ namespace FileExplorer.ViewModels
             {
                 MoveToDirectory(item.FullPath);
 
-                Messenger.Send(new DirectoryNavigationModel(item.Name, item.FullPath));
+                var directoryInfo = item.FullInfo as DirectoryInfo;
+
+                Messenger.Send(new DirectoryNavigationModel(directoryInfo));
             }
         }
 

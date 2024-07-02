@@ -18,10 +18,7 @@ namespace FileExplorer.UI.Behaviors
 
         private void OnLostFocus(object sender, RoutedEventArgs e)
         {
-            if (Command.CanExecute(CommandParameter))
-            {
-                Command.Execute(CommandParameter);
-            }
+            ExecuteIfCan();
         }
     }
 }

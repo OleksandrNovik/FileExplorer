@@ -17,10 +17,7 @@ namespace FileExplorer.UI.Behaviors
         }
         private void OnDoubleTapped(object sender, Microsoft.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
         {
-            if (Command.CanExecute(CommandParameter))
-            {
-                Command.Execute(CommandParameter);
-            }
+            ExecuteIfCan();
         }
     }
 }

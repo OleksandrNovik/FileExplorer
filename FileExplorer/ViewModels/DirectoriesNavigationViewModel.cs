@@ -11,7 +11,6 @@ namespace FileExplorer.ViewModels
     {
         private readonly IHistoryNavigationService _navigation;
         private DirectoryNavigationModel CurrentDirectory => _navigation.CurrentDirectory;
-
         public DirectoriesNavigationViewModel(IHistoryNavigationService navigation)
         {
             _navigation = navigation;
@@ -46,11 +45,13 @@ namespace FileExplorer.ViewModels
             Messenger.Send(new NavigationRequiredMessage(CurrentDirectory.FullPath));
         }
 
-        [RelayCommand(CanExecute = nameof(CanGoBack))]
+        [RelayCommand(CanExecute = nameof(CanNavigateUp))]
         private void NavigateUpDirectory()
         {
             MoveBackCommand.Execute(null);
         }
+
+        private bool CanNavigateUp() => CurrentDirectory.HasParent;
 
         private void SendNavigationMessage(string path)
         {

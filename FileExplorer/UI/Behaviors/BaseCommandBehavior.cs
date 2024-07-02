@@ -12,5 +12,16 @@ namespace FileExplorer.UI.Behaviors
     {
         public IRelayCommand Command { get; set; }
         public object CommandParameter { get; set; } = null;
+
+        /// <summary>
+        /// Executes <see cref="Command"/> (if it can be executed) with provided <see cref="CommandParameter"/>
+        /// </summary>
+        protected void ExecuteIfCan()
+        {
+            if (Command.CanExecute(CommandParameter))
+            {
+                Command.Execute(CommandParameter);
+            }
+        }
     }
 }
