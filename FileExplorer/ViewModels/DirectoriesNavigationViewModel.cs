@@ -48,10 +48,11 @@ namespace FileExplorer.ViewModels
         [RelayCommand(CanExecute = nameof(CanNavigateUp))]
         private void NavigateUpDirectory()
         {
-            MoveBackCommand.Execute(null);
+            _navigation.GoBack(new DirectoryNavigationModel(CurrentDirectory.ParentPath));
+            SendNavigationMessage(CurrentDirectory.FullPath);
         }
 
-        private bool CanNavigateUp() => CurrentDirectory.HasParent;
+        private bool CanNavigateUp() => CurrentDirectory.ParentPath != null;
 
         private void SendNavigationMessage(string path)
         {

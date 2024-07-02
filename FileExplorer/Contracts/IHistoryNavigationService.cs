@@ -8,6 +8,7 @@ namespace FileExplorer.Contracts
         public bool CanGoForward { get; }
         public bool CanGoBack { get; }
         public void GoForward(DirectoryNavigationModel location);
+        public void GoBack(DirectoryNavigationModel location);
         public void GoForward();
         public void GoBack();
     }

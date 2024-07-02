@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿#nullable enable
+using System.IO;
 
 namespace FileExplorer.Models
 {
@@ -6,21 +7,22 @@ namespace FileExplorer.Models
     {
         public string Name { get; }
         public string FullPath { get; }
-        public bool HasParent { get; }
+        public string? ParentPath { get; }
 
         public DirectoryNavigationModel(string path)
         {
             var dirInfo = new DirectoryInfo(path);
             Name = dirInfo.Name;
             FullPath = path;
-            HasParent = dirInfo.Parent != null;
+            ParentPath = dirInfo.Parent?.FullName;
         }
 
         public DirectoryNavigationModel(DirectoryInfo info)
         {
             Name = info.Name;
             FullPath = info.FullName;
-            HasParent = info.Parent != null;
+            var p = info.Parent;
+            ParentPath = info.Parent?.FullName;
         }
 
     }

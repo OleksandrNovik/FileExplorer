@@ -18,7 +18,7 @@ namespace FileExplorer.ViewModels
         private readonly IDirectoryManager _manager;
 
         [ObservableProperty]
-        private DirectoryInfo currentDirectory = new DirectoryInfo(@"D:\");
+        private DirectoryInfo currentDirectory = new DirectoryInfo(@"D:\Files");
 
         [ObservableProperty]
         private ObservableCollection<DirectoryItemModel> directoryItems;
