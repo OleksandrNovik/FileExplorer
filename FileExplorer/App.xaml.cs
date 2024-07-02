@@ -28,7 +28,6 @@ namespace FileExplorer
         /// </summary>
         public App()
         {
-            this.UnhandledException += ExceptionOccured;
             this.InitializeComponent();
             this.Host = Hosting.CreateDefaultBuilder()
                 .UseContentRoot(AppContext.BaseDirectory)
@@ -40,14 +39,10 @@ namespace FileExplorer
                     services.AddTransient<IHistoryNavigationService, HistoryNavigationService>();
 
                     services.AddTransient<DirectoriesNavigationViewModel>();
+
                 })
                 .Build();
             ;
-        }
-
-        private void ExceptionOccured(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
-        {
-            e.Handled = true;
         }
 
         /// <summary>

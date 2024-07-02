@@ -29,11 +29,13 @@
             </Button>
             <Button 
                 ToolTipService.ToolTip="Refresh"
+                Command="{x:Bind ViewModel.RefreshCommand}"
                 Style="{StaticResource SmallIconButton}">
                 <FontIcon FontSize="13" Glyph="&#xE72C;" />
             </Button>
             <Button
                 ToolTipService.ToolTip="Up to directory"
+                Command="{x:Bind ViewModel.NavigateUpDirectoryCommand}"
                 Style="{StaticResource SmallIconButton}">
                 <FontIcon FontSize="13" Glyph="&#xE74A;" />
             </Button>

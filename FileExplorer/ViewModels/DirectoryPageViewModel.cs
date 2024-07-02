@@ -1,44 +1,40 @@
 ﻿#nullable enable
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using FileExplorer.Contracts;
 using FileExplorer.Models;
 using FileExplorer.Services;
+using FileExplorer.ViewModels.Messages;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
-using ContentDialog = Microsoft.UI.Xaml.Controls.ContentDialog;
 
 namespace FileExplorer.ViewModels
 {
-    public record DirectoryOpenedMessage(string DirectoryPath);
-
     public partial class DirectoryPageViewModel : ObservableRecipient
     {
-        public const int FolderOpenedChannelCode = 2;
-
         private readonly IDirectoryManager _manager;
 
         [ObservableProperty]
-        private DirectoryInfo _currentDirectory = new DirectoryInfo(@"D:\");
+        private DirectoryInfo currentDirectory = new DirectoryInfo(@"D:\");
 
         [ObservableProperty]
-        private ObservableCollection<DirectoryItemModel> _directoryItems;
+        private ObservableCollection<DirectoryItemModel> directoryItems;
 
         [ObservableProperty]
-        private ObservableCollection<DirectoryItemModel> _selectedItems;
+        private ObservableCollection<DirectoryItemModel> selectedItems;
 
         public DirectoryPageViewModel()
         {
-            _manager = new DirectoryManager(_currentDirectory);
+            _manager = new DirectoryManager(currentDirectory);
 
-            Messenger.Register<DirectoryPageViewModel, DirectoryOpenedMessage, int>(this,
-                DirectoriesNavigationViewModel.NavigationRequiredChannelCode, (_, massage) =>
+            Messenger.Register<DirectoryPageViewModel, NavigationRequiredMessage>(this, (_, massage) =>
             {
-                MoveToDirectory(massage.DirectoryPath);
+                MoveToDirectory(massage.NavigationPath);
             });
+
             InitializeDirectory();
         }
 
@@ -68,11 +64,13 @@ namespace FileExplorer.ViewModels
 
             if (item.IsFile)
             {
+
             }
             else
             {
                 MoveToDirectory(item.FullPath);
-                Messenger.Send(new DirectoryOpenedMessage(item.FullPath), FolderOpenedChannelCode);
+
+                Messenger.Send(new DirectoryNavigationModel(item.Name, item.FullPath));
             }
         }
 
@@ -149,19 +147,13 @@ namespace FileExplorer.ViewModels
         #region Delete logic
 
         [RelayCommand(CanExecute = nameof(HasSelectedItems))]
-        public async Task DeleteSelectedItems()
+        public void DeleteSelectedItems()
         {
             while (SelectedItems.Count > 0)
             {
                 if (!TryDeleteItem(SelectedItems[0]))
                 {
-                    var dialog = new ContentDialog
-                    {
-                        Title = "Cannot Delete file",
-                        Content = $"Cannot access the \"{SelectedItems[0].Name}\" because it is being used by another process.",
-                        CloseButtonText = "Ok"
-                    };
-                    await dialog.ShowAsync();
+                    SelectedItems.Remove(SelectedItems[0]);
                 }
             }
         }

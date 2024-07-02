@@ -1,22 +1,24 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using FileExplorer.Contracts;
+using FileExplorer.Models;
+using FileExplorer.ViewModels.Messages;
 
 namespace FileExplorer.ViewModels
 {
     public partial class DirectoriesNavigationViewModel : ObservableRecipient
     {
-        public const int NavigationRequiredChannelCode = 1;
         private readonly IHistoryNavigationService _navigation;
+        private DirectoryNavigationModel CurrentDirectory => _navigation.CurrentDirectory;
 
         public DirectoriesNavigationViewModel(IHistoryNavigationService navigation)
         {
             _navigation = navigation;
 
-            Messenger.Register<DirectoriesNavigationViewModel, DirectoryOpenedMessage, int>(this,
-                DirectoryPageViewModel.FolderOpenedChannelCode, (_, message) =>
+            Messenger.Register<DirectoriesNavigationViewModel, DirectoryNavigationModel>(this, (_, message) =>
             {
-                _navigation.GoForward(message.DirectoryPath);
+                _navigation.GoForward(message);
                 NotifyCanExecute();
             });
         }
@@ -24,8 +26,8 @@ namespace FileExplorer.ViewModels
         [RelayCommand(CanExecute = nameof(CanGoForward))]
         private void MoveForward()
         {
-            var forwardDirectory = _navigation.GoForward();
-            SendMessage(forwardDirectory);
+            _navigation.GoForward();
+            SendNavigationMessage(CurrentDirectory.FullPath);
         }
         private bool CanGoForward() => _navigation.CanGoForward;
 
@@ -33,14 +35,26 @@ namespace FileExplorer.ViewModels
         [RelayCommand(CanExecute = nameof(CanGoBack))]
         private void MoveBack()
         {
-            var backDirectory = _navigation.GoBack();
-            SendMessage(backDirectory);
+            _navigation.GoBack();
+            SendNavigationMessage(CurrentDirectory.FullPath);
         }
         private bool CanGoBack() => _navigation.CanGoBack;
 
-        private void SendMessage(string message)
+        [RelayCommand]
+        private void Refresh()
         {
-            Messenger.Send(new DirectoryOpenedMessage(message), NavigationRequiredChannelCode);
+            Messenger.Send(new NavigationRequiredMessage(CurrentDirectory.FullPath));
+        }
+
+        [RelayCommand(CanExecute = nameof(CanGoBack))]
+        private void NavigateUpDirectory()
+        {
+            MoveBackCommand.Execute(null);
+        }
+
+        private void SendNavigationMessage(string path)
+        {
+            Messenger.Send(new NavigationRequiredMessage(path));
             NotifyCanExecute();
         }
 
@@ -48,6 +62,7 @@ namespace FileExplorer.ViewModels
         {
             MoveBackCommand.NotifyCanExecuteChanged();
             MoveForwardCommand.NotifyCanExecuteChanged();
+            NavigateUpDirectoryCommand.NotifyCanExecuteChanged();
         }
 
     }

@@ -1,35 +1,33 @@
 ﻿using FileExplorer.Contracts;
+using FileExplorer.Models;
 using System.Collections.Generic;
 
 namespace FileExplorer.Services
 {
     public class HistoryNavigationService : IHistoryNavigationService
     {
-        private readonly Stack<string> _forwardStack = new Stack<string>();
-        private readonly Stack<string> _backStack = new Stack<string>();
-        private string _currentDirectoryName = @"D:\";
-
+        private readonly Stack<DirectoryNavigationModel> _forwardStack = new Stack<DirectoryNavigationModel>();
+        private readonly Stack<DirectoryNavigationModel> _backStack = new Stack<DirectoryNavigationModel>();
+        public DirectoryNavigationModel CurrentDirectory { get; private set; } = new("D Drive", @"D:\");
         public bool CanGoForward => _forwardStack.Count > 0;
         public bool CanGoBack => _backStack.Count > 0;
 
-        public void GoForward(string location)
+        public void GoForward(DirectoryNavigationModel location)
         {
-            _backStack.Push(_currentDirectoryName);
-            _currentDirectoryName = location;
+            _backStack.Push(CurrentDirectory);
+            CurrentDirectory = location;
         }
 
-        public string GoForward()
+        public void GoForward()
         {
-            _backStack.Push(_currentDirectoryName);
-            _currentDirectoryName = _forwardStack.Pop();
-            return _currentDirectoryName;
+            _backStack.Push(CurrentDirectory);
+            CurrentDirectory = _forwardStack.Pop();
         }
 
-        public string GoBack()
+        public void GoBack()
         {
-            _forwardStack.Push(_currentDirectoryName);
-            _currentDirectoryName = _backStack.Pop();
-            return _currentDirectoryName;
+            _forwardStack.Push(CurrentDirectory);
+            CurrentDirectory = _backStack.Pop();
         }
     }
 }
