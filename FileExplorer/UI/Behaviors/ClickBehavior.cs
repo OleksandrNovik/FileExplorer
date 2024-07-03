@@ -7,7 +7,7 @@ namespace FileExplorer.UI.Behaviors
         protected override void OnAttached()
         {
             base.OnAttached();
-            AssociatedObject.Tapped += OnClick; ;
+            AssociatedObject.Tapped += OnClick;
         }
         protected override void OnDetaching()
         {

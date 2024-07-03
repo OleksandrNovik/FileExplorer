@@ -18,7 +18,7 @@ namespace FileExplorer.ViewModels
         private readonly IDirectoryManager _manager;
 
         [ObservableProperty]
-        private DirectoryInfo currentDirectory = new DirectoryInfo(@"D:\Files");
+        private DirectoryInfo currentDirectory = new DirectoryInfo(@"D:\");
 
         [ObservableProperty]
         private ObservableCollection<DirectoryItemModel> directoryItems;
@@ -119,7 +119,7 @@ namespace FileExplorer.ViewModels
         {
             var newFullName = $@"{CurrentDirectory.FullName}\{item.Name}";
             // File or folder already exists, so we can't rename item or name is empty
-            if (Path.Exists(newFullName) || item.Name == string.Empty)
+            if (item.Name == string.Empty || Path.Exists(newFullName))
             {
                 //TODO: File exists message
                 item.CancelEdit();

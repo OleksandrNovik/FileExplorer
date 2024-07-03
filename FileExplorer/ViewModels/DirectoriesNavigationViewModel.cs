@@ -5,6 +5,7 @@ using FileExplorer.Contracts;
 using FileExplorer.Models;
 using FileExplorer.ViewModels.Messages;
 using System.Collections.ObjectModel;
+using System.IO;
 
 namespace FileExplorer.ViewModels
 {
@@ -97,8 +98,39 @@ namespace FileExplorer.ViewModels
             SendNavigationMessage(_router.CreatePathFrom(RouteItems));
         }
 
+        /// <summary>
+        /// Unselects input field for navigation route or shows it whenever needed
+        /// If user typed in not existing route switches back to current route
+        /// </summary>
         [RelayCommand]
-        private void SwitchNavigationBarMode() => IsWritingRoute = !IsWritingRoute;
+        private void SwitchNavigationBarMode()
+        {
+            IsWritingRoute = !IsWritingRoute;
+
+            if (!CanUseRouteInput())
+            {
+                CurrentRoute = _router.CreatePathFrom(RouteItems);
+            }
+        }
+
+        /// <summary>
+        /// Uses route that user has inputted into text box and navigates to a new directory
+        /// </summary>
+        [RelayCommand(CanExecute = nameof(CanUseRouteInput))]
+        private void NavigateUsingRouteInput()
+        {
+            _navigation.GoForward(new DirectoryNavigationModel(CurrentRoute));
+            SendNavigationMessage(CurrentRoute);
+            IsWritingRoute = !IsWritingRoute;
+            RouteItems = new ObservableCollection<string>(_router.ExtractRouteItems(CurrentRoute));
+        }
+
+        private bool CanUseRouteInput() => CurrentRoute != CurrentDirectory.FullPath && Path.Exists(CurrentRoute);
+
+        partial void OnCurrentRouteChanged(string value)
+        {
+            NavigateUsingRouteInputCommand.NotifyCanExecuteChanged();
+        }
 
         private void SendNavigationMessage(string path)
         {

@@ -10,6 +10,8 @@
     xmlns:models="using:FileExplorer.Models"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:behaviors="using:FileExplorer.UI.Behaviors"
+    xmlns:toolkitBehaviors="using:CommunityToolkit.WinUI.UI.Behaviors"
+    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -31,7 +33,6 @@
                               Padding="0 5 0 0"
                               Visibility="{x:Bind IsRenamed, Mode=OneWay,
                                 Converter = {StaticResource BoolToVisibilityConverter}}">
-
 
                         <interactivity:Interaction.Behaviors>
                             <interactivity:BehaviorCollection>
@@ -168,7 +169,9 @@
         </controls:AdaptiveGridView>
 
         <interactivity:Interaction.Behaviors>
-            <behaviors:KeyPressedBehavior Key="Delete" Command="{x:Bind ViewModel.DeleteSelectedItemsCommand}" />
+            <toolkitBehaviors:KeyDownTriggerBehavior Key="Delete">
+                <core:InvokeCommandAction Command="{x:Bind ViewModel.DeleteSelectedItemsCommand}" />
+            </toolkitBehaviors:KeyDownTriggerBehavior>
         </interactivity:Interaction.Behaviors>
     </Grid>
 </Page>

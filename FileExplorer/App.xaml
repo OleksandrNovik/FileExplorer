@@ -18,6 +18,7 @@
                 <Setter Property="VerticalAlignment" Value="Center"/>
             </Style>
             <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>
