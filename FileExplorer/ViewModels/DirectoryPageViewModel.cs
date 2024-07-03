@@ -34,6 +34,7 @@ namespace FileExplorer.ViewModels
 
             Messenger.Register<DirectoryPageViewModel, NavigationRequiredMessage>(this, (_, massage) =>
             {
+                //TODO: Handle file or folder opening here
                 MoveToDirectory(massage.NavigationPath);
             });
 

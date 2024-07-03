@@ -12,6 +12,7 @@
     xmlns:behaviors="using:FileExplorer.UI.Behaviors"
     xmlns:toolkitBehaviors="using:CommunityToolkit.WinUI.UI.Behaviors"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:ui="using:FileExplorer.UI"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -179,6 +180,12 @@
                 <core:InvokeCommandAction Command="{x:Bind ViewModel.DeleteSelectedItemsCommand}" />
             </toolkitBehaviors:KeyDownTriggerBehavior>
         </interactivity:Interaction.Behaviors>
+        <Grid.KeyboardAccelerators>
+            <!--TODO: HotKey1 Ctrl+R - Rename-->
+            <ui:KeyboardAcceleratorExtended 
+                Modifiers="Control" Key="R"
+                Command="{x:Bind ViewModel.BeginRenamingItemCommand}" />
+        </Grid.KeyboardAccelerators>
     </Grid>
 </Page>
 

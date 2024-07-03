@@ -24,9 +24,9 @@ namespace FileExplorer.UI.Behaviors
         /// <summary>
         /// Executes <see cref="Command"/> (if it can be executed) with provided <see cref="CommandParameter"/>
         /// </summary>
-        /// <typeparam name="T"> Type of parameter </typeparam>
+        /// <typeparam name="TParam"> Type of parameter </typeparam>
         /// <param name="param"> Provided command parameter </param>
-        protected void ExecuteIfCan<T>(T param)
+        protected void ExecuteIfCan<TParam>(TParam param)
         {
             if (Command.CanExecute(param))
             {
