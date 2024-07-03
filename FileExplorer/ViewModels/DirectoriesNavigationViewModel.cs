@@ -95,7 +95,10 @@ namespace FileExplorer.ViewModels
             {
                 RouteItems.RemoveAt(i);
             }
-            SendNavigationMessage(_router.CreatePathFrom(RouteItems));
+
+            var selectedRoute = _router.CreatePathFrom(RouteItems);
+            _navigation.GoForward(new DirectoryNavigationModel(selectedRoute));
+            SendNavigationMessage(selectedRoute);
         }
 
         /// <summary>
@@ -125,9 +128,14 @@ namespace FileExplorer.ViewModels
             RouteItems = new ObservableCollection<string>(_router.ExtractRouteItems(CurrentRoute));
         }
 
-        private bool CanUseRouteInput() => CurrentRoute != CurrentDirectory.FullPath && Path.Exists(CurrentRoute);
+        private bool CanUseRouteInput() => IsWritingRoute && Path.Exists(CurrentRoute);
 
         partial void OnCurrentRouteChanged(string value)
+        {
+            NavigateUsingRouteInputCommand.NotifyCanExecuteChanged();
+        }
+
+        partial void OnIsWritingRouteChanged(bool value)
         {
             NavigateUsingRouteInputCommand.NotifyCanExecuteChanged();
         }

@@ -1,4 +1,4 @@
-using Microsoft.UI.Xaml;
+using FileExplorer.Views;
 using System.Collections.ObjectModel;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -9,7 +9,7 @@ namespace FileExplorer
     /// <summary>
     /// An empty window that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MainWindow : Window
+    public sealed partial class MainWindow : WindowExtended
     {
 
         public ObservableCollection<string> Tabs = new ObservableCollection<string>

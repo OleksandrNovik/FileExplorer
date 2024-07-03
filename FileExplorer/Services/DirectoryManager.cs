@@ -55,29 +55,7 @@ namespace FileExplorer.Services
                 throw new ArgumentNullException(nameof(item.FullInfo), "Wrapper is empty. Consider creating physical object first.");
 
             // File has not the save location as provided
-            if (item.FullInfo.FullName != location)
-            {
-                if (item.IsFile)
-                {
-                    File.Move(item.FullInfo.FullName, location);
-                    // Update information about physical item in directory
-                    item.FullInfo = new FileInfo(location);
-                }
-                else
-                {
-                    Directory.Move(item.FullInfo.FullName, location);
-                    item.FullInfo = new DirectoryInfo(location);
-                }
-            }
-        }
-
-        public bool TryMove(DirectoryItemModel item, string location)
-        {
-            if (item.FullInfo is null)
-                return false;
-
-            if (item.FullInfo.FullName == location)
-                return true;
+            if (item.FullInfo.FullName == location) return;
 
             if (item.IsFile)
             {
@@ -90,22 +68,14 @@ namespace FileExplorer.Services
                 Directory.Move(item.FullInfo.FullName, location);
                 item.FullInfo = new DirectoryInfo(location);
             }
-            return true;
         }
 
-        public bool TryDelete(DirectoryItemModel item)
+        public void Delete(DirectoryItemModel item)
         {
             if (item.FullInfo == null)
                 throw new FileNotFoundException("Cannot delete file or folder that don't exits!");
-            try
-            {
-                item.FullInfo.Delete();
-            }
-            catch (IOException)
-            {
-                return false;
-            }
-            return true;
+
+            item.FullInfo.Delete();
         }
 
         public void MoveToNewDirectory(DirectoryInfo dir)

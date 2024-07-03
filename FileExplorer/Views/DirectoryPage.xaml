@@ -28,8 +28,8 @@
                                Visibility="{x:Bind IsRenamed, Mode=OneWay, 
                                         Converter = {StaticResource BoolToVisibilityConverter}, 
                                         ConverterParameter=True}" />
-                    <TextBox  Text="{x:Bind Name, Mode=TwoWay}"
-                              AcceptsReturn="True"
+                    <TextBox  Text="{x:Bind Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              TextWrapping="Wrap"
                               Padding="0 5 0 0"
                               Visibility="{x:Bind IsRenamed, Mode=OneWay,
                                 Converter = {StaticResource BoolToVisibilityConverter}}">
@@ -45,6 +45,12 @@
                                     Command="{StaticResource EndRenamingCommand}"
                                     CommandParameter="{x:Bind}"
                                     />
+
+                                <toolkitBehaviors:KeyDownTriggerBehavior Key="Enter">
+                                    <core:InvokeCommandAction 
+                                        Command="{StaticResource EndRenamingCommand}" 
+                                        CommandParameter="{x:Bind}" />
+                                </toolkitBehaviors:KeyDownTriggerBehavior>
 
                             </interactivity:BehaviorCollection>
                         </interactivity:Interaction.Behaviors>

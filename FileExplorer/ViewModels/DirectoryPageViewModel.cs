@@ -6,10 +6,12 @@ using FileExplorer.Contracts;
 using FileExplorer.Models;
 using FileExplorer.Services;
 using FileExplorer.ViewModels.Messages;
+using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace FileExplorer.ViewModels
 {
@@ -55,16 +57,13 @@ namespace FileExplorer.ViewModels
         }
 
         [RelayCommand]
-        private void Open(DirectoryItemModel item)
+        private async Task Open(DirectoryItemModel item)
         {
-            if (item.IsRenamed)
-            {
-                EndRenamingItem(item);
-            }
+            await EndRenamingIfNeeded(item);
 
             if (item.IsFile)
             {
-
+                //TODO: Open File 
             }
             else
             {
@@ -115,11 +114,11 @@ namespace FileExplorer.ViewModels
 
 
         [RelayCommand]
-        private void EndRenamingItem(DirectoryItemModel item)
+        private async Task EndRenamingItem(DirectoryItemModel item)
         {
             var newFullName = $@"{CurrentDirectory.FullName}\{item.Name}";
             // File or folder already exists, so we can't rename item or name is empty
-            if (item.Name == string.Empty || Path.Exists(newFullName))
+            if (Path.Exists(newFullName) || item.Name == string.Empty)
             {
                 //TODO: File exists message
                 item.CancelEdit();
@@ -140,25 +139,36 @@ namespace FileExplorer.ViewModels
             // Object is in use in other process
             catch (IOException e)
             {
-                //TODO: File is occupied message
+                await App.MainWindow.ShowMessageDialogAsync($"{e.Message} Item can be used in other process.", "Cannot rename item");
                 item.CancelEdit();
             }
             //TODO: New Sorting of items is required
         }
+
+        private async Task EndRenamingIfNeeded(DirectoryItemModel item)
+        {
+            if (item.IsRenamed)
+            {
+                await EndRenamingItem(item);
+            }
+        }
+
         #endregion
 
         #region Delete logic
 
         [RelayCommand(CanExecute = nameof(HasSelectedItems))]
-        public void DeleteSelectedItems()
+        public async Task DeleteSelectedItems()
         {
+            var content = $"Do you really want to delete {(SelectedItems.Count > 1 ? "selected items" : $"\"{SelectedItems[0].FullPath}\""
+                )}?";
+            var result = await App.MainWindow.ShowYesNoDialog(content, "Deleting items");
+
+            if (result == ContentDialogResult.Secondary) return;
+
             while (SelectedItems.Count > 0)
             {
-                if (!TryDeleteItem(SelectedItems[0]))
-                {
-                    //TODO: Fix deleting
-                    SelectedItems.Remove(SelectedItems[0]);
-                }
+                await TryDeleteItem(SelectedItems[0]);
             }
         }
 
@@ -167,21 +177,19 @@ namespace FileExplorer.ViewModels
         /// </summary>
         /// <param name="item"> Wrapper item to delete </param>
         /// <returns> true if item is successfully deleted, otherwise - false </returns>
-        private bool TryDeleteItem(DirectoryItemModel item)
+        private async Task TryDeleteItem(DirectoryItemModel item)
         {
-            if (item.IsRenamed)
+            await EndRenamingIfNeeded(item);
+            try
             {
-                EndRenamingItem(item);
-            }
-
-            var isItemDeleted = _manager.TryDelete(item);
-
-            if (isItemDeleted)
-            {
+                _manager.Delete(item);
+                SelectedItems.Remove(item);
                 DirectoryItems.Remove(item);
             }
-
-            return isItemDeleted;
+            catch (IOException e)
+            {
+                await App.MainWindow.ShowMessageDialogAsync(e.Message, $"Cannot delete item");
+            }
         }
 
         #endregion
