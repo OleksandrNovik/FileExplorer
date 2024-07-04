@@ -3,12 +3,12 @@ using Microsoft.UI.Xaml.Input;
 
 namespace FileExplorer.UI
 {
-    public class KeyboardAcceleratorExtended : KeyboardAccelerator
+    public class CommandKeyboardAccelerator : KeyboardAccelerator
     {
         public IRelayCommand Command { get; set; }
         public object CommandParameter { get; set; }
 
-        public KeyboardAcceleratorExtended()
+        public CommandKeyboardAccelerator()
         {
             Invoked += OnAcceleratorInvoked;
         }

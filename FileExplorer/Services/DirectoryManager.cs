@@ -1,19 +1,17 @@
 ﻿using FileExplorer.Contracts;
 using FileExplorer.Models;
 using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace FileExplorer.Services
 {
     public class DirectoryManager : IDirectoryManager
     {
-        private DirectoryInfo _currentDirectory;
-
-        public DirectoryManager(DirectoryInfo currentDirectory)
-        {
-            _currentDirectory = currentDirectory;
-        }
+        public DirectoryInfo CurrentDirectory { get; set; }
 
         public string GetDefaultName(bool isFile)
         {
@@ -21,7 +19,7 @@ namespace FileExplorer.Services
             var nameBuilder = new StringBuilder("New ");
             nameBuilder.Append(isFile ? "File" : "Folder");
 
-            while (Path.Exists($@"{_currentDirectory.FullName}\{nameBuilder} {itemsCounter}"))
+            while (Path.Exists($@"{CurrentDirectory.FullName}\{nameBuilder} {itemsCounter}"))
             {
                 itemsCounter++;
             }
@@ -33,7 +31,7 @@ namespace FileExplorer.Services
 
         public void Create(DirectoryItemModel item)
         {
-            var fullName = $@"{_currentDirectory.FullName}\{item.Name}";
+            var fullName = $@"{CurrentDirectory.FullName}\{item.Name}";
 
             if (item.IsFile)
             {
@@ -70,17 +68,26 @@ namespace FileExplorer.Services
             }
         }
 
+        public void CopyToClipboard(IEnumerable<DirectoryItemModel> items)
+        {
+            var pathsCollection = new StringCollection();
+            var itemsPaths = items.Select(item => item.FullPath);
+            pathsCollection.AddRange(itemsPaths.ToArray());
+
+            //Clipboard.SetFileDropList(pathsCollection);
+        }
+
+        public IEnumerable<DirectoryItemModel> PasteFromClipboard()
+        {
+            throw new NotImplementedException();
+        }
+
         public void Delete(DirectoryItemModel item)
         {
             if (item.FullInfo == null)
                 throw new FileNotFoundException("Cannot delete file or folder that don't exits!");
 
             item.FullInfo.Delete();
-        }
-
-        public void MoveToNewDirectory(DirectoryInfo dir)
-        {
-            _currentDirectory = dir;
         }
     }
 }

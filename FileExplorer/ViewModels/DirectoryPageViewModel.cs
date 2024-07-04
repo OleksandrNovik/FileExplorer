@@ -4,7 +4,6 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using FileExplorer.Contracts;
 using FileExplorer.Models;
-using FileExplorer.Services;
 using FileExplorer.ViewModels.Messages;
 using Microsoft.UI.Xaml.Controls;
 using System;
@@ -15,12 +14,15 @@ using System.Threading.Tasks;
 
 namespace FileExplorer.ViewModels
 {
-    public partial class DirectoryPageViewModel : ObservableRecipient
+    public partial class DirectoryPageViewModel : ObservableRecipient, INavigationAware
     {
+        public const int InitializeDirectoryChannel = 1;
+        public const int MoveDirectoryChannel = 2;
+
         private readonly IDirectoryManager _manager;
 
         [ObservableProperty]
-        private DirectoryInfo currentDirectory = new DirectoryInfo(@"D:\");
+        private DirectoryInfo currentDirectory;
 
         [ObservableProperty]
         private ObservableCollection<DirectoryItemModel> directoryItems;
@@ -28,17 +30,15 @@ namespace FileExplorer.ViewModels
         [ObservableProperty]
         private ObservableCollection<DirectoryItemModel> selectedItems;
 
-        public DirectoryPageViewModel()
+        public DirectoryPageViewModel(IDirectoryManager manager)
         {
-            _manager = new DirectoryManager(currentDirectory);
-
+            _manager = manager;
             Messenger.Register<DirectoryPageViewModel, NavigationRequiredMessage>(this, (_, massage) =>
             {
                 //TODO: Handle file or folder opening here
                 MoveToDirectory(massage.NavigationPath);
             });
 
-            InitializeDirectory();
         }
 
         private void NotifyCommandsCanExecute(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -72,14 +72,14 @@ namespace FileExplorer.ViewModels
 
                 var directoryInfo = item.FullInfo as DirectoryInfo;
 
-                Messenger.Send(new DirectoryNavigationModel(directoryInfo));
+                Messenger.Send(new DirectoryNavigationModel(directoryInfo), MoveDirectoryChannel);
             }
         }
 
         private void MoveToDirectory(string dirName)
         {
             CurrentDirectory = new DirectoryInfo(dirName);
-            _manager.MoveToNewDirectory(CurrentDirectory);
+            _manager.CurrentDirectory = CurrentDirectory;
             InitializeDirectory();
         }
 
@@ -194,5 +194,19 @@ namespace FileExplorer.ViewModels
         }
 
         #endregion
+
+        public void OnNavigatedTo(object parameter)
+        {
+            if (parameter is DirectoryInfo dir)
+            {
+                MoveToDirectory(dir.FullName);
+                Messenger.Send(new DirectoryNavigationModel(dir), InitializeDirectoryChannel);
+            }
+        }
+
+        public void OnNavigatedFrom()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

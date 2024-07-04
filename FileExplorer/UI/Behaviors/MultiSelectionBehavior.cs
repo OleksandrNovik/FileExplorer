@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml.Controls;
+﻿using FileExplorer.Helpers;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.Xaml.Interactivity;
 using System.Collections;
 
@@ -33,15 +34,8 @@ namespace FileExplorer.UI.Behaviors
         /// <param name="e"> Event argument that stores all information about selection </param>
         private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            foreach (var item in e.RemovedItems)
-            {
-                SelectedItems.Remove(item);
-            }
-
-            foreach (var item in e.AddedItems)
-            {
-                SelectedItems.Add(item);
-            }
+            SelectedItems.RemoveRange(e.RemovedItems);
+            SelectedItems.AddRange(e.AddedItems);
         }
     }
 }

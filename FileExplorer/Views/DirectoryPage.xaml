@@ -70,7 +70,7 @@
         </Style>
     </Page.Resources>
 
-    <Grid Padding="20 20 5 5">
+    <Grid Padding="20 20 5 5" KeyboardAcceleratorPlacementMode="Hidden">
         <Grid.RowDefinitions>
             <RowDefinition Height="55" />
             <RowDefinition Height="*" />
@@ -163,7 +163,7 @@
                 </Button>
             </StackPanel>
         </Grid>
-        <controls:AdaptiveGridView Grid.Row="1"
+        <controls:AdaptiveGridView Grid.Row="1" x:Name="DirectoryItemsGrid"
             ItemsSource="{x:Bind ViewModel.DirectoryItems, Mode=OneWay}" 
             ItemTemplate="{StaticResource GridItemTemplate}"
             SelectionMode="Extended"
@@ -176,15 +176,19 @@
         </controls:AdaptiveGridView>
 
         <interactivity:Interaction.Behaviors>
+            <!--TODO: HotKey2 Del - Delete item-->
             <toolkitBehaviors:KeyDownTriggerBehavior Key="Delete">
                 <core:InvokeCommandAction Command="{x:Bind ViewModel.DeleteSelectedItemsCommand}" />
             </toolkitBehaviors:KeyDownTriggerBehavior>
         </interactivity:Interaction.Behaviors>
         <Grid.KeyboardAccelerators>
             <!--TODO: HotKey1 Ctrl+R - Rename-->
-            <ui:KeyboardAcceleratorExtended 
+            <ui:CommandKeyboardAccelerator 
                 Modifiers="Control" Key="R"
-                Command="{x:Bind ViewModel.BeginRenamingItemCommand}" />
+                Command="{x:Bind ViewModel.BeginRenamingItemCommand}"
+                />
+            <!--TODO: HotKey3 Ctrl+A - SelectAll-->
+            <KeyboardAccelerator Modifiers="Control" Key="A" Invoked="SelectAllItems" />
         </Grid.KeyboardAccelerators>
     </Grid>
 </Page>

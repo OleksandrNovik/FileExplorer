@@ -30,17 +30,33 @@ namespace FileExplorer.ViewModels
             _navigation = navigation;
             _router = router;
 
-            Messenger.Register<DirectoriesNavigationViewModel, DirectoryNavigationModel>(this, (_, message) =>
+
+            Messenger.Register<DirectoriesNavigationViewModel, DirectoryNavigationModel, int>(this,
+                DirectoryPageViewModel.InitializeDirectoryChannel, (_, message) =>
+                {
+                    InitializeDirectory(message);
+                    NotifyCanExecute();
+                });
+
+            Messenger.Register<DirectoriesNavigationViewModel, DirectoryNavigationModel, int>(this,
+                DirectoryPageViewModel.MoveDirectoryChannel, (_, message) =>
             {
                 _navigation.GoForward(message);
                 RouteItems.Add(message.Name);
                 NotifyCanExecute();
             });
 
+        }
+
+        private void InitializeDirectory(DirectoryNavigationModel directory)
+        {
+            _navigation.CurrentDirectory = directory;
+
             CurrentRoute = CurrentDirectory.FullPath;
 
             RouteItems = new ObservableCollection<string>(_router.ExtractRouteItems(CurrentRoute));
         }
+
 
         #region GoForward
 
@@ -84,7 +100,7 @@ namespace FileExplorer.ViewModels
             RouteItems.RemoveAt(RouteItems.Count - 1);
         }
 
-        private bool CanNavigateUp() => CurrentDirectory.ParentPath != null;
+        private bool CanNavigateUp() => CurrentDirectory?.ParentPath != null;
 
         #endregion
 

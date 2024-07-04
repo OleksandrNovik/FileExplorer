@@ -35,12 +35,17 @@ namespace FileExplorer
                 .ConfigureServices((context, services) =>
                 {
                     services.AddPageAndViewModel<DirectoryPage, DirectoryPageViewModel>();
+                    services.AddPageAndViewModel<ShellPage, ShellPageViewModel>();
 
                     services.AddTransient<IPicturesService, PictureService>();
                     services.AddTransient<IHistoryNavigationService, HistoryNavigationService>();
                     services.AddTransient<IDirectoryRouteService, DirectoryRouteService>();
+                    services.AddTransient<IPageService, PageService>();
+                    services.AddTransient<IDirectoryManager, DirectoryManager>();
 
                     services.AddTransient<DirectoriesNavigationViewModel>();
+
+                    services.AddSingleton<ITabService, TabsService>();
 
                 })
                 .Build();
@@ -54,6 +59,7 @@ namespace FileExplorer
         protected override void OnLaunched(LaunchActivatedEventArgs args)
         {
             m_window = MainWindow;
+            m_window.Content = GetService<ShellPage>();
             m_window.Activate();
         }
 
