@@ -11,7 +11,6 @@ namespace FileExplorer.Contracts
         public Frame? CurrentTab { get; set; }
         public ObservableCollection<TabModel> Tabs { get; }
         public void CreateNewTab(DirectoryInfo? directory);
-        public void OpenNewTab(DirectoryInfo? directory);
         public void Navigate(int tabIndex);
     }
 }

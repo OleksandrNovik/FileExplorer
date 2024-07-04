@@ -1,4 +1,6 @@
+using FileExplorer.Helpers;
 using FileExplorer.ViewModels;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -17,7 +19,16 @@ namespace FileExplorer.Views
             this.ViewModel = vm;
             this.InitializeComponent();
             this.ViewModel.TabService.CurrentTab = NavigationFrame;
-            this.ViewModel.OpenNewTab();
+            //TODO: Fix default page later
+            this.ViewModel.OpenNewTabCommand.Execute(null);
+        }
+
+        private void OnTabViewLoaded(object sender, RoutedEventArgs e)
+        {
+            var currentWindow = WindowHelper.GetWindowForElement(this);
+            currentWindow.ExtendsContentIntoTitleBar = true;
+            currentWindow.SetTitleBar(CustomDragRegion);
+            CustomDragRegion.MinWidth = 188;
         }
     }
 }

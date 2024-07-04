@@ -41,12 +41,6 @@ namespace FileExplorer.Services
             this.pageService = pageService;
         }
 
-        public void OpenNewTab(DirectoryInfo? directory)
-        {
-            CreateNewTab(directory);
-            Navigate(Tabs.Count - 1);
-        }
-
         public void CreateNewTab(DirectoryInfo? directory)
         {
             var newTab = pageService.CreateTabFromDirectory(directory);

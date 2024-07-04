@@ -59,6 +59,7 @@ namespace FileExplorer
         protected override void OnLaunched(LaunchActivatedEventArgs args)
         {
             m_window = MainWindow;
+            WindowHelper.TrackWindow(MainWindow);
             m_window.Content = GetService<ShellPage>();
             m_window.Activate();
         }

@@ -8,6 +8,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:userControls="using:FileExplorer.UI.UserControls"
     xmlns:ui="using:FileExplorer.UI"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:behaviors="using:FileExplorer.UI.Behaviors"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -23,7 +25,21 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="150" />
             </Grid.ColumnDefinitions>
-            <TabView TabItemsSource="{x:Bind ViewModel.Tabs}" />
+            <TabView TabItemsSource="{x:Bind ViewModel.Tabs, Mode=OneWay}" 
+                     Loaded="OnTabViewLoaded"
+                     CanReorderTabs="True">
+                <interactivity:Interaction.Behaviors>
+                    <behaviors:TabViewBehavior 
+                        OpenTabCommand="{x:Bind ViewModel.OpenNewTabCommand}" 
+                        CloseTabCommand="{x:Bind ViewModel.RemoveTabCommand}" />
+                </interactivity:Interaction.Behaviors>
+                <TabView.TabStripHeader>
+                    <Grid x:Name="ShellTitleBarInset" Background="Transparent" />
+                </TabView.TabStripHeader>
+                <TabView.TabStripFooter>
+                    <Grid x:Name="CustomDragRegion" Background="Transparent" />
+                </TabView.TabStripFooter>
+            </TabView>
         </Grid>
 
         <Grid Row="1">

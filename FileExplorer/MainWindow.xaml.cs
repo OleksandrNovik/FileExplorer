@@ -13,7 +13,7 @@ namespace FileExplorer
         public MainWindow()
         {
             this.InitializeComponent();
-            ExtendsContentIntoTitleBar = true;
+            //ExtendsContentIntoTitleBar = true;
         }
     }
 }

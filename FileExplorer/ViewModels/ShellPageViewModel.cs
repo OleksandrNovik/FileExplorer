@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using FileExplorer.Contracts;
 using FileExplorer.Models;
 using System.Collections.ObjectModel;
@@ -20,9 +21,11 @@ namespace FileExplorer.ViewModels
             Tabs = TabService.Tabs;
         }
 
-        public void OpenNewTab(DirectoryInfo? directory = null)
+        [RelayCommand]
+        private void OpenNewTab(DirectoryInfo? directory = null)
         {
-            TabService.OpenNewTab(directory);
+            NewTab(directory);
+            NavigateToTab(Tabs.Count - 1);
         }
 
         public void NewTab(DirectoryInfo? directory = null)
@@ -33,6 +36,12 @@ namespace FileExplorer.ViewModels
         private void NavigateToTab(int index)
         {
             TabService.Navigate(index);
+        }
+
+        [RelayCommand]
+        private void RemoveTab(int tabIndex)
+        {
+            Tabs.RemoveAt(tabIndex);
         }
     }
 }
