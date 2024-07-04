@@ -13,7 +13,6 @@ namespace FileExplorer.ViewModels
     {
         private readonly IHistoryNavigationService _navigation;
         private readonly IDirectoryRouteService _router;
-
         private DirectoryNavigationModel CurrentDirectory => _navigation.CurrentDirectory;
 
         [ObservableProperty]
@@ -30,14 +29,14 @@ namespace FileExplorer.ViewModels
             _navigation = navigation;
             _router = router;
 
-
+            // Handler that is called when new tab is opened. New directory from that tab is initialized
             Messenger.Register<DirectoriesNavigationViewModel, DirectoryNavigationModel, int>(this,
                 DirectoryPageViewModel.InitializeDirectoryChannel, (_, message) =>
                 {
                     InitializeDirectory(message);
-                    NotifyCanExecute();
                 });
 
+            // Handler that is called when user is navigation inside current tab
             Messenger.Register<DirectoriesNavigationViewModel, DirectoryNavigationModel, int>(this,
                 DirectoryPageViewModel.MoveDirectoryChannel, (_, message) =>
             {
@@ -48,6 +47,10 @@ namespace FileExplorer.ViewModels
 
         }
 
+        /// <summary>
+        /// Is called when new tab is opened, so directory in that tab should be initialized
+        /// </summary>
+        /// <param name="directory"> Directory that is held in tab </param>
         private void InitializeDirectory(DirectoryNavigationModel directory)
         {
             _navigation.CurrentDirectory = directory;
@@ -55,8 +58,9 @@ namespace FileExplorer.ViewModels
             CurrentRoute = CurrentDirectory.FullPath;
 
             RouteItems = new ObservableCollection<string>(_router.ExtractRouteItems(CurrentRoute));
-        }
 
+            NotifyCanExecute();
+        }
 
         #region GoForward
 
@@ -104,6 +108,10 @@ namespace FileExplorer.ViewModels
 
         #endregion
 
+        /// <summary>
+        /// Method called when BreadcrumbBar is used to navigate through directory
+        /// </summary>
+        /// <param name="lastElementIndex"> index of new last element (that is final folder inside route) </param>
         [RelayCommand]
         private void UseNavigationBar(int lastElementIndex)
         {
@@ -156,6 +164,10 @@ namespace FileExplorer.ViewModels
             NavigateUsingRouteInputCommand.NotifyCanExecuteChanged();
         }
 
+        /// <summary>
+        /// Sends message to all listeners that navigation is required to a certain path
+        /// </summary>
+        /// <param name="path"> Path that will be navigated to </param>
         private void SendNavigationMessage(string path)
         {
             Messenger.Send(new NavigationRequiredMessage(path));

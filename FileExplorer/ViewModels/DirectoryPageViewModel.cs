@@ -16,7 +16,14 @@ namespace FileExplorer.ViewModels
 {
     public partial class DirectoryPageViewModel : ObservableRecipient, INavigationAware
     {
+        /// <summary>
+        /// Channel for an initialization of directory in new tab
+        /// </summary>
         public const int InitializeDirectoryChannel = 1;
+
+        /// <summary>
+        /// Channel for a moving to a new directory in current tab 
+        /// </summary>
         public const int MoveDirectoryChannel = 2;
 
         private readonly IDirectoryManager _manager;
@@ -47,6 +54,10 @@ namespace FileExplorer.ViewModels
             DeleteSelectedItemsCommand.NotifyCanExecuteChanged();
         }
 
+        /// <summary>
+        /// Method that should be called every time we navigate to a new directory
+        /// It initializes collections of data in view model
+        /// </summary>
         private void InitializeDirectory()
         {
             var models = CurrentDirectory.GetFileSystemInfos()
@@ -126,6 +137,18 @@ namespace FileExplorer.ViewModels
                 return;
             }
 
+            await TryMoveItem(item, newFullName);
+            //TODO: New Sorting of items is required
+        }
+
+        /// <summary>
+        /// Tries to "Move" (rename) file and handles exceptions that might occur in this process
+        /// </summary>
+        /// <param name="item"> Items that is renamed </param>
+        /// <param name="newFullName"> New name for this item </param>
+        /// <returns> Completed task </returns>
+        private async Task TryMoveItem(DirectoryItemModel item, string newFullName)
+        {
             try
             {
                 _manager.Move(item, newFullName);
@@ -143,9 +166,14 @@ namespace FileExplorer.ViewModels
                 await App.MainWindow.ShowMessageDialogAsync($"{e.Message} Item can be used in other process.", "Cannot rename item");
                 item.CancelEdit();
             }
-            //TODO: New Sorting of items is required
         }
 
+        /// <summary>
+        /// Ends renaming item when it is renamed.
+        /// This method is called before any operation with item to be sure it's not renamed while executing operation
+        /// </summary>
+        /// <param name="item"> Item that we are checking for renaming </param>
+        /// <returns> Completed task </returns>
         private async Task EndRenamingIfNeeded(DirectoryItemModel item)
         {
             if (item.IsRenamed)

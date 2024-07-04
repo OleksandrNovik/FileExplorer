@@ -11,32 +11,17 @@ namespace FileExplorer.Services
     public class TabsService : ITabService
     {
         private readonly IPageService pageService;
-        private Frame? currTab;
+        public ObservableCollection<TabModel> Tabs { get; } = new();
 
+        private Frame? currentTab;
         public Frame? CurrentTab
         {
-            get => currTab;
+            get => currentTab;
             set
             {
                 UnregisterFrameEvents();
-                currTab = value;
+                currentTab = value;
                 RegisterFrameEvents();
-            }
-        }
-
-        private void RegisterFrameEvents()
-        {
-            if (currTab != null)
-            {
-                currTab.Navigated += OnNavigated;
-            }
-        }
-
-        private void UnregisterFrameEvents()
-        {
-            if (currTab != null)
-            {
-                currTab.Navigated -= OnNavigated;
             }
         }
 
@@ -50,8 +35,6 @@ namespace FileExplorer.Services
                 }
             }
         }
-
-        public ObservableCollection<TabModel> Tabs { get; } = new();
 
         public TabsService(IPageService pageService)
         {
@@ -73,11 +56,22 @@ namespace FileExplorer.Services
         public void Navigate(int tabIndex)
         {
             var selectedTab = Tabs[tabIndex];
-            var n = CurrentTab?.Navigate(selectedTab.TabType, selectedTab.TabDirectory);
+            CurrentTab?.Navigate(selectedTab.TabType, selectedTab.TabDirectory);
+        }
 
-            if (n.Value)
+        private void RegisterFrameEvents()
+        {
+            if (currentTab != null)
             {
+                currentTab.Navigated += OnNavigated;
+            }
+        }
 
+        private void UnregisterFrameEvents()
+        {
+            if (currentTab != null)
+            {
+                currentTab.Navigated -= OnNavigated;
             }
         }
 

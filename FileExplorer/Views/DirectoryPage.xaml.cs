@@ -13,9 +13,9 @@ namespace FileExplorer.Views
     public sealed partial class DirectoryPage : Page
     {
         public DirectoryPageViewModel ViewModel { get; }
-        public DirectoryPage(DirectoryPageViewModel vm)
+        public DirectoryPage()
         {
-            this.ViewModel = vm;
+            this.ViewModel = App.GetService<DirectoryPageViewModel>();
             this.Resources["EndRenamingCommand"] = this.ViewModel.EndRenamingItemCommand;
             this.Resources["OpenCommand"] = this.ViewModel.OpenCommand;
             this.InitializeComponent();
