@@ -4,6 +4,7 @@ using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace FileExplorer.Services
@@ -12,6 +13,7 @@ namespace FileExplorer.Services
     {
         private const string CopiedFilesKey = "Copied";
         private readonly IMemoryCache _cache;
+        public bool HasCopiedFiles { get; private set; }
         public DirectoryInfo CurrentDirectory { get; set; }
 
         public DirectoryManager(IMemoryCache cache)
@@ -19,20 +21,25 @@ namespace FileExplorer.Services
             _cache = cache;
         }
 
-        public string GetDefaultName(string nameTemplate, bool isFile)
+        ~DirectoryManager()
+        {
+            _cache.Dispose();
+        }
+        public string GetDefaultName(string nameTemplate)
         {
             var itemsCounter = 0;
             var nameBuilder = new StringBuilder(nameTemplate);
 
-            while (Path.Exists($@"{CurrentDirectory.FullName}\{nameBuilder} {itemsCounter}"))
+            while (Path.Exists($@"{CurrentDirectory.FullName}\{nameBuilder} ({itemsCounter})"))
             {
                 itemsCounter++;
             }
 
-            nameBuilder.Append($" {itemsCounter}");
+            nameBuilder.Append($" ({itemsCounter})");
 
             return nameBuilder.ToString();
         }
+
 
         public void Create(DirectoryItemModel item)
         {
@@ -76,11 +83,24 @@ namespace FileExplorer.Services
         public void CopyToClipboard(IEnumerable<DirectoryItemModel> items)
         {
             _cache.Set(CopiedFilesKey, items);
+            HasCopiedFiles = true;
         }
 
         public IEnumerable<DirectoryItemModel> PasteFromClipboard()
         {
-            throw new NotImplementedException();
+            var copiedItems = _cache.Get<IEnumerable<DirectoryItemModel>>(CopiedFilesKey).ToArray();
+
+            foreach (var item in copiedItems)
+            {
+                if (Path.Exists(item.Name))
+                {
+                    item.Name = GetDefaultName($"{item.Name} Copy");
+                }
+
+                Move(item, @$"{CurrentDirectory.FullName}\{item.Name}");
+            }
+
+            return copiedItems;
         }
 
         public void Delete(DirectoryItemModel item)

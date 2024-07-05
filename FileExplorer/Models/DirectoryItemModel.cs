@@ -6,7 +6,7 @@ using System.IO;
 
 namespace FileExplorer.Models
 {
-    public partial class DirectoryItemModel : ObservableObject, IEditableObject
+    public partial class DirectoryItemModel : ObservableObject, IEditableObject, ICloneable
     {
         private string backUpName;
 
@@ -33,11 +33,11 @@ namespace FileExplorer.Models
             isRenamed = true;
         }
 
-        public DirectoryItemModel(string name, bool isFile)
+        public DirectoryItemModel(string name, bool isFile, bool isRenamed = true)
         {
             Name = name;
             IsFile = isFile;
-            isRenamed = true;
+            this.isRenamed = isRenamed;
         }
 
         /// <summary>
@@ -79,6 +79,15 @@ namespace FileExplorer.Models
                 backUpName = Name;
                 IsRenamed = false;
             }
+        }
+
+        public object Clone()
+        {
+            var clone = new DirectoryItemModel(Name, IsFile, false)
+            {
+                FullInfo = FullInfo
+            };
+            return clone;
         }
     }
 }

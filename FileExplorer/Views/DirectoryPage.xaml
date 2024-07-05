@@ -103,18 +103,22 @@
                 <Button 
                     Style="{StaticResource MenuButton}"
                     ToolTipService.ToolTip="Copy"
+                    Command="{x:Bind ViewModel.CopySelectedItemsCommand}"
                     ToolTipService.Placement="Bottom">
                     <FontIcon FontSize="17" Glyph="&#xE8C8;" />
                 </Button>
                 <Button 
                     Style="{StaticResource MenuButton}"
                     ToolTipService.ToolTip="Cut"
+                    Command="{x:Bind ViewModel.CutSelectedItemsCommand}"
                     ToolTipService.Placement="Bottom">
                     <FontIcon FontSize="17" Glyph="&#xE8C6;" />
                 </Button>
                 <Button 
                     Style="{StaticResource MenuButton}"
                     ToolTipService.ToolTip="Paste"
+                    Command="{x:Bind ViewModel.PasteItemsCommand}"
+                    IsEnabled="{x:Bind ViewModel.HasCopiedFiles, Mode=OneWay}"
                     ToolTipService.Placement="Bottom">
                     <FontIcon FontSize="17" Glyph="&#xE77F;" />
                 </Button>
@@ -177,7 +181,7 @@
 
         <InfoBar Grid.Row="1"
                  Margin="0 0 6 6"
-                 IsOpen="True" Severity="Informational"
+                 IsOpen="{x:Bind ViewModel.HasCopiedFiles, Mode=OneWay}" Severity="Informational"
                  Background="{ThemeResource MenuFlyoutItemFocusedBackgroundThemeBrush}"
                  Title="Copied successfully" VerticalAlignment="Bottom" HorizontalAlignment="Right" >
         </InfoBar>

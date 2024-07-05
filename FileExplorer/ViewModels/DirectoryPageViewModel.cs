@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using FileExplorer.Contracts;
+using FileExplorer.Helpers;
 using FileExplorer.Models;
 using FileExplorer.ViewModels.Messages;
 using Microsoft.UI.Xaml.Controls;
@@ -27,6 +28,8 @@ namespace FileExplorer.ViewModels
 
         [ObservableProperty]
         private ObservableCollection<DirectoryItemModel> selectedItems;
+
+        public bool HasCopiedFiles => _manager.HasCopiedFiles;
 
         public DirectoryPageViewModel(IDirectoryManager manager)
         {
@@ -101,7 +104,7 @@ namespace FileExplorer.ViewModels
 
         private void CreateItem(bool isFile)
         {
-            var fileName = _manager.GetDefaultName($"New {(isFile ? "File" : "Folder")}", isFile);
+            var fileName = _manager.GetDefaultName($"New {(isFile ? "File" : "Folder")}");
             var emptyWrapper = new DirectoryItemModel(fileName, isFile);
             DirectoryItems.Insert(0, emptyWrapper);
             RenameNewItem(emptyWrapper);
@@ -192,6 +195,11 @@ namespace FileExplorer.ViewModels
 
             if (result == ContentDialogResult.Secondary) return;
 
+            await ClearSelectedItems();
+        }
+
+        private async Task ClearSelectedItems()
+        {
             while (SelectedItems.Count > 0)
             {
                 await TryDeleteItem(SelectedItems[0]);
@@ -222,9 +230,29 @@ namespace FileExplorer.ViewModels
 
         #region Copy+Paste logic
 
-        private void CopySelectedFiles()
+        [RelayCommand]
+        private void CopySelectedItems()
         {
             _manager.CopyToClipboard(SelectedItems);
+            OnPropertyChanged(nameof(HasCopiedFiles));
+
+            if (!HasCopiedFiles)
+            {
+                PasteItemsCommand.NotifyCanExecuteChanged();
+            }
+        }
+
+        [RelayCommand]
+        private async Task CutSelectedItems()
+        {
+            CopySelectedItems();
+            await ClearSelectedItems();
+        }
+
+        [RelayCommand]
+        private void PasteItems()
+        {
+            DirectoryItems.AddRange(_manager.PasteFromClipboard());
         }
 
         #endregion
