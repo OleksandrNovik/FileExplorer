@@ -5,6 +5,7 @@ namespace FileExplorer.Contracts
 {
     public interface IHistoryNavigationService
     {
+        public TabNavigationHistoryModel History { get; set; }
         public DirectoryNavigationModel CurrentDirectory { get; set; }
         public bool CanGoForward { get; }
         public bool CanGoBack { get; }

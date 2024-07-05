@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using FileExplorer.UI.Behaviors.BaseBehaviors;
 using Microsoft.UI.Xaml.Controls;
+using System.Linq;
 
 namespace FileExplorer.UI.Behaviors
 {
@@ -8,6 +9,8 @@ namespace FileExplorer.UI.Behaviors
     {
         public IRelayCommand OpenTabCommand { get; set; }
         public IRelayCommand CloseTabCommand { get; set; }
+        public IRelayCommand SelectTabCommand { get; set; }
+
 
         protected override void OnAttached()
         {
@@ -28,6 +31,7 @@ namespace FileExplorer.UI.Behaviors
         private void OnAddButtonClick(TabView sender, object args)
         {
             ExecuteIfCan(OpenTabCommand, null);
+            AssociatedObject.SelectedItem = AssociatedObject.TabItems.Last();
         }
 
         private void OnCloseButtonClick(TabView sender, TabViewTabCloseRequestedEventArgs args)
@@ -37,9 +41,11 @@ namespace FileExplorer.UI.Behaviors
 
         private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
+            if (e.AddedItems.Count > 0)
+            {
+                ExecuteIfCan(SelectTabCommand, e.AddedItems[0]);
+            }
+            //TODO: handle last tab closed...
         }
-
-
     }
 }

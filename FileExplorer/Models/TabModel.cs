@@ -6,21 +6,17 @@ namespace FileExplorer.Models
 {
     public sealed partial class TabModel : ObservableObject
     {
-        public string Name => TabDirectory.Name;
         public Type TabType { get; }
 
         [ObservableProperty]
         private DirectoryInfo tabDirectory;
+        public TabNavigationHistoryModel TabHistory { get; }
 
         public TabModel(DirectoryInfo directory, Type tabType)
         {
             TabType = tabType;
             TabDirectory = directory;
-        }
-
-        public override string ToString()
-        {
-            return Name;
+            TabHistory = new TabNavigationHistoryModel();
         }
     }
 }

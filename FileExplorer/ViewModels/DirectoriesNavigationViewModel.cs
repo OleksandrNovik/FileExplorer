@@ -30,15 +30,15 @@ namespace FileExplorer.ViewModels
             _router = router;
 
             // Handler that is called when new tab is opened. New directory from that tab is initialized
-            Messenger.Register<DirectoriesNavigationViewModel, DirectoryNavigationModel, int>(this,
-                DirectoryPageViewModel.InitializeDirectoryChannel, (_, message) =>
-                {
-                    InitializeDirectory(message);
-                });
+            Messenger.Register<DirectoriesNavigationViewModel, NewTabOpened>(this, (_, message) =>
+            {
+                InitializeDirectory(message.TabDirectoryInfo);
+                _navigation.History = message.TabNavigationHistory;
+                NotifyCanExecute();
+            });
 
             // Handler that is called when user is navigation inside current tab
-            Messenger.Register<DirectoriesNavigationViewModel, DirectoryNavigationModel, int>(this,
-                DirectoryPageViewModel.MoveDirectoryChannel, (_, message) =>
+            Messenger.Register<DirectoriesNavigationViewModel, DirectoryNavigationModel>(this, (_, message) =>
             {
                 _navigation.GoForward(message);
                 RouteItems.Add(message.Name);
@@ -58,8 +58,6 @@ namespace FileExplorer.ViewModels
             CurrentRoute = CurrentDirectory.FullPath;
 
             RouteItems = new ObservableCollection<string>(_router.ExtractRouteItems(CurrentRoute));
-
-            NotifyCanExecute();
         }
 
         #region GoForward

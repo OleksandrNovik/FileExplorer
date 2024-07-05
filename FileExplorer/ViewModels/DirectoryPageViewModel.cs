@@ -16,15 +16,6 @@ namespace FileExplorer.ViewModels
 {
     public partial class DirectoryPageViewModel : ObservableRecipient, INavigationAware
     {
-        /// <summary>
-        /// Channel for an initialization of directory in new tab
-        /// </summary>
-        public const int InitializeDirectoryChannel = 1;
-
-        /// <summary>
-        /// Channel for a moving to a new directory in current tab 
-        /// </summary>
-        public const int MoveDirectoryChannel = 2;
 
         private readonly IDirectoryManager _manager;
 
@@ -43,7 +34,7 @@ namespace FileExplorer.ViewModels
             Messenger.Register<DirectoryPageViewModel, NavigationRequiredMessage>(this, (_, massage) =>
             {
                 //TODO: Handle file or folder opening here
-                MoveToDirectory(massage.NavigationPath);
+                MoveToDirectory(new DirectoryInfo(massage.NavigationPath));
             });
 
         }
@@ -79,19 +70,21 @@ namespace FileExplorer.ViewModels
             }
             else
             {
-                MoveToDirectory(item.FullPath);
+                if (item.FullInfo is DirectoryInfo dir)
+                {
+                    MoveToDirectory(dir);
 
-                var directoryInfo = item.FullInfo as DirectoryInfo;
-
-                Messenger.Send(new DirectoryNavigationModel(directoryInfo), MoveDirectoryChannel);
+                    Messenger.Send(new DirectoryNavigationModel(dir));
+                }
             }
         }
 
-        private void MoveToDirectory(string dirName)
+        private void MoveToDirectory(DirectoryInfo directory)
         {
-            CurrentDirectory = new DirectoryInfo(dirName);
+            CurrentDirectory = directory;
             _manager.CurrentDirectory = CurrentDirectory;
             InitializeDirectory();
+            Messenger.Send(directory);
         }
 
 
@@ -225,10 +218,11 @@ namespace FileExplorer.ViewModels
 
         public void OnNavigatedTo(object parameter)
         {
-            if (parameter is DirectoryInfo dir)
+            if (parameter is TabModel tab)
             {
-                MoveToDirectory(dir.FullName);
-                Messenger.Send(new DirectoryNavigationModel(dir), InitializeDirectoryChannel);
+                MoveToDirectory(tab.TabDirectory);
+                var directoryInfoModel = new DirectoryNavigationModel(tab.TabDirectory);
+                Messenger.Send(new NewTabOpened(directoryInfoModel, tab.TabHistory));
             }
         }
 

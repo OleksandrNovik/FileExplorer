@@ -13,6 +13,8 @@ namespace FileExplorer.Services
         private readonly IPageService pageService;
         public ObservableCollection<TabModel> Tabs { get; } = new();
 
+
+
         private Frame? currentTab;
         public Frame? CurrentTab
         {
@@ -47,10 +49,9 @@ namespace FileExplorer.Services
             Tabs.Add(newTab);
         }
 
-        public void Navigate(int tabIndex)
+        public void Navigate(TabModel tab)
         {
-            var selectedTab = Tabs[tabIndex];
-            CurrentTab?.Navigate(selectedTab.TabType, selectedTab.TabDirectory);
+            CurrentTab?.Navigate(tab.TabType, tab);
         }
 
         private void RegisterFrameEvents()

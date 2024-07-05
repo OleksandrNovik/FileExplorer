@@ -29,20 +29,28 @@
             <TabView TabItemsSource="{x:Bind ViewModel.Tabs, Mode=OneWay}" 
                      Loaded="OnTabViewLoaded"
                      CanReorderTabs="True">
-
-                <TabView.TabItemTemplate>
-                    <DataTemplate x:DataType="models:TabModel">
-                        <TextBlock Text="{x:Bind Name, Mode=OneWay}" />
-                    </DataTemplate>
-                </TabView.TabItemTemplate>
+                <TabView.Resources>
+                    <Style TargetType="TabViewItem">
+                        <Setter Property="HeaderTemplate">
+                            <Setter.Value>
+                                <DataTemplate x:DataType="models:TabModel">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{x:Bind TabDirectory.Name, Mode=OneWay}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </TabView.Resources>
 
                 <interactivity:Interaction.Behaviors>
                     <behaviors:TabViewBehavior 
                         OpenTabCommand="{x:Bind ViewModel.OpenNewTabCommand}" 
-                        CloseTabCommand="{x:Bind ViewModel.RemoveTabCommand}" />
+                        CloseTabCommand="{x:Bind ViewModel.RemoveTabCommand}" 
+                        SelectTabCommand="{x:Bind ViewModel.SelectTabCommand}" />
                 </interactivity:Interaction.Behaviors>
                 <TabView.TabStripHeader>
-                    <Grid x:Name="ShellTitleBarInset" Background="Transparent" />
+                    <Grid Background="Transparent" />
                 </TabView.TabStripHeader>
                 <TabView.TabStripFooter>
                     <Grid x:Name="CustomDragRegion" Background="Transparent" />
