@@ -48,60 +48,45 @@
                 <FontIcon FontSize="13" Glyph="&#xE74A;" />
             </Button>
         </StackPanel>
-        <Grid Column="1" Padding="10 0">
+        <Grid Column="1" Padding="10 0" Background="Transparent">
 
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-
-            <Grid Background="Transparent">
-
-                <BreadcrumbBar ItemsSource="{x:Bind ViewModel.RouteItems, Mode=OneWay}" 
+            <BreadcrumbBar ItemsSource="{x:Bind ViewModel.RouteItems, Mode=OneWay}" 
                                VerticalAlignment="Center"
                                Visibility="{x:Bind ViewModel.IsWritingRoute,Mode=OneWay, 
                                               Converter={StaticResource BoolToVisibilityConverter}, 
                                               ConverterParameter=True}">
 
-                    <interactivity:Interaction.Behaviors>
-                        <behaviors:BreadcrumbBarItemClickedBehavior Command="{x:Bind ViewModel.UseNavigationBarCommand}" />
-                    </interactivity:Interaction.Behaviors>
+                <interactivity:Interaction.Behaviors>
+                    <behaviors:BreadcrumbBarItemClickedBehavior Command="{x:Bind ViewModel.UseNavigationBarCommand}" />
+                </interactivity:Interaction.Behaviors>
 
-                </BreadcrumbBar>
+            </BreadcrumbBar>
 
-                <TextBox Grid.Column="0" TextWrapping="Wrap"
+            <TextBox Grid.Column="0" TextWrapping="Wrap"
                          VerticalAlignment="Center" Text="{x:Bind ViewModel.CurrentRoute, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          Visibility="{x:Bind ViewModel.IsWritingRoute, Mode=OneWay,
                                     Converter={StaticResource BoolToVisibilityConverter}}">
 
-                    <interactivity:Interaction.Behaviors>
-                        <interactivity:BehaviorCollection>
-
-                            <behaviors:FocusOnConditionBehavior Condition="{x:Bind ViewModel.IsWritingRoute, Mode=OneWay}"/>
-
-                            <behaviors:LostFocusBehavior Command="{x:Bind ViewModel.SwitchNavigationBarModeCommand}" />
-
-                            <toolkitBehaviors:KeyDownTriggerBehavior Key="Enter">
-                                <core:InvokeCommandAction Command="{x:Bind ViewModel.NavigateUsingRouteInputCommand}" />
-                            </toolkitBehaviors:KeyDownTriggerBehavior>
-
-                        </interactivity:BehaviorCollection>
-                    </interactivity:Interaction.Behaviors>
-
-                </TextBox>
-
                 <interactivity:Interaction.Behaviors>
-                    <behaviors:ClickBehavior Command="{x:Bind ViewModel.SwitchNavigationBarModeCommand}" />
+                    <interactivity:BehaviorCollection>
+
+                        <behaviors:FocusOnConditionBehavior Condition="{x:Bind ViewModel.IsWritingRoute, Mode=OneWay}"/>
+
+                        <behaviors:LostFocusBehavior Command="{x:Bind ViewModel.SwitchNavigationBarModeCommand}" />
+
+                        <toolkitBehaviors:KeyDownTriggerBehavior Key="Enter">
+                            <core:InvokeCommandAction Command="{x:Bind ViewModel.NavigateUsingRouteInputCommand}" />
+                        </toolkitBehaviors:KeyDownTriggerBehavior>
+
+                    </interactivity:BehaviorCollection>
                 </interactivity:Interaction.Behaviors>
 
-            </Grid>
+            </TextBox>
 
+            <interactivity:Interaction.Behaviors>
+                <behaviors:ClickBehavior Command="{x:Bind ViewModel.SwitchNavigationBarModeCommand}" />
+            </interactivity:Interaction.Behaviors>
 
-            <Button Grid.Column="1" Command="{x:Bind ViewModel.NavigateUsingRouteInputCommand}" 
-                    VerticalAlignment="Stretch" HorizontalAlignment="Right"
-                    ToolTipService.ToolTip="Go to route" ToolTipService.Placement="Bottom">
-                <FontIcon FontSize="16" Glyph="&#xEA62;"  />
-            </Button>
         </Grid>
         <Grid Column="2" Padding="5 0">
             <Grid.ColumnDefinitions>

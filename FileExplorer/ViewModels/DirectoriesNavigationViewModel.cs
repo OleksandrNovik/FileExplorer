@@ -150,7 +150,7 @@ namespace FileExplorer.ViewModels
             RouteItems = new ObservableCollection<string>(_router.ExtractRouteItems(CurrentRoute));
         }
 
-        private bool CanUseRouteInput() => IsWritingRoute && Path.Exists(CurrentRoute);
+        private bool CanUseRouteInput() => Path.Exists(CurrentRoute);
 
         partial void OnCurrentRouteChanged(string value)
         {
