@@ -1,13 +1,16 @@
-﻿using System;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System;
 using System.IO;
 
 namespace FileExplorer.Models
 {
-    public sealed class TabModel
+    public sealed partial class TabModel : ObservableObject
     {
         public string Name => TabDirectory.Name;
         public Type TabType { get; }
-        public DirectoryInfo TabDirectory { get; }
+
+        [ObservableProperty]
+        private DirectoryInfo tabDirectory;
 
         public TabModel(DirectoryInfo directory, Type tabType)
         {

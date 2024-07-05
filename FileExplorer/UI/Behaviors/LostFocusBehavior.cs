@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml;
+﻿using FileExplorer.UI.Behaviors.BaseBehaviors;
+using Microsoft.UI.Xaml;
 
 namespace FileExplorer.UI.Behaviors
 {
@@ -18,7 +19,7 @@ namespace FileExplorer.UI.Behaviors
 
         private void OnLostFocus(object sender, RoutedEventArgs e)
         {
-            ExecuteIfCan();
+            ExecuteIfCan(Command, CommandParameter);
         }
     }
 }

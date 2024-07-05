@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml;
+﻿using FileExplorer.UI.Behaviors.BaseBehaviors;
+using Microsoft.UI.Xaml;
 
 namespace FileExplorer.UI.Behaviors
 {
@@ -16,7 +17,7 @@ namespace FileExplorer.UI.Behaviors
         }
         private void OnClick(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
         {
-            ExecuteIfCan();
+            ExecuteIfCan(Command, CommandParameter);
         }
     }
 }

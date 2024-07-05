@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml.Controls;
+﻿using FileExplorer.UI.Behaviors.BaseBehaviors;
+using Microsoft.UI.Xaml.Controls;
 
 namespace FileExplorer.UI.Behaviors
 {
@@ -17,7 +18,7 @@ namespace FileExplorer.UI.Behaviors
 
         private void OnItemClick(BreadcrumbBar sender, BreadcrumbBarItemClickedEventArgs args)
         {
-            ExecuteIfCan(args.Index);
+            ExecuteIfCan(Command, args.Index);
         }
     }
 }

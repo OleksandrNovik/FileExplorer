@@ -10,6 +10,7 @@
     xmlns:ui="using:FileExplorer.UI"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:behaviors="using:FileExplorer.UI.Behaviors"
+    xmlns:models="using:FileExplorer.Models"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -28,6 +29,13 @@
             <TabView TabItemsSource="{x:Bind ViewModel.Tabs, Mode=OneWay}" 
                      Loaded="OnTabViewLoaded"
                      CanReorderTabs="True">
+
+                <TabView.TabItemTemplate>
+                    <DataTemplate x:DataType="models:TabModel">
+                        <TextBlock Text="{x:Bind Name, Mode=OneWay}" />
+                    </DataTemplate>
+                </TabView.TabItemTemplate>
+
                 <interactivity:Interaction.Behaviors>
                     <behaviors:TabViewBehavior 
                         OpenTabCommand="{x:Bind ViewModel.OpenNewTabCommand}" 

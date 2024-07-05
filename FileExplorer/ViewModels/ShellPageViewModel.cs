@@ -39,9 +39,9 @@ namespace FileExplorer.ViewModels
         }
 
         [RelayCommand]
-        private void RemoveTab(int tabIndex)
+        private void RemoveTab(TabModel item)
         {
-            Tabs.RemoveAt(tabIndex);
+            Tabs.Remove(item);
         }
     }
 }

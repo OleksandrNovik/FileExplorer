@@ -1,10 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using FileExplorer.UI.Behaviors.BaseBehaviors;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.Xaml.Interactivity;
 
 namespace FileExplorer.UI.Behaviors
 {
-    public class TabViewBehavior : Behavior<TabView>
+    public class TabViewBehavior : BaseCanExecuteBehavior<TabView>
     {
         public IRelayCommand OpenTabCommand { get; set; }
         public IRelayCommand CloseTabCommand { get; set; }
@@ -14,6 +14,7 @@ namespace FileExplorer.UI.Behaviors
             base.OnAttached();
             AssociatedObject.AddTabButtonClick += OnAddButtonClick;
             AssociatedObject.TabCloseRequested += OnCloseButtonClick;
+            AssociatedObject.SelectionChanged += OnSelectionChanged;
         }
 
         protected override void OnDetaching()
@@ -21,23 +22,22 @@ namespace FileExplorer.UI.Behaviors
             base.OnDetaching();
             AssociatedObject.AddTabButtonClick -= OnAddButtonClick;
             AssociatedObject.TabCloseRequested -= OnCloseButtonClick;
+            AssociatedObject.SelectionChanged -= OnSelectionChanged;
         }
 
         private void OnAddButtonClick(TabView sender, object args)
         {
-            if (OpenTabCommand.CanExecute(null))
-            {
-                OpenTabCommand.Execute(null);
-            }
+            ExecuteIfCan(OpenTabCommand, null);
         }
 
         private void OnCloseButtonClick(TabView sender, TabViewTabCloseRequestedEventArgs args)
         {
-            var removedIndex = sender.TabItems.IndexOf(args.Item);
-            if (CloseTabCommand.CanExecute(removedIndex))
-            {
-                CloseTabCommand.Execute(removedIndex);
-            }
+            ExecuteIfCan(CloseTabCommand, args.Item);
+        }
+
+        private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
 
 
