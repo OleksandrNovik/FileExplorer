@@ -34,9 +34,10 @@ namespace FileExplorer.Contracts
         /// <summary>
         /// Gets default name for a file or folder (example: New File 0)
         /// </summary>
+        /// <param name="nameTemplate"></param>
         /// <param name="isFile"> Is name for a file or folder </param>
         /// <returns> New unique name for item </returns>
-        public string GetDefaultName(bool isFile);
+        public string GetDefaultName(string nameTemplate, bool isFile);
 
     }
 }

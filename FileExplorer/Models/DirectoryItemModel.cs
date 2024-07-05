@@ -12,8 +12,7 @@ namespace FileExplorer.Models
 
         [ObservableProperty]
         private string name;
-
-        public string FullPath { get; private set; }
+        public string FullPath => FullInfo?.FullName ?? string.Empty;
 
         [ObservableProperty]
         private FileSystemInfo? fullInfo;
@@ -79,14 +78,6 @@ namespace FileExplorer.Models
             {
                 backUpName = Name;
                 IsRenamed = false;
-            }
-        }
-
-        partial void OnFullInfoChanged(FileSystemInfo? value)
-        {
-            if (value != null)
-            {
-                FullPath = value.FullName;
             }
         }
     }

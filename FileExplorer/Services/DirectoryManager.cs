@@ -1,23 +1,28 @@
 ﻿using FileExplorer.Contracts;
 using FileExplorer.Models;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.IO;
-using System.Linq;
 using System.Text;
 
 namespace FileExplorer.Services
 {
     public class DirectoryManager : IDirectoryManager
     {
+        private const string CopiedFilesKey = "Copied";
+        private readonly IMemoryCache _cache;
         public DirectoryInfo CurrentDirectory { get; set; }
 
-        public string GetDefaultName(bool isFile)
+        public DirectoryManager(IMemoryCache cache)
+        {
+            _cache = cache;
+        }
+
+        public string GetDefaultName(string nameTemplate, bool isFile)
         {
             var itemsCounter = 0;
-            var nameBuilder = new StringBuilder("New ");
-            nameBuilder.Append(isFile ? "File" : "Folder");
+            var nameBuilder = new StringBuilder(nameTemplate);
 
             while (Path.Exists($@"{CurrentDirectory.FullName}\{nameBuilder} {itemsCounter}"))
             {
@@ -70,11 +75,7 @@ namespace FileExplorer.Services
 
         public void CopyToClipboard(IEnumerable<DirectoryItemModel> items)
         {
-            var pathsCollection = new StringCollection();
-            var itemsPaths = items.Select(item => item.FullPath);
-            pathsCollection.AddRange(itemsPaths.ToArray());
-
-            //Clipboard.SetFileDropList(pathsCollection);
+            _cache.Set(CopiedFilesKey, items);
         }
 
         public IEnumerable<DirectoryItemModel> PasteFromClipboard()

@@ -175,6 +175,13 @@
             </interactivity:Interaction.Behaviors>
         </controls:AdaptiveGridView>
 
+        <InfoBar Grid.Row="1"
+                 Margin="0 0 6 6"
+                 IsOpen="True" Severity="Informational"
+                 Background="{ThemeResource MenuFlyoutItemFocusedBackgroundThemeBrush}"
+                 Title="Copied successfully" VerticalAlignment="Bottom" HorizontalAlignment="Right" >
+        </InfoBar>
+
         <interactivity:Interaction.Behaviors>
             <!--TODO: HotKey2 Del - Delete item-->
             <toolkitBehaviors:KeyDownTriggerBehavior Key="Delete">

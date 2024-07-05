@@ -31,6 +31,10 @@ namespace FileExplorer.ViewModels
         public DirectoryPageViewModel(IDirectoryManager manager)
         {
             _manager = manager;
+
+            SelectedItems = new ObservableCollection<DirectoryItemModel>();
+            SelectedItems.CollectionChanged += NotifyCommandsCanExecute;
+
             Messenger.Register<DirectoryPageViewModel, NavigationRequiredMessage>(this, (_, massage) =>
             {
                 //TODO: Handle file or folder opening here
@@ -55,8 +59,7 @@ namespace FileExplorer.ViewModels
                 .Select(info => new DirectoryItemModel(info, info is FileInfo));
 
             DirectoryItems = new ObservableCollection<DirectoryItemModel>(models);
-            SelectedItems = new ObservableCollection<DirectoryItemModel>();
-            SelectedItems.CollectionChanged += NotifyCommandsCanExecute;
+            SelectedItems.Clear();
         }
 
         [RelayCommand]
@@ -98,7 +101,8 @@ namespace FileExplorer.ViewModels
 
         private void CreateItem(bool isFile)
         {
-            var emptyWrapper = new DirectoryItemModel(_manager.GetDefaultName(isFile), isFile);
+            var fileName = _manager.GetDefaultName($"New {(isFile ? "File" : "Folder")}", isFile);
+            var emptyWrapper = new DirectoryItemModel(fileName, isFile);
             DirectoryItems.Insert(0, emptyWrapper);
             RenameNewItem(emptyWrapper);
         }
@@ -210,8 +214,17 @@ namespace FileExplorer.ViewModels
             }
             catch (IOException e)
             {
-                await App.MainWindow.ShowMessageDialogAsync(e.Message, $"Cannot delete item");
+                await App.MainWindow.ShowMessageDialogAsync(e.Message, $"File operation canceled");
             }
+        }
+
+        #endregion
+
+        #region Copy+Paste logic
+
+        private void CopySelectedFiles()
+        {
+            _manager.CopyToClipboard(SelectedItems);
         }
 
         #endregion
