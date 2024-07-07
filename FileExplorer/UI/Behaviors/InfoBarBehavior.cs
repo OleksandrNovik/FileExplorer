@@ -1,11 +1,11 @@
-﻿using FileExplorer.UI.Behaviors.BaseBehaviors;
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.Xaml.Interactivity;
 using System;
 
 namespace FileExplorer.UI.Behaviors
 {
-    public class InfoBarBehavior : BaseCanExecuteBehavior<InfoBar>
+    public class InfoBarBehavior : Behavior<InfoBar>
     {
         public DispatcherTimer ClosingTimer { get; }
         public bool IsOpen
@@ -21,13 +21,13 @@ namespace FileExplorer.UI.Behaviors
         public InfoBarBehavior()
         {
             ClosingTimer = new DispatcherTimer();
-            ClosingTimer.Interval = TimeSpan.FromSeconds(5);
+            ClosingTimer.Interval = TimeSpan.FromSeconds(2);
             ClosingTimer.Tick += CloseAfterTimeout;
         }
 
         private void CloseAfterTimeout(object sender, object e)
         {
-            ExecuteIfCan(AssociatedObject.CloseButtonCommand, AssociatedObject.CloseButtonCommandParameter);
+            AssociatedObject.IsOpen = false;
         }
 
         protected override void OnAttached()
