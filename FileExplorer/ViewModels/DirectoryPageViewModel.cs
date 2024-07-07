@@ -217,12 +217,15 @@ namespace FileExplorer.ViewModels
             try
             {
                 _manager.Delete(item);
-                SelectedItems.Remove(item);
                 DirectoryItems.Remove(item);
             }
             catch (IOException e)
             {
                 await App.MainWindow.ShowMessageDialogAsync(e.Message, $"File operation canceled");
+            }
+            finally
+            {
+                SelectedItems.Remove(item);
             }
         }
 
@@ -230,10 +233,8 @@ namespace FileExplorer.ViewModels
 
         #region Copy+Paste logic
 
-        [RelayCommand]
-        private void CopySelectedItems()
+        private void NotifyHasCopied()
         {
-            _manager.CopyToClipboard(SelectedItems);
             OnPropertyChanged(nameof(HasCopiedFiles));
 
             if (!HasCopiedFiles)
@@ -243,9 +244,17 @@ namespace FileExplorer.ViewModels
         }
 
         [RelayCommand]
+        private void CopySelectedItems()
+        {
+            _manager.CopyToClipboard(SelectedItems.Select(item => item.Clone() as DirectoryItemModel));
+            NotifyHasCopied();
+        }
+
+        [RelayCommand]
         private async Task CutSelectedItems()
         {
-            CopySelectedItems();
+            _manager.CopyToClipboard(SelectedItems);
+            NotifyHasCopied();
             await ClearSelectedItems();
         }
 
@@ -253,6 +262,7 @@ namespace FileExplorer.ViewModels
         private void PasteItems()
         {
             DirectoryItems.AddRange(_manager.PasteFromClipboard());
+            OnPropertyChanged(nameof(DirectoryItems));
         }
 
         #endregion

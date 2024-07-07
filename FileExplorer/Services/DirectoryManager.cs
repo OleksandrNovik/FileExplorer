@@ -92,12 +92,12 @@ namespace FileExplorer.Services
 
             foreach (var item in copiedItems)
             {
-                if (Path.Exists(item.Name))
+                if (Path.Exists(item.FullPath))
                 {
                     item.Name = GetDefaultName($"{item.Name} Copy");
                 }
 
-                Move(item, @$"{CurrentDirectory.FullName}\{item.Name}");
+                Create(item);
             }
 
             return copiedItems;
