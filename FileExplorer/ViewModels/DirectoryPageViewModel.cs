@@ -50,6 +50,8 @@ namespace FileExplorer.ViewModels
         {
             BeginRenamingItemCommand.NotifyCanExecuteChanged();
             DeleteSelectedItemsCommand.NotifyCanExecuteChanged();
+            CopySelectedItemsCommand.NotifyCanExecuteChanged();
+            CutSelectedItemsCommand.NotifyCanExecuteChanged();
         }
 
         /// <summary>
@@ -124,21 +126,70 @@ namespace FileExplorer.ViewModels
 
         private bool HasSelectedItems() => SelectedItems.Count > 0;
 
+        /// <summary>
+        /// Ends renaming only when needed to prevent double renaming of item at the same time
+        /// (Example: It can happen when user presses enter and renames file and after that lost focus event is called renaming same file again)
+        /// </summary>
+        public AsyncRelayCommand<DirectoryItemModel> EndRenamingIfNeededCommand =>
+            new(async item =>
+            {
+                if (item.IsRenamed)
+                {
+                    await EndRenamingItem(item);
+                }
+            });
+
 
         [RelayCommand]
         private async Task EndRenamingItem(DirectoryItemModel item)
         {
             var newFullName = $@"{CurrentDirectory.FullName}\{item.Name}";
-            // File or folder already exists, so we can't rename item or name is empty
-            if (Path.Exists(newFullName) || item.Name == string.Empty)
+
+            if (await IsItemsNameLegal(item, newFullName))
             {
-                //TODO: File exists message
+                await TryMoveItem(item, newFullName);
+            }
+            //TODO: New Sorting of items is required
+        }
+
+        /// <summary>
+        /// Checks if new item's name is legal (does not exist and is not empty).
+        /// If item has illegal name show message for a user.
+        /// And if physically item does not exist at the same time creates new physical folder or file to represent item
+        /// </summary>
+        /// <param name="item"> Item to check name for </param>
+        /// <param name="newFullName"> New full name (full path) of physical item</param>
+        /// <returns> true if name is legal and no canceling was executed and false if name was illegal </returns>
+        private async Task<bool> IsItemsNameLegal(DirectoryItemModel item, string newFullName)
+        {
+            var isItemNameLegal = true;
+            var itemsNameIsEmpty = string.IsNullOrWhiteSpace(item.Name);
+            // File or folder already exists, so we can't rename item or name is empty
+            if (Path.Exists(newFullName) || itemsNameIsEmpty)
+            {
+                // If item has been named with illegal name we revert changes
                 item.CancelEdit();
-                return;
+                isItemNameLegal = false;
+
+                // Show user feedback message
+                if (itemsNameIsEmpty)
+                {
+                    await App.MainWindow.ShowMessageDialogAsync("Item's name cannot be empty", "Empty name is illegal");
+                }
+                else
+                {
+                    await App.MainWindow.ShowMessageDialogAsync(
+                        $"Item \"{newFullName}\" already exists. Old name will be applied...", "Item exists");
+                }
+
+                // If item was being created we should create it anyway (with old legal name)
+                if (item.FullInfo is null)
+                {
+                    _manager.Create(item);
+                }
             }
 
-            await TryMoveItem(item, newFullName);
-            //TODO: New Sorting of items is required
+            return isItemNameLegal;
         }
 
         /// <summary>
@@ -243,14 +294,21 @@ namespace FileExplorer.ViewModels
             }
         }
 
-        [RelayCommand]
+        /// <summary>
+        /// Creates copies of directory items (calling <see cref="ICloneable.Clone"/> method).
+        /// And saves them into cache to paste later
+        /// </summary>
+        [RelayCommand(CanExecute = nameof(HasSelectedItems))]
         private void CopySelectedItems()
         {
             _manager.CopyToClipboard(SelectedItems.Select(item => item.Clone() as DirectoryItemModel));
             NotifyHasCopied();
         }
 
-        [RelayCommand]
+        /// <summary>
+        /// Moves original versions of directory items into cache and deletes them from current directory.
+        /// </summary>
+        [RelayCommand(CanExecute = nameof(HasSelectedItems))]
         private async Task CutSelectedItems()
         {
             _manager.CopyToClipboard(SelectedItems);
@@ -258,6 +316,9 @@ namespace FileExplorer.ViewModels
             await ClearSelectedItems();
         }
 
+        /// <summary>
+        /// Uses information about items from cache to create new files and folders in current location
+        /// </summary>
         [RelayCommand]
         private void PasteItems()
         {

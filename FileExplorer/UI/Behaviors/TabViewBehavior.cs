@@ -11,7 +11,6 @@ namespace FileExplorer.UI.Behaviors
         public IRelayCommand CloseTabCommand { get; set; }
         public IRelayCommand SelectTabCommand { get; set; }
 
-
         protected override void OnAttached()
         {
             base.OnAttached();

@@ -17,6 +17,7 @@ namespace FileExplorer.Views
         {
             this.ViewModel = App.GetService<DirectoryPageViewModel>();
             this.Resources["EndRenamingCommand"] = this.ViewModel.EndRenamingItemCommand;
+            this.Resources["EndRenamingIfLostFocusCommand"] = this.ViewModel.EndRenamingIfNeededCommand;
             this.Resources["OpenCommand"] = this.ViewModel.OpenCommand;
             this.InitializeComponent();
         }

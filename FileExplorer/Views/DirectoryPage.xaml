@@ -43,7 +43,7 @@
                                     />
 
                                 <behaviors:LostFocusBehavior 
-                                    Command="{StaticResource EndRenamingCommand}"
+                                    Command="{StaticResource EndRenamingIfLostFocusCommand}"
                                     CommandParameter="{x:Bind}"
                                     />
 

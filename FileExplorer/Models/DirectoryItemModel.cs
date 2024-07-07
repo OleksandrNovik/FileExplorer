@@ -21,23 +21,16 @@ namespace FileExplorer.Models
         [ObservableProperty]
         private bool isRenamed;
 
-        /// <summary>
-        /// Constructor for an empty item with only name and isFile
-        /// Using for a new item creation
-        /// </summary>
-        /// <param name="isFile"> Type of item </param>
-        public DirectoryItemModel(bool isFile)
+
+        private DirectoryItemModel(bool isFile)
         {
-            Name = Guid.NewGuid().ToString();
+            IsRenamed = false;
             IsFile = isFile;
-            isRenamed = true;
         }
 
-        public DirectoryItemModel(string name, bool isFile, bool isRenamed = true)
+        public DirectoryItemModel(string name, bool isFile) : this(isFile)
         {
             Name = name;
-            IsFile = isFile;
-            this.isRenamed = isRenamed;
         }
 
         /// <summary>
@@ -46,12 +39,10 @@ namespace FileExplorer.Models
         /// </summary>
         /// <param name="info"> Full information about directory item</param>
         /// <param name="isFile"> Type of item </param>
-        public DirectoryItemModel(FileSystemInfo info, bool isFile)
+        public DirectoryItemModel(FileSystemInfo info, bool isFile) : this(isFile)
         {
             name = info.Name;
             FullInfo = info;
-            IsFile = isFile;
-            isRenamed = false;
         }
 
         public void BeginEdit()
@@ -83,7 +74,7 @@ namespace FileExplorer.Models
 
         public object Clone()
         {
-            var clone = new DirectoryItemModel(Name, IsFile, false)
+            var clone = new DirectoryItemModel(Name, IsFile)
             {
                 FullInfo = FullInfo
             };
