@@ -1,20 +1,29 @@
 ﻿#nullable enable
-using System.IO;
+using System;
+using System.Threading.Tasks;
+using Windows.Storage;
 
 namespace FileExplorer.Models
 {
     public record DirectoryNavigationModel
     {
-        public string Name { get; }
-        public string FullPath { get; }
-        public string? ParentPath { get; }
+        public string Name { get; private set; }
+        public string FullPath { get; private set; }
+        public string? ParentPath { get; private set; }
 
-        public DirectoryNavigationModel(string path)
+        public async Task InitializeDataAsync(string path)
         {
-            var dirInfo = new DirectoryInfo(path);
-            Name = dirInfo.Name;
-            FullPath = path;
-            ParentPath = dirInfo.Parent?.FullName;
+            var folder = await StorageFolder.GetFolderFromPathAsync(path);
+            await InitializeDataAsync(folder);
+        }
+
+        public async Task InitializeDataAsync(StorageFolder folder)
+        {
+            Name = folder.Name;
+            //TODO: Fix path for special folders
+            FullPath = folder.Path;
+            var parent = await folder.GetParentAsync();
+            ParentPath = parent?.Path;
         }
     }
 }

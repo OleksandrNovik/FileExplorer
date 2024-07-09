@@ -8,7 +8,7 @@ namespace FileExplorer.Services
 {
     public class PageService : IPageService
     {
-        private static readonly StorageFolder DefaultDirectory = StorageFolder.GetFolderFromPathAsync("D:\\").GetResults();
+        private static readonly StorageFolder DefaultDirectory = KnownFolders.DocumentsLibrary;
 
         public TabModel CreateTabFromDirectory(StorageFolder dir)
         {

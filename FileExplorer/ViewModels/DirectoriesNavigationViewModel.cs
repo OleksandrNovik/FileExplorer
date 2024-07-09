@@ -6,6 +6,7 @@ using FileExplorer.Models;
 using FileExplorer.ViewModels.Messages;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace FileExplorer.ViewModels
 {
@@ -95,9 +96,12 @@ namespace FileExplorer.ViewModels
         }
 
         [RelayCommand(CanExecute = nameof(CanNavigateUp))]
-        private void NavigateUpDirectory()
+        private async Task NavigateUpDirectory()
         {
-            _navigation.GoBack(new DirectoryNavigationModel(CurrentDirectory.ParentPath));
+            var navigationModel = new DirectoryNavigationModel();
+            await navigationModel.InitializeDataAsync(CurrentDirectory.ParentPath);
+
+            _navigation.GoBack(navigationModel);
             SendNavigationMessage(CurrentDirectory.FullPath);
             RouteItems.RemoveAt(RouteItems.Count - 1);
         }
@@ -111,7 +115,7 @@ namespace FileExplorer.ViewModels
         /// </summary>
         /// <param name="lastElementIndex"> index of new last element (that is final folder inside route) </param>
         [RelayCommand]
-        private void UseNavigationBar(int lastElementIndex)
+        private async Task UseNavigationBar(int lastElementIndex)
         {
             for (int i = RouteItems.Count - 1; i > lastElementIndex; i--)
             {
@@ -119,7 +123,10 @@ namespace FileExplorer.ViewModels
             }
 
             var selectedRoute = _router.CreatePathFrom(RouteItems);
-            _navigation.GoForward(new DirectoryNavigationModel(selectedRoute));
+            var navigationModel = new DirectoryNavigationModel();
+            await navigationModel.InitializeDataAsync(selectedRoute);
+
+            _navigation.GoForward(navigationModel);
             SendNavigationMessage(selectedRoute);
         }
 
@@ -142,9 +149,12 @@ namespace FileExplorer.ViewModels
         /// Uses route that user has inputted into text box and navigates to a new directory
         /// </summary>
         [RelayCommand(CanExecute = nameof(CanUseRouteInput))]
-        private void NavigateUsingRouteInput()
+        private async Task NavigateUsingRouteInput()
         {
-            _navigation.GoForward(new DirectoryNavigationModel(CurrentRoute));
+            var navigationModel = new DirectoryNavigationModel();
+            await navigationModel.InitializeDataAsync(CurrentRoute);
+
+            _navigation.GoForward(navigationModel);
             SendNavigationMessage(CurrentRoute);
             IsWritingRoute = !IsWritingRoute;
             RouteItems = new ObservableCollection<string>(_router.ExtractRouteItems(CurrentRoute));

@@ -131,7 +131,7 @@
                 </Button>
                 <Button 
                     Style="{StaticResource MenuButton}"
-                    Command="{x:Bind ViewModel.DeleteSelectedItemsCommand}"
+                    Command="{x:Bind ViewModel.RecycleSelectedItemsCommand}"
                     ToolTipService.ToolTip="DeleteAsync"
                     ToolTipService.Placement="Bottom">
                     <FontIcon FontSize="17" Glyph="&#xE74D;" />
@@ -192,7 +192,7 @@
         <interactivity:Interaction.Behaviors>
             <!--TODO: HotKey2 Del - Delete item-->
             <toolkitBehaviors:KeyDownTriggerBehavior Key="Delete">
-                <core:InvokeCommandAction Command="{x:Bind ViewModel.DeleteSelectedItemsCommand}" />
+                <core:InvokeCommandAction Command="{x:Bind ViewModel.RecycleSelectedItemsCommand}" />
             </toolkitBehaviors:KeyDownTriggerBehavior>
         </interactivity:Interaction.Behaviors>
         <Grid.KeyboardAccelerators>
@@ -200,6 +200,10 @@
             <ui:CommandKeyboardAccelerator 
                 Modifiers="Control" Key="R"
                 Command="{x:Bind ViewModel.BeginRenamingItemCommand}"
+                />
+            <ui:CommandKeyboardAccelerator 
+                Modifiers="Shift" Key="Delete"
+                Command="{x:Bind ViewModel.DeleteSelectedItemsCommand}"
                 />
             <!--TODO: HotKey3 Ctrl+A - SelectAll-->
             <KeyboardAccelerator Modifiers="Control" Key="A" Invoked="SelectAllItems" />

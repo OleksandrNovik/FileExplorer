@@ -98,7 +98,10 @@ namespace FileExplorer.ViewModels
                 {
                     await MoveToDirectoryAsync(dir);
 
-                    Messenger.Send(new DirectoryNavigationModel(dir.Path));
+                    var navigationModel = new DirectoryNavigationModel();
+                    await navigationModel.InitializeDataAsync(dir);
+
+                    Messenger.Send(navigationModel);
                 }
             }
         }
@@ -201,7 +204,7 @@ namespace FileExplorer.ViewModels
 
         #endregion
 
-        #region DeleteAsync logic
+        #region Delete logic
 
         /// <summary>
         /// Moves selected items to a recycle bin
@@ -229,7 +232,7 @@ namespace FileExplorer.ViewModels
 
             while (SelectedItems.Count > 0)
             {
-                await TryDeleteItem(SelectedItems[0]);
+                await TryDeleteItem(SelectedItems[0], true);
             }
         }
 
@@ -318,7 +321,9 @@ namespace FileExplorer.ViewModels
             if (parameter is TabModel tab)
             {
                 await MoveToDirectoryAsync(tab.TabDirectory);
-                var directoryInfoModel = new DirectoryNavigationModel(tab.TabDirectory.Path);
+                var directoryInfoModel = new DirectoryNavigationModel();
+                await directoryInfoModel.InitializeDataAsync(tab.TabDirectory);
+
                 Messenger.Send(new NewTabOpened(directoryInfoModel, tab.TabHistory));
             }
         }
