@@ -2,7 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.ComponentModel;
-using System.IO;
+using Windows.Storage;
 
 namespace FileExplorer.Models
 {
@@ -12,25 +12,18 @@ namespace FileExplorer.Models
 
         [ObservableProperty]
         private string name;
-        public string FullPath => FullInfo?.FullName ?? string.Empty;
+        public string FullPath => FullInfo?.Path ?? string.Empty;
 
         [ObservableProperty]
-        private FileSystemInfo? fullInfo;
-        public bool IsFile { get; }
+        private IStorageItem? fullInfo;
 
         [ObservableProperty]
         private bool isRenamed;
 
-
-        private DirectoryItemModel(bool isFile)
-        {
-            IsRenamed = false;
-            IsFile = isFile;
-        }
-
-        public DirectoryItemModel(string name, bool isFile) : this(isFile)
+        public DirectoryItemModel(string name)
         {
             Name = name;
+            IsRenamed = false;
         }
 
         /// <summary>
@@ -38,11 +31,11 @@ namespace FileExplorer.Models
         /// Using for viewing existing item in UI
         /// </summary>
         /// <param name="info"> Full information about directory item</param>
-        /// <param name="isFile"> Type of item </param>
-        public DirectoryItemModel(FileSystemInfo info, bool isFile) : this(isFile)
+        public DirectoryItemModel(IStorageItem info)
         {
             name = info.Name;
             FullInfo = info;
+            IsRenamed = false;
         }
 
         public void BeginEdit()
@@ -74,7 +67,7 @@ namespace FileExplorer.Models
 
         public object Clone()
         {
-            var clone = new DirectoryItemModel(Name, IsFile)
+            var clone = new DirectoryItemModel(Name)
             {
                 FullInfo = FullInfo
             };

@@ -12,6 +12,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Windows.Storage;
 
 namespace FileExplorer.ViewModels
 {
@@ -21,7 +22,7 @@ namespace FileExplorer.ViewModels
         private readonly IDirectoryManager _manager;
 
         [ObservableProperty]
-        private DirectoryInfo currentDirectory;
+        private StorageFolder currentDirectory;
 
         [ObservableProperty]
         private ObservableCollection<DirectoryItemModel> directoryItems;
@@ -38,12 +39,15 @@ namespace FileExplorer.ViewModels
             SelectedItems = new ObservableCollection<DirectoryItemModel>();
             SelectedItems.CollectionChanged += NotifyCommandsCanExecute;
 
-            Messenger.Register<DirectoryPageViewModel, NavigationRequiredMessage>(this, (_, massage) =>
-            {
-                //TODO: Handle file or folder opening here
-                MoveToDirectory(new DirectoryInfo(massage.NavigationPath));
-            });
+            Messenger.Register<DirectoryPageViewModel, NavigationRequiredMessage>(this, HandleDirectoryNavigationMessage);
 
+        }
+
+        private async void HandleDirectoryNavigationMessage(DirectoryPageViewModel receiver, NavigationRequiredMessage massage)
+        {
+            //TODO: Handle file or folder opening here
+            var navigatedFolder = await StorageFolder.GetFolderFromPathAsync(massage.NavigationPath);
+            await MoveToDirectoryAsync(navigatedFolder);
         }
 
         private void NotifyCommandsCanExecute(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -58,10 +62,10 @@ namespace FileExplorer.ViewModels
         /// Method that should be called every time we navigate to a new directory
         /// It initializes collections of data in view model
         /// </summary>
-        private void InitializeDirectory()
+        private async Task InitializeDirectoryAsync()
         {
-            var models = CurrentDirectory.GetFileSystemInfos()
-                .Select(info => new DirectoryItemModel(info, info is FileInfo));
+            var models = (await CurrentDirectory.GetItemsAsync())
+                .Select(folderItem => new DirectoryItemModel(folderItem));
 
             DirectoryItems = new ObservableCollection<DirectoryItemModel>(models);
             SelectedItems.Clear();
@@ -70,28 +74,30 @@ namespace FileExplorer.ViewModels
         [RelayCommand]
         private async Task Open(DirectoryItemModel item)
         {
+            ArgumentNullException.ThrowIfNull(item.FullInfo);
+
             await EndRenamingIfNeeded(item);
 
-            if (item.IsFile)
+            if (item.FullInfo.IsOfType(StorageItemTypes.File))
             {
                 //TODO: Open File 
             }
             else
             {
-                if (item.FullInfo is DirectoryInfo dir)
+                if (item.FullInfo is StorageFolder dir)
                 {
-                    MoveToDirectory(dir);
+                    await MoveToDirectoryAsync(dir);
 
-                    Messenger.Send(new DirectoryNavigationModel(dir));
+                    Messenger.Send(new DirectoryNavigationModel(dir.Path));
                 }
             }
         }
 
-        private void MoveToDirectory(DirectoryInfo directory)
+        private async Task MoveToDirectoryAsync(StorageFolder directory)
         {
             CurrentDirectory = directory;
             _manager.CurrentDirectory = CurrentDirectory;
-            InitializeDirectory();
+            await InitializeDirectoryAsync();
             Messenger.Send(directory);
         }
 
@@ -99,17 +105,16 @@ namespace FileExplorer.ViewModels
         #region Creating logic
 
         [RelayCommand]
-        private void CreateFile() => CreateItem(true);
+        private async Task CreateFile() => await CreateItemAsync(true);
 
         [RelayCommand]
-        private void CreateDirectory() => CreateItem(false);
+        private async Task CreateDirectory() => await CreateItemAsync(false);
 
-        private void CreateItem(bool isFile)
+        private async Task CreateItemAsync(bool isFile)
         {
-            var fileName = _manager.GetDefaultName($"New {(isFile ? "File" : "Folder")}");
-            var emptyWrapper = new DirectoryItemModel(fileName, isFile);
-            DirectoryItems.Insert(0, emptyWrapper);
-            RenameNewItem(emptyWrapper);
+            var wrapper = await _manager.CreateAsync(isFile);
+            DirectoryItems.Insert(0, wrapper);
+            RenameNewItem(wrapper);
         }
 
         #endregion
@@ -143,80 +148,17 @@ namespace FileExplorer.ViewModels
         [RelayCommand]
         private async Task EndRenamingItem(DirectoryItemModel item)
         {
-            var newFullName = $@"{CurrentDirectory.FullName}\{item.Name}";
-
-            if (await IsItemsNameLegal(item, newFullName))
+            if (string.IsNullOrWhiteSpace(item.Name))
             {
-                await TryMoveItem(item, newFullName);
+                item.CancelEdit();
+                await App.MainWindow.ShowMessageDialogAsync("Item's name cannot be empty", "Empty name is illegal");
+                return;
             }
+
+            await _manager.RenameAsync(item);
+            item.EndEdit();
+
             //TODO: New Sorting of items is required
-        }
-
-        /// <summary>
-        /// Checks if new item's name is legal (does not exist and is not empty).
-        /// If item has illegal name show message for a user.
-        /// And if physically item does not exist at the same time creates new physical folder or file to represent item
-        /// </summary>
-        /// <param name="item"> Item to check name for </param>
-        /// <param name="newFullName"> New full name (full path) of physical item</param>
-        /// <returns> true if name is legal and no canceling was executed and false if name was illegal </returns>
-        private async Task<bool> IsItemsNameLegal(DirectoryItemModel item, string newFullName)
-        {
-            var isItemNameLegal = true;
-            var itemsNameIsEmpty = string.IsNullOrWhiteSpace(item.Name);
-            // File or folder already exists, so we can't rename item or name is empty
-            if (Path.Exists(newFullName) || itemsNameIsEmpty)
-            {
-                // If item has been named with illegal name we revert changes
-                item.CancelEdit();
-                isItemNameLegal = false;
-
-                // Show user feedback message
-                if (itemsNameIsEmpty)
-                {
-                    await App.MainWindow.ShowMessageDialogAsync("Item's name cannot be empty", "Empty name is illegal");
-                }
-                else
-                {
-                    await App.MainWindow.ShowMessageDialogAsync(
-                        $"Item \"{newFullName}\" already exists. Old name will be applied...", "Item exists");
-                }
-
-                // If item was being created we should create it anyway (with old legal name)
-                if (item.FullInfo is null)
-                {
-                    _manager.Create(item);
-                }
-            }
-
-            return isItemNameLegal;
-        }
-
-        /// <summary>
-        /// Tries to "Move" (rename) file and handles exceptions that might occur in this process
-        /// </summary>
-        /// <param name="item"> Items that is renamed </param>
-        /// <param name="newFullName"> New name for this item </param>
-        /// <returns> Completed task </returns>
-        private async Task TryMoveItem(DirectoryItemModel item, string newFullName)
-        {
-            try
-            {
-                _manager.Move(item, newFullName);
-                item.EndEdit();
-            }
-            // Case when item is empty wrapper and we should create file or folder first
-            catch (ArgumentNullException)
-            {
-                _manager.Create(item);
-                item.EndEdit();
-            }
-            // Object is in use in other process
-            catch (IOException e)
-            {
-                await App.MainWindow.ShowMessageDialogAsync($"{e.Message} Item can be used in other process.", "Cannot rename item");
-                item.CancelEdit();
-            }
         }
 
         /// <summary>
@@ -235,22 +177,17 @@ namespace FileExplorer.ViewModels
 
         #endregion
 
-        #region Delete logic
+        #region DeleteAsync logic
 
         [RelayCommand(CanExecute = nameof(HasSelectedItems))]
         public async Task DeleteSelectedItems()
         {
             var content = $"Do you really want to delete {(SelectedItems.Count > 1 ? "selected items" : $"\"{SelectedItems[0].FullPath}\""
-                )}?";
+                )} permanently?";
             var result = await App.MainWindow.ShowYesNoDialog(content, "Deleting items");
 
             if (result == ContentDialogResult.Secondary) return;
 
-            await ClearSelectedItems();
-        }
-
-        private async Task ClearSelectedItems()
-        {
             while (SelectedItems.Count > 0)
             {
                 await TryDeleteItem(SelectedItems[0]);
@@ -267,7 +204,7 @@ namespace FileExplorer.ViewModels
             await EndRenamingIfNeeded(item);
             try
             {
-                _manager.Delete(item);
+                await _manager.DeleteAsync(item);
                 DirectoryItems.Remove(item);
             }
             catch (IOException e)
@@ -309,11 +246,11 @@ namespace FileExplorer.ViewModels
         /// Moves original versions of directory items into cache and deletes them from current directory.
         /// </summary>
         [RelayCommand(CanExecute = nameof(HasSelectedItems))]
-        private async Task CutSelectedItems()
+        private void CutSelectedItems()
         {
             _manager.CopyToClipboard(SelectedItems);
             NotifyHasCopied();
-            await ClearSelectedItems();
+            //await ClearSelectedItems();
         }
 
         /// <summary>
@@ -328,12 +265,12 @@ namespace FileExplorer.ViewModels
 
         #endregion
 
-        public void OnNavigatedTo(object parameter)
+        public async void OnNavigatedTo(object parameter)
         {
             if (parameter is TabModel tab)
             {
-                MoveToDirectory(tab.TabDirectory);
-                var directoryInfoModel = new DirectoryNavigationModel(tab.TabDirectory);
+                await MoveToDirectoryAsync(tab.TabDirectory);
+                var directoryInfoModel = new DirectoryNavigationModel(tab.TabDirectory.Path);
                 Messenger.Send(new NewTabOpened(directoryInfoModel, tab.TabHistory));
             }
         }

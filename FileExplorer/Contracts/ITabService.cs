@@ -2,7 +2,7 @@
 using FileExplorer.Models;
 using Microsoft.UI.Xaml.Controls;
 using System.Collections.ObjectModel;
-using System.IO;
+using Windows.Storage;
 
 namespace FileExplorer.Contracts
 {
@@ -10,7 +10,7 @@ namespace FileExplorer.Contracts
     {
         public Frame? CurrentTab { get; set; }
         public ObservableCollection<TabModel> Tabs { get; }
-        public void CreateNewTab(DirectoryInfo? directory);
+        public void CreateNewTab(StorageFolder? directory);
         public void Navigate(TabModel tab);
     }
 }

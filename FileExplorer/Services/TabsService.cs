@@ -4,7 +4,7 @@ using FileExplorer.Helpers;
 using FileExplorer.Models;
 using Microsoft.UI.Xaml.Controls;
 using System.Collections.ObjectModel;
-using System.IO;
+using Windows.Storage;
 
 namespace FileExplorer.Services
 {
@@ -43,7 +43,7 @@ namespace FileExplorer.Services
             this.pageService = pageService;
         }
 
-        public void CreateNewTab(DirectoryInfo? directory)
+        public void CreateNewTab(StorageFolder? directory)
         {
             var newTab = pageService.CreateTabFromDirectory(directory);
             Tabs.Add(newTab);

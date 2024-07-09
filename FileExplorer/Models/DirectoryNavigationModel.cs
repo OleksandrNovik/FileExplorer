@@ -16,13 +16,5 @@ namespace FileExplorer.Models
             FullPath = path;
             ParentPath = dirInfo.Parent?.FullName;
         }
-
-        public DirectoryNavigationModel(DirectoryInfo info)
-        {
-            Name = info.Name;
-            FullPath = info.FullName;
-            ParentPath = info.Parent?.FullName;
-        }
-
     }
 }

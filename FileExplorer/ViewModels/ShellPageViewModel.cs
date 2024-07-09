@@ -5,7 +5,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using FileExplorer.Contracts;
 using FileExplorer.Models;
 using System.Collections.ObjectModel;
-using System.IO;
+using Windows.Storage;
 
 namespace FileExplorer.ViewModels
 {
@@ -23,7 +23,7 @@ namespace FileExplorer.ViewModels
             TabService = tabService;
             Tabs = TabService.Tabs;
 
-            Messenger.Register<ShellPageViewModel, DirectoryInfo>(this, (_, message) =>
+            Messenger.Register<ShellPageViewModel, StorageFolder>(this, (_, message) =>
             {
                 if (selectedTab != null)
                 {
@@ -33,12 +33,12 @@ namespace FileExplorer.ViewModels
         }
 
         [RelayCommand]
-        private void OpenNewTab(DirectoryInfo? directory = null)
+        private void OpenNewTab(StorageFolder? directory = null)
         {
             NewTab(directory);
         }
 
-        public void NewTab(DirectoryInfo? directory = null)
+        public void NewTab(StorageFolder? directory = null)
         {
             TabService.CreateNewTab(directory);
         }

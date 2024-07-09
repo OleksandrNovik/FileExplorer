@@ -1,10 +1,10 @@
 ﻿using FileExplorer.Models;
-using System.IO;
+using Windows.Storage;
 
 namespace FileExplorer.Contracts
 {
     public interface IPageService
     {
-        public TabModel CreateTabFromDirectory(DirectoryInfo dir);
+        public TabModel CreateTabFromDirectory(StorageFolder dir);
     }
 }

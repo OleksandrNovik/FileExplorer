@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System;
-using System.IO;
+using Windows.Storage;
 
 namespace FileExplorer.Models
 {
@@ -9,10 +9,10 @@ namespace FileExplorer.Models
         public Type TabType { get; }
 
         [ObservableProperty]
-        private DirectoryInfo tabDirectory;
+        private StorageFolder tabDirectory;
         public TabNavigationHistoryModel TabHistory { get; }
 
-        public TabModel(DirectoryInfo directory, Type tabType)
+        public TabModel(StorageFolder directory, Type tabType)
         {
             TabType = tabType;
             TabDirectory = directory;

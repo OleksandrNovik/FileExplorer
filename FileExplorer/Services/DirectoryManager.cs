@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using Windows.Storage;
 
 namespace FileExplorer.Services
 {
@@ -14,7 +16,7 @@ namespace FileExplorer.Services
         private const string CopiedFilesKey = "Copied";
         private readonly IMemoryCache _cache;
         public bool HasCopiedFiles { get; private set; }
-        public DirectoryInfo CurrentDirectory { get; set; }
+        public StorageFolder CurrentDirectory { get; set; }
 
         public DirectoryManager(IMemoryCache cache)
         {
@@ -30,7 +32,7 @@ namespace FileExplorer.Services
             var itemsCounter = 0;
             var nameBuilder = new StringBuilder(nameTemplate);
 
-            while (Path.Exists($@"{CurrentDirectory.FullName}\{nameBuilder} ({itemsCounter})"))
+            while (Path.Exists($@"{CurrentDirectory.Path}\{nameBuilder} ({itemsCounter})"))
             {
                 itemsCounter++;
             }
@@ -41,43 +43,30 @@ namespace FileExplorer.Services
         }
 
 
-        public void Create(DirectoryItemModel item)
+        public async Task<DirectoryItemModel> CreateAsync(bool isFile)
         {
-            var fullName = $@"{CurrentDirectory.FullName}\{item.Name}";
+            IStorageItem item;
 
-            if (item.IsFile)
+            if (isFile)
             {
-                using (File.Create(fullName))
-                {
-                    item.FullInfo = new FileInfo(fullName);
-                }
+                item = await CurrentDirectory.CreateFileAsync("New File",
+                    CreationCollisionOption.GenerateUniqueName);
             }
             else
             {
-                Directory.CreateDirectory(fullName);
-                item.FullInfo = new DirectoryInfo(fullName);
+                item = await CurrentDirectory.CreateFolderAsync("New Folder",
+                    CreationCollisionOption.GenerateUniqueName);
             }
+            return new DirectoryItemModel(item);
         }
 
-        public void Move(DirectoryItemModel item, string location)
+        public async Task RenameAsync(DirectoryItemModel item)
         {
-            if (item.FullInfo is null)
-                throw new ArgumentNullException(nameof(item.FullInfo), "Wrapper is empty. Consider creating physical object first.");
+            ArgumentNullException.ThrowIfNull(item.FullInfo);
 
-            // File has not the save location as provided
-            if (item.FullInfo.FullName == location) return;
+            await item.FullInfo.RenameAsync(item.Name, NameCollisionOption.GenerateUniqueName);
 
-            if (item.IsFile)
-            {
-                File.Move(item.FullInfo.FullName, location);
-                // Update information about physical item in directory
-                item.FullInfo = new FileInfo(location);
-            }
-            else
-            {
-                Directory.Move(item.FullInfo.FullName, location);
-                item.FullInfo = new DirectoryInfo(location);
-            }
+            item.Name = item.FullInfo.Name;
         }
 
         public void CopyToClipboard(IEnumerable<DirectoryItemModel> items)
@@ -90,25 +79,14 @@ namespace FileExplorer.Services
         {
             var copiedItems = _cache.Get<IEnumerable<DirectoryItemModel>>(CopiedFilesKey).ToArray();
 
-            foreach (var item in copiedItems)
-            {
-                if (Path.Exists(item.FullPath))
-                {
-                    item.Name = GetDefaultName($"{item.Name} Copy");
-                }
-
-                Create(item);
-            }
-
             return copiedItems;
         }
 
-        public void Delete(DirectoryItemModel item)
+        public async Task DeleteAsync(DirectoryItemModel item)
         {
-            if (item.FullInfo == null)
-                throw new FileNotFoundException("Cannot delete file or folder that don't exits!");
+            ArgumentNullException.ThrowIfNull(item.FullInfo);
 
-            item.FullInfo.Delete();
+            await item.FullInfo.DeleteAsync(StorageDeleteOption.PermanentDelete);
         }
     }
 }

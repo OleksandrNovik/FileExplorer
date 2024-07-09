@@ -2,18 +2,18 @@
 using FileExplorer.Models;
 using FileExplorer.Views;
 using System;
-using System.IO;
+using Windows.Storage;
 
 namespace FileExplorer.Services
 {
     public class PageService : IPageService
     {
-        private static readonly DirectoryInfo DefaultDirectory = new(@"D:\");
+        private static readonly StorageFolder DefaultDirectory = StorageFolder.GetFolderFromPathAsync("D:\\").GetResults();
 
-        public TabModel CreateTabFromDirectory(DirectoryInfo dir)
+        public TabModel CreateTabFromDirectory(StorageFolder dir)
         {
             Type tabType;
-            DirectoryInfo tabDirectory;
+            StorageFolder tabDirectory;
 
             if (dir == null)
             {

@@ -132,7 +132,7 @@
                 <Button 
                     Style="{StaticResource MenuButton}"
                     Command="{x:Bind ViewModel.DeleteSelectedItemsCommand}"
-                    ToolTipService.ToolTip="Delete"
+                    ToolTipService.ToolTip="DeleteAsync"
                     ToolTipService.Placement="Bottom">
                     <FontIcon FontSize="17" Glyph="&#xE74D;" />
                 </Button>
