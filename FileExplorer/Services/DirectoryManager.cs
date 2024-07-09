@@ -82,11 +82,16 @@ namespace FileExplorer.Services
             return copiedItems;
         }
 
-        public async Task DeleteAsync(DirectoryItemModel item)
+        private async Task DeleteItemAsync(DirectoryItemModel item, StorageDeleteOption deleteOption = StorageDeleteOption.Default)
         {
             ArgumentNullException.ThrowIfNull(item.FullInfo);
 
-            await item.FullInfo.DeleteAsync(StorageDeleteOption.PermanentDelete);
+            await item.FullInfo.DeleteAsync(deleteOption);
         }
+
+        public async Task MoveToRecycleBinAsync(DirectoryItemModel item) => await DeleteItemAsync(item);
+
+        public async Task DeleteAsync(DirectoryItemModel item) =>
+            await DeleteItemAsync(item, StorageDeleteOption.PermanentDelete);
     }
 }

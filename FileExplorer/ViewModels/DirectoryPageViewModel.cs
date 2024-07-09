@@ -43,6 +43,12 @@ namespace FileExplorer.ViewModels
 
         }
 
+        /// <summary>
+        /// Handles navigation messages from <see cref="DirectoriesNavigationViewModel"/>
+        /// and decides how to execute new navigation command
+        /// </summary>
+        /// <param name="receiver"> Message receiver (this) </param>
+        /// <param name="massage"> Navigation message that contains new path </param>
         private async void HandleDirectoryNavigationMessage(DirectoryPageViewModel receiver, NavigationRequiredMessage massage)
         {
             //TODO: Handle file or folder opening here
@@ -50,12 +56,16 @@ namespace FileExplorer.ViewModels
             await MoveToDirectoryAsync(navigatedFolder);
         }
 
+        /// <summary>
+        /// Notifies each command that require at least one selected item if they can execute 
+        /// </summary>
         private void NotifyCommandsCanExecute(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             BeginRenamingItemCommand.NotifyCanExecuteChanged();
             DeleteSelectedItemsCommand.NotifyCanExecuteChanged();
             CopySelectedItemsCommand.NotifyCanExecuteChanged();
             CutSelectedItemsCommand.NotifyCanExecuteChanged();
+            RecycleSelectedItemsCommand.NotifyCanExecuteChanged();
         }
 
         /// <summary>
@@ -93,6 +103,10 @@ namespace FileExplorer.ViewModels
             }
         }
 
+        /// <summary>
+        /// Changes current directory and initializes its items
+        /// </summary>
+        /// <param name="directory"> Given directory that is opened </param>
         private async Task MoveToDirectoryAsync(StorageFolder directory)
         {
             CurrentDirectory = directory;
@@ -110,6 +124,10 @@ namespace FileExplorer.ViewModels
         [RelayCommand]
         private async Task CreateDirectory() => await CreateItemAsync(false);
 
+        /// <summary>
+        /// Uses manager to create new item in current directory
+        /// </summary>
+        /// <param name="isFile"> Is item a file or a folder </param>
         private async Task CreateItemAsync(bool isFile)
         {
             var wrapper = await _manager.CreateAsync(isFile);
@@ -127,6 +145,10 @@ namespace FileExplorer.ViewModels
             RenameNewItem(SelectedItems[0]);
         }
 
+        /// <summary>
+        /// Begins renaming provided item
+        /// </summary>
+        /// <param name="item"> Item that is renamed </param>
         private void RenameNewItem(DirectoryItemModel item) => item.BeginEdit();
 
         private bool HasSelectedItems() => SelectedItems.Count > 0;
@@ -144,7 +166,10 @@ namespace FileExplorer.ViewModels
                 }
             });
 
-
+        /// <summary>
+        /// Ends renaming item if it is actually possible
+        /// </summary>
+        /// <param name="item"> Item that has to be given new name </param>
         [RelayCommand]
         private async Task EndRenamingItem(DirectoryItemModel item)
         {
@@ -166,7 +191,6 @@ namespace FileExplorer.ViewModels
         /// This method is called before any operation with item to be sure it's not renamed while executing operation
         /// </summary>
         /// <param name="item"> Item that we are checking for renaming </param>
-        /// <returns> Completed task </returns>
         private async Task EndRenamingIfNeeded(DirectoryItemModel item)
         {
             if (item.IsRenamed)
@@ -179,6 +203,21 @@ namespace FileExplorer.ViewModels
 
         #region DeleteAsync logic
 
+        /// <summary>
+        /// Moves selected items to a recycle bin
+        /// </summary>
+        [RelayCommand(CanExecute = nameof(HasSelectedItems))]
+        private async Task RecycleSelectedItems()
+        {
+            while (SelectedItems.Count > 0)
+            {
+                await TryDeleteItem(SelectedItems[0]);
+            }
+        }
+
+        /// <summary>
+        /// Permanently deletes selected items
+        /// </summary>
         [RelayCommand(CanExecute = nameof(HasSelectedItems))]
         public async Task DeleteSelectedItems()
         {
@@ -198,13 +237,22 @@ namespace FileExplorer.ViewModels
         /// Fully deletes item (if it is possible)
         /// </summary>
         /// <param name="item"> Wrapper item to delete </param>
+        /// <param name="isPermanent"> Is item being deleted permanently or not </param>
         /// <returns> true if item is successfully deleted, otherwise - false </returns>
-        private async Task TryDeleteItem(DirectoryItemModel item)
+        private async Task TryDeleteItem(DirectoryItemModel item, bool isPermanent = false)
         {
             await EndRenamingIfNeeded(item);
             try
             {
-                await _manager.DeleteAsync(item);
+                if (isPermanent)
+                {
+                    await _manager.DeleteAsync(item);
+                }
+                else
+                {
+                    await _manager.MoveToRecycleBinAsync(item);
+                }
+
                 DirectoryItems.Remove(item);
             }
             catch (IOException e)
