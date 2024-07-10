@@ -52,8 +52,7 @@ namespace FileExplorer.ViewModels
         private async void HandleDirectoryNavigationMessage(DirectoryPageViewModel receiver, NavigationRequiredMessage massage)
         {
             //TODO: Handle file or folder opening here
-            var navigatedFolder = await StorageFolder.GetFolderFromPathAsync(massage.NavigationPath);
-            await MoveToDirectoryAsync(navigatedFolder);
+            await MoveToDirectoryAsync(massage.NavigatedFolder);
         }
 
         /// <summary>

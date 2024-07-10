@@ -7,6 +7,7 @@ using FileExplorer.ViewModels.Messages;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
+using Windows.Storage;
 
 namespace FileExplorer.ViewModels
 {
@@ -43,6 +44,7 @@ namespace FileExplorer.ViewModels
             {
                 _navigation.GoForward(message);
                 RouteItems.Add(message.Name);
+                CurrentRoute = CurrentDirectory.FullPath;
                 NotifyCanExecute();
             });
 
@@ -64,10 +66,13 @@ namespace FileExplorer.ViewModels
         #region GoForward
 
         [RelayCommand(CanExecute = nameof(CanGoForward))]
-        private void MoveForward()
+        private async Task MoveForward()
         {
             _navigation.GoForward();
-            SendNavigationMessage(CurrentDirectory.FullPath);
+
+            var folder = await _router.UseNavigationRouteAsync(CurrentDirectory.FullPath);
+            SendNavigationMessage(folder);
+
             RouteItems = new ObservableCollection<string>(_router.ExtractRouteItems(CurrentRoute));
         }
         private bool CanGoForward() => _navigation.CanGoForward;
@@ -77,10 +82,13 @@ namespace FileExplorer.ViewModels
         #region GoBack
 
         [RelayCommand(CanExecute = nameof(CanGoBack))]
-        private void MoveBack()
+        private async Task MoveBack()
         {
             _navigation.GoBack();
-            SendNavigationMessage(CurrentDirectory.FullPath);
+
+            var folder = await _router.UseNavigationRouteAsync(CurrentDirectory.FullPath);
+            SendNavigationMessage(folder);
+
             RouteItems = new ObservableCollection<string>(_router.ExtractRouteItems(CurrentRoute));
         }
         private bool CanGoBack() => _navigation.CanGoBack;
@@ -90,9 +98,10 @@ namespace FileExplorer.ViewModels
         #region RefreshAndNavigateUp
 
         [RelayCommand]
-        private void Refresh()
+        private async Task Refresh()
         {
-            Messenger.Send(new NavigationRequiredMessage(CurrentDirectory.FullPath));
+            var folder = await _router.UseNavigationRouteAsync(CurrentDirectory.FullPath);
+            Messenger.Send(new NavigationRequiredMessage(folder));
         }
 
         [RelayCommand(CanExecute = nameof(CanNavigateUp))]
@@ -102,8 +111,22 @@ namespace FileExplorer.ViewModels
             await navigationModel.InitializeDataAsync(CurrentDirectory.ParentPath);
 
             _navigation.GoBack(navigationModel);
-            SendNavigationMessage(CurrentDirectory.FullPath);
-            RouteItems.RemoveAt(RouteItems.Count - 1);
+            var folder = await _router.UseNavigationRouteAsync(CurrentDirectory.FullPath);
+            SendNavigationMessage(folder);
+
+            // If we can go up directory but did not document it in the application
+            // This condition will be false. So we'll just navigate to a parent folder while it is possible
+            if (RouteItems.Count > 0)
+            {
+                RouteItems.RemoveAt(RouteItems.Count - 1);
+            }
+
+            // If there is no route items documented, and we still can navigate to a parent route
+            // Will add parent's name as route item to display current location on UI
+            if (RouteItems.Count == 0)
+            {
+                RouteItems.Add(folder.DisplayName);
+            }
         }
 
         private bool CanNavigateUp() => CurrentDirectory?.ParentPath != null;
@@ -123,11 +146,13 @@ namespace FileExplorer.ViewModels
             }
 
             var selectedRoute = _router.CreatePathFrom(RouteItems);
+            var folder = await _router.UseNavigationRouteAsync(selectedRoute);
+
             var navigationModel = new DirectoryNavigationModel();
-            await navigationModel.InitializeDataAsync(selectedRoute);
+            await navigationModel.InitializeDataAsync(folder);
 
             _navigation.GoForward(navigationModel);
-            SendNavigationMessage(selectedRoute);
+            SendNavigationMessage(folder);
         }
 
         /// <summary>
@@ -151,16 +176,19 @@ namespace FileExplorer.ViewModels
         [RelayCommand(CanExecute = nameof(CanUseRouteInput))]
         private async Task NavigateUsingRouteInput()
         {
+            var folder = await _router.UseNavigationRouteAsync(CurrentRoute);
+
             var navigationModel = new DirectoryNavigationModel();
-            await navigationModel.InitializeDataAsync(CurrentRoute);
+            await navigationModel.InitializeDataAsync(folder);
 
             _navigation.GoForward(navigationModel);
-            SendNavigationMessage(CurrentRoute);
+
+            SendNavigationMessage(folder);
             IsWritingRoute = !IsWritingRoute;
             RouteItems = new ObservableCollection<string>(_router.ExtractRouteItems(CurrentRoute));
         }
 
-        private bool CanUseRouteInput() => Path.Exists(CurrentRoute);
+        private bool CanUseRouteInput() => _router.IsSpecialRoute(CurrentRoute) || Path.Exists(CurrentRoute);
 
         partial void OnCurrentRouteChanged(string value)
         {
@@ -175,10 +203,10 @@ namespace FileExplorer.ViewModels
         /// <summary>
         /// Sends message to all listeners that navigation is required to a certain path
         /// </summary>
-        /// <param name="path"> Path that will be navigated to </param>
-        private void SendNavigationMessage(string path)
+        /// <param name="folder"> Folder that will be navigated to </param>
+        private void SendNavigationMessage(StorageFolder folder)
         {
-            Messenger.Send(new NavigationRequiredMessage(path));
+            Messenger.Send(new NavigationRequiredMessage(folder));
             CurrentRoute = CurrentDirectory.FullPath;
             NotifyCanExecute();
         }

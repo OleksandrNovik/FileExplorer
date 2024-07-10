@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Windows.Storage;
 
 namespace FileExplorer.Contracts
 {
@@ -17,5 +19,10 @@ namespace FileExplorer.Contracts
         /// <param name="route"> Route that we need to get each folder name in it </param>
         /// <returns> Enumeration of path parts that can be used to display all folders </returns>
         public IEnumerable<string> ExtractRouteItems(string route);
+
+        public Task<StorageFolder> UseNavigationRouteAsync(string route);
+
+        public bool IsSpecialRoute(string route);
+
     }
 }

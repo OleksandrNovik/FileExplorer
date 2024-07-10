@@ -19,9 +19,9 @@ namespace FileExplorer.Models
 
         public async Task InitializeDataAsync(StorageFolder folder)
         {
-            Name = folder.Name;
+            Name = folder.DisplayName;
             //TODO: Fix path for special folders
-            FullPath = folder.Path;
+            FullPath = string.IsNullOrEmpty(folder.Path) ? folder.DisplayName : folder.Path;
             var parent = await folder.GetParentAsync();
             ParentPath = parent?.Path;
         }
