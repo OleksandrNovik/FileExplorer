@@ -2,17 +2,20 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Enums;
 using FileExplorer.Contracts;
 using FileExplorer.Helpers;
 using FileExplorer.Models;
 using FileExplorer.ViewModels.Messages;
 using Microsoft.UI.Xaml.Controls;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Storage;
+using DirectoryItemModel = FileExplorer.Models.DirectoryItemModel;
 
 namespace FileExplorer.ViewModels
 {
@@ -30,7 +33,9 @@ namespace FileExplorer.ViewModels
         [ObservableProperty]
         private ObservableCollection<DirectoryItemModel> selectedItems;
 
-        public bool HasCopiedFiles => _manager.HasCopiedFiles;
+        private CopyOperation executedOperation = CopyOperation.None;
+
+        public bool HasCopiedFiles => executedOperation != CopyOperation.None;
 
         public DirectoryPageViewModel(IDirectoryManager manager)
         {
@@ -271,14 +276,10 @@ namespace FileExplorer.ViewModels
 
         #region Copy+Paste logic
 
-        private void NotifyHasCopied()
+        private void SaveToClipboard(IEnumerable<DirectoryItemModel> items)
         {
+            _manager.CopyToClipboard(items.ToArray(), executedOperation);
             OnPropertyChanged(nameof(HasCopiedFiles));
-
-            if (!HasCopiedFiles)
-            {
-                PasteItemsCommand.NotifyCanExecuteChanged();
-            }
         }
 
         /// <summary>
@@ -288,8 +289,8 @@ namespace FileExplorer.ViewModels
         [RelayCommand(CanExecute = nameof(HasSelectedItems))]
         private void CopySelectedItems()
         {
-            _manager.CopyToClipboard(SelectedItems.Select(item => item.Clone() as DirectoryItemModel));
-            NotifyHasCopied();
+            executedOperation = CopyOperation.Copy;
+            SaveToClipboard(SelectedItems.Select(i => i.Clone() as DirectoryItemModel));
         }
 
         /// <summary>
@@ -298,18 +299,21 @@ namespace FileExplorer.ViewModels
         [RelayCommand(CanExecute = nameof(HasSelectedItems))]
         private void CutSelectedItems()
         {
-            _manager.CopyToClipboard(SelectedItems);
-            NotifyHasCopied();
-            //await ClearSelectedItems();
+            executedOperation = CopyOperation.Cut;
+            SaveToClipboard(SelectedItems);
+
+            DirectoryItems.RemoveRange(SelectedItems);
+            SelectedItems.Clear();
         }
 
         /// <summary>
         /// Uses information about items from cache to create new files and folders in current location
         /// </summary>
         [RelayCommand]
-        private void PasteItems()
+        private async void PasteItems()
         {
-            DirectoryItems.AddRange(_manager.PasteFromClipboard());
+            var pastedItems = await _manager.PasteFromClipboard(executedOperation);
+            DirectoryItems.AddRange(pastedItems);
             OnPropertyChanged(nameof(DirectoryItems));
         }
 

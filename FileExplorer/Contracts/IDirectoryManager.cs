@@ -1,4 +1,5 @@
-﻿using FileExplorer.Models;
+﻿using Enums;
+using FileExplorer.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.Storage;
@@ -7,8 +8,8 @@ namespace FileExplorer.Contracts
 {
     public interface IDirectoryManager
     {
+
         public StorageFolder CurrentDirectory { get; set; }
-        public bool HasCopiedFiles { get; }
 
         /// <summary>
         /// Creates new item in <see cref="CurrentDirectory"/> asynchronely
@@ -23,9 +24,9 @@ namespace FileExplorer.Contracts
         /// <param name="item"> Item that is renamed </param>
         public Task RenameAsync(DirectoryItemModel item);
 
-        public void CopyToClipboard(IEnumerable<DirectoryItemModel> items);
+        public void CopyToClipboard(IEnumerable<DirectoryItemModel> items, CopyOperation operation);
 
-        public IEnumerable<DirectoryItemModel> PasteFromClipboard();
+        public Task<IEnumerable<DirectoryItemModel>> PasteFromClipboard(CopyOperation operation);
 
         /// <summary>
         /// Deletes item with ability to restore it from recycle bin
@@ -38,6 +39,5 @@ namespace FileExplorer.Contracts
         /// </summary>
         /// <param name="item"> Item that being deleted permanently </param>
         public Task DeleteAsync(DirectoryItemModel item);
-
     }
 }

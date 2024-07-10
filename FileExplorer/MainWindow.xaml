@@ -10,7 +10,7 @@
     mc:Ignorable="d">
 
     <views:WindowExtended.SystemBackdrop>
-        <MicaBackdrop />
+        <DesktopAcrylicBackdrop />
     </views:WindowExtended.SystemBackdrop>
 
 </views:WindowExtended>

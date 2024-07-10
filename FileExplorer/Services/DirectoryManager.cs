@@ -1,21 +1,25 @@
-﻿using FileExplorer.Contracts;
+﻿using Enums;
+using FileExplorer.Contracts;
+using FileExplorer.Helpers;
 using FileExplorer.Models;
 using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
+using FileAttributes = System.IO.FileAttributes;
 
 namespace FileExplorer.Services
 {
     public class DirectoryManager : IDirectoryManager
     {
         private const string CopiedFilesKey = "Copied";
+
         private readonly IMemoryCache _cache;
-        public bool HasCopiedFiles { get; private set; }
         public StorageFolder CurrentDirectory { get; set; }
 
         public DirectoryManager(IMemoryCache cache)
@@ -23,10 +27,6 @@ namespace FileExplorer.Services
             _cache = cache;
         }
 
-        ~DirectoryManager()
-        {
-            _cache.Dispose();
-        }
         public string GetDefaultName(string nameTemplate)
         {
             var itemsCounter = 0;
@@ -69,15 +69,28 @@ namespace FileExplorer.Services
             item.Name = item.FullInfo.Name;
         }
 
-        public void CopyToClipboard(IEnumerable<DirectoryItemModel> items)
+        public void CopyToClipboard(IEnumerable<DirectoryItemModel> items, CopyOperation operation)
         {
             _cache.Set(CopiedFilesKey, items);
-            HasCopiedFiles = true;
+
+            //If files are cut, set attribute Hidden for each item
+            if (operation == CopyOperation.Cut)
+            {
+                foreach (var item in items)
+                {
+                    var itemAttributes = File.GetAttributes(item.FullPath);
+                    File.SetAttributes(item.FullPath, itemAttributes | FileAttributes.Hidden);
+                }
+            }
         }
 
-        public IEnumerable<DirectoryItemModel> PasteFromClipboard()
+        public async Task<IEnumerable<DirectoryItemModel>> PasteFromClipboard(CopyOperation operation)
         {
             var copiedItems = _cache.Get<IEnumerable<DirectoryItemModel>>(CopiedFilesKey).ToArray();
+
+            var items = copiedItems.Select(model => model.FullInfo).ToImmutableArray();
+
+            await items.PasteAsync(CurrentDirectory, operation);
 
             return copiedItems;
         }
