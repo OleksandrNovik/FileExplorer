@@ -18,8 +18,8 @@
 
     <Page.Resources>
         <DataTemplate x:Key="GridItemTemplate" x:DataType="models:DirectoryItemModel">
-            <StackPanel  Padding="10  25 10 10">
-                <Image Source="../Resources/Folder.png" Height="95"  />
+            <StackPanel  Padding="10  20 10 10">
+                <Image Source="{x:Bind Thumbnail}" Height="95"  />
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="30" />

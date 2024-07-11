@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.UI.Xaml.Media;
 using System;
 using System.ComponentModel;
 using Windows.Storage;
@@ -19,6 +20,8 @@ namespace FileExplorer.Models
 
         [ObservableProperty]
         private bool isRenamed;
+
+        public ImageSource Thumbnail { get; set; }
 
         public DirectoryItemModel(string name)
         {

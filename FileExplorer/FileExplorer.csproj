@@ -37,10 +37,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Resources\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Page Update="UI\UserControls\DirectoryNavigationPanel.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

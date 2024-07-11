@@ -1,10 +1,11 @@
 ﻿using Microsoft.UI.Xaml.Media.Imaging;
-using System.Drawing;
+using System.Threading.Tasks;
+using Windows.Storage;
 
 namespace FileExplorer.Contracts
 {
     public interface IPicturesService
     {
-        public BitmapImage IconToImage(Icon icon);
+        public Task<BitmapImage> IconToImageAsync(IStorageItem item);
     }
 }

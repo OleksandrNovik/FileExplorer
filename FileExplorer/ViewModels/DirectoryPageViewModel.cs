@@ -15,6 +15,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.System;
 using DirectoryItemModel = FileExplorer.Models.DirectoryItemModel;
 
 namespace FileExplorer.ViewModels
@@ -23,7 +24,7 @@ namespace FileExplorer.ViewModels
     {
 
         private readonly IDirectoryManager _manager;
-
+        private readonly IPicturesService iconService;
         [ObservableProperty]
         private StorageFolder currentDirectory;
 
@@ -37,15 +38,14 @@ namespace FileExplorer.ViewModels
 
         public bool HasCopiedFiles => executedOperation != CopyOperation.None;
 
-        public DirectoryPageViewModel(IDirectoryManager manager)
+        public DirectoryPageViewModel(IDirectoryManager manager, IPicturesService iconService)
         {
             _manager = manager;
-
+            this.iconService = iconService;
             SelectedItems = new ObservableCollection<DirectoryItemModel>();
             SelectedItems.CollectionChanged += NotifyCommandsCanExecute;
 
             Messenger.Register<DirectoryPageViewModel, NavigationRequiredMessage>(this, HandleDirectoryNavigationMessage);
-
         }
 
         /// <summary>
@@ -78,10 +78,17 @@ namespace FileExplorer.ViewModels
         /// </summary>
         private async Task InitializeDirectoryAsync()
         {
-            var models = (await CurrentDirectory.GetItemsAsync())
-                .Select(folderItem => new DirectoryItemModel(folderItem));
+            var dirItems = await CurrentDirectory.GetItemsAsync();
+
+            var models = dirItems.AsParallel().Select(folderItem => new DirectoryItemModel(folderItem)).ToArray();
+
+            foreach (var model in models)
+            {
+                model.Thumbnail = await iconService.IconToImageAsync(model.FullInfo);
+            }
 
             DirectoryItems = new ObservableCollection<DirectoryItemModel>(models);
+
             SelectedItems.Clear();
         }
 
@@ -92,9 +99,9 @@ namespace FileExplorer.ViewModels
 
             await EndRenamingIfNeeded(item);
 
-            if (item.FullInfo.IsOfType(StorageItemTypes.File))
+            if (item.FullInfo is StorageFile file)
             {
-                //TODO: Open File 
+                await Launcher.LaunchFileAsync(file);
             }
             else
             {
@@ -138,6 +145,7 @@ namespace FileExplorer.ViewModels
         private async Task CreateItemAsync(bool isFile)
         {
             var wrapper = await _manager.CreateAsync(isFile);
+            wrapper.Thumbnail = await iconService.IconToImageAsync(wrapper.FullInfo);
             DirectoryItems.Insert(0, wrapper);
             RenameNewItem(wrapper);
         }

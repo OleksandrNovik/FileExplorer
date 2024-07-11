@@ -8,6 +8,20 @@ namespace FileExplorer.Helpers
 {
     public static class StorageItemExtensions
     {
+        public static async Task PasteAsync(this StorageFile file, StorageFolder destination, CopyOperation operation)
+        {
+            switch (operation)
+            {
+                case CopyOperation.Copy:
+                    await file.CopyAsync(destination, file.Name, NameCollisionOption.GenerateUniqueName);
+                    break;
+                case CopyOperation.Cut:
+                    await file.MoveAsync(destination, file.Name, NameCollisionOption.GenerateUniqueName);
+                    break;
+                default:
+                    throw new ArgumentException("None copy value is not allowed.");
+            }
+        }
         public static async Task PasteAsync(this IReadOnlyCollection<IStorageItem> items, StorageFolder destination, CopyOperation operation)
         {
             await Parallel.ForEachAsync(items, async (item, token) =>
@@ -24,21 +38,6 @@ namespace FileExplorer.Helpers
                     await folderContent.PasteAsync(copied, operation);
                 }
             });
-        }
-
-        public static async Task PasteAsync(this StorageFile file, StorageFolder destination, CopyOperation operation)
-        {
-            switch (operation)
-            {
-                case CopyOperation.Copy:
-                    await file.CopyAsync(destination, file.Name, NameCollisionOption.GenerateUniqueName);
-                    break;
-                case CopyOperation.Cut:
-                    await file.MoveAsync(destination, file.Name, NameCollisionOption.GenerateUniqueName);
-                    break;
-                default:
-                    throw new ArgumentException("None copy value is not allowed.");
-            }
         }
     }
 }

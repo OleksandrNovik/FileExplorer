@@ -1,27 +1,26 @@
 ﻿using FileExplorer.Contracts;
 using Microsoft.UI.Xaml.Media.Imaging;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
+using System;
+using System.Threading.Tasks;
+using Windows.Storage;
+using Windows.Storage.FileProperties;
 
 namespace FileExplorer.Services
 {
     public class PictureService : IPicturesService
     {
-        public BitmapImage IconToImage(Icon icon)
+        public async Task<BitmapImage> IconToImageAsync(IStorageItem item)
         {
-            using (MemoryStream ms = new MemoryStream())
-            {
-                var iconBmp = icon.ToBitmap();
-                iconBmp.SetResolution(95, 95);
-                iconBmp.Save(ms, ImageFormat.Png);
+            var imgIcon = new BitmapImage();
 
-                ms.Seek(0, SeekOrigin.Begin);
+            var storageItemProperties = item as IStorageItemProperties;
 
-                var bmpImg = new BitmapImage();
-                bmpImg.SetSource(ms.AsRandomAccessStream());
-                return bmpImg;
-            }
+            ArgumentNullException.ThrowIfNull(storageItemProperties);
+
+            var thumbnail = await storageItemProperties.GetThumbnailAsync(ThumbnailMode.ListView, 95);
+            imgIcon.SetSource(thumbnail);
+
+            return imgIcon;
         }
 
     }
