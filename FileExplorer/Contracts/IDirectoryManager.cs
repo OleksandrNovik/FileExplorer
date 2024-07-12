@@ -1,7 +1,7 @@
-﻿using Enums;
-using FileExplorer.Models;
+﻿using FileExplorer.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 
 namespace FileExplorer.Contracts
@@ -24,9 +24,9 @@ namespace FileExplorer.Contracts
         /// <param name="item"> Item that is renamed </param>
         public Task RenameAsync(DirectoryItemModel item);
 
-        public void CopyToClipboard(IEnumerable<DirectoryItemModel> items, CopyOperation operation);
+        public void CopyToClipboard(IEnumerable<DirectoryItemModel> items, DataPackageOperation operation);
 
-        public Task<IEnumerable<DirectoryItemModel>> PasteFromClipboard(CopyOperation operation);
+        public Task<IEnumerable<IStorageItem>> PasteFromClipboard();
 
         /// <summary>
         /// Deletes item with ability to restore it from recycle bin

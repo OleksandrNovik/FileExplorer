@@ -34,7 +34,6 @@ namespace FileExplorer
                 .UseContentRoot(AppContext.BaseDirectory)
                 .ConfigureServices((context, services) =>
                 {
-                    services.AddMemoryCache();
                     services.AddPageAndViewModel<DirectoryPage, DirectoryPageViewModel>();
                     services.AddPageAndViewModel<ShellPage, ShellPageViewModel>();
 

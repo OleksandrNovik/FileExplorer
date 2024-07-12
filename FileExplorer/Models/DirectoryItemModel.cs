@@ -1,33 +1,26 @@
 ﻿#nullable enable
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml.Media;
-using System;
 using System.ComponentModel;
 using Windows.Storage;
 
 namespace FileExplorer.Models
 {
-    public partial class DirectoryItemModel : ObservableObject, IEditableObject, ICloneable
+    public partial class DirectoryItemModel : ObservableObject, IEditableObject
     {
         private string backUpName;
 
         [ObservableProperty]
         private string name;
-        public string FullPath => FullInfo?.Path ?? string.Empty;
+        public string FullPath => FullInfo.Path;
 
         [ObservableProperty]
-        private IStorageItem? fullInfo;
+        private IStorageItem fullInfo;
 
         [ObservableProperty]
         private bool isRenamed;
 
         public ImageSource Thumbnail { get; set; }
-
-        public DirectoryItemModel(string name)
-        {
-            Name = name;
-            IsRenamed = false;
-        }
 
         /// <summary>
         /// Constructor for an existing item in directory
@@ -66,15 +59,6 @@ namespace FileExplorer.Models
                 backUpName = Name;
                 IsRenamed = false;
             }
-        }
-
-        public object Clone()
-        {
-            var clone = new DirectoryItemModel(Name)
-            {
-                FullInfo = FullInfo
-            };
-            return clone;
         }
     }
 }

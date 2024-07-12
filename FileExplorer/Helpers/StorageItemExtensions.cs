@@ -1,5 +1,4 @@
-﻿using Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.Storage;
@@ -8,36 +7,62 @@ namespace FileExplorer.Helpers
 {
     public static class StorageItemExtensions
     {
-        public static async Task PasteAsync(this StorageFile file, StorageFolder destination, CopyOperation operation)
+        public static async Task CopyRangeAsync(this IEnumerable<IStorageItem> items, StorageFolder destination)
         {
-            switch (operation)
+            foreach (var item in items)
             {
-                case CopyOperation.Copy:
-                    await file.CopyAsync(destination, file.Name, NameCollisionOption.GenerateUniqueName);
-                    break;
-                case CopyOperation.Cut:
-                    await file.MoveAsync(destination, file.Name, NameCollisionOption.GenerateUniqueName);
-                    break;
-                default:
-                    throw new ArgumentException("None copy value is not allowed.");
+                await item.CopyAsync(destination);
             }
         }
-        public static async Task PasteAsync(this IReadOnlyCollection<IStorageItem> items, StorageFolder destination, CopyOperation operation)
+
+        public static async Task CopyAsync(this IStorageItem item, StorageFolder destination)
         {
-            await Parallel.ForEachAsync(items, async (item, token) =>
+            if (item is StorageFile file)
             {
-                if (item is StorageFile file)
-                {
-                    await file.PasteAsync(destination, operation);
-                }
-                else if (item is StorageFolder folder)
-                {
-                    var copied = await destination.CreateFolderAsync(folder.DisplayName,
-                        CreationCollisionOption.GenerateUniqueName);
-                    var folderContent = await folder.GetItemsAsync();
-                    await folderContent.PasteAsync(copied, operation);
-                }
-            });
+                await file.CopyAsync(destination, file.Name, NameCollisionOption.GenerateUniqueName);
+            }
+            else if (item is StorageFolder folder)
+            {
+                await folder.CopyAsync(destination);
+            }
+            else
+            {
+                throw new ArgumentException("Item is neither a file nor folder", nameof(item));
+            }
         }
+
+        public static async Task CopyAsync(this StorageFolder folder, StorageFolder destination)
+        {
+            var folderItems = await folder.GetItemsAsync();
+
+            var copy = await destination.CreateFolderAsync(folder.Name, CreationCollisionOption.GenerateUniqueName);
+
+            foreach (var item in folderItems)
+            {
+                await item.CopyAsync(copy);
+            }
+        }
+
+        //public static async Task MoveAsync(this IStorageItem item, StorageFolder destination)
+        //{
+        //    if (item is StorageFile file)
+        //    {
+        //        await file.MoveAsync(destination, file.Name, NameCollisionOption.GenerateUniqueName);
+        //    }
+        //    else if (item is StorageFolder folder)
+        //    {
+        //        await folder.MoveAsync(destination);
+        //    }
+        //    else
+        //    {
+        //        throw new ArgumentException("Item is neither a file nor folder", nameof(item));
+        //    }
+        //}
+
+        //public static async Task MoveAsync(this StorageFolder folder, StorageFolder destination)
+        //{
+        //    await folder.CopyAsync(destination);
+        //    await folder.DeleteAsync(StorageDeleteOption.PermanentDelete);
+        //}
     }
 }

@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using Enums;
 using FileExplorer.Contracts;
 using FileExplorer.Helpers;
 using FileExplorer.Models;
@@ -14,6 +13,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 using Windows.System;
 using DirectoryItemModel = FileExplorer.Models.DirectoryItemModel;
@@ -22,9 +22,9 @@ namespace FileExplorer.ViewModels
 {
     public partial class DirectoryPageViewModel : ObservableRecipient, INavigationAware
     {
-
         private readonly IDirectoryManager _manager;
         private readonly IPicturesService iconService;
+
         [ObservableProperty]
         private StorageFolder currentDirectory;
 
@@ -33,10 +33,7 @@ namespace FileExplorer.ViewModels
 
         [ObservableProperty]
         private ObservableCollection<DirectoryItemModel> selectedItems;
-
-        private CopyOperation executedOperation = CopyOperation.None;
-
-        public bool HasCopiedFiles => executedOperation != CopyOperation.None;
+        public bool HasCopiedFiles { get; private set; }
 
         public DirectoryPageViewModel(IDirectoryManager manager, IPicturesService iconService)
         {
@@ -78,18 +75,26 @@ namespace FileExplorer.ViewModels
         /// </summary>
         private async Task InitializeDirectoryAsync()
         {
-            var dirItems = await CurrentDirectory.GetItemsAsync();
+            DirectoryItems = new ObservableCollection<DirectoryItemModel>();
 
-            var models = dirItems.AsParallel().Select(folderItem => new DirectoryItemModel(folderItem)).ToArray();
+            var directoryContent = await CurrentDirectory.GetItemsAsync();
+            await AddDirectoryItemsAsync(directoryContent);
+
+            SelectedItems.Clear();
+        }
+
+        private async Task AddDirectoryItemsAsync(IEnumerable<IStorageItem> items)
+        {
+            var models = items.AsParallel()
+                                                .Select(folderItem => new DirectoryItemModel(folderItem))
+                                                .ToArray();
 
             foreach (var model in models)
             {
                 model.Thumbnail = await iconService.IconToImageAsync(model.FullInfo);
             }
 
-            DirectoryItems = new ObservableCollection<DirectoryItemModel>(models);
-
-            SelectedItems.Clear();
+            DirectoryItems.AddRange(models);
         }
 
         [RelayCommand]
@@ -284,45 +289,30 @@ namespace FileExplorer.ViewModels
 
         #region Copy+Paste logic
 
-        private void SaveToClipboard(IEnumerable<DirectoryItemModel> items)
+        private void MoveToClipboard(IEnumerable<DirectoryItemModel> items, DataPackageOperation operation)
         {
-            _manager.CopyToClipboard(items.ToArray(), executedOperation);
+            _manager.CopyToClipboard(items, operation);
+            HasCopiedFiles = true;
             OnPropertyChanged(nameof(HasCopiedFiles));
         }
 
-        /// <summary>
-        /// Creates copies of directory items (calling <see cref="ICloneable.Clone"/> method).
-        /// And saves them into cache to paste later
-        /// </summary>
         [RelayCommand(CanExecute = nameof(HasSelectedItems))]
         private void CopySelectedItems()
         {
-            executedOperation = CopyOperation.Copy;
-            SaveToClipboard(SelectedItems.Select(i => i.Clone() as DirectoryItemModel));
+            MoveToClipboard(SelectedItems, DataPackageOperation.Copy);
         }
 
-        /// <summary>
-        /// Moves original versions of directory items into cache and deletes them from current directory.
-        /// </summary>
         [RelayCommand(CanExecute = nameof(HasSelectedItems))]
         private void CutSelectedItems()
         {
-            executedOperation = CopyOperation.Cut;
-            SaveToClipboard(SelectedItems);
-
-            DirectoryItems.RemoveRange(SelectedItems);
-            SelectedItems.Clear();
+            MoveToClipboard(SelectedItems, DataPackageOperation.Move);
         }
 
-        /// <summary>
-        /// Uses information about items from cache to create new files and folders in current location
-        /// </summary>
         [RelayCommand]
-        private async void PasteItems()
+        private async Task PasteItems()
         {
-            var pastedItems = await _manager.PasteFromClipboard(executedOperation);
-            DirectoryItems.AddRange(pastedItems);
-            OnPropertyChanged(nameof(DirectoryItems));
+            var pastedItems = await _manager.PasteFromClipboard();
+            await AddDirectoryItemsAsync(pastedItems);
         }
 
         #endregion

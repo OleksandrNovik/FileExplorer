@@ -1,47 +1,18 @@
-﻿using Enums;
-using FileExplorer.Contracts;
+﻿using FileExplorer.Contracts;
 using FileExplorer.Helpers;
 using FileExplorer.Models;
-using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
-using FileAttributes = System.IO.FileAttributes;
 
 namespace FileExplorer.Services
 {
     public class DirectoryManager : IDirectoryManager
     {
-        private const string CopiedFilesKey = "Copied";
-
-        private readonly IMemoryCache _cache;
         public StorageFolder CurrentDirectory { get; set; }
-
-        public DirectoryManager(IMemoryCache cache)
-        {
-            _cache = cache;
-        }
-
-        public string GetDefaultName(string nameTemplate)
-        {
-            var itemsCounter = 0;
-            var nameBuilder = new StringBuilder(nameTemplate);
-
-            while (Path.Exists($@"{CurrentDirectory.Path}\{nameBuilder} ({itemsCounter})"))
-            {
-                itemsCounter++;
-            }
-
-            nameBuilder.Append($" ({itemsCounter})");
-
-            return nameBuilder.ToString();
-        }
-
 
         public async Task<DirectoryItemModel> CreateAsync(bool isFile)
         {
@@ -69,28 +40,36 @@ namespace FileExplorer.Services
             item.Name = item.FullInfo.Name;
         }
 
-        public void CopyToClipboard(IEnumerable<DirectoryItemModel> items, CopyOperation operation)
+        public void CopyToClipboard(IEnumerable<DirectoryItemModel> items, DataPackageOperation operation)
         {
-            _cache.Set(CopiedFilesKey, items);
+            var dirItems = items.AsParallel().Select(model => model.FullInfo);
 
-            //If files are cut, set attribute Hidden for each item
-            if (operation == CopyOperation.Cut)
-            {
-                foreach (var item in items)
-                {
-                    var itemAttributes = File.GetAttributes(item.FullPath);
-                    File.SetAttributes(item.FullPath, itemAttributes | FileAttributes.Hidden);
-                }
-            }
+            var dataPackage = new DataPackage();
+            dataPackage.SetStorageItems(dirItems);
+            dataPackage.RequestedOperation = operation;
+
+            Clipboard.SetContent(dataPackage);
         }
 
-        public async Task<IEnumerable<DirectoryItemModel>> PasteFromClipboard(CopyOperation operation)
+        public async Task<IEnumerable<IStorageItem>> PasteFromClipboard()
         {
-            var copiedItems = _cache.Get<IEnumerable<DirectoryItemModel>>(CopiedFilesKey).ToArray();
+            var clipboardContent = Clipboard.GetContent();
 
-            var items = copiedItems.Select(model => model.FullInfo).ToImmutableArray();
+            if (!clipboardContent.Contains(StandardDataFormats.StorageItems))
+            {
+                throw new ArgumentException("Clipboard does not contain storage items", nameof(clipboardContent));
+            }
 
-            await items.PasteAsync(CurrentDirectory, operation);
+            var copiedItems = (await clipboardContent.GetStorageItemsAsync()).ToArray();
+            await copiedItems.CopyRangeAsync(CurrentDirectory);
+
+            if ((clipboardContent.RequestedOperation & DataPackageOperation.Move) != 0)
+            {
+                foreach (var item in copiedItems)
+                {
+                    await item.DeleteAsync(StorageDeleteOption.PermanentDelete);
+                }
+            }
 
             return copiedItems;
         }
