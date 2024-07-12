@@ -43,6 +43,12 @@ namespace FileExplorer.ViewModels
             SelectedItems.CollectionChanged += NotifyCommandsCanExecute;
 
             Messenger.Register<DirectoryPageViewModel, NavigationRequiredMessage>(this, HandleDirectoryNavigationMessage);
+            Messenger.Register<DirectoryPageViewModel, FileOpenRequiredMessage>(this, OpenFileRequired);
+        }
+
+        private async void OpenFileRequired(DirectoryPageViewModel recipient, FileOpenRequiredMessage message)
+        {
+            await OpenStorageItem(message.OpenFile);
         }
 
         /// <summary>
@@ -53,7 +59,6 @@ namespace FileExplorer.ViewModels
         /// <param name="massage"> Navigation message that contains new path </param>
         private async void HandleDirectoryNavigationMessage(DirectoryPageViewModel receiver, NavigationRequiredMessage massage)
         {
-            //TODO: Handle file or folder opening here
             await MoveToDirectoryAsync(massage.NavigatedFolder);
         }
 
@@ -97,6 +102,25 @@ namespace FileExplorer.ViewModels
             DirectoryItems.AddRange(models);
         }
 
+        private async Task OpenStorageItem(IStorageItem item)
+        {
+            if (item is StorageFile file)
+            {
+                await Launcher.LaunchFileAsync(file);
+            }
+            else if (item is StorageFolder dir)
+            {
+                await MoveToDirectoryAsync(dir);
+
+                var navigationModel = new DirectoryNavigationModel();
+                await navigationModel.InitializeDataAsync(dir);
+
+                Messenger.Send(navigationModel);
+            }
+            else
+                throw new ArgumentException("Storage item is neither a file nor a folder.", nameof(item));
+        }
+
         [RelayCommand]
         private async Task Open(DirectoryItemModel item)
         {
@@ -104,22 +128,7 @@ namespace FileExplorer.ViewModels
 
             await EndRenamingIfNeeded(item);
 
-            if (item.FullInfo is StorageFile file)
-            {
-                await Launcher.LaunchFileAsync(file);
-            }
-            else
-            {
-                if (item.FullInfo is StorageFolder dir)
-                {
-                    await MoveToDirectoryAsync(dir);
-
-                    var navigationModel = new DirectoryNavigationModel();
-                    await navigationModel.InitializeDataAsync(dir);
-
-                    Messenger.Send(navigationModel);
-                }
-            }
+            await OpenStorageItem(item.FullInfo);
         }
 
         /// <summary>

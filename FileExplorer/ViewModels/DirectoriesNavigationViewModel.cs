@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using FileExplorer.Contracts;
 using FileExplorer.Models;
 using FileExplorer.ViewModels.Messages;
+using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
@@ -176,7 +177,22 @@ namespace FileExplorer.ViewModels
         [RelayCommand(CanExecute = nameof(CanUseRouteInput))]
         private async Task NavigateUsingRouteInput()
         {
-            var folder = await _router.UseNavigationRouteAsync(CurrentRoute);
+            // When user writes down navigation route it can be either file or folder
+            StorageFolder folder;
+            // We can check if current route is file (has extension)
+            if (Path.HasExtension(CurrentRoute))
+            {
+                // If so we can call message to open this file in DirectoryPageViewModel
+                var file = await StorageFile.GetFileFromPathAsync(CurrentRoute);
+                Messenger.Send(new FileOpenRequiredMessage(file));
+                // And then use parent folder for file as navigation folder
+                folder = await file.GetParentAsync();
+            }
+            // Otherwise we just use route to identify new navigation folder
+            else
+            {
+                folder = await _router.UseNavigationRouteAsync(CurrentRoute);
+            }
 
             var navigationModel = new DirectoryNavigationModel();
             await navigationModel.InitializeDataAsync(folder);
@@ -184,6 +200,7 @@ namespace FileExplorer.ViewModels
             _navigation.GoForward(navigationModel);
 
             SendNavigationMessage(folder);
+
             IsWritingRoute = !IsWritingRoute;
             RouteItems = new ObservableCollection<string>(_router.ExtractRouteItems(CurrentRoute));
         }

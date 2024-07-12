@@ -13,6 +13,7 @@
     xmlns:toolkitBehaviors="using:CommunityToolkit.WinUI.UI.Behaviors"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:ui="using:FileExplorer.UI"
+    xmlns:userControls="using:FileExplorer.UI.UserControls"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -167,17 +168,24 @@
                 </Button>
             </StackPanel>
         </Grid>
-        <controls:AdaptiveGridView Grid.Row="1" x:Name="DirectoryItemsGrid"
-            ItemsSource="{x:Bind ViewModel.DirectoryItems, Mode=OneWay}" 
-            ItemTemplate="{StaticResource GridItemTemplate}"
-            SelectionMode="Extended"
-            DesiredWidth="160"
-            >
+        <Grid Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <controls:AdaptiveGridView x:Name="DirectoryItemsGrid"
+                                       ItemsSource="{x:Bind ViewModel.DirectoryItems, Mode=OneWay}" 
+                                       ItemTemplate="{StaticResource GridItemTemplate}"
+                                       SelectionMode="Extended"
+                                       DesiredWidth="160">
 
-            <interactivity:Interaction.Behaviors>
-                <behaviors:MultiSelectionBehavior SelectedItems="{x:Bind ViewModel.SelectedItems, Mode=OneWay}" />
-            </interactivity:Interaction.Behaviors>
-        </controls:AdaptiveGridView>
+                <interactivity:Interaction.Behaviors>
+                    <behaviors:MultiSelectionBehavior SelectedItems="{x:Bind ViewModel.SelectedItems, Mode=OneWay}" />
+                </interactivity:Interaction.Behaviors>
+            </controls:AdaptiveGridView>
+            <Rectangle Visibility="Collapsed" Grid.Column="1" Width="300"/>
+            <userControls:FileDetails Grid.Column="1" />
+        </Grid>
 
         <InfoBar Grid.Row="1"
                  Margin="0 0 6 6"

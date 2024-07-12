@@ -12,6 +12,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="UI\UserControls\DirectoryNavigationPanel.xaml" />
+    <None Remove="UI\UserControls\FileDetails.xaml" />
     <None Remove="Views\DirectoryPage.xaml" />
     <None Remove="Views\ShellPage.xaml" />
   </ItemGroup>
@@ -47,5 +48,11 @@
 
   <ItemGroup>
     <Resource Remove="Views\ShellPage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="UI\UserControls\FileDetails.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 </Project>

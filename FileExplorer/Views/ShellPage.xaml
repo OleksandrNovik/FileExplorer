@@ -70,8 +70,7 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" MinWidth="190" />
                     <ColumnDefinition Width="5" />
-                    <ColumnDefinition Width="4*" MinWidth="200" />
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="3.8*" MinWidth="200" />
                 </Grid.ColumnDefinitions>
 
                 <ui:InteractiveGridSplitter
@@ -79,9 +78,6 @@
                     ResizeBehavior="PreviousAndNext" />
 
                 <Frame Grid.Column="2" x:Name="NavigationFrame" />
-
-                <!--TODO: File Details Menu-->
-                <Rectangle Visibility="Collapsed" Grid.Column="3" Width="300"/>
             </Grid>
         </Grid>
 
