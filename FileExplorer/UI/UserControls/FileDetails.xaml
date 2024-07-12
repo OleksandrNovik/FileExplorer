@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Width="280" Visibility="{x:Bind isOpen, Converter={StaticResource BoolToVisibilityConverter}}">
+    <Grid Width="280" Visibility="{x:Bind IsOpen, Converter={StaticResource BoolToVisibilityConverter}}">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="60" />
@@ -29,33 +29,33 @@
 
                 <Image Source="../../Resources/Folder.png" Height="100" Style="{StaticResource PanelItem}" />
 
-                <TextBlock Text="File Name" Style="{StaticResource TitleTextBlockStyle}" 
+                <TextBlock Text="{x:Bind Details.Name}" Style="{StaticResource TitleTextBlockStyle}" 
                            HorizontalAlignment="Center" 
                            Margin="0 6"
                            FontSize="25"/>
 
-                <TextBlock Text="File Name" Style="{StaticResource BodyTextBlockStyle}" 
+                <TextBlock Text="{x:Bind Details.TitleInfo}" Style="{StaticResource BodyTextBlockStyle}" 
                            HorizontalAlignment="Center" 
                            Margin="0 6"/>
 
                 <StackPanel Style="{StaticResource PanelItem}" HorizontalAlignment="Stretch">
                     <TextBlock Style="{StaticResource BodyTextBlockStyle}"> Modification date</TextBlock>
-                    <TextBlock Text="02.05.2023" Style="{StaticResource BodyTextBlockStyle}"  />
+                    <TextBlock Text="{x:Bind Details.ModifiedDate}" Style="{StaticResource BodyTextBlockStyle}"  />
                 </StackPanel>
 
                 <StackPanel Style="{StaticResource PanelItem}" HorizontalAlignment="Stretch">
                     <TextBlock Style="{StaticResource BodyTextBlockStyle}"> Creation date</TextBlock>
-                    <TextBlock Text="02.05.2023" Style="{StaticResource BodyTextBlockStyle}"  />
+                    <TextBlock Text="{x:Bind Details.CreationTime}" Style="{StaticResource BodyTextBlockStyle}"  />
                 </StackPanel>
 
                 <StackPanel Style="{StaticResource PanelItem}" HorizontalAlignment="Stretch">
                     <TextBlock Style="{StaticResource BodyTextBlockStyle}"> Full path</TextBlock>
-                    <TextBlock Text="D:\Files" Style="{StaticResource BodyTextBlockStyle}"  />
+                    <TextBlock Text="{x:Bind Details.FullPath}" Style="{StaticResource BodyTextBlockStyle}"  />
                 </StackPanel>
 
             </StackPanel>
         </ScrollViewer>
 
-        <Button Grid.Row="2" Style="{StaticResource PanelItem}" FontSize="16" HorizontalAlignment="Left" Padding="12 7">Open</Button>
+        <Button Grid.Row="1" Style="{StaticResource PanelItem}" FontSize="16" HorizontalAlignment="Left" Padding="12 7">Open</Button>
     </Grid>
 </UserControl>

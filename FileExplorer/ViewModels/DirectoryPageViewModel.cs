@@ -26,6 +26,9 @@ namespace FileExplorer.ViewModels
         private readonly IPicturesService iconService;
 
         [ObservableProperty]
+        private FileInfoModel selectedFileDetails = new();
+
+        [ObservableProperty]
         private StorageFolder currentDirectory;
 
         [ObservableProperty]
@@ -72,6 +75,7 @@ namespace FileExplorer.ViewModels
             CopySelectedItemsCommand.NotifyCanExecuteChanged();
             CutSelectedItemsCommand.NotifyCanExecuteChanged();
             RecycleSelectedItemsCommand.NotifyCanExecuteChanged();
+            ShowDetailsOfSelectedItemCommand.NotifyCanExecuteChanged();
         }
 
         /// <summary>
@@ -80,7 +84,7 @@ namespace FileExplorer.ViewModels
         /// </summary>
         private async Task InitializeDirectoryAsync()
         {
-            DirectoryItems = new ObservableCollection<DirectoryItemModel>();
+            DirectoryItems = [];
 
             var directoryContent = await CurrentDirectory.GetItemsAsync();
             await AddDirectoryItemsAsync(directoryContent);
@@ -101,6 +105,20 @@ namespace FileExplorer.ViewModels
 
             DirectoryItems.AddRange(models);
         }
+
+        /// <summary>
+        /// Changes current directory and initializes its items
+        /// </summary>
+        /// <param name="directory"> Given directory that is opened </param>
+        private async Task MoveToDirectoryAsync(StorageFolder directory)
+        {
+            CurrentDirectory = directory;
+            _manager.CurrentDirectory = CurrentDirectory;
+            await InitializeDirectoryAsync();
+            Messenger.Send(directory);
+        }
+
+        #region Open logic
 
         private async Task OpenStorageItem(IStorageItem item)
         {
@@ -131,18 +149,7 @@ namespace FileExplorer.ViewModels
             await OpenStorageItem(item.FullInfo);
         }
 
-        /// <summary>
-        /// Changes current directory and initializes its items
-        /// </summary>
-        /// <param name="directory"> Given directory that is opened </param>
-        private async Task MoveToDirectoryAsync(StorageFolder directory)
-        {
-            CurrentDirectory = directory;
-            _manager.CurrentDirectory = CurrentDirectory;
-            await InitializeDirectoryAsync();
-            Messenger.Send(directory);
-        }
-
+        #endregion
 
         #region Creating logic
 
@@ -325,6 +332,18 @@ namespace FileExplorer.ViewModels
         }
 
         #endregion
+
+        [RelayCommand(CanExecute = nameof(HasSelectedItems))]
+        private async Task ShowDetailsOfSelectedItem()
+        {
+            await ShowDetails(SelectedItems[0]);
+        }
+
+        private async Task ShowDetails(DirectoryItemModel item)
+        {
+            await SelectedFileDetails.InitializeAsync(item);
+            OnPropertyChanged(nameof(SelectedFileDetails));
+        }
 
         public async void OnNavigatedTo(object parameter)
         {

@@ -159,6 +159,7 @@
                 </DropDownButton>
                 <Button 
                     Style="{StaticResource MenuButton}" 
+                    Command="{x:Bind ViewModel.ShowDetailsOfSelectedItemCommand}"
                     ToolTipService.ToolTip="File Details"
                     ToolTipService.Placement="Bottom">
                     <StackPanel Orientation="Horizontal">
@@ -183,8 +184,11 @@
                     <behaviors:MultiSelectionBehavior SelectedItems="{x:Bind ViewModel.SelectedItems, Mode=OneWay}" />
                 </interactivity:Interaction.Behaviors>
             </controls:AdaptiveGridView>
-            <Rectangle Visibility="Collapsed" Grid.Column="1" Width="300"/>
-            <userControls:FileDetails Grid.Column="1" />
+            <userControls:FileDetails Grid.Column="1" Details="{x:Bind ViewModel.SelectedFileDetails}">
+                <interactivity:Interaction.Behaviors>
+                    <behaviors:FileDetailsBehavior Details="{x:Bind ViewModel.SelectedFileDetails, Mode=OneWay}" />
+                </interactivity:Interaction.Behaviors>
+            </userControls:FileDetails>
         </Grid>
 
         <InfoBar Grid.Row="1"
