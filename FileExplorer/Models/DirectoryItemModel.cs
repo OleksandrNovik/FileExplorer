@@ -1,6 +1,6 @@
 ﻿#nullable enable
 using CommunityToolkit.Mvvm.ComponentModel;
-using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using System.ComponentModel;
 using Windows.Storage;
 
@@ -12,7 +12,9 @@ namespace FileExplorer.Models
 
         [ObservableProperty]
         private string name;
-        public string FullPath => FullInfo.Path;
+
+        public string FullPath { get; private set; }
+        public bool IsFile { get; }
 
         [ObservableProperty]
         private IStorageItem fullInfo;
@@ -20,7 +22,8 @@ namespace FileExplorer.Models
         [ObservableProperty]
         private bool isRenamed;
 
-        public ImageSource Thumbnail { get; set; }
+        [ObservableProperty]
+        private BitmapImage thumbnail = new();
 
         /// <summary>
         /// Constructor for an existing item in directory
@@ -32,6 +35,14 @@ namespace FileExplorer.Models
             name = info.Name;
             FullInfo = info;
             IsRenamed = false;
+            FullPath = info.Path;
+        }
+
+        public DirectoryItemModel(string path, string name, bool isFile)
+        {
+            Name = name;
+            FullPath = path;
+            IsFile = isFile;
         }
 
         public void BeginEdit()

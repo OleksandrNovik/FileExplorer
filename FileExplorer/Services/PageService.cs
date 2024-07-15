@@ -1,4 +1,5 @@
 ﻿using FileExplorer.Contracts;
+using FileExplorer.Helpers;
 using FileExplorer.Models;
 using FileExplorer.Views;
 using System;
@@ -8,7 +9,8 @@ namespace FileExplorer.Services
 {
     public class PageService : IPageService
     {
-        private static readonly StorageFolder DefaultDirectory = KnownFolders.DocumentsLibrary;
+        private static readonly StorageFolder DefaultDirectory
+            = KnownFoldersHelper.SpecialFolders[KnownFolders.DocumentsLibrary.DisplayName];
 
         public TabModel CreateTabFromDirectory(StorageFolder dir)
         {

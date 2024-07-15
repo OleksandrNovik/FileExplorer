@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml.Media;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.UI.Xaml.Media;
 using System;
 using System.IO;
 using System.Linq;
@@ -7,7 +8,7 @@ using Windows.Storage;
 
 namespace FileExplorer.Models
 {
-    public class FileInfoModel
+    public class FileInfoModel : ObservableObject
     {
         public DateTimeOffset ModifiedDate { get; set; }
         public DateTimeOffset CreationTime { get; set; }
@@ -15,32 +16,37 @@ namespace FileExplorer.Models
         public string Name { get; set; }
         public string TitleInfo { get; set; }
         public ImageSource Thumbnail { get; set; }
-        public bool IsShown { get; set; }
 
-        public async Task InitializeAsync(DirectoryItemModel directoryItem)
+        public static async Task<FileInfoModel> InitializeAsync(DirectoryItemModel directoryItem)
         {
-            ModifiedDate = directoryItem.FullInfo.DateCreated;
-            FullPath = directoryItem.FullInfo.Path;
-            Thumbnail = directoryItem.Thumbnail;
+            var model = new FileInfoModel
+            {
+                ModifiedDate = directoryItem.FullInfo.DateCreated,
+                FullPath = directoryItem.FullInfo.Path,
+                Thumbnail = directoryItem.Thumbnail
+            };
 
             var properties = await directoryItem.FullInfo.GetBasicPropertiesAsync();
-            ModifiedDate = properties.DateModified;
+            model.ModifiedDate = properties.DateModified;
 
             var storageItemProps = directoryItem.FullInfo as IStorageItemProperties;
             ArgumentNullException.ThrowIfNull(storageItemProps);
 
-            Name = storageItemProps.DisplayName;
+            model.Name = storageItemProps.DisplayName;
 
             if (directoryItem.FullInfo is StorageFile file)
             {
-                TitleInfo = $"{file.FileType} {file.DisplayType}";
+                model.TitleInfo = $"{file.FileType} {file.DisplayType}";
             }
             else
             {
-                TitleInfo = $"Items: {Directory.EnumerateFileSystemEntries(FullPath).Count()}";
+                var fileCount = Directory.EnumerateFiles(model.FullPath, "*", SearchOption.AllDirectories)
+                                         .Count();
+                var folderCount = Directory.EnumerateDirectories(model.FullPath, "*", SearchOption.AllDirectories)
+                                           .Count();
+                model.TitleInfo = $"Files: {fileCount}, Folders: {folderCount}";
             }
-
-            IsShown = true;
+            return model;
         }
     }
 }

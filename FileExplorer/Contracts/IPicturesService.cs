@@ -7,5 +7,8 @@ namespace FileExplorer.Contracts
     public interface IPicturesService
     {
         public Task<BitmapImage> IconToImageAsync(IStorageItem item);
+
+        public Task<BitmapImage> IconToImageAsync(string path, bool isFile);
+
     }
 }

@@ -20,7 +20,7 @@
     <Page.Resources>
         <DataTemplate x:Key="GridItemTemplate" x:DataType="models:DirectoryItemModel">
             <StackPanel  Padding="10  20 10 10">
-                <Image Source="{x:Bind Thumbnail}" Height="95"  />
+                <Image Source="{x:Bind Thumbnail, Mode=OneWay}" Height="95"  />
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="30" />
@@ -184,11 +184,58 @@
                     <behaviors:MultiSelectionBehavior SelectedItems="{x:Bind ViewModel.SelectedItems, Mode=OneWay}" />
                 </interactivity:Interaction.Behaviors>
             </controls:AdaptiveGridView>
-            <userControls:FileDetails Grid.Column="1" Details="{x:Bind ViewModel.SelectedFileDetails}">
-                <interactivity:Interaction.Behaviors>
-                    <behaviors:FileDetailsBehavior Details="{x:Bind ViewModel.SelectedFileDetails, Mode=OneWay}" />
-                </interactivity:Interaction.Behaviors>
-            </userControls:FileDetails>
+            
+            <Grid Width="280" Column="1" Visibility="{x:Bind ViewModel.IsDetailsShown, Mode=OneWay, 
+                Converter={StaticResource BoolToVisibilityConverter}}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="60" />
+                </Grid.RowDefinitions>
+                <Grid.Resources>
+                    <Style TargetType="FrameworkElement" x:Key="PanelItem">
+                        <Setter Property="HorizontalAlignment" Value="Center" />
+                        <Setter Property="Margin" Value="0 6" />
+                    </Style>
+                </Grid.Resources>
+
+                <Button HorizontalAlignment="Right" VerticalAlignment="Top">
+                    <FontIcon FontSize="12" Glyph="&#xE8BB;" />
+                </Button>
+
+                <ScrollViewer Grid.Row="0">
+                    <StackPanel Padding="10 5">
+
+                        <Image Source="../../Resources/Folder.png" Height="100" Style="{StaticResource PanelItem}" />
+
+                        <TextBlock Text="{x:Bind ViewModel.SelectedFileDetails.Name, Mode=OneWay}" Style="{StaticResource TitleTextBlockStyle}" 
+                           HorizontalAlignment="Center" 
+                           Margin="0 6"
+                           FontSize="25"/>
+
+                        <TextBlock Text="{x:Bind ViewModel.SelectedFileDetails.TitleInfo, Mode=OneWay}" Style="{StaticResource BodyTextBlockStyle}" 
+                           HorizontalAlignment="Center" 
+                           Margin="0 6"/>
+
+                        <StackPanel Style="{StaticResource PanelItem}" HorizontalAlignment="Stretch">
+                            <TextBlock Style="{StaticResource BodyTextBlockStyle}"> Modification date</TextBlock>
+                            <TextBlock Text="{x:Bind ViewModel.SelectedFileDetails.ModifiedDate, Mode=OneWay}" Style="{StaticResource BodyTextBlockStyle}"  />
+                        </StackPanel>
+
+                        <StackPanel Style="{StaticResource PanelItem}" HorizontalAlignment="Stretch">
+                            <TextBlock Style="{StaticResource BodyTextBlockStyle}"> Creation date</TextBlock>
+                            <TextBlock Text="{x:Bind ViewModel.SelectedFileDetails.CreationTime, Mode=OneWay}" Style="{StaticResource BodyTextBlockStyle}"  />
+                        </StackPanel>
+
+                        <StackPanel Style="{StaticResource PanelItem}" HorizontalAlignment="Stretch">
+                            <TextBlock Style="{StaticResource BodyTextBlockStyle}"> Full path</TextBlock>
+                            <TextBlock Text="{x:Bind ViewModel.SelectedFileDetails.FullPath, Mode=OneWay}" Style="{StaticResource BodyTextBlockStyle}"  />
+                        </StackPanel>
+
+                    </StackPanel>
+                </ScrollViewer>
+
+                <Button Grid.Row="1" Style="{StaticResource PanelItem}" FontSize="16" HorizontalAlignment="Left" Padding="12 7">Open</Button>
+            </Grid>
         </Grid>
 
         <InfoBar Grid.Row="1"

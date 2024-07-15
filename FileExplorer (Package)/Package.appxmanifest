@@ -54,5 +54,6 @@
     <uap:Capability Name="videosLibrary"/>
     <uap:Capability Name="removableStorage"/>
     <uap:Capability Name="picturesLibrary"/>
+    <uap:Capability Name="documentsLibrary"/>
   </Capabilities>
 </Package>

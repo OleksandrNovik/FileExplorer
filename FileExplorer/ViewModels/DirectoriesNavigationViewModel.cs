@@ -114,20 +114,7 @@ namespace FileExplorer.ViewModels
             _navigation.GoBack(navigationModel);
             var folder = await _router.UseNavigationRouteAsync(CurrentDirectory.FullPath);
             SendNavigationMessage(folder);
-
-            // If we can go up directory but did not document it in the application
-            // This condition will be false. So we'll just navigate to a parent folder while it is possible
-            if (RouteItems.Count > 0)
-            {
-                RouteItems.RemoveAt(RouteItems.Count - 1);
-            }
-
-            // If there is no route items documented, and we still can navigate to a parent route
-            // Will add parent's name as route item to display current location on UI
-            if (RouteItems.Count == 0)
-            {
-                RouteItems.Add(folder.DisplayName);
-            }
+            RouteItems.RemoveAt(RouteItems.Count - 1);
         }
 
         private bool CanNavigateUp() => CurrentDirectory?.ParentPath != null;

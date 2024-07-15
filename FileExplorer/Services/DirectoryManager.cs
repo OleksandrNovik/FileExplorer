@@ -33,8 +33,6 @@ namespace FileExplorer.Services
 
         public async Task RenameAsync(DirectoryItemModel item)
         {
-            ArgumentNullException.ThrowIfNull(item.FullInfo);
-
             await item.FullInfo.RenameAsync(item.Name, NameCollisionOption.GenerateUniqueName);
 
             item.Name = item.FullInfo.Name;
@@ -74,16 +72,9 @@ namespace FileExplorer.Services
             return copiedItems;
         }
 
-        private async Task DeleteItemAsync(DirectoryItemModel item, StorageDeleteOption deleteOption = StorageDeleteOption.Default)
-        {
-            ArgumentNullException.ThrowIfNull(item.FullInfo);
-
-            await item.FullInfo.DeleteAsync(deleteOption);
-        }
-
-        public async Task MoveToRecycleBinAsync(DirectoryItemModel item) => await DeleteItemAsync(item);
+        public async Task MoveToRecycleBinAsync(DirectoryItemModel item) => await item.FullInfo.DeleteAsync(StorageDeleteOption.Default);
 
         public async Task DeleteAsync(DirectoryItemModel item) =>
-            await DeleteItemAsync(item, StorageDeleteOption.PermanentDelete);
+            await item.FullInfo.DeleteAsync(StorageDeleteOption.PermanentDelete);
     }
 }

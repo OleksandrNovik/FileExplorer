@@ -17,6 +17,7 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 using Windows.System;
 using DirectoryItemModel = FileExplorer.Models.DirectoryItemModel;
+using FileAttributes = System.IO.FileAttributes;
 
 namespace FileExplorer.ViewModels
 {
@@ -26,7 +27,10 @@ namespace FileExplorer.ViewModels
         private readonly IPicturesService iconService;
 
         [ObservableProperty]
-        private FileInfoModel selectedFileDetails = new();
+        private FileInfoModel selectedFileDetails;
+
+        [ObservableProperty]
+        private bool isDetailsShown;
 
         [ObservableProperty]
         private StorageFolder currentDirectory;
@@ -84,10 +88,17 @@ namespace FileExplorer.ViewModels
         /// </summary>
         private async Task InitializeDirectoryAsync()
         {
-            DirectoryItems = [];
+            var dir = new DirectoryInfo(CurrentDirectory.Path);
+            var dirItems = dir.EnumerateFileSystemInfos().Where(f => (f.Attributes & FileAttributes.Hidden) == 0);
+            DirectoryItems = new ObservableCollection<DirectoryItemModel>(dirItems.Select(i => new DirectoryItemModel(i.FullName, i.Name, i is FileInfo)));
 
-            var directoryContent = await CurrentDirectory.GetItemsAsync();
-            await AddDirectoryItemsAsync(directoryContent);
+            //var directoryContent = await CurrentDirectory.GetItemsAsync();
+            //await AddDirectoryItemsAsync(directoryContent);
+
+            foreach (var model in DirectoryItems)
+            {
+                model.Thumbnail = await iconService.IconToImageAsync(model.FullPath, model.IsFile);
+            }
 
             SelectedItems.Clear();
         }
@@ -98,12 +109,12 @@ namespace FileExplorer.ViewModels
                                                 .Select(folderItem => new DirectoryItemModel(folderItem))
                                                 .ToArray();
 
+            DirectoryItems.AddRange(models);
+
             foreach (var model in models)
             {
                 model.Thumbnail = await iconService.IconToImageAsync(model.FullInfo);
             }
-
-            DirectoryItems.AddRange(models);
         }
 
         /// <summary>
@@ -341,8 +352,8 @@ namespace FileExplorer.ViewModels
 
         private async Task ShowDetails(DirectoryItemModel item)
         {
-            await SelectedFileDetails.InitializeAsync(item);
-            OnPropertyChanged(nameof(SelectedFileDetails));
+            SelectedFileDetails = await FileInfoModel.InitializeAsync(item);
+            IsDetailsShown = true;
         }
 
         public async void OnNavigatedTo(object parameter)

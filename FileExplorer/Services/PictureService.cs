@@ -23,5 +23,20 @@ namespace FileExplorer.Services
             return imgIcon;
         }
 
+        public async Task<BitmapImage> IconToImageAsync(string path, bool isFile)
+        {
+            IStorageItem item;
+
+            if (isFile)
+            {
+                item = await StorageFile.GetFileFromPathAsync(path);
+            }
+            else
+            {
+                item = await StorageFolder.GetFolderFromPathAsync(path);
+            }
+
+            return await IconToImageAsync(item);
+        }
     }
 }
