@@ -9,10 +9,10 @@ namespace FileExplorer.Contracts
     public interface IDirectoryManager
     {
 
-        public StorageFolder CurrentDirectory { get; set; }
+        public StorageFolder CurrentFolder { get; set; }
 
         /// <summary>
-        /// Creates new item in <see cref="CurrentDirectory"/> asynchronely
+        /// Creates new item in <see cref="CurrentFolder"/> asynchronely
         /// </summary>
         /// <param name="isFile"> Is created item file or a folder </param>
         /// <returns> Corresponding wrapper element for a physical file/folder that was created </returns>

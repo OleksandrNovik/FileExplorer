@@ -93,7 +93,7 @@ namespace FileExplorer.ViewModels
 
             DirectoryItems = new ObservableCollection<DirectoryItemModel>(dirItems.Select(i => new DirectoryItemModel(i.FullName, i.Name, i is FileInfo)));
 
-            //var directoryContent = await CurrentDirectory.GetItemsAsync();
+            //var directoryContent = await CurrentFolder.GetItemsAsync();
             //await AddDirectoryItemsAsync(directoryContent);
 
             foreach (var model in DirectoryItems)
@@ -125,7 +125,7 @@ namespace FileExplorer.ViewModels
         private async Task MoveToDirectoryAsync(StorageFolder directory)
         {
             CurrentDirectory = directory;
-            _manager.CurrentDirectory = CurrentDirectory;
+            _manager.CurrentFolder = CurrentDirectory;
             await InitializeDirectoryAsync();
             Messenger.Send(directory);
         }

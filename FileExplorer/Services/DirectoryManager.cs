@@ -3,7 +3,6 @@ using FileExplorer.Helpers;
 using FileExplorer.Models;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
@@ -13,7 +12,9 @@ namespace FileExplorer.Services
 {
     public class DirectoryManager : IDirectoryManager
     {
-        public StorageFolder CurrentDirectory { get; set; }
+        public StorageFolder CurrentFolder { get; set; }
+
+        public DirectoryWrapper CurrentDirectory { get; set; }
 
         public async Task<DirectoryItemModel> CreateAsync(bool isFile)
         {
@@ -21,32 +22,20 @@ namespace FileExplorer.Services
 
             if (isFile)
             {
-                item = await CurrentDirectory.CreateFileAsync("New File",
+                item = await CurrentFolder.CreateFileAsync("New File",
                     CreationCollisionOption.GenerateUniqueName);
             }
             else
             {
-                item = await CurrentDirectory.CreateFolderAsync("New Folder",
+                item = await CurrentFolder.CreateFolderAsync("New Folder",
                     CreationCollisionOption.GenerateUniqueName);
             }
             return new DirectoryItemModel(item);
         }
 
-        public DirectoryItemModel Create(bool isFile)
+        public void CreatePhysical(DirectoryItemWrapper wrapper)
         {
-            string name;
-
-            if (isFile)
-            {
-                name = "New File";
-                using (File.Create(CurrentDirectory + name)) { }
-            }
-            else
-            {
-                name = "New Folder";
-                Directory.CreateDirectory(CurrentDirectory + name);
-            }
-            return new DirectoryItemModel(CurrentDirectory + name, name, isFile);
+            wrapper.CreatePhysical(CurrentDirectory.Path);
         }
 
         public async Task RenameAsync(DirectoryItemModel item)
@@ -56,22 +45,9 @@ namespace FileExplorer.Services
             item.Name = item.FullInfo.Name;
         }
 
-        public void Rename(DirectoryItemModel item)
+        public void Rename(DirectoryItemWrapper item)
         {
-            var uniqueName = $"{item.Name}(1)";
-            var newName = $"{CurrentDirectory.Path}{uniqueName}";
-
-            if (item.IsFile)
-            {
-                File.Move(item.FullPath, newName);
-            }
-            else
-            {
-                Directory.Move(item.FullPath, newName);
-            }
-
-            //item.FullPath = newName;
-            item.Name = uniqueName;
+            item.Move(CurrentDirectory.Path);
         }
 
         public void CopyToClipboard(IEnumerable<DirectoryItemModel> items, DataPackageOperation operation)
@@ -95,7 +71,7 @@ namespace FileExplorer.Services
             }
 
             var copiedItems = (await clipboardContent.GetStorageItemsAsync()).ToArray();
-            await copiedItems.CopyRangeAsync(CurrentDirectory);
+            await copiedItems.CopyRangeAsync(CurrentFolder);
 
             if ((clipboardContent.RequestedOperation & DataPackageOperation.Move) != 0)
             {
@@ -113,16 +89,6 @@ namespace FileExplorer.Services
         public async Task DeleteAsync(DirectoryItemModel item) =>
             await item.FullInfo.DeleteAsync(StorageDeleteOption.PermanentDelete);
 
-        public void Delete(DirectoryItemModel item)
-        {
-            if (item.IsFile)
-            {
-                File.Delete(item.FullPath);
-            }
-            else
-            {
-                Directory.Delete(item.FullPath, true);
-            }
-        }
+        public void Delete(DirectoryItemWrapper item) => item.Delete();
     }
 }

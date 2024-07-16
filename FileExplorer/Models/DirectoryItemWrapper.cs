@@ -5,7 +5,7 @@ using System.IO;
 
 namespace FileExplorer.Models
 {
-    public abstract partial class BasicExplorerItem : ObservableObject, IEditableObject
+    public abstract partial class DirectoryItemWrapper : ObservableObject, IEditableObject
     {
         private string backupName;
 
@@ -15,14 +15,15 @@ namespace FileExplorer.Models
         [ObservableProperty]
         private bool isRenamed;
 
-        private FileSystemInfo info;
+        protected FileSystemInfo info;
 
         [ObservableProperty]
         private BitmapImage thumbnail = new();
 
         public string Path => info.FullName;
 
-        protected BasicExplorerItem(FileSystemInfo info)
+        protected DirectoryItemWrapper() { }
+        protected DirectoryItemWrapper(FileSystemInfo info)
         {
             Name = info.Name;
             this.info = info;
@@ -44,6 +45,13 @@ namespace FileExplorer.Models
         /// Permanently deletes physical item 
         /// </summary>
         public abstract void Delete();
+
+        public abstract void CreatePhysical(string destination);
+
+        protected string GenerateUniqueName(string destination, string template)
+        {
+            return "";
+        }
 
         public void BeginEdit()
         {
