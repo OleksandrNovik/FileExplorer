@@ -18,7 +18,7 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Page.Resources>
-        <DataTemplate x:Key="GridItemTemplate" x:DataType="models:DirectoryItemModel">
+        <DataTemplate x:Key="GridItemTemplate" x:DataType="models:DirectoryItemWrapper">
             <StackPanel  Padding="10  20 10 10">
                 <Image Source="{x:Bind Thumbnail, Mode=OneWay}" Height="95"  />
                 <Grid>

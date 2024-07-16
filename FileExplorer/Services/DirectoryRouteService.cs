@@ -1,31 +1,26 @@
 ﻿using FileExplorer.Contracts;
-using FileExplorer.Helpers;
-using System;
+using FileExplorer.Models;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
-using Windows.Storage;
 
 namespace FileExplorer.Services
 {
     public class DirectoryRouteService : IDirectoryRouteService
     {
-        public bool IsSpecialRoute(string route) => KnownFoldersHelper.SpecialFolders.ContainsKey(route);
-
-        public async Task<StorageFolder> UseNavigationRouteAsync(string route)
+        public DirectoryItemWrapper UseNavigationRoute(string route)
         {
-            StorageFolder folder;
+            DirectoryItemWrapper wrapper;
 
-            if (IsSpecialRoute(route))
+            if (Path.HasExtension(route))
             {
-                folder = KnownFoldersHelper.SpecialFolders[route];
+                wrapper = new FileWrapper(route);
             }
             else
             {
-                folder = await StorageFolder.GetFolderFromPathAsync(route);
+                wrapper = new DirectoryWrapper(route);
             }
-            return folder;
+            return wrapper;
         }
 
         public string CreatePathFrom(IEnumerable<string> pathParts)

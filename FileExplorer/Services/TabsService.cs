@@ -4,7 +4,6 @@ using FileExplorer.Helpers;
 using FileExplorer.Models;
 using Microsoft.UI.Xaml.Controls;
 using System.Collections.ObjectModel;
-using Windows.Storage;
 
 namespace FileExplorer.Services
 {
@@ -12,8 +11,6 @@ namespace FileExplorer.Services
     {
         private readonly IPageService pageService;
         public ObservableCollection<TabModel> Tabs { get; } = new();
-
-
 
         private Frame? currentTab;
         public Frame? CurrentTab
@@ -43,7 +40,7 @@ namespace FileExplorer.Services
             this.pageService = pageService;
         }
 
-        public void CreateNewTab(StorageFolder? directory)
+        public void CreateNewTab(DirectoryWrapper? directory)
         {
             var newTab = pageService.CreateTabFromDirectory(directory);
             Tabs.Add(newTab);

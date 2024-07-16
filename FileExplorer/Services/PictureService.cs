@@ -1,4 +1,5 @@
 ﻿using FileExplorer.Contracts;
+using FileExplorer.Models;
 using Microsoft.UI.Xaml.Media.Imaging;
 using System;
 using System.Threading.Tasks;
@@ -19,20 +20,10 @@ namespace FileExplorer.Services
             return imgIcon;
         }
 
-        public async Task<BitmapImage> IconToImageAsync(string path, bool isFile)
+        public async Task<BitmapImage> GetThumbnailForItem(DirectoryItemWrapper item)
         {
-            IStorageItemProperties item;
-
-            if (isFile)
-            {
-                item = await StorageFile.GetFileFromPathAsync(path);
-            }
-            else
-            {
-                item = await StorageFolder.GetFolderFromPathAsync(path);
-            }
-
-            return await IconToImageAsync(item);
+            var itemProperties = await item.GetStorageItemPropertiesAsync();
+            return await IconToImageAsync(itemProperties);
         }
     }
 }

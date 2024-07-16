@@ -8,8 +8,8 @@ namespace FileExplorer.Contracts
 {
     public interface IDirectoryManager
     {
-
         public StorageFolder CurrentFolder { get; set; }
+        public DirectoryWrapper CurrentDirectory { get; set; }
 
         /// <summary>
         /// Creates new item in <see cref="CurrentFolder"/> asynchronely

@@ -6,7 +6,7 @@ namespace FileExplorer.Contracts
     public interface IHistoryNavigationService
     {
         public TabNavigationHistoryModel History { get; set; }
-        public DirectoryNavigationModel CurrentDirectory { get; set; }
+        public DirectoryNavigationInfo CurrentDirectory { get; set; }
         public bool CanGoForward { get; }
         public bool CanGoBack { get; }
 
@@ -15,14 +15,14 @@ namespace FileExplorer.Contracts
         /// Method saves previous location, so user can go back
         /// </summary>
         /// <param name="location"> New location we have navigated to </param>
-        public void GoForward(DirectoryNavigationModel location);
+        public void GoForward(DirectoryNavigationInfo location);
 
         /// <summary>
         /// Should be called when <see cref="DirectoryPageViewModel"/> navigates up directory
         /// Method sets new location as current directory and saves previous location, so we can always go forward to it
         /// </summary>
         /// <param name="location"></param>
-        public void GoBack(DirectoryNavigationModel location);
+        public void GoBack(DirectoryNavigationInfo location);
 
         /// <summary>
         /// Sets forward directory as current directory and saves previous location to be back

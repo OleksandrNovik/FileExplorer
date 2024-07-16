@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Windows.Storage;
+﻿using FileExplorer.Models;
+using System.Collections.Generic;
 
 namespace FileExplorer.Contracts
 {
@@ -20,9 +19,6 @@ namespace FileExplorer.Contracts
         /// <returns> Enumeration of path parts that can be used to display all folders </returns>
         public IEnumerable<string> ExtractRouteItems(string route);
 
-        public Task<StorageFolder> UseNavigationRouteAsync(string route);
-
-        public bool IsSpecialRoute(string route);
-
+        public DirectoryItemWrapper UseNavigationRoute(string route);
     }
 }

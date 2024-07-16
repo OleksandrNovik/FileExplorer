@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Frozen;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.Storage;
 
@@ -12,8 +10,6 @@ namespace FileExplorer.Helpers
         public static StorageFolder Pictures { get; }
         public static StorageFolder Music { get; }
         public static StorageFolder Videos { get; }
-
-        public static FrozenDictionary<string, StorageFolder> SpecialFolders { get; }
 
         static KnownFoldersHelper()
         {
@@ -28,19 +24,6 @@ namespace FileExplorer.Helpers
             Pictures = picturesLibrary.Result.SaveFolder;
             Music = musicLibrary.Result.SaveFolder;
             Videos = videosLibrary.Result.SaveFolder;
-
-            SpecialFolders = SpecialFolders = new Dictionary<string, StorageFolder>
-            {
-                { Documents.DisplayName, Documents },
-                { Pictures.DisplayName, Pictures },
-                { Music.DisplayName, Music },
-                { Videos.DisplayName, Videos },
-                { KnownFolders.CameraRoll.DisplayName, KnownFolders.CameraRoll },
-                { KnownFolders.Objects3D.DisplayName, KnownFolders.Objects3D },
-                { KnownFolders.Playlists.DisplayName, KnownFolders.Playlists },
-                { KnownFolders.RecordedCalls.DisplayName, KnownFolders.RecordedCalls },
-                { KnownFolders.SavedPictures.DisplayName, KnownFolders.SavedPictures },
-            }.ToFrozenDictionary();
         }
     }
 }

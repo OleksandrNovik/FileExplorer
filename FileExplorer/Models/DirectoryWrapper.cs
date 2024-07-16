@@ -12,7 +12,6 @@ namespace FileExplorer.Models
         public DirectoryWrapper() { }
         public DirectoryWrapper(DirectoryInfo info) : base(info) { }
         public DirectoryWrapper(string path) : base(new DirectoryInfo(path)) { }
-        public DirectoryWrapper(StorageFolder folder) : this(folder.Path) { }
 
         public IEnumerable<FileWrapper> EnumerateFiles(string pattern = "*", SearchOption option = SearchOption.TopDirectoryOnly)
         {
@@ -26,7 +25,7 @@ namespace FileExplorer.Models
 
         public IEnumerable<DirectoryItemWrapper> EnumerateItems(string pattern = "*", SearchOption option = SearchOption.TopDirectoryOnly)
         {
-            foreach (var itemPath in Directory.EnumerateFileSystemEntries(Path))
+            foreach (var itemPath in Directory.EnumerateFileSystemEntries(Path, pattern, option))
             {
                 if (File.Exists(itemPath))
                     yield return new FileWrapper(itemPath);
@@ -63,6 +62,11 @@ namespace FileExplorer.Models
             var uniqueName = GenerateUniqueName(destination, "New Folder");
             info = Directory.CreateDirectory(destination + uniqueName);
             Name = info.Name;
+        }
+
+        public override async Task<IStorageItemProperties> GetStorageItemPropertiesAsync()
+        {
+            return await AsStorageFolderAsync();
         }
 
         private async Task<StorageFolder> AsStorageFolderAsync()

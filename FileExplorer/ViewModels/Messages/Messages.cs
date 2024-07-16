@@ -3,10 +3,10 @@ using Windows.Storage;
 
 namespace FileExplorer.ViewModels.Messages
 {
-    public record NavigationRequiredMessage(StorageFolder NavigatedFolder);
+    public record NavigationRequiredMessage(DirectoryItemWrapper OpenedItem);
 
     public record FileOpenRequiredMessage(StorageFile OpenFile);
     public record NewTabOpened(
-        DirectoryNavigationModel TabDirectoryInfo,
+        DirectoryNavigationInfo TabDirectoryInfo,
         TabNavigationHistoryModel TabNavigationHistory);
 }

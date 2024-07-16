@@ -1,4 +1,5 @@
-﻿using FileExplorer.Contracts;
+﻿#nullable enable
+using FileExplorer.Contracts;
 using FileExplorer.Helpers;
 using FileExplorer.Models;
 using FileExplorer.Views;
@@ -9,27 +10,24 @@ namespace FileExplorer.Services
 {
     public class PageService : IPageService
     {
-        private static readonly StorageFolder DefaultDirectory
-            = KnownFoldersHelper.SpecialFolders[KnownFolders.DocumentsLibrary.DisplayName];
+        private static readonly StorageFolder DefaultDirectory = KnownFoldersHelper.Documents;
 
-        public TabModel CreateTabFromDirectory(StorageFolder dir)
+        public TabModel CreateTabFromDirectory(DirectoryWrapper? dir)
         {
             Type tabType;
-            StorageFolder tabDirectory;
 
             if (dir == null)
             {
                 //TODO: Open ThisPC instead
                 tabType = typeof(DirectoryPage);
-                tabDirectory = DefaultDirectory;
+                dir = new DirectoryWrapper(DefaultDirectory.Path);
             }
             else
             {
                 tabType = typeof(DirectoryPage);
-                tabDirectory = dir;
             }
 
-            return new TabModel(tabDirectory, tabType);
+            return new TabModel(dir, tabType);
         }
     }
 }

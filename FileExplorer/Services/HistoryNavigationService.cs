@@ -6,18 +6,18 @@ namespace FileExplorer.Services
     public class HistoryNavigationService : IHistoryNavigationService
     {
         public TabNavigationHistoryModel History { get; set; }
-        public DirectoryNavigationModel CurrentDirectory { get; set; }
+        public DirectoryNavigationInfo CurrentDirectory { get; set; }
 
         public bool CanGoForward => History != null && History.CanGoForward;
         public bool CanGoBack => History != null && History.CanGoBack;
 
-        public void GoForward(DirectoryNavigationModel location)
+        public void GoForward(DirectoryNavigationInfo location)
         {
             History.BackStack.Push(CurrentDirectory);
             CurrentDirectory = location;
         }
 
-        public void GoBack(DirectoryNavigationModel location)
+        public void GoBack(DirectoryNavigationInfo location)
         {
             History.ForwardStack.Push(CurrentDirectory);
             CurrentDirectory = location;

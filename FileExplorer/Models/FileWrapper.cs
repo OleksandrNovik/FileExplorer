@@ -1,7 +1,9 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.System;
 
 namespace FileExplorer.Models
 {
@@ -12,6 +14,12 @@ namespace FileExplorer.Models
         public FileWrapper(FileInfo info) : base(info) { }
 
         public FileWrapper(string path) : base(new FileInfo(path)) { }
+
+        public async Task LaunchAsync()
+        {
+            var storageFile = await AsStorageFileAsync();
+            await Launcher.LaunchFileAsync(storageFile);
+        }
 
         public override void Copy(string destination)
         {
@@ -48,6 +56,11 @@ namespace FileExplorer.Models
 
             info = new FileInfo(fullName);
             Name = info.Name;
+        }
+
+        public override async Task<IStorageItemProperties> GetStorageItemPropertiesAsync()
+        {
+            return await AsStorageFileAsync();
         }
 
         private async Task<StorageFile> AsStorageFileAsync()
