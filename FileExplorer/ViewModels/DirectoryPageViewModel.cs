@@ -90,6 +90,7 @@ namespace FileExplorer.ViewModels
         {
             var dir = new DirectoryInfo(CurrentDirectory.Path);
             var dirItems = dir.EnumerateFileSystemInfos().Where(f => (f.Attributes & FileAttributes.Hidden) == 0);
+
             DirectoryItems = new ObservableCollection<DirectoryItemModel>(dirItems.Select(i => new DirectoryItemModel(i.FullName, i.Name, i is FileInfo)));
 
             //var directoryContent = await CurrentDirectory.GetItemsAsync();
@@ -113,7 +114,7 @@ namespace FileExplorer.ViewModels
 
             foreach (var model in models)
             {
-                model.Thumbnail = await iconService.IconToImageAsync(model.FullInfo);
+                model.Thumbnail = await iconService.IconToImageAsync(model.FullInfo as IStorageItemProperties);
             }
         }
 

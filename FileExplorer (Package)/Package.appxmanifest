@@ -11,7 +11,7 @@
   <Identity
     Name="73d651c4-a5e1-4154-8cd4-19c59b5dd17a"
     Publisher="CN=HP"
-    Version="1.0.0.0" />
+    Version="1.0.2.0" />
 
   <mp:PhoneIdentity PhoneProductId="73d651c4-a5e1-4154-8cd4-19c59b5dd17a" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
@@ -54,6 +54,5 @@
     <uap:Capability Name="videosLibrary"/>
     <uap:Capability Name="removableStorage"/>
     <uap:Capability Name="picturesLibrary"/>
-    <uap:Capability Name="documentsLibrary"/>
   </Capabilities>
 </Package>

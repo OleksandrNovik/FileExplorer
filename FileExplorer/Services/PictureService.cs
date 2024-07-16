@@ -9,15 +9,11 @@ namespace FileExplorer.Services
 {
     public class PictureService : IPicturesService
     {
-        public async Task<BitmapImage> IconToImageAsync(IStorageItem item)
+        public async Task<BitmapImage> IconToImageAsync(IStorageItemProperties item)
         {
             var imgIcon = new BitmapImage();
 
-            var storageItemProperties = item as IStorageItemProperties;
-
-            ArgumentNullException.ThrowIfNull(storageItemProperties);
-
-            var thumbnail = await storageItemProperties.GetThumbnailAsync(ThumbnailMode.ListView, 95);
+            var thumbnail = await item.GetThumbnailAsync(ThumbnailMode.ListView, 95);
             imgIcon.SetSource(thumbnail);
 
             return imgIcon;
@@ -25,7 +21,7 @@ namespace FileExplorer.Services
 
         public async Task<BitmapImage> IconToImageAsync(string path, bool isFile)
         {
-            IStorageItem item;
+            IStorageItemProperties item;
 
             if (isFile)
             {
