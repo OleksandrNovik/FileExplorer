@@ -53,9 +53,10 @@ namespace FileExplorer.Models
             InitializeData();
         }
 
-        public override void Recycle()
+        public override async Task RecycleAsync()
         {
-            throw new NotImplementedException();
+            var storageFolder = await AsStorageFolderAsync();
+            await storageFolder.DeleteAsync(StorageDeleteOption.Default);
         }
 
         public override void Delete()
@@ -75,6 +76,8 @@ namespace FileExplorer.Models
         {
             return await AsStorageFolderAsync();
         }
+
+        public override DirectoryWrapper GetCurrentDirectory() => this;
 
         private async Task<StorageFolder> AsStorageFolderAsync()
         {

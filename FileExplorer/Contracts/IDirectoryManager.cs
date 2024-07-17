@@ -8,7 +8,6 @@ namespace FileExplorer.Contracts
 {
     public interface IDirectoryManager
     {
-        public StorageFolder CurrentFolder { get; set; }
         public DirectoryWrapper CurrentDirectory { get; set; }
 
         public void CreatePhysical(DirectoryItemWrapper wrapper);
@@ -23,12 +22,9 @@ namespace FileExplorer.Contracts
         /// Deletes item with ability to restore it from recycle bin
         /// </summary>
         /// <param name="item"> Item that being moved to a recycle bin </param>
-        public Task MoveToRecycleBinAsync(DirectoryItemModel item);
+        public Task MoveToRecycleBinAsync(DirectoryItemWrapper item);
 
-        /// <summary>
-        /// Permanently deletes item
-        /// </summary>
-        /// <param name="item"> Item that being deleted permanently </param>
-        public Task DeleteAsync(DirectoryItemModel item);
+        public void Delete(DirectoryItemWrapper item);
+
     }
 }

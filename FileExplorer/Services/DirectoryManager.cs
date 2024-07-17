@@ -60,11 +60,15 @@ namespace FileExplorer.Services
             return copiedItems;
         }
 
-        public async Task MoveToRecycleBinAsync(DirectoryItemModel item) => await item.FullInfo.DeleteAsync(StorageDeleteOption.Default);
+        public async Task MoveToRecycleBinAsync(DirectoryItemWrapper item)
+        {
+            await item.RecycleAsync();
+        }
 
-        public async Task DeleteAsync(DirectoryItemModel item) =>
-            await item.FullInfo.DeleteAsync(StorageDeleteOption.PermanentDelete);
 
-        public void Delete(DirectoryItemWrapper item) => item.Delete();
+        public void Delete(DirectoryItemWrapper item)
+        {
+            item.Delete();
+        }
     }
 }

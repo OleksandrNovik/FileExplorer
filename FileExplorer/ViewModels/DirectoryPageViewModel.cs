@@ -47,6 +47,12 @@ namespace FileExplorer.ViewModels
             SelectedItems.CollectionChanged += NotifyCommandsCanExecute;
 
             Messenger.Register<DirectoryPageViewModel, NavigationRequiredMessage>(this, HandleNavigationMessage);
+            Messenger.Register<DirectoryPageViewModel, FileOpenRequiredMessage>(this, HandlerFileOpen);
+        }
+
+        private async void HandlerFileOpen(DirectoryPageViewModel recipient, FileOpenRequiredMessage message)
+        {
+            await message.OpenFile.LaunchAsync();
         }
 
 
@@ -58,7 +64,7 @@ namespace FileExplorer.ViewModels
         /// <param name="massage"> Navigation message that contains new path </param>
         private async void HandleNavigationMessage(DirectoryPageViewModel receiver, NavigationRequiredMessage massage)
         {
-            await Open(massage.OpenedItem);
+            await MoveToDirectoryAsync(massage.NavigatedDirectory);
         }
 
         /// <summary>
@@ -119,16 +125,19 @@ namespace FileExplorer.ViewModels
         {
             await EndRenamingIfNeeded(item);
 
-            if (item is FileWrapper fileWrapper)
+            switch (item)
             {
-                await fileWrapper.LaunchAsync();
+                case FileWrapper fileWrapper:
+                    await fileWrapper.LaunchAsync();
+                    break;
+                case DirectoryWrapper directoryWrapper:
+                    await MoveToDirectoryAsync(directoryWrapper);
+                    var navigationModel = new DirectoryNavigationInfo(directoryWrapper);
+                    Messenger.Send(navigationModel);
+                    break;
+                default:
+                    throw new ArgumentException("Cannot open provided item. It is not a directory or file.", nameof(item));
             }
-            else if (item is DirectoryWrapper directoryWrapper)
-            {
-                await MoveToDirectoryAsync(directoryWrapper);
-            }
-            else
-                throw new ArgumentException("Cannot open provided item. It is not a directory or file.", nameof(item));
         }
 
         #endregion
@@ -227,10 +236,10 @@ namespace FileExplorer.ViewModels
         [RelayCommand(CanExecute = nameof(HasSelectedItems))]
         private async Task RecycleSelectedItems()
         {
-            //while (SelectedItems.Count > 0)
-            //{
-            //    await TryDeleteItem(SelectedItems[0]);
-            //}
+            while (SelectedItems.Count > 0)
+            {
+                await TryDeleteItem(SelectedItems[0]);
+            }
         }
 
         /// <summary>
@@ -245,10 +254,10 @@ namespace FileExplorer.ViewModels
 
             if (result == ContentDialogResult.Secondary) return;
 
-            //while (SelectedItems.Count > 0)
-            //{
-            //    await TryDeleteItem(SelectedItems[0], true);
-            //}
+            while (SelectedItems.Count > 0)
+            {
+                await TryDeleteItem(SelectedItems[0], true);
+            }
         }
 
         /// <summary>
@@ -260,16 +269,17 @@ namespace FileExplorer.ViewModels
         private async Task TryDeleteItem(DirectoryItemWrapper item, bool isPermanent = false)
         {
             await EndRenamingIfNeeded(item);
+
             try
             {
-                //if (isPermanent)
-                //{
-                //    await _manager.DeleteAsync(item);
-                //}
-                //else
-                //{
-                //    await _manager.MoveToRecycleBinAsync(item);
-                //}
+                if (isPermanent)
+                {
+                    _manager.Delete(item);
+                }
+                else
+                {
+                    await _manager.MoveToRecycleBinAsync(item);
+                }
 
                 DirectoryItems.Remove(item);
             }

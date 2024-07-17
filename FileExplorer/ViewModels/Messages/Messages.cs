@@ -1,11 +1,10 @@
 ﻿using FileExplorer.Models;
-using Windows.Storage;
 
 namespace FileExplorer.ViewModels.Messages
 {
-    public record NavigationRequiredMessage(DirectoryItemWrapper OpenedItem);
+    public record NavigationRequiredMessage(DirectoryWrapper NavigatedDirectory);
 
-    public record FileOpenRequiredMessage(StorageFile OpenFile);
+    public record FileOpenRequiredMessage(FileWrapper OpenFile);
     public record NewTabOpened(
         DirectoryNavigationInfo TabDirectoryInfo,
         TabNavigationHistoryModel TabNavigationHistory);

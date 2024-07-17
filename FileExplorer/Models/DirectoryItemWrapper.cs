@@ -55,7 +55,7 @@ namespace FileExplorer.Models
         /// <summary>
         /// Moves physical item to a recycle bin
         /// </summary>
-        public abstract void Recycle();
+        public abstract Task RecycleAsync();
 
         /// <summary>
         /// Permanently deletes physical item 
@@ -73,6 +73,13 @@ namespace FileExplorer.Models
         /// </summary>
         /// <returns> <see cref="IStorageItemProperties"/> representation of item </returns>
         public abstract Task<IStorageItemProperties> GetStorageItemPropertiesAsync();
+
+        /// <summary>
+        /// Gets current directory for an item. If item is directory itself, returns item.
+        /// For a file gets parent directory
+        /// </summary>
+        /// <returns> this if item is <see cref="DirectoryWrapper"/> otherwise parent directory </returns>
+        public abstract DirectoryWrapper GetCurrentDirectory();
 
         /// <summary>
         /// Gets parent directory for an item
