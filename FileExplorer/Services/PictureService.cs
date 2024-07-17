@@ -10,7 +10,7 @@ namespace FileExplorer.Services
 {
     public class PictureService : IPicturesService
     {
-        public async Task<BitmapImage> IconToImageAsync(IStorageItemProperties item)
+        private async Task<BitmapImage> IconToImageAsync(IStorageItemProperties item)
         {
             var imgIcon = new BitmapImage();
 

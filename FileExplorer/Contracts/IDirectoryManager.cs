@@ -11,18 +11,9 @@ namespace FileExplorer.Contracts
         public StorageFolder CurrentFolder { get; set; }
         public DirectoryWrapper CurrentDirectory { get; set; }
 
-        /// <summary>
-        /// Creates new item in <see cref="CurrentFolder"/> asynchronely
-        /// </summary>
-        /// <param name="isFile"> Is created item file or a folder </param>
-        /// <returns> Corresponding wrapper element for a physical file/folder that was created </returns>
-        public Task<DirectoryItemModel> CreateAsync(bool isFile);
+        public void CreatePhysical(DirectoryItemWrapper wrapper);
 
-        /// <summary>
-        /// Renames item that is provided as argument (sets unique name if name is colliding with existing item) 
-        /// </summary>
-        /// <param name="item"> Item that is renamed </param>
-        public Task RenameAsync(DirectoryItemModel item);
+        public void Rename(DirectoryItemWrapper item);
 
         public void CopyToClipboard(IEnumerable<DirectoryItemModel> items, DataPackageOperation operation);
 

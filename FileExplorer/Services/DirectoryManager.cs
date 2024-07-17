@@ -16,33 +16,9 @@ namespace FileExplorer.Services
 
         public DirectoryWrapper CurrentDirectory { get; set; }
 
-        public async Task<DirectoryItemModel> CreateAsync(bool isFile)
-        {
-            IStorageItem item;
-
-            if (isFile)
-            {
-                item = await CurrentFolder.CreateFileAsync("New File",
-                    CreationCollisionOption.GenerateUniqueName);
-            }
-            else
-            {
-                item = await CurrentFolder.CreateFolderAsync("New Folder",
-                    CreationCollisionOption.GenerateUniqueName);
-            }
-            return new DirectoryItemModel(item);
-        }
-
         public void CreatePhysical(DirectoryItemWrapper wrapper)
         {
             wrapper.CreatePhysical(CurrentDirectory.Path);
-        }
-
-        public async Task RenameAsync(DirectoryItemModel item)
-        {
-            await item.FullInfo.RenameAsync(item.Name, NameCollisionOption.GenerateUniqueName);
-
-            item.Name = item.FullInfo.Name;
         }
 
         public void Rename(DirectoryItemWrapper item)

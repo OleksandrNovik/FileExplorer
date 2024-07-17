@@ -6,6 +6,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Windows.Storage;
 using FileAttributes = System.IO.FileAttributes;
+using IOPath = System.IO.Path;
 
 namespace FileExplorer.Models
 {
@@ -25,13 +26,19 @@ namespace FileExplorer.Models
         private BitmapImage thumbnail;
 
         public FileAttributes Attributes => info.Attributes;
-        public string Path => info.FullName;
+        public string Path { get; private set; }
 
         protected DirectoryItemWrapper() { }
         protected DirectoryItemWrapper(FileSystemInfo info)
         {
-            Name = info.Name;
             this.info = info;
+            InitializeData();
+        }
+
+        protected void InitializeData()
+        {
+            Name = info.Name;
+            Path = info.FullName;
         }
 
         /// <summary>
@@ -61,8 +68,16 @@ namespace FileExplorer.Models
         /// <param name="destination"> Path to the folder that item is created in </param>
         public abstract void CreatePhysical(string destination);
 
+        /// <summary>
+        /// Converts item for a <see cref="IStorageItemProperties"/> thumbnail
+        /// </summary>
+        /// <returns> <see cref="IStorageItemProperties"/> representation of item </returns>
         public abstract Task<IStorageItemProperties> GetStorageItemPropertiesAsync();
 
+        /// <summary>
+        /// Gets parent directory for an item
+        /// </summary>
+        /// <returns> If item is root directory returns null, otherwise returns parent directory for the item </returns>
         public DirectoryWrapper? GetParentDirectory()
         {
             var directoryInfo = Directory.GetParent(Path);
@@ -74,9 +89,30 @@ namespace FileExplorer.Models
             return wrapper;
         }
 
+        /// <summary>
+        /// Generates unique name for a current item to avoid collisions.
+        /// Method not only creates, but also can use item's current name if it is unique
+        /// </summary>
+        /// <param name="destination"> Path to a destination </param>
+        /// <param name="template"> Template for name </param>
+        /// <returns> Unique name for current item </returns>
         protected string GenerateUniqueName(string destination, string template)
         {
-            return "";
+            var itemsCounter = 1;
+            var nameWithoutExtension = IOPath.GetFileNameWithoutExtension(template);
+            var extension = IOPath.GetExtension(template);
+            var newName = template;
+
+            var currentPath = IOPath.Combine(destination, newName);
+
+            while (currentPath != Path && IOPath.Exists(currentPath))
+            {
+                itemsCounter++;
+                newName = $"{nameWithoutExtension} ({itemsCounter}){extension}";
+                currentPath = IOPath.Combine(destination, newName);
+            }
+
+            return newName;
         }
 
         public void BeginEdit()

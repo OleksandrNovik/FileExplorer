@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.System;
+using IOPath = System.IO.Path;
 
 namespace FileExplorer.Models
 {
@@ -27,14 +28,20 @@ namespace FileExplorer.Models
             var newName = $@"{destination}\{Name}";
             File.Copy(Path, newName);
             info = new FileInfo(newName);
+            InitializeData();
         }
 
         public override void Move(string destination)
         {
             Name = GenerateUniqueName(destination, Name);
-            var newName = $@"{destination}\{Name}";
-            File.Move(Path, newName);
-            info = new FileInfo(newName);
+            var newPath = IOPath.Combine(destination, Name);
+
+            // File is being moved to the same directory
+            if (newPath == Path) return;
+
+            File.Move(Path, newPath);
+            info = new FileInfo(newPath);
+            InitializeData();
         }
 
         public override void Recycle()
@@ -50,12 +57,12 @@ namespace FileExplorer.Models
         public override void CreatePhysical(string destination)
         {
             var uniqueName = GenerateUniqueName(destination, "New File");
-            var fullName = destination + uniqueName;
+            var fullName = IOPath.Combine(destination, uniqueName);
 
             using (File.Create(fullName)) { }
 
             info = new FileInfo(fullName);
-            Name = info.Name;
+            InitializeData();
         }
 
         public override async Task<IStorageItemProperties> GetStorageItemPropertiesAsync()

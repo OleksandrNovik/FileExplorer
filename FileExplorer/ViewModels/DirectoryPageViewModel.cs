@@ -136,19 +136,26 @@ namespace FileExplorer.ViewModels
         #region Creating logic
 
         [RelayCommand]
-        private async Task CreateFile() => await CreateItemAsync(true);
+        private async Task CreateFile()
+        {
+            var wrapper = new FileWrapper();
+            await CreateItemAsync(wrapper);
+        }
 
         [RelayCommand]
-        private async Task CreateDirectory() => await CreateItemAsync(false);
+        private async Task CreateDirectory()
+        {
+            var wrapper = new DirectoryWrapper();
+            await CreateItemAsync(wrapper);
+        }
 
         /// <summary>
         /// Uses manager to create new item in current directory
         /// </summary>
-        /// <param name="isFile"> Is item a file or a folder </param>
-        private async Task CreateItemAsync(bool isFile)
+        /// <param name="wrapper"> Wrapper that we are creating physical item for </param>
+        private async Task CreateItemAsync(DirectoryItemWrapper wrapper)
         {
-            DirectoryItemWrapper wrapper = isFile ? new FileWrapper() : new DirectoryWrapper();
-            //TOdo: Create
+            _manager.CreatePhysical(wrapper);
             wrapper.Thumbnail = await iconService.GetThumbnailForItem(wrapper);
             DirectoryItems.Insert(0, wrapper);
             RenameNewItem(wrapper);
@@ -176,14 +183,7 @@ namespace FileExplorer.ViewModels
         /// Ends renaming only when needed to prevent double renaming of item at the same time
         /// (Example: It can happen when user presses enter and renames file and after that lost focus event is called renaming same file again)
         /// </summary>
-        public AsyncRelayCommand<DirectoryItemWrapper> EndRenamingIfNeededCommand =>
-            new(async item =>
-            {
-                if (item.IsRenamed)
-                {
-                    await EndRenamingItem(item);
-                }
-            });
+        public AsyncRelayCommand<DirectoryItemWrapper> EndRenamingIfNeededCommand => new(EndRenamingIfNeeded!);
 
         /// <summary>
         /// Ends renaming item if it is actually possible
@@ -198,7 +198,7 @@ namespace FileExplorer.ViewModels
                 await App.MainWindow.ShowMessageDialogAsync("Item's name cannot be empty", "Empty name is illegal");
                 return;
             }
-            //TODO: Rename item
+            _manager.Rename(item);
             item.EndEdit();
 
             //TODO: New Sorting of items is required
