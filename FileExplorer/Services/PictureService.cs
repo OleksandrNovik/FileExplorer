@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using FileExplorer.Contracts;
+using FileExplorer.Helpers;
 using FileExplorer.Models;
 using System;
 using System.Collections.Generic;
@@ -43,7 +44,11 @@ namespace FileExplorer.Services
             {
                 var itemProperties = await item.GetStorageItemPropertiesAsync();
                 thumbnail = await GetIconFromItemPropsAsync(itemProperties);
-                CachedThumbnails.Add(key, thumbnail);
+
+                if (!FileExtensionsHelper.IsImage(item.Name))
+                {
+                    CachedThumbnails.Add(key, thumbnail);
+                }
             }
 
             return thumbnail;
