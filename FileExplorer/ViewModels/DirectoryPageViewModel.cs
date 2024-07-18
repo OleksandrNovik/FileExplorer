@@ -23,7 +23,7 @@ namespace FileExplorer.ViewModels
         private readonly IDirectoryManager manager;
 
         [ObservableProperty]
-        private FileInfoModel selectedFileDetails;
+        private DirectoryItemAdditionalInfo _selectedDirectoryItemAdditionalDetails;
 
         [ObservableProperty]
         private bool isDetailsShown;
@@ -76,6 +76,7 @@ namespace FileExplorer.ViewModels
             CutSelectedItemsCommand.NotifyCanExecuteChanged();
             RecycleSelectedItemsCommand.NotifyCanExecuteChanged();
             ShowDetailsOfSelectedItemCommand.NotifyCanExecuteChanged();
+            OpenSelectedItemCommand.NotifyCanExecuteChanged();
         }
 
         /// <summary>
@@ -119,6 +120,11 @@ namespace FileExplorer.ViewModels
 
         #region Open logic
 
+        [RelayCommand(CanExecute = nameof(HasSelectedItems))]
+        private async Task OpenSelectedItem()
+        {
+            await Open(SelectedItems[0]);
+        }
 
         [RelayCommand]
         private async Task Open(DirectoryItemWrapper item)
@@ -342,9 +348,28 @@ namespace FileExplorer.ViewModels
 
         private async Task ShowDetails(DirectoryItemWrapper item)
         {
-            //SelectedFileDetails = await FileInfoModel.InitializeAsync(item);
+            SelectedDirectoryItemAdditionalDetails = item.GetBasicInfo();
             IsDetailsShown = true;
+
+            switch (item)
+            {
+                case DirectoryWrapper dir:
+                    {
+                        int files = await dir.CountFilesAsync();
+                        int folders = await dir.CountFoldersAsync();
+                        SelectedDirectoryItemAdditionalDetails.TitleInfo = $"Files: {files} Folders: {folders}";
+                        break;
+                    }
+                case FileWrapper file:
+                    SelectedDirectoryItemAdditionalDetails.TitleInfo = await file.GetFileTypeAsync();
+                    break;
+                default:
+                    throw new ArgumentException("Item not a directory or file.", nameof(item));
+            }
         }
+
+        [RelayCommand]
+        private void CloseDetailsMenu() => IsDetailsShown = false;
 
         public async void OnNavigatedTo(object parameter)
         {

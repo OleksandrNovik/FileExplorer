@@ -81,6 +81,18 @@ namespace FileExplorer.Models.StorageWrappers
             return parent;
         }
 
+        public override Task<uint> CalculateSizeAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<string> GetFileTypeAsync()
+        {
+            var storageFile = await AsStorageFileAsync();
+
+            return $"{storageFile.DisplayType} ({info.Extension})";
+        }
+
         private async Task<StorageFile> AsStorageFileAsync()
         {
             if (asStorageFile is null)

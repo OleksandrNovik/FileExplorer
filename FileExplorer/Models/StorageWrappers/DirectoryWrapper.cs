@@ -93,6 +93,10 @@ namespace FileExplorer.Models.StorageWrappers
         }
 
         public override DirectoryWrapper GetCurrentDirectory() => this;
+        public override Task<uint> CalculateSizeAsync()
+        {
+            throw new NotImplementedException();
+        }
 
         private async Task<StorageFolder> AsStorageFolderAsync()
         {

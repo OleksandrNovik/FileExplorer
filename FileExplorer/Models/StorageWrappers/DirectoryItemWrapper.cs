@@ -30,13 +30,24 @@ namespace FileExplorer.Models.StorageWrappers
         public FileAttributes Attributes => info.Attributes;
         public string Path { get; private set; }
 
+        /// <summary>
+        /// Empty constructor to create empty wrapper
+        /// </summary>
         protected DirectoryItemWrapper() { }
+
+        /// <summary>
+        /// Creates wrapper that has physical item
+        /// </summary>
+        /// <param name="info"> Information about physical item </param>
         protected DirectoryItemWrapper(FileSystemInfo info)
         {
             this.info = info;
             InitializeData();
         }
 
+        /// <summary>
+        /// When physical item is changed sets new <see cref="Path"/> and <see cref="Name"/> for this wrapper
+        /// </summary>
         protected void InitializeData()
         {
             Name = info.Name;
@@ -82,6 +93,20 @@ namespace FileExplorer.Models.StorageWrappers
         /// </summary>
         /// <returns> this if item is <see cref="DirectoryWrapper"/> otherwise parent directory </returns>
         public abstract DirectoryWrapper GetCurrentDirectory();
+
+        public DirectoryItemAdditionalInfo GetBasicInfo()
+        {
+            return new DirectoryItemAdditionalInfo
+            {
+                ModifiedDate = info.LastWriteTime,
+                CreationTime = info.CreationTime,
+                FullPath = Path,
+                Name = Name,
+                Thumbnail = Thumbnail
+            };
+        }
+
+        public abstract Task<uint> CalculateSizeAsync();
 
         /// <summary>
         /// Gets parent directory for an item
