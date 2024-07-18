@@ -14,11 +14,12 @@
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:ui="using:FileExplorer.UI"
     xmlns:userControls="using:FileExplorer.UI.UserControls"
+    xmlns:storageWrappers="using:FileExplorer.Models.StorageWrappers"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Page.Resources>
-        <DataTemplate x:Key="GridItemTemplate" x:DataType="models:DirectoryItemWrapper">
+        <DataTemplate x:Key="GridItemTemplate" x:DataType="storageWrappers:DirectoryItemWrapper">
             <StackPanel  Padding="10  20 10 10">
                 <Image Source="{x:Bind Thumbnail, Mode=OneWay}" Height="95"  />
                 <Grid>

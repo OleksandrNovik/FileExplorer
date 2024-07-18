@@ -10,6 +10,7 @@ namespace FileExplorer.Models.StorageWrappers
 {
     public class FileWrapper : DirectoryItemWrapper
     {
+        private StorageFile? asStorageFile;
         public FileWrapper() { }
 
         public FileWrapper(FileInfo info) : base(info) { }
@@ -82,7 +83,12 @@ namespace FileExplorer.Models.StorageWrappers
 
         private async Task<StorageFile> AsStorageFileAsync()
         {
-            return await StorageFile.GetFileFromPathAsync(Path);
+            if (asStorageFile is null)
+            {
+                asStorageFile = await StorageFile.GetFileFromPathAsync(Path);
+            }
+
+            return asStorageFile;
         }
     }
 }

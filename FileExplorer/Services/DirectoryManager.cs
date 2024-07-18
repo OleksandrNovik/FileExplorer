@@ -1,6 +1,5 @@
 ﻿using FileExplorer.Contracts;
-using FileExplorer.Helpers;
-using FileExplorer.Models;
+using FileExplorer.Helpers.StorageHelpers;
 using FileExplorer.Models.StorageWrappers;
 using System;
 using System.Collections.Generic;
@@ -8,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
+using DirectoryItemWrapper = FileExplorer.Models.StorageWrappers.DirectoryItemWrapper;
 
 namespace FileExplorer.Services
 {

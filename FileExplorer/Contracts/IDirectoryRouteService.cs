@@ -1,5 +1,5 @@
-﻿using FileExplorer.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using DirectoryItemWrapper = FileExplorer.Models.StorageWrappers.DirectoryItemWrapper;
 
 namespace FileExplorer.Contracts
 {

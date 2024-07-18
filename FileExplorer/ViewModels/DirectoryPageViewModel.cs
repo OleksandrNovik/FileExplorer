@@ -14,13 +14,13 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using DirectoryItemWrapper = FileExplorer.Models.StorageWrappers.DirectoryItemWrapper;
 
 namespace FileExplorer.ViewModels
 {
     public partial class DirectoryPageViewModel : ObservableRecipient, INavigationAware
     {
-        private readonly IDirectoryManager _manager;
-        private readonly IPicturesService iconService;
+        private readonly IDirectoryManager manager;
 
         [ObservableProperty]
         private FileInfoModel selectedFileDetails;
@@ -38,10 +38,9 @@ namespace FileExplorer.ViewModels
         private ObservableCollection<DirectoryItemWrapper> selectedItems;
         public bool HasCopiedFiles { get; private set; }
 
-        public DirectoryPageViewModel(IDirectoryManager manager, IPicturesService iconService)
+        public DirectoryPageViewModel(IDirectoryManager manager)
         {
-            _manager = manager;
-            this.iconService = iconService;
+            this.manager = manager;
             SelectedItems = [];
             SelectedItems.CollectionChanged += NotifyCommandsCanExecute;
 
@@ -101,8 +100,7 @@ namespace FileExplorer.ViewModels
             {
                 if ((item.Attributes & FileAttributes.Hidden) == 0)
                 {
-                    var thumbnail = await iconService.GetThumbnailForItem(item);
-                    await item.Thumbnail.SetSourceAsync(thumbnail);
+                    await item.UpdateThumbnailAsync();
                 }
             }
         }
@@ -114,7 +112,7 @@ namespace FileExplorer.ViewModels
         private async Task MoveToDirectoryAsync(DirectoryWrapper directory)
         {
             CurrentDirectory = directory;
-            _manager.CurrentDirectory = directory;
+            manager.CurrentDirectory = directory;
             await InitializeDirectoryAsync();
             Messenger.Send(directory);
         }
@@ -166,10 +164,9 @@ namespace FileExplorer.ViewModels
         /// <param name="wrapper"> Wrapper that we are creating physical item for </param>
         private async Task CreateItemAsync(DirectoryItemWrapper wrapper)
         {
-            _manager.CreatePhysical(wrapper);
+            manager.CreatePhysical(wrapper);
 
-            var thumbnail = await iconService.GetThumbnailForItem(wrapper);
-            wrapper.Thumbnail.SetSource(thumbnail);
+            await wrapper.UpdateThumbnailAsync();
 
             DirectoryItems.Insert(0, wrapper);
             RenameNewItem(wrapper);
@@ -212,12 +209,15 @@ namespace FileExplorer.ViewModels
                 await App.MainWindow.ShowMessageDialogAsync("Item's name cannot be empty", "Empty name is illegal");
                 return;
             }
-            _manager.Rename(item);
+            manager.Rename(item);
+
+            // If item's extension changed we need to update icon
+            if (item.HasExtensionChanged)
+            {
+                await item.UpdateThumbnailAsync();
+            }
 
             item.EndEdit();
-
-            var thumbnail = await iconService.GetThumbnailForItem(item);
-            item.Thumbnail.SetSource(thumbnail);
 
             //TODO: New Sorting of items is required
         }
@@ -283,11 +283,11 @@ namespace FileExplorer.ViewModels
             {
                 if (isPermanent)
                 {
-                    _manager.Delete(item);
+                    manager.Delete(item);
                 }
                 else
                 {
-                    await _manager.MoveToRecycleBinAsync(item);
+                    await manager.MoveToRecycleBinAsync(item);
                 }
 
                 DirectoryItems.Remove(item);
@@ -308,7 +308,7 @@ namespace FileExplorer.ViewModels
 
         //private void MoveToClipboard(IEnumerable<DirectoryItemModel> items, DataPackageOperation operation)
         //{
-        //    _manager.CopyToClipboard(items, operation);
+        //    manager.CopyToClipboard(items, operation);
         //    HasCopiedFiles = true;
         //    OnPropertyChanged(nameof(HasCopiedFiles));
         //}
@@ -328,7 +328,7 @@ namespace FileExplorer.ViewModels
         [RelayCommand]
         private async Task PasteItems()
         {
-            //var pastedItems = await _manager.PasteFromClipboard();
+            //var pastedItems = await manager.PasteFromClipboard();
             //await AddDirectoryItemsAsync(pastedItems);
         }
 
@@ -342,7 +342,7 @@ namespace FileExplorer.ViewModels
 
         private async Task ShowDetails(DirectoryItemWrapper item)
         {
-            SelectedFileDetails = await FileInfoModel.InitializeAsync(item);
+            //SelectedFileDetails = await FileInfoModel.InitializeAsync(item);
             IsDetailsShown = true;
         }
 

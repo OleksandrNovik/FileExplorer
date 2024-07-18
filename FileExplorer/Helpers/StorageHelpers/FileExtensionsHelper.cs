@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace FileExplorer.Helpers
+namespace FileExplorer.Helpers.StorageHelpers
 {
     public static class FileExtensionsHelper
     {

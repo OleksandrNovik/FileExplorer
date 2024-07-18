@@ -1,7 +1,5 @@
 ﻿#nullable enable
-using FileExplorer.Contracts;
-using FileExplorer.Helpers;
-using FileExplorer.Models;
+using FileExplorer.Models.StorageWrappers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,19 +9,19 @@ using Windows.Storage.FileProperties;
 using Windows.Storage.Streams;
 using FileAttributes = System.IO.FileAttributes;
 
-namespace FileExplorer.Services
+namespace FileExplorer.Helpers.StorageHelpers
 {
-    public class PictureService : IPicturesService
+    public static class IconHelper
     {
         private static readonly Dictionary<string, IRandomAccessStream> CachedThumbnails = new();
 
-        private async Task<StorageItemThumbnail> GetIconFromItemPropsAsync(IStorageItemProperties item)
+        private static async Task<StorageItemThumbnail> GetIconFromItemPropsAsync(IStorageItemProperties item, uint size)
         {
-            var thumbnail = await item.GetThumbnailAsync(ThumbnailMode.ListView, 95);
+            var thumbnail = await item.GetThumbnailAsync(ThumbnailMode.ListView, size);
             return thumbnail;
         }
 
-        public IRandomAccessStream? TryGetCachedThumbnail(string key)
+        public static IRandomAccessStream? TryGetCachedThumbnail(string key)
         {
             IRandomAccessStream? thumbnail = null;
 
@@ -35,7 +33,7 @@ namespace FileExplorer.Services
             return thumbnail;
         }
 
-        public async Task<IRandomAccessStream> GetThumbnailForItem(DirectoryItemWrapper item)
+        public static async Task<IRandomAccessStream> GetThumbnailForItem(DirectoryItemWrapper item)
         {
             var key = $"{Path.GetExtension(item.Name).ToLower()}{(item.Attributes & FileAttributes.Directory) != 0}";
             var thumbnail = TryGetCachedThumbnail(key);
@@ -43,7 +41,7 @@ namespace FileExplorer.Services
             if (thumbnail is null)
             {
                 var itemProperties = await item.GetStorageItemPropertiesAsync();
-                thumbnail = await GetIconFromItemPropsAsync(itemProperties);
+                thumbnail = await GetIconFromItemPropsAsync(itemProperties, 95);
 
                 if (!FileExtensionsHelper.IsImage(item.Name))
                 {

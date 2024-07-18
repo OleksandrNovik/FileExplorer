@@ -6,7 +6,7 @@ namespace FileExplorer.Helpers
 {
     public static class WindowHelper
     {
-        public static List<Window> ActiveWindows { get; } = new List<Window>();
+        public static List<Window> ActiveWindows { get; } = new();
 
         public static Window CreateWindow()
         {

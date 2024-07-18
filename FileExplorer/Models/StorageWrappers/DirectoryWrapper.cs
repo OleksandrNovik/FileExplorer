@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace FileExplorer.Models.StorageWrappers
 {
     public class DirectoryWrapper : DirectoryItemWrapper
     {
+        private StorageFolder? asStorageFolder;
         public DirectoryWrapper() { }
         public DirectoryWrapper(DirectoryInfo info) : base(info) { }
         public DirectoryWrapper(string path) : base(new DirectoryInfo(path)) { }
@@ -34,6 +36,19 @@ namespace FileExplorer.Models.StorageWrappers
                     yield return new DirectoryWrapper(itemPath);
             }
         }
+
+        public async Task<int> CountFilesAsync(string pattern = "*", SearchOption option = SearchOption.TopDirectoryOnly)
+        {
+            return await Task.Run(() => Directory.EnumerateFiles(Path, pattern, option)
+                .AsParallel().Count());
+        }
+
+        public async Task<int> CountFoldersAsync(string pattern = "*", SearchOption option = SearchOption.TopDirectoryOnly)
+        {
+            return await Task.Run(() => Directory.EnumerateDirectories(Path, pattern, option)
+                .AsParallel().Count());
+        }
+
 
         public override void Copy(string destination)
         {
@@ -81,7 +96,12 @@ namespace FileExplorer.Models.StorageWrappers
 
         private async Task<StorageFolder> AsStorageFolderAsync()
         {
-            return await StorageFolder.GetFolderFromPathAsync(Path);
+            if (asStorageFolder is null)
+            {
+                asStorageFolder = await StorageFolder.GetFolderFromPathAsync(Path);
+            }
+
+            return asStorageFolder;
         }
     }
 }

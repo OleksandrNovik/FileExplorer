@@ -1,7 +1,8 @@
 ﻿#nullable enable
 using CommunityToolkit.Mvvm.ComponentModel;
-using FileExplorer.Models.StorageWrappers;
+using FileExplorer.Helpers.StorageHelpers;
 using Microsoft.UI.Xaml.Media.Imaging;
+using System;
 using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
@@ -9,7 +10,7 @@ using Windows.Storage;
 using FileAttributes = System.IO.FileAttributes;
 using IOPath = System.IO.Path;
 
-namespace FileExplorer.Models
+namespace FileExplorer.Models.StorageWrappers
 {
     public abstract partial class DirectoryItemWrapper : ObservableObject, IEditableObject
     {
@@ -122,6 +123,14 @@ namespace FileExplorer.Models
 
             return newName;
         }
+
+        public async Task UpdateThumbnailAsync()
+        {
+            var icon = await IconHelper.GetThumbnailForItem(this);
+            await Thumbnail.SetSourceAsync(icon);
+        }
+
+        public bool HasExtensionChanged => IOPath.GetExtension(backupName) != IOPath.GetExtension(Name);
 
         public void BeginEdit()
         {
