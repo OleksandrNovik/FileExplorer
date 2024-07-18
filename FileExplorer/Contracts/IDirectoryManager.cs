@@ -1,7 +1,7 @@
 ﻿using FileExplorer.Models;
+using FileExplorer.Models.StorageWrappers;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 
 namespace FileExplorer.Contracts
@@ -14,7 +14,7 @@ namespace FileExplorer.Contracts
 
         public void Rename(DirectoryItemWrapper item);
 
-        public void CopyToClipboard(IEnumerable<DirectoryItemModel> items, DataPackageOperation operation);
+        //public void CopyToClipboard(IEnumerable<DirectoryItemModel> items, DataPackageOperation operation);
 
         public Task<IEnumerable<IStorageItem>> PasteFromClipboard();
 

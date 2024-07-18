@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using CommunityToolkit.Mvvm.ComponentModel;
+using FileExplorer.Models.StorageWrappers;
 using Microsoft.UI.Xaml.Media.Imaging;
 using System.ComponentModel;
 using System.IO;
@@ -23,7 +24,7 @@ namespace FileExplorer.Models
         protected FileSystemInfo info;
 
         [ObservableProperty]
-        private BitmapImage thumbnail;
+        private BitmapImage thumbnail = new();
 
         public FileAttributes Attributes => info.Attributes;
         public string Path { get; private set; }

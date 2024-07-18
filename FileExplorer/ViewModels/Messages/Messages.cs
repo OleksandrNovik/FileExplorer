@@ -1,4 +1,5 @@
 ﻿using FileExplorer.Models;
+using FileExplorer.Models.StorageWrappers;
 
 namespace FileExplorer.ViewModels.Messages
 {

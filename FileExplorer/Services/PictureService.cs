@@ -1,29 +1,52 @@
-﻿using FileExplorer.Contracts;
+﻿#nullable enable
+using FileExplorer.Contracts;
 using FileExplorer.Models;
-using Microsoft.UI.Xaml.Media.Imaging;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.FileProperties;
+using Windows.Storage.Streams;
+using FileAttributes = System.IO.FileAttributes;
 
 namespace FileExplorer.Services
 {
     public class PictureService : IPicturesService
     {
-        private async Task<BitmapImage> IconToImageAsync(IStorageItemProperties item)
+        private static readonly Dictionary<string, IRandomAccessStream> CachedThumbnails = new();
+
+        private async Task<StorageItemThumbnail> GetIconFromItemPropsAsync(IStorageItemProperties item)
         {
-            var imgIcon = new BitmapImage();
-
             var thumbnail = await item.GetThumbnailAsync(ThumbnailMode.ListView, 95);
-            imgIcon.SetSource(thumbnail);
-
-            return imgIcon;
+            return thumbnail;
         }
 
-        public async Task<BitmapImage> GetThumbnailForItem(DirectoryItemWrapper item)
+        public IRandomAccessStream? TryGetCachedThumbnail(string key)
         {
-            var itemProperties = await item.GetStorageItemPropertiesAsync();
-            return await IconToImageAsync(itemProperties);
+            IRandomAccessStream? thumbnail = null;
+
+            if (CachedThumbnails.TryGetValue(key, out var cachedThumbnail))
+            {
+                thumbnail = cachedThumbnail.CloneStream();
+            }
+
+            return thumbnail;
+        }
+
+        public async Task<IRandomAccessStream> GetThumbnailForItem(DirectoryItemWrapper item)
+        {
+            var key = $"{Path.GetExtension(item.Name).ToLower()}{(item.Attributes & FileAttributes.Directory) != 0}";
+            var thumbnail = TryGetCachedThumbnail(key);
+
+            if (thumbnail is null)
+            {
+                var itemProperties = await item.GetStorageItemPropertiesAsync();
+                thumbnail = await GetIconFromItemPropsAsync(itemProperties);
+                CachedThumbnails.Add(key, thumbnail);
+            }
+
+            return thumbnail;
         }
     }
 }

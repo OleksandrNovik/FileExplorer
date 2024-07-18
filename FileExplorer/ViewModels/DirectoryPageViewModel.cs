@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using FileExplorer.Contracts;
 using FileExplorer.Helpers;
 using FileExplorer.Models;
+using FileExplorer.Models.StorageWrappers;
 using FileExplorer.ViewModels.Messages;
 using Microsoft.UI.Xaml.Controls;
 using System;
@@ -13,8 +14,6 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.DataTransfer;
-using DirectoryItemModel = FileExplorer.Models.DirectoryItemModel;
 
 namespace FileExplorer.ViewModels
 {
@@ -87,7 +86,9 @@ namespace FileExplorer.ViewModels
         private async Task InitializeDirectoryAsync()
         {
             DirectoryItems = [];
-            var directoryContent = CurrentDirectory.EnumerateItems().ToArray();
+            var directoryContent = CurrentDirectory.EnumerateItems()
+                                                            .Where(i => (i.Attributes & FileAttributes.System) == 0)
+                                                            .ToArray();
             await AddDirectoryItemsAsync(directoryContent);
             SelectedItems.Clear();
         }
@@ -100,7 +101,8 @@ namespace FileExplorer.ViewModels
             {
                 if ((item.Attributes & FileAttributes.Hidden) == 0)
                 {
-                    item.Thumbnail = await iconService.GetThumbnailForItem(item);
+                    var thumbnail = await iconService.GetThumbnailForItem(item);
+                    await item.Thumbnail.SetSourceAsync(thumbnail);
                 }
             }
         }
@@ -165,7 +167,10 @@ namespace FileExplorer.ViewModels
         private async Task CreateItemAsync(DirectoryItemWrapper wrapper)
         {
             _manager.CreatePhysical(wrapper);
-            wrapper.Thumbnail = await iconService.GetThumbnailForItem(wrapper);
+
+            var thumbnail = await iconService.GetThumbnailForItem(wrapper);
+            wrapper.Thumbnail.SetSource(thumbnail);
+
             DirectoryItems.Insert(0, wrapper);
             RenameNewItem(wrapper);
         }
@@ -208,7 +213,11 @@ namespace FileExplorer.ViewModels
                 return;
             }
             _manager.Rename(item);
+
             item.EndEdit();
+
+            var thumbnail = await iconService.GetThumbnailForItem(item);
+            item.Thumbnail.SetSource(thumbnail);
 
             //TODO: New Sorting of items is required
         }
@@ -297,12 +306,12 @@ namespace FileExplorer.ViewModels
 
         #region Copy+Paste logic
 
-        private void MoveToClipboard(IEnumerable<DirectoryItemModel> items, DataPackageOperation operation)
-        {
-            _manager.CopyToClipboard(items, operation);
-            HasCopiedFiles = true;
-            OnPropertyChanged(nameof(HasCopiedFiles));
-        }
+        //private void MoveToClipboard(IEnumerable<DirectoryItemModel> items, DataPackageOperation operation)
+        //{
+        //    _manager.CopyToClipboard(items, operation);
+        //    HasCopiedFiles = true;
+        //    OnPropertyChanged(nameof(HasCopiedFiles));
+        //}
 
         [RelayCommand(CanExecute = nameof(HasSelectedItems))]
         private void CopySelectedItems()

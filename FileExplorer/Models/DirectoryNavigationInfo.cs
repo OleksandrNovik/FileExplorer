@@ -1,4 +1,6 @@
 ﻿#nullable enable
+using FileExplorer.Models.StorageWrappers;
+
 namespace FileExplorer.Models
 {
     public record DirectoryNavigationInfo

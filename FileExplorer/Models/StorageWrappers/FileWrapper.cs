@@ -6,7 +6,7 @@ using Windows.Storage;
 using Windows.System;
 using IOPath = System.IO.Path;
 
-namespace FileExplorer.Models
+namespace FileExplorer.Models.StorageWrappers
 {
     public class FileWrapper : DirectoryItemWrapper
     {

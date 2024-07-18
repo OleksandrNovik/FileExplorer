@@ -1,6 +1,7 @@
 ﻿using FileExplorer.Contracts;
 using FileExplorer.Helpers;
 using FileExplorer.Models;
+using FileExplorer.Models.StorageWrappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,16 +27,16 @@ namespace FileExplorer.Services
             item.Move(CurrentDirectory.Path);
         }
 
-        public void CopyToClipboard(IEnumerable<DirectoryItemModel> items, DataPackageOperation operation)
-        {
-            var dirItems = items.AsParallel().Select(model => model.FullInfo);
+        //public void CopyToClipboard(IEnumerable<DirectoryItemModel> items, DataPackageOperation operation)
+        //{
+        //    var dirItems = items.AsParallel().Select(model => model.FullInfo);
 
-            var dataPackage = new DataPackage();
-            dataPackage.SetStorageItems(dirItems);
-            dataPackage.RequestedOperation = operation;
+        //    var dataPackage = new DataPackage();
+        //    dataPackage.SetStorageItems(dirItems);
+        //    dataPackage.RequestedOperation = operation;
 
-            Clipboard.SetContent(dataPackage);
-        }
+        //    Clipboard.SetContent(dataPackage);
+        //}
 
         public async Task<IEnumerable<IStorageItem>> PasteFromClipboard()
         {

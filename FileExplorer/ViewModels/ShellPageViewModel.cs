@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using FileExplorer.Contracts;
 using FileExplorer.Models;
+using FileExplorer.Models.StorageWrappers;
 using System.Collections.ObjectModel;
 
 namespace FileExplorer.ViewModels
