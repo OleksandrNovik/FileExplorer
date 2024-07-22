@@ -49,10 +49,9 @@
   <Capabilities>
     <rescap:Capability Name="runFullTrust" />
     <Capability Name="codeGeneration"/>
-    <uap:Capability Name="musicLibrary"/>
+	  <uap:Capability Name="musicLibrary"/>
     <uap:Capability Name="objects3D"/>
     <uap:Capability Name="videosLibrary"/>
-    <uap:Capability Name="removableStorage"/>
     <uap:Capability Name="picturesLibrary"/>
   </Capabilities>
 </Package>

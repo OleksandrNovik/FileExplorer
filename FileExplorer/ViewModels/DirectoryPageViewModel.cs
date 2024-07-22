@@ -6,6 +6,7 @@ using FileExplorer.Contracts;
 using FileExplorer.Helpers;
 using FileExplorer.Models;
 using FileExplorer.Models.StorageWrappers;
+using FileExplorer.Services;
 using FileExplorer.ViewModels.Messages;
 using Microsoft.UI.Xaml.Controls;
 using System;
@@ -21,6 +22,7 @@ namespace FileExplorer.ViewModels
     public partial class DirectoryPageViewModel : ObservableRecipient, INavigationAware
     {
         private readonly IDirectoryManager manager;
+        private readonly ContextMenuMetadataBuilder menuBuilder;
 
         [ObservableProperty]
         private DirectoryItemAdditionalInfo _selectedDirectoryItemAdditionalDetails;
@@ -41,6 +43,7 @@ namespace FileExplorer.ViewModels
         public DirectoryPageViewModel(IDirectoryManager manager)
         {
             this.manager = manager;
+            menuBuilder = new ContextMenuMetadataBuilder(this);
             SelectedItems = [];
             SelectedItems.CollectionChanged += NotifyCommandsCanExecute;
 
@@ -146,6 +149,12 @@ namespace FileExplorer.ViewModels
             }
         }
 
+        [RelayCommand]
+        private void OpenInNewTab(DirectoryWrapper directory)
+        {
+
+        }
+
         #endregion
 
         #region Creating logic
@@ -175,7 +184,7 @@ namespace FileExplorer.ViewModels
             await wrapper.UpdateThumbnailAsync();
 
             DirectoryItems.Insert(0, wrapper);
-            RenameNewItem(wrapper);
+            BeginRenamingItem(wrapper);
         }
 
         #endregion
@@ -183,16 +192,17 @@ namespace FileExplorer.ViewModels
         #region Renaming logic
 
         [RelayCommand(CanExecute = nameof(HasSelectedItems))]
-        private void BeginRenamingItem()
+        private void BeginRenamingSelectedItem()
         {
-            RenameNewItem(SelectedItems[0]);
+            BeginRenamingItem(SelectedItems[0]);
         }
 
         /// <summary>
         /// Begins renaming provided item
         /// </summary>
         /// <param name="item"> Item that is renamed </param>
-        private void RenameNewItem(DirectoryItemWrapper item) => item.BeginEdit();
+        [RelayCommand]
+        private void BeginRenamingItem(DirectoryItemWrapper item) => item.BeginEdit();
 
         private bool HasSelectedItems() => SelectedItems.Count > 0;
 
@@ -275,6 +285,9 @@ namespace FileExplorer.ViewModels
             }
         }
 
+        [RelayCommand]
+        private async Task RecycleItem(DirectoryItemWrapper item) => await TryDeleteItem(item);
+
         /// <summary>
         /// Fully deletes item (if it is possible)
         /// </summary>
@@ -325,10 +338,22 @@ namespace FileExplorer.ViewModels
             //MoveToClipboard(SelectedItems, DataPackageOperation.Copy);
         }
 
+        [RelayCommand]
+        private void CopyItem(DirectoryItemWrapper item)
+        {
+
+        }
+
         [RelayCommand(CanExecute = nameof(HasSelectedItems))]
         private void CutSelectedItems()
         {
             //MoveToClipboard(SelectedItems, DataPackageOperation.Move);
+        }
+
+        [RelayCommand]
+        private void CutItem(DirectoryItemWrapper item)
+        {
+
         }
 
         [RelayCommand]
@@ -346,6 +371,7 @@ namespace FileExplorer.ViewModels
             await ShowDetails(SelectedItems[0]);
         }
 
+        [RelayCommand]
         private async Task ShowDetails(DirectoryItemWrapper item)
         {
             SelectedDirectoryItemAdditionalDetails = item.GetBasicInfo();
@@ -355,8 +381,8 @@ namespace FileExplorer.ViewModels
             {
                 case DirectoryWrapper dir:
                     {
-                        int files = await dir.CountFilesAsync();
-                        int folders = await dir.CountFoldersAsync();
+                        int files = await dir.CountFilesAsync(option: SearchOption.AllDirectories);
+                        int folders = await dir.CountFoldersAsync(option: SearchOption.AllDirectories);
                         SelectedDirectoryItemAdditionalDetails.TitleInfo = $"Files: {files} Folders: {folders}";
                         break;
                     }
@@ -381,9 +407,33 @@ namespace FileExplorer.ViewModels
             }
         }
 
+        [RelayCommand]
+        private async Task Refresh()
+        {
+            //TODO: Fix this later
+            await MoveToDirectoryAsync(CurrentDirectory);
+        }
+
         public void OnNavigatedFrom()
         {
             throw new NotImplementedException();
         }
+
+        public MenuFlyout OnContextMenuRequired()
+        {
+            List<MenuFlyoutItemViewModel> menu;
+
+            if (HasSelectedItems())
+            {
+                menu = menuBuilder.BuildMenuForItem(SelectedItems[0]);
+            }
+            else
+            {
+                menu = menuBuilder.BuildDefaultMenu();
+            }
+
+            return new MenuFlyout();
+        }
+
     }
 }
