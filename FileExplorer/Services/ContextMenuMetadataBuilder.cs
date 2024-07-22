@@ -26,36 +26,42 @@ namespace FileExplorer.Services
             List<MenuFlyoutItemViewModel> menuCommands = [
                 new MenuFlyoutItemViewModel("Open")
                 {
+                    IconGlyph = "\uED25",
                     Command = viewModel.OpenCommand,
                     CommandParameter = item
                 },
 
                 new MenuFlyoutItemViewModel("Copy")
                 {
+                    IconGlyph = "\uE8C8",
                     Command = viewModel.CopyItemCommand,
                     CommandParameter = item
                 },
 
                 new MenuFlyoutItemViewModel("Cut")
                 {
+                    IconGlyph = "\uE8C6",
                     Command = viewModel.CutItemCommand,
                     CommandParameter = item
                 },
 
                 new MenuFlyoutItemViewModel("Delete")
                 {
+                    IconGlyph = "\uE74D",
                     Command = viewModel.RecycleItemCommand,
                     CommandParameter = item
                 },
 
                 new MenuFlyoutItemViewModel("Rename")
                 {
+                    IconGlyph = "\uE8AC",
                     Command = viewModel.BeginRenamingItemCommand,
                     CommandParameter = item
                 },
 
                 new MenuFlyoutItemViewModel("Details")
                 {
+                    IconGlyph = "\uE946",
                     Command = viewModel.ShowDetailsCommand,
                     CommandParameter = item
                 }
@@ -65,6 +71,7 @@ namespace FileExplorer.Services
             {
                 menuCommands.Insert(1, new MenuFlyoutItemViewModel("Open in new tab")
                 {
+                    IconGlyph = "\uE8B4",
                     Command = viewModel.OpenInNewTabCommand,
                     CommandParameter = folder
                 });
@@ -84,11 +91,13 @@ namespace FileExplorer.Services
             [
                 new MenuFlyoutItemViewModel("Refresh")
                 {
+                    IconGlyph = "\uE72C",
                     Command = viewModel.RefreshCommand
                 },
 
                 new MenuFlyoutItemViewModel("Create")
                 {
+                    IconGlyph = "\uE710",
                     Items = new List<MenuFlyoutItemViewModel>
                     {
                         new MenuFlyoutItemViewModel("File")
@@ -104,11 +113,13 @@ namespace FileExplorer.Services
 
                 new MenuFlyoutItemViewModel("Paste")
                 {
+                    IconGlyph = "\uE77F",
                     Command = viewModel.PasteItemsCommand
                 },
 
                 new MenuFlyoutItemViewModel("Details")
                 {
+                    IconGlyph = "\uE946",
                     Command = viewModel.ShowDetailsCommand,
                     CommandParameter = viewModel.CurrentDirectory
                 }

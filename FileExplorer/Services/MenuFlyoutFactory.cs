@@ -27,16 +27,34 @@ namespace FileExplorer.Services
 
                 subItemsMenu.Items.AddRange(itemsMetadata.Items.Select(CreateSingeItem));
 
+                if (itemsMetadata.IconGlyph is not null)
+                {
+                    subItemsMenu.Icon = new FontIcon
+                    {
+                        Glyph = itemsMetadata.IconGlyph,
+                    };
+                }
+
                 result = subItemsMenu;
             }
             else
             {
-                result = new MenuFlyoutItem
+                var menuItem = new MenuFlyoutItem
                 {
                     Text = itemsMetadata.Text,
                     Command = itemsMetadata.Command,
                     CommandParameter = itemsMetadata.CommandParameter
                 };
+
+                if (itemsMetadata.IconGlyph is not null)
+                {
+                    menuItem.Icon = new FontIcon
+                    {
+                        Glyph = itemsMetadata.IconGlyph,
+                    };
+                }
+
+                result = menuItem;
             }
 
             return result;

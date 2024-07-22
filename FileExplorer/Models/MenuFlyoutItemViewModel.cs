@@ -10,6 +10,7 @@ namespace FileExplorer.Models
         public IRelayCommand? Command { get; set; }
         public object? CommandParameter { get; set; }
         public List<MenuFlyoutItemViewModel>? Items { get; set; }
+        public string? IconGlyph { get; set; }
 
         public MenuFlyoutItemViewModel(string text)
         {

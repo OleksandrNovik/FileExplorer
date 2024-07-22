@@ -37,6 +37,7 @@ namespace FileExplorer.Views
             var tappedElement = e.OriginalSource as FrameworkElement;
             ContextMenu.Items.Clear();
 
+            // If grid item was right-clicked
             if (tappedElement?.DataContext is DirectoryItemWrapper wrapper)
             {
                 // Item is not selected
@@ -49,6 +50,12 @@ namespace FileExplorer.Views
                 }
 
             }
+            // If grid itself was right-clicked
+            else if (DirectoryItemsGrid.SelectedItems.Count > 0)
+            {
+                DirectoryItemsGrid.DeselectAll();
+            }
+
             ContextMenu.Items.AddRange(ViewModel.OnContextMenuRequired());
             ContextMenu.ShowAt(tappedElement, e.GetPosition(tappedElement));
         }

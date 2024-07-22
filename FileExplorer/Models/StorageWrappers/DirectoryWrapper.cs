@@ -39,6 +39,7 @@ namespace FileExplorer.Models.StorageWrappers
 
         public async Task<int> CountFilesAsync(string pattern = "*", SearchOption option = SearchOption.TopDirectoryOnly)
         {
+            //TODO: Access denied might be occured here
             return await Task.Run(() => Directory.EnumerateFiles(Path, pattern, option)
                 .AsParallel().Count());
         }
