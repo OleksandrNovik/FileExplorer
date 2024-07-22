@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace FileExplorer.Services
 {
-    public class ContextMenuMetadataBuilder
+    public sealed class ContextMenuMetadataBuilder
     {
         private readonly DirectoryPageViewModel viewModel;
 
@@ -14,6 +14,11 @@ namespace FileExplorer.Services
             this.viewModel = viewModel;
         }
 
+        /// <summary>
+        /// Builds menu for a certain item that provided as parameter
+        /// </summary>
+        /// <param name="item"> Item that will be used in interactions with menu </param>
+        /// <returns> Menu options for a provided item </returns>
         public List<MenuFlyoutItemViewModel> BuildMenuForItem(DirectoryItemWrapper item)
         {
             var folder = item as DirectoryWrapper;

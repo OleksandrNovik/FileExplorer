@@ -22,6 +22,7 @@ namespace FileExplorer.ViewModels
     public partial class DirectoryPageViewModel : ObservableRecipient, INavigationAware
     {
         private readonly IDirectoryManager manager;
+        private readonly IMenuFlyoutFactory menuFactory;
         private readonly ContextMenuMetadataBuilder menuBuilder;
 
         [ObservableProperty]
@@ -40,9 +41,10 @@ namespace FileExplorer.ViewModels
         private ObservableCollection<DirectoryItemWrapper> selectedItems;
         public bool HasCopiedFiles { get; private set; }
 
-        public DirectoryPageViewModel(IDirectoryManager manager)
+        public DirectoryPageViewModel(IDirectoryManager manager, IMenuFlyoutFactory factory)
         {
             this.manager = manager;
+            menuFactory = factory;
             menuBuilder = new ContextMenuMetadataBuilder(this);
             SelectedItems = [];
             SelectedItems.CollectionChanged += NotifyCommandsCanExecute;
@@ -419,7 +421,7 @@ namespace FileExplorer.ViewModels
             throw new NotImplementedException();
         }
 
-        public MenuFlyout OnContextMenuRequired()
+        public List<MenuFlyoutItemBase> OnContextMenuRequired()
         {
             List<MenuFlyoutItemViewModel> menu;
 
@@ -432,7 +434,7 @@ namespace FileExplorer.ViewModels
                 menu = menuBuilder.BuildDefaultMenu();
             }
 
-            return new MenuFlyout();
+            return menuFactory.Create(menu);
         }
 
     }

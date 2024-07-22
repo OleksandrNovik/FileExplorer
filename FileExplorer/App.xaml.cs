@@ -39,6 +39,7 @@ namespace FileExplorer
 
                     services.AddTransient<IHistoryNavigationService, HistoryNavigationService>();
                     services.AddTransient<IDirectoryRouteService, DirectoryRouteService>();
+                    services.AddTransient<IMenuFlyoutFactory, MenuFlyoutFactory>();
                     services.AddTransient<IPageService, PageService>();
                     services.AddTransient<IDirectoryManager, DirectoryManager>();
 

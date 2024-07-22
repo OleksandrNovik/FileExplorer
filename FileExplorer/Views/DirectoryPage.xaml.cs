@@ -1,4 +1,8 @@
+using CommunityToolkit.WinUI.UI;
+using FileExplorer.Helpers;
+using FileExplorer.Models.StorageWrappers;
 using FileExplorer.ViewModels;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 
@@ -25,6 +29,28 @@ namespace FileExplorer.Views
         private void SelectAllItems(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
         {
             DirectoryItemsGrid.SelectAll();
+        }
+
+
+        private void OnDirectoryItemsGridRightTapped(object sender, RightTappedRoutedEventArgs e)
+        {
+            var tappedElement = e.OriginalSource as FrameworkElement;
+            ContextMenu.Items.Clear();
+
+            if (tappedElement?.DataContext is DirectoryItemWrapper wrapper)
+            {
+                // Item is not selected
+                if (!DirectoryItemsGrid.SelectedItems.Contains(wrapper))
+                {
+                    // Clear previously selected items
+                    DirectoryItemsGrid.DeselectAll();
+                    // Select item that user right-clicked on
+                    DirectoryItemsGrid.SelectedItem = wrapper;
+                }
+
+            }
+            ContextMenu.Items.AddRange(ViewModel.OnContextMenuRequired());
+            ContextMenu.ShowAt(tappedElement, e.GetPosition(tappedElement));
         }
     }
 }

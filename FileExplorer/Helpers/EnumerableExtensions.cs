@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 
 namespace FileExplorer.Helpers
 {
@@ -10,6 +11,14 @@ namespace FileExplorer.Helpers
         /// <param name="target"> Target collection (we are adding items into) </param>
         /// <param name="source"> Source collection (from which items are copied to target) </param>
         public static void AddRange(this IList target, IEnumerable source)
+        {
+            foreach (var item in source)
+            {
+                target.Add(item);
+            }
+        }
+
+        public static void AddRange<T>(this IList<T> target, IEnumerable<T> source)
         {
             foreach (var item in source)
             {
