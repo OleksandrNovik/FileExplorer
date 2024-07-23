@@ -9,4 +9,6 @@ namespace FileExplorer.ViewModels.Messages
     public record NewTabOpened(
         DirectoryNavigationInfo TabDirectoryInfo,
         TabNavigationHistoryModel TabNavigationHistory);
+
+    public record OpenTabMessage(DirectoryWrapper TabDirectory);
 }

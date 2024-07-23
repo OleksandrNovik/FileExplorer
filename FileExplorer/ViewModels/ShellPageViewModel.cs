@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using FileExplorer.Contracts;
 using FileExplorer.Models;
 using FileExplorer.Models.StorageWrappers;
+using FileExplorer.ViewModels.Messages;
 using System.Collections.ObjectModel;
 
 namespace FileExplorer.ViewModels
@@ -30,6 +31,11 @@ namespace FileExplorer.ViewModels
                     selectedTab.TabDirectory = message;
                 }
             });
+
+            Messenger.Register<ShellPageViewModel, OpenTabMessage>(this, (_, message) =>
+            {
+                NewTab(message.TabDirectory);
+            });
         }
 
         [RelayCommand]
@@ -38,7 +44,7 @@ namespace FileExplorer.ViewModels
             NewTab(directory);
         }
 
-        public void NewTab(DirectoryWrapper? directory = null)
+        private void NewTab(DirectoryWrapper? directory = null)
         {
             TabService.CreateNewTab(directory);
         }

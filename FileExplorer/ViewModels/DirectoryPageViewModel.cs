@@ -154,7 +154,7 @@ namespace FileExplorer.ViewModels
         [RelayCommand]
         private void OpenInNewTab(DirectoryWrapper directory)
         {
-
+            Messenger.Send(new OpenTabMessage(directory));
         }
 
         #endregion
