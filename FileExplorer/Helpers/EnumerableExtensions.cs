@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿#nullable enable
+using System.Collections;
 using System.Collections.Generic;
 
 namespace FileExplorer.Helpers
@@ -23,6 +24,29 @@ namespace FileExplorer.Helpers
             foreach (var item in source)
             {
                 target.Add(item);
+            }
+        }
+        public static void RemoveRange<T>(this IList<T> target, IEnumerable<T> source)
+        {
+            foreach (var item in source)
+            {
+                target.Remove(item);
+            }
+        }
+
+        public static void AppendCollection<T>(this IList<T> target, ICollection<T>? source)
+        {
+            if (source is not null && source.Count > 0)
+            {
+                target.AddRange(source);
+            }
+        }
+
+        public static void RemoveCollection<T>(this IList<T> target, ICollection<T>? source)
+        {
+            if (source is not null && source.Count > 0)
+            {
+                target.RemoveRange(source);
             }
         }
 

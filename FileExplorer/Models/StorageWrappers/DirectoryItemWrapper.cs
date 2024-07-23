@@ -183,5 +183,14 @@ namespace FileExplorer.Models.StorageWrappers
                 IsRenamed = false;
             }
         }
+
+        public override bool Equals(object? obj)
+        {
+            if (obj is DirectoryItemWrapper wrapper)
+            {
+                return Path == wrapper.Path;
+            }
+            return false;
+        }
     }
 }

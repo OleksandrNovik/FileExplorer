@@ -36,9 +36,7 @@ namespace FileExplorer.ViewModels
 
         [ObservableProperty]
         private ObservableCollection<DirectoryItemWrapper> directoryItems;
-
-        [ObservableProperty]
-        private ObservableCollection<DirectoryItemWrapper> selectedItems;
+        public ObservableCollection<DirectoryItemWrapper> SelectedItems { get; }
         public bool HasCopiedFiles { get; private set; }
 
         public DirectoryPageViewModel(IDirectoryManager manager, IMenuFlyoutFactory factory)
@@ -51,6 +49,13 @@ namespace FileExplorer.ViewModels
 
             Messenger.Register<DirectoryPageViewModel, NavigationRequiredMessage>(this, HandleNavigationMessage);
             Messenger.Register<DirectoryPageViewModel, FileOpenRequiredMessage>(this, HandlerFileOpen);
+
+            //TODO: Maybe Storage API can handle directory change
+            Messenger.Register<DirectoryPageViewModel, DirectoryChangedMessage>(this, (_, message) =>
+            {
+                DirectoryItems.AppendCollection(message.Added);
+                DirectoryItems.RemoveCollection(message.Removed);
+            });
         }
 
         private async void HandlerFileOpen(DirectoryPageViewModel recipient, FileOpenRequiredMessage message)

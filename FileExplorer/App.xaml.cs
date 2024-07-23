@@ -44,6 +44,7 @@ namespace FileExplorer
                     services.AddTransient<IDirectoryManager, DirectoryManager>();
 
                     services.AddTransient<DirectoriesNavigationViewModel>();
+                    services.AddTransient<DirectoryToolBarViewModel>();
 
                     services.AddSingleton<ITabService, TabsService>();
 

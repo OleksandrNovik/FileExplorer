@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="FileExplorer.UI.UserControls.DirectoryToolBar"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:FileExplorer.UI.UserControls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <Style x:Key="MenuButton" TargetType="Button">
+            <Setter Property="Padding" Value="10 8"  />
+            <Setter Property="Margin" Value="0 0 10 0" />
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="0 0 0 10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="300" />
+        </Grid.ColumnDefinitions>
+        <StackPanel Orientation="Horizontal">
+            <DropDownButton
+             Style="{StaticResource MenuButton}" 
+             ToolTipService.ToolTip="New File"
+             ToolTipService.Placement="Bottom">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Margin="0 0 7 0 " VerticalAlignment="Center">New</TextBlock>
+                    <FontIcon FontSize="12" Glyph="&#xE710;" />
+                </StackPanel>
+                <DropDownButton.Flyout>
+                    <MenuFlyout Placement="Bottom">
+                        <MenuFlyoutItem 
+                         Command="{x:Bind ViewModel.CreateFileCommand}"
+                         Text="File" />
+                        <MenuFlyoutItem 
+                         Command="{x:Bind ViewModel.CreateDirectoryCommand}"
+                         Text="Folder"/>
+                    </MenuFlyout>
+                </DropDownButton.Flyout>
+            </DropDownButton>
+            <Button 
+             Style="{StaticResource MenuButton}"
+             ToolTipService.ToolTip="Copy"
+             ToolTipService.Placement="Bottom">
+                <FontIcon FontSize="17" Glyph="&#xE8C8;" />
+            </Button>
+            <Button 
+             Style="{StaticResource MenuButton}"
+             ToolTipService.ToolTip="Cut"
+             ToolTipService.Placement="Bottom">
+                <FontIcon FontSize="17" Glyph="&#xE8C6;" />
+            </Button>
+            <Button 
+             Style="{StaticResource MenuButton}"
+             ToolTipService.ToolTip="Paste"
+             ToolTipService.Placement="Bottom">
+                <FontIcon FontSize="17" Glyph="&#xE77F;" />
+            </Button>
+            <Button 
+             Command="{x:Bind ViewModel.BeginRenamingSelectedItemCommand}"
+             Style="{StaticResource MenuButton}"
+             ToolTipService.ToolTip="Rename"
+             ToolTipService.Placement="Bottom">
+                <FontIcon FontSize="17" Glyph="&#xE8AC;" />
+            </Button>
+            <Button 
+             Style="{StaticResource MenuButton}"
+             Command="{x:Bind ViewModel.RecycleSelectedItemsCommand}"
+             ToolTipService.ToolTip="DeleteAsync"
+             ToolTipService.Placement="Bottom">
+                <FontIcon FontSize="17" Glyph="&#xE74D;" />
+            </Button>
+        </StackPanel>
+        <StackPanel Grid.Column="1" Orientation="Horizontal">
+            <DropDownButton 
+             Style="{StaticResource MenuButton}"
+             ToolTipService.ToolTip="Change View Of Items"
+             ToolTipService.Placement="Bottom">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Margin="0 0 7 0 " VerticalAlignment="Center">View</TextBlock>
+                    <FontIcon FontSize="12" Glyph="&#xF246;"  />
+                </StackPanel>
+            </DropDownButton>
+            <DropDownButton 
+             Style="{StaticResource MenuButton}"
+             ToolTipService.ToolTip="Apply Filter"
+             ToolTipService.Placement="Bottom">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Margin="0 0 7 0 " VerticalAlignment="Center">Filter</TextBlock>
+                    <FontIcon FontSize="12" Glyph="&#xE71C;"  />
+                </StackPanel>
+            </DropDownButton>
+            <Button 
+             Style="{StaticResource MenuButton}" 
+             Command="{x:Bind ViewModel.ShowDetailsCommand}"
+             ToolTipService.ToolTip="File Details"
+             ToolTipService.Placement="Bottom">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Margin="0 0 7 0 " VerticalAlignment="Center">Details</TextBlock>
+                    <FontIcon FontSize="14" Glyph="&#xE946;" />
+                </StackPanel>
+            </Button>
+        </StackPanel>
+    </Grid>
+</UserControl>
