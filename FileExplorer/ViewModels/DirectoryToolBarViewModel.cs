@@ -55,7 +55,7 @@ namespace FileExplorer.ViewModels
 
         private void SetNewDirectory(DirectoryWrapper directory)
         {
-            if (!manager.CurrentDirectory.Equals(directory))
+            if (!directory.Equals(manager.CurrentDirectory))
             {
                 manager.CurrentDirectory = directory;
             }

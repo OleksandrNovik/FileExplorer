@@ -80,7 +80,7 @@
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <controls:AdaptiveGridView x:Name="DirectoryItemsGrid"
-                                       ItemHeight="125"
+                                       ItemHeight="155"
                                        RightTapped="OnDirectoryItemsGridRightTapped"
                                        ItemsSource="{x:Bind ViewModel.DirectoryItems, Mode=OneWay}" 
                                        ItemTemplate="{StaticResource GridItemTemplate}"

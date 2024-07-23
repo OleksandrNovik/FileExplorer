@@ -85,11 +85,11 @@
             </DropDownButton>
             <DropDownButton 
              Style="{StaticResource MenuButton}"
-             ToolTipService.ToolTip="Apply Filter"
+             ToolTipService.ToolTip="Sort elements"
              ToolTipService.Placement="Bottom">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Margin="0 0 7 0 " VerticalAlignment="Center">Filter</TextBlock>
-                    <FontIcon FontSize="12" Glyph="&#xE71C;"  />
+                    <TextBlock Margin="0 0 7 0 " VerticalAlignment="Center">Sort</TextBlock>
+                    <FontIcon FontSize="12" Glyph="&#xE8CB;"  />
                 </StackPanel>
             </DropDownButton>
             <Button 
