@@ -21,9 +21,11 @@ namespace FileExplorer.ViewModels
 {
     public partial class DirectoryPageViewModel : ObservableRecipient, INavigationAware
     {
-        private readonly IDirectoryManager manager;
         private readonly IMenuFlyoutFactory menuFactory;
+
         private readonly ContextMenuMetadataBuilder menuBuilder;
+
+        public CommonFileOperationsViewModel CommonFileOperationsViewModel { get; }
 
         [ObservableProperty]
         private DirectoryItemAdditionalInfo _selectedDirectoryItemAdditionalDetails;
@@ -39,10 +41,10 @@ namespace FileExplorer.ViewModels
         public ObservableCollection<DirectoryItemWrapper> SelectedItems { get; }
         public bool HasCopiedFiles { get; private set; }
 
-        public DirectoryPageViewModel(IDirectoryManager manager, IMenuFlyoutFactory factory)
+        public DirectoryPageViewModel(CommonFileOperationsViewModel operationsVM, IMenuFlyoutFactory factory)
         {
-            this.manager = manager;
             menuFactory = factory;
+            CommonFileOperationsViewModel = operationsVM;
             menuBuilder = new ContextMenuMetadataBuilder(this);
             SelectedItems = [];
             SelectedItems.CollectionChanged += NotifyCommandsCanExecute;
@@ -53,7 +55,7 @@ namespace FileExplorer.ViewModels
             //TODO: Maybe Storage API can handle directory change
             Messenger.Register<DirectoryPageViewModel, DirectoryChangedMessage>(this, (_, message) =>
             {
-                DirectoryItems.AppendCollection(message.Added);
+                DirectoryItems.AppendFront(message.Added);
                 DirectoryItems.RemoveCollection(message.Removed);
             });
         }
@@ -80,12 +82,6 @@ namespace FileExplorer.ViewModels
         /// </summary>
         private void NotifyCommandsCanExecute(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            BeginRenamingItemCommand.NotifyCanExecuteChanged();
-            DeleteSelectedItemsCommand.NotifyCanExecuteChanged();
-            CopySelectedItemsCommand.NotifyCanExecuteChanged();
-            CutSelectedItemsCommand.NotifyCanExecuteChanged();
-            RecycleSelectedItemsCommand.NotifyCanExecuteChanged();
-            ShowDetailsOfSelectedItemCommand.NotifyCanExecuteChanged();
             OpenSelectedItemCommand.NotifyCanExecuteChanged();
         }
 
@@ -123,7 +119,7 @@ namespace FileExplorer.ViewModels
         private async Task MoveToDirectoryAsync(DirectoryWrapper directory)
         {
             CurrentDirectory = directory;
-            manager.CurrentDirectory = directory;
+            CommonFileOperationsViewModel.CurrentDirectory = directory;
             await InitializeDirectoryAsync();
             Messenger.Send(directory);
         }
@@ -139,7 +135,7 @@ namespace FileExplorer.ViewModels
         [RelayCommand]
         private async Task Open(DirectoryItemWrapper item)
         {
-            await EndRenamingIfNeeded(item);
+            await EndRenamingIfNeededCommand.ExecuteAsync(item);
 
             switch (item)
             {
@@ -164,60 +160,13 @@ namespace FileExplorer.ViewModels
 
         #endregion
 
-        #region Creating logic
-
-        [RelayCommand]
-        private async Task CreateFile()
-        {
-            var wrapper = new FileWrapper();
-            await CreateItemAsync(wrapper);
-        }
-
-        [RelayCommand]
-        private async Task CreateDirectory()
-        {
-            var wrapper = new DirectoryWrapper();
-            await CreateItemAsync(wrapper);
-        }
-
-        /// <summary>
-        /// Uses manager to create new item in current directory
-        /// </summary>
-        /// <param name="wrapper"> Wrapper that we are creating physical item for </param>
-        private async Task CreateItemAsync(DirectoryItemWrapper wrapper)
-        {
-            manager.CreatePhysical(wrapper);
-
-            await wrapper.UpdateThumbnailAsync();
-
-            DirectoryItems.Insert(0, wrapper);
-            BeginRenamingItem(wrapper);
-        }
-
-        #endregion
-
         #region Renaming logic
 
-        [RelayCommand(CanExecute = nameof(HasSelectedItems))]
-        private void BeginRenamingSelectedItem()
-        {
-            BeginRenamingItem(SelectedItems[0]);
-        }
-
-        /// <summary>
-        /// Begins renaming provided item
-        /// </summary>
-        /// <param name="item"> Item that is renamed </param>
         [RelayCommand]
         private void BeginRenamingItem(DirectoryItemWrapper item) => item.BeginEdit();
 
         private bool HasSelectedItems() => SelectedItems.Count > 0;
 
-        /// <summary>
-        /// Ends renaming only when needed to prevent double renaming of item at the same time
-        /// (Example: It can happen when user presses enter and renames file and after that lost focus event is called renaming same file again)
-        /// </summary>
-        public AsyncRelayCommand<DirectoryItemWrapper> EndRenamingIfNeededCommand => new(EndRenamingIfNeeded!);
 
         /// <summary>
         /// Ends renaming item if it is actually possible
@@ -226,179 +175,54 @@ namespace FileExplorer.ViewModels
         [RelayCommand]
         private async Task EndRenamingItem(DirectoryItemWrapper item)
         {
-            if (string.IsNullOrWhiteSpace(item.Name))
-            {
-                item.CancelEdit();
-                await App.MainWindow.ShowMessageDialogAsync("Item's name cannot be empty", "Empty name is illegal");
-                return;
-            }
-            manager.Rename(item);
-
-            // If item's extension changed we need to update icon
-            if (item.HasExtensionChanged)
-            {
-                await item.UpdateThumbnailAsync();
-            }
-
-            item.EndEdit();
-
-            //TODO: New Sorting of items is required
+            await CommonFileOperationsViewModel.EndRenamingItemCommand.ExecuteAsync(item);
+            //TODO: Sort Items
         }
 
-        /// <summary>
-        /// Ends renaming item when it is renamed.
-        /// This method is called before any operation with item to be sure it's not renamed while executing operation
-        /// </summary>
-        /// <param name="item"> Item that we are checking for renaming </param>
-        private async Task EndRenamingIfNeeded(DirectoryItemWrapper item)
-        {
-            if (item.IsRenamed)
-            {
-                await EndRenamingItem(item);
-            }
-        }
+        public IAsyncRelayCommand<DirectoryItemWrapper> EndRenamingIfNeededCommand =>
+            CommonFileOperationsViewModel.EndRenamingIfNeededCommand;
 
         #endregion
 
-        #region Delete logic
-
-        /// <summary>
-        /// Moves selected items to a recycle bin
-        /// </summary>
-        [RelayCommand(CanExecute = nameof(HasSelectedItems))]
-        private async Task RecycleSelectedItems()
+        [RelayCommand]
+        private async Task RecycleItem(DirectoryItemWrapper item)
         {
-            while (SelectedItems.Count > 0)
-            {
-                await TryDeleteItem(SelectedItems[0]);
-            }
-        }
-
-        /// <summary>
-        /// Permanently deletes selected items
-        /// </summary>
-        [RelayCommand(CanExecute = nameof(HasSelectedItems))]
-        public async Task DeleteSelectedItems()
-        {
-            var content = $"Do you really want to delete {(SelectedItems.Count > 1 ? "selected items" : $"\"{SelectedItems[0].Path}\""
-                )} permanently?";
-            var result = await App.MainWindow.ShowYesNoDialog(content, "Deleting items");
-
-            if (result == ContentDialogResult.Secondary) return;
-
-            while (SelectedItems.Count > 0)
-            {
-                await TryDeleteItem(SelectedItems[0], true);
-            }
+            await CommonFileOperationsViewModel.TryDeleteItem(item, false);
         }
 
         [RelayCommand]
-        private async Task RecycleItem(DirectoryItemWrapper item) => await TryDeleteItem(item);
-
-        /// <summary>
-        /// Fully deletes item (if it is possible)
-        /// </summary>
-        /// <param name="item"> Wrapper item to delete </param>
-        /// <param name="isPermanent"> Is item being deleted permanently or not </param>
-        /// <returns> true if item is successfully deleted, otherwise - false </returns>
-        private async Task TryDeleteItem(DirectoryItemWrapper item, bool isPermanent = false)
+        private async Task CreateFile()
         {
-            await EndRenamingIfNeeded(item);
-
-            try
-            {
-                if (isPermanent)
-                {
-                    manager.Delete(item);
-                }
-                else
-                {
-                    await manager.MoveToRecycleBinAsync(item);
-                }
-
-                DirectoryItems.Remove(item);
-            }
-            catch (IOException e)
-            {
-                await App.MainWindow.ShowMessageDialogAsync(e.Message, $"File operation canceled");
-            }
-            finally
-            {
-                SelectedItems.Remove(item);
-            }
+            var file = await CommonFileOperationsViewModel.CreateFile();
+            OnItemCreation(file);
+        }
+        [RelayCommand]
+        private async Task CreateDirectory()
+        {
+            var dir = await CommonFileOperationsViewModel.CreateDirectory();
+            OnItemCreation(dir);
         }
 
-        #endregion
-
-        #region Copy+Paste logic
-
-        //private void MoveToClipboard(IEnumerable<DirectoryItemModel> items, DataPackageOperation operation)
-        //{
-        //    manager.CopyToClipboard(items, operation);
-        //    HasCopiedFiles = true;
-        //    OnPropertyChanged(nameof(HasCopiedFiles));
-        //}
-
-        [RelayCommand(CanExecute = nameof(HasSelectedItems))]
-        private void CopySelectedItems()
+        private void OnItemCreation(DirectoryItemWrapper item)
         {
-            //MoveToClipboard(SelectedItems, DataPackageOperation.Copy);
+            DirectoryItems.Insert(0, item);
+            BeginRenamingItem(item);
         }
 
         [RelayCommand]
-        private void CopyItem(DirectoryItemWrapper item)
-        {
-
-        }
-
-        [RelayCommand(CanExecute = nameof(HasSelectedItems))]
-        private void CutSelectedItems()
-        {
-            //MoveToClipboard(SelectedItems, DataPackageOperation.Move);
-        }
+        private void PasteItems() { }
 
         [RelayCommand]
-        private void CutItem(DirectoryItemWrapper item)
-        {
-
-        }
+        private void CopyItem(DirectoryItemWrapper item) { }
 
         [RelayCommand]
-        private async Task PasteItems()
-        {
-            //var pastedItems = await manager.PasteFromClipboard();
-            //await AddDirectoryItemsAsync(pastedItems);
-        }
-
-        #endregion
-
-        [RelayCommand(CanExecute = nameof(HasSelectedItems))]
-        private async Task ShowDetailsOfSelectedItem()
-        {
-            await ShowDetails(SelectedItems[0]);
-        }
+        private void CutItem(DirectoryItemWrapper item) { }
 
         [RelayCommand]
         private async Task ShowDetails(DirectoryItemWrapper item)
         {
-            SelectedDirectoryItemAdditionalDetails = item.GetBasicInfo();
+            SelectedDirectoryItemAdditionalDetails = await CommonFileOperationsViewModel.ShowDetailsAsync(item);
             IsDetailsShown = true;
-
-            switch (item)
-            {
-                case DirectoryWrapper dir:
-                    {
-                        int files = await dir.CountFilesAsync(option: SearchOption.AllDirectories);
-                        int folders = await dir.CountFoldersAsync(option: SearchOption.AllDirectories);
-                        SelectedDirectoryItemAdditionalDetails.TitleInfo = $"Files: {files} Folders: {folders}";
-                        break;
-                    }
-                case FileWrapper file:
-                    SelectedDirectoryItemAdditionalDetails.TitleInfo = await file.GetFileTypeAsync();
-                    break;
-                default:
-                    throw new ArgumentException("Item not a directory or file.", nameof(item));
-            }
         }
 
         [RelayCommand]
@@ -411,6 +235,7 @@ namespace FileExplorer.ViewModels
                 await MoveToDirectoryAsync(tab.TabDirectory);
                 var navigationInfo = new DirectoryNavigationInfo(tab.TabDirectory);
                 Messenger.Send(new NewTabOpened(navigationInfo, tab.TabHistory));
+                Messenger.Send(new InitializeToolBarMessage(CurrentDirectory, SelectedItems));
             }
         }
 

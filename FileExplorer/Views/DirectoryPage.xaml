@@ -157,22 +157,7 @@
             </interactivity:Interaction.Behaviors>
         </InfoBar>
 
-        <interactivity:Interaction.Behaviors>
-            <!--TODO: HotKey2 Del - Delete item-->
-            <toolkitBehaviors:KeyDownTriggerBehavior Key="Delete">
-                <core:InvokeCommandAction Command="{x:Bind ViewModel.RecycleSelectedItemsCommand}" />
-            </toolkitBehaviors:KeyDownTriggerBehavior>
-        </interactivity:Interaction.Behaviors>
         <Grid.KeyboardAccelerators>
-            <!--TODO: HotKey1 Ctrl+R - Rename-->
-            <ui:CommandKeyboardAccelerator 
-                    Modifiers="Control" Key="R"
-                    Command="{x:Bind ViewModel.BeginRenamingItemCommand}"
-                />
-            <ui:CommandKeyboardAccelerator 
-                    Modifiers="Shift" Key="Delete"
-                    Command="{x:Bind ViewModel.DeleteSelectedItemsCommand}"
-                />
             <!--TODO: HotKey3 Ctrl+A - SelectAll-->
             <KeyboardAccelerator Modifiers="Control" Key="A" Invoked="SelectAllItems" />
         </Grid.KeyboardAccelerators>

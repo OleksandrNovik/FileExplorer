@@ -2,6 +2,7 @@
 using FileExplorer.Models;
 using FileExplorer.Models.StorageWrappers;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace FileExplorer.ViewModels.Messages
 {
@@ -30,7 +31,7 @@ namespace FileExplorer.ViewModels.Messages
     /// <param name="TabDirectory"> Directory that has to be opened in new tab </param>
     public record OpenTabMessage(DirectoryWrapper TabDirectory);
 
-    public record InitializeToolBarMessage(DirectoryWrapper? CurrentDirectory, IList<DirectoryItemWrapper>? SelectedItems);
+    public record InitializeToolBarMessage(DirectoryWrapper? CurrentDirectory, ObservableCollection<DirectoryItemWrapper>? SelectedItems);
 
-    public record DirectoryChangedMessage(ICollection<DirectoryItemWrapper>? Added = null, ICollection<DirectoryItemWrapper>? Removed = null);
+    public record DirectoryChangedMessage(IList<DirectoryItemWrapper>? Added = null, IList<DirectoryItemWrapper>? Removed = null);
 }

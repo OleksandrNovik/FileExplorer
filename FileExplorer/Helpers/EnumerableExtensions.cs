@@ -34,11 +34,14 @@ namespace FileExplorer.Helpers
             }
         }
 
-        public static void AppendCollection<T>(this IList<T> target, ICollection<T>? source)
+        public static void AppendFront<T>(this IList<T> target, IList<T>? source)
         {
             if (source is not null && source.Count > 0)
             {
-                target.AddRange(source);
+                for (int i = 0; i < source.Count; i++)
+                {
+                    target.Insert(i, source[i]);
+                }
             }
         }
 

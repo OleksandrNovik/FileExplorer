@@ -25,8 +25,8 @@ namespace FileExplorer.Models.StorageWrappers
 
         public override void Copy(string destination)
         {
-            Name = GenerateUniqueName(destination, Name + " - Copy");
-            var newName = $@"{destination}\{Name}";
+            var uniqueName = GenerateUniqueName(destination, Name + " - Copy");
+            var newName = $@"{destination}\{uniqueName}";
             File.Copy(Path, newName);
             info = new FileInfo(newName);
             InitializeData();
@@ -43,6 +43,7 @@ namespace FileExplorer.Models.StorageWrappers
             File.Move(Path, newPath);
             info = new FileInfo(newPath);
             InitializeData();
+            asStorageFile = null;
         }
 
         public override async Task RecycleAsync()

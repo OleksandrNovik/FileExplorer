@@ -37,17 +37,15 @@ namespace FileExplorer.Models.StorageWrappers
             }
         }
 
-        public async Task<int> CountFilesAsync(string pattern = "*", SearchOption option = SearchOption.TopDirectoryOnly)
+        public int CountFiles(string pattern = "*", SearchOption option = SearchOption.TopDirectoryOnly)
         {
             //TODO: Access denied might be occured here
-            return await Task.Run(() => Directory.EnumerateFiles(Path, pattern, option)
-                .AsParallel().Count());
+            return Directory.EnumerateFiles(Path, pattern, option).AsParallel().Count();
         }
 
-        public async Task<int> CountFoldersAsync(string pattern = "*", SearchOption option = SearchOption.TopDirectoryOnly)
+        public int CountFolders(string pattern = "*", SearchOption option = SearchOption.TopDirectoryOnly)
         {
-            return await Task.Run(() => Directory.EnumerateDirectories(Path, pattern, option)
-                .AsParallel().Count());
+            return Directory.EnumerateDirectories(Path, pattern, option).AsParallel().Count();
         }
 
 
@@ -67,6 +65,7 @@ namespace FileExplorer.Models.StorageWrappers
             Directory.Move(Path, newPath);
             info = new DirectoryInfo(newPath);
             InitializeData();
+            asStorageFolder = null;
         }
 
         public override async Task RecycleAsync()

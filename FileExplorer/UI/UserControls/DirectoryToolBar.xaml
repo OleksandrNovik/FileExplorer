@@ -6,6 +6,10 @@
     xmlns:local="using:FileExplorer.UI.UserControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="using:FileExplorer.UI"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:behaviors="using:CommunityToolkit.WinUI.UI.Behaviors"
+    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     mc:Ignorable="d">
 
     <UserControl.Resources>
@@ -21,8 +25,9 @@
             <ColumnDefinition Width="300" />
         </Grid.ColumnDefinitions>
         <StackPanel Orientation="Horizontal">
-            <DropDownButton
+            <DropDownButton 
              Style="{StaticResource MenuButton}" 
+             IsEnabled="{x:Bind ViewModel.CommonFileOperationsViewModel.CanCreateItems, Mode=OneWay}"
              ToolTipService.ToolTip="New File"
              ToolTipService.Placement="Bottom">
                 <StackPanel Orientation="Horizontal">
@@ -68,7 +73,7 @@
             <Button 
              Style="{StaticResource MenuButton}"
              Command="{x:Bind ViewModel.RecycleSelectedItemsCommand}"
-             ToolTipService.ToolTip="DeleteAsync"
+             ToolTipService.ToolTip="Delete"
              ToolTipService.Placement="Bottom">
                 <FontIcon FontSize="17" Glyph="&#xE74D;" />
             </Button>
@@ -103,5 +108,26 @@
                 </StackPanel>
             </Button>
         </StackPanel>
+
+        <Grid.KeyboardAccelerators>
+            <!--TODO: HotKey1 Ctrl+R - Rename-->
+            <ui:CommandKeyboardAccelerator 
+                Modifiers="Control" Key="R"
+                Command="{x:Bind ViewModel.BeginRenamingSelectedItemCommand}"
+            />
+            <!--TODO: HotKey3 Shift+Delete - Permanent delete-->
+            <ui:CommandKeyboardAccelerator 
+                Modifiers="Shift" Key="Delete"
+                Command="{x:Bind ViewModel.DeleteSelectedItemsCommand}"
+            />
+        </Grid.KeyboardAccelerators>
+
+        <interactivity:Interaction.Behaviors>
+            <!--TODO: HotKey2 Del - Delete item-->
+            <behaviors:KeyDownTriggerBehavior Key="Delete">
+                <core:InvokeCommandAction Command="{x:Bind ViewModel.RecycleSelectedItemsCommand}" />
+            </behaviors:KeyDownTriggerBehavior>
+        </interactivity:Interaction.Behaviors>
+
     </Grid>
 </UserControl>
