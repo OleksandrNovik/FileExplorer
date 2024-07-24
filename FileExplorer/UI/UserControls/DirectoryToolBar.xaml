@@ -27,7 +27,6 @@
         <StackPanel Orientation="Horizontal">
             <DropDownButton 
              Style="{StaticResource MenuButton}" 
-             IsEnabled="{x:Bind ViewModel.CommonFileOperationsViewModel.CanCreateItems, Mode=OneWay}"
              ToolTipService.ToolTip="New File"
              ToolTipService.Placement="Bottom">
                 <StackPanel Orientation="Horizontal">
@@ -45,38 +44,46 @@
                     </MenuFlyout>
                 </DropDownButton.Flyout>
             </DropDownButton>
-            <Button 
-             Style="{StaticResource MenuButton}"
-             ToolTipService.ToolTip="Copy"
-             ToolTipService.Placement="Bottom">
-                <FontIcon FontSize="17" Glyph="&#xE8C8;" />
-            </Button>
-            <Button 
-             Style="{StaticResource MenuButton}"
-             ToolTipService.ToolTip="Cut"
-             ToolTipService.Placement="Bottom">
-                <FontIcon FontSize="17" Glyph="&#xE8C6;" />
-            </Button>
-            <Button 
-             Style="{StaticResource MenuButton}"
-             ToolTipService.ToolTip="Paste"
-             ToolTipService.Placement="Bottom">
-                <FontIcon FontSize="17" Glyph="&#xE77F;" />
-            </Button>
-            <Button 
-             Command="{x:Bind ViewModel.BeginRenamingSelectedItemCommand}"
-             Style="{StaticResource MenuButton}"
-             ToolTipService.ToolTip="Rename"
-             ToolTipService.Placement="Bottom">
-                <FontIcon FontSize="17" Glyph="&#xE8AC;" />
-            </Button>
-            <Button 
-             Style="{StaticResource MenuButton}"
-             Command="{x:Bind ViewModel.RecycleSelectedItemsCommand}"
-             ToolTipService.ToolTip="Delete"
-             ToolTipService.Placement="Bottom">
-                <FontIcon FontSize="17" Glyph="&#xE74D;" />
-            </Button>
+
+            <CommandBar OverflowButtonVisibility="Collapsed">
+                <AppBarButton IsCompact="True"
+                              ToolTipService.ToolTip="Copy"
+                              ToolTipService.Placement="Bottom">
+                    <AppBarButton.Icon>
+                        <FontIcon FontSize="20" Glyph="&#xE8C8;" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+                <AppBarButton IsCompact="True"
+                              ToolTipService.ToolTip="Cut"
+                              ToolTipService.Placement="Bottom">
+                    <AppBarButton.Icon>
+                        <FontIcon FontSize="20" Glyph="&#xE8C6;" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+                <AppBarButton IsCompact="True"
+                              ToolTipService.ToolTip="Paste"
+                              ToolTipService.Placement="Bottom">
+                    <AppBarButton.Icon>
+                        <FontIcon FontSize="20" Glyph="&#xE77F;" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+                <AppBarButton IsCompact="True"
+                              Command="{x:Bind ViewModel.BeginRenamingSelectedItemCommand}"
+                              ToolTipService.ToolTip="Rename"
+                              ToolTipService.Placement="Bottom">
+                    <AppBarButton.Icon>
+                        <FontIcon FontSize="20" Glyph="&#xE8AC;" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+                <AppBarButton IsCompact="True" 
+                              Command="{x:Bind ViewModel.RecycleSelectedItemsCommand}"
+                              ToolTipService.ToolTip="Delete"
+                              ToolTipService.Placement="Bottom">
+                    <AppBarButton.Icon>
+                        <FontIcon FontSize="20" Glyph="&#xE74D;" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+            </CommandBar>
         </StackPanel>
         <StackPanel Grid.Column="1" Orientation="Horizontal">
             <DropDownButton 

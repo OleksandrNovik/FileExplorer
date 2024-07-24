@@ -16,6 +16,7 @@ namespace FileExplorer.ViewModels
         private readonly IHistoryNavigationService _navigation;
         private readonly IDirectoryRouteService _router;
         private DirectoryNavigationInfo CurrentDirectory => _navigation.CurrentDirectory;
+        public SearchOperationsViewModel SearchOperator { get; }
 
         [ObservableProperty]
         private bool isWritingRoute;
@@ -26,10 +27,12 @@ namespace FileExplorer.ViewModels
         [ObservableProperty]
         private ObservableCollection<string> routeItems;
 
-        public DirectoriesNavigationViewModel(IHistoryNavigationService navigation, IDirectoryRouteService router)
+        public DirectoriesNavigationViewModel(IHistoryNavigationService navigation, IDirectoryRouteService router, SearchOperationsViewModel searchOperator)
         {
             _navigation = navigation;
             _router = router;
+
+            SearchOperator = searchOperator;
 
             // Handler that is called when new tab is opened. New directory from that tab is initialized
             Messenger.Register<DirectoriesNavigationViewModel, NewTabOpened>(this, (_, message) =>

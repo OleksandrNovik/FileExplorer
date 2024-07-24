@@ -12,6 +12,50 @@
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     mc:Ignorable="d">
 
+    <UserControl.Resources>
+        <MenuFlyout x:Key="SearchOptions" Placement="BottomEdgeAlignedRight">
+
+            <ToggleMenuFlyoutItem Text="All nested folders" IsChecked="{x:Bind ViewModel.SearchOperator.Options.IsNestedSearch, Mode=TwoWay}">
+                <ToggleMenuFlyoutItem.Icon>
+                    <FontIcon FontSize="14" Glyph="&#xED25;" />
+                </ToggleMenuFlyoutItem.Icon>
+            </ToggleMenuFlyoutItem>
+
+            <MenuFlyoutSeparator />
+
+            <MenuFlyoutSubItem Text="Modification date">
+                <MenuFlyoutSubItem.Icon>
+                    <FontIcon FontSize="14" Glyph="&#xEC92;" />
+                </MenuFlyoutSubItem.Icon>
+
+                <MenuFlyoutSubItem.Items>
+                    <MenuFlyoutItem Text="Dates"  />
+                </MenuFlyoutSubItem.Items>
+            </MenuFlyoutSubItem>
+
+            <MenuFlyoutSubItem Text="Type">
+                <MenuFlyoutSubItem.Icon>
+                    <FontIcon FontSize="14" Glyph="&#xE97C;" />
+                </MenuFlyoutSubItem.Icon>
+
+                <MenuFlyoutSubItem.Items>
+                    <MenuFlyoutItem Text="Types"  />
+                </MenuFlyoutSubItem.Items>
+            </MenuFlyoutSubItem>
+
+            <MenuFlyoutSubItem Text="Size">
+                <MenuFlyoutSubItem.Icon>
+                    <FontIcon FontSize="14" Glyph="&#xE97C;" />
+                </MenuFlyoutSubItem.Icon>
+
+                <MenuFlyoutSubItem.Items>
+                    <MenuFlyoutItem Text="Sizes"  />
+                </MenuFlyoutSubItem.Items>
+            </MenuFlyoutSubItem>
+
+        </MenuFlyout>
+    </UserControl.Resources>
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="160" />
@@ -102,6 +146,7 @@
             <Button Grid.Column="1"
                     ToolTipService.ToolTip="Search options"
                     ToolTipService.Placement="Bottom"
+                    Flyout="{StaticResource SearchOptions}"
                     Style="{StaticResource SmallIconButton}">
                 <FontIcon FontSize="16" Glyph="&#xE712;" />
             </Button>

@@ -140,9 +140,10 @@ namespace FileExplorer.ViewModels
         #endregion
 
         [RelayCommand(CanExecute = nameof(HasSelectedItems))]
-        private void ShowDetails()
+        private async Task ShowDetails()
         {
-            //TODO: Send show details message
+            var info = await CommonFileOperationsViewModel.ShowDetailsAsync(selectedItems[0]);
+            Messenger.Send(info);
         }
     }
 }

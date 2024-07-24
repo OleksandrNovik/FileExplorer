@@ -58,6 +58,12 @@ namespace FileExplorer.ViewModels
                 DirectoryItems.AppendFront(message.Added);
                 DirectoryItems.RemoveCollection(message.Removed);
             });
+
+            Messenger.Register<DirectoryPageViewModel, DirectoryItemAdditionalInfo>(this, (_, message) =>
+            {
+                SelectedDirectoryItemAdditionalDetails = message;
+                IsDetailsShown = true;
+            });
         }
 
         private async void HandlerFileOpen(DirectoryPageViewModel recipient, FileOpenRequiredMessage message)

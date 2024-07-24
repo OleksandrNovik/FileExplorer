@@ -14,22 +14,14 @@ namespace FileExplorer.ViewModels
     {
         private readonly IDirectoryManager manager;
 
-        [ObservableProperty]
-        private bool canCreateItems;
-
-        public DirectoryWrapper? CurrentDirectory
+        public DirectoryWrapper CurrentDirectory
         {
             get => manager.CurrentDirectory;
             set
             {
-                if (value is not null && !value.Equals(manager.CurrentDirectory))
+                if (!value.Equals(manager.CurrentDirectory))
                 {
                     manager.CurrentDirectory = value;
-                    CanCreateItems = true;
-                }
-                else
-                {
-                    CanCreateItems = false;
                 }
             }
         }
