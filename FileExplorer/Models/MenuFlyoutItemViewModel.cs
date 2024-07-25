@@ -8,7 +8,7 @@ namespace FileExplorer.Models
     {
         public string Text { get; set; }
         public IRelayCommand? Command { get; set; }
-        public object? CommandParameter { get; set; }
+        public object? CommandParameter { get; set; } = null;
         public List<MenuFlyoutItemViewModel>? Items { get; set; }
         public string? IconGlyph { get; set; }
 

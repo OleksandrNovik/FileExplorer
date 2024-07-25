@@ -28,9 +28,9 @@
                     <FontIcon FontSize="14" Glyph="&#xEC92;" />
                 </MenuFlyoutSubItem.Icon>
 
-                <MenuFlyoutSubItem.Items>
-                    <MenuFlyoutItem Text="Dates"  />
-                </MenuFlyoutSubItem.Items>
+                <interactivity:Interaction.Behaviors>
+                    <behaviors:InitializeWithItemsBehavior MenuSubItems="{x:Bind ViewModel.SearchOperator.DateSearchOptions}" />
+                </interactivity:Interaction.Behaviors>
             </MenuFlyoutSubItem>
 
             <MenuFlyoutSubItem Text="Type">

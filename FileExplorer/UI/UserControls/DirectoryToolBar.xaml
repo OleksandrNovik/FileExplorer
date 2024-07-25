@@ -45,24 +45,24 @@
                 </DropDownButton.Flyout>
             </DropDownButton>
 
-            <CommandBar OverflowButtonVisibility="Collapsed">
+            <CommandBar OverflowButtonVisibility="Collapsed" >
                 <AppBarButton IsCompact="True"
                               ToolTipService.ToolTip="Copy"
-                              ToolTipService.Placement="Bottom">
+                              ToolTipService.Placement="Bottom" MaxWidth="55">
                     <AppBarButton.Icon>
                         <FontIcon FontSize="20" Glyph="&#xE8C8;" />
                     </AppBarButton.Icon>
                 </AppBarButton>
                 <AppBarButton IsCompact="True"
                               ToolTipService.ToolTip="Cut"
-                              ToolTipService.Placement="Bottom">
+                              ToolTipService.Placement="Bottom" MaxWidth="55">
                     <AppBarButton.Icon>
                         <FontIcon FontSize="20" Glyph="&#xE8C6;" />
                     </AppBarButton.Icon>
                 </AppBarButton>
                 <AppBarButton IsCompact="True"
                               ToolTipService.ToolTip="Paste"
-                              ToolTipService.Placement="Bottom">
+                              ToolTipService.Placement="Bottom" MaxWidth="55">
                     <AppBarButton.Icon>
                         <FontIcon FontSize="20" Glyph="&#xE77F;" />
                     </AppBarButton.Icon>
@@ -70,7 +70,7 @@
                 <AppBarButton IsCompact="True"
                               Command="{x:Bind ViewModel.BeginRenamingSelectedItemCommand}"
                               ToolTipService.ToolTip="Rename"
-                              ToolTipService.Placement="Bottom">
+                              ToolTipService.Placement="Bottom" MaxWidth="55">
                     <AppBarButton.Icon>
                         <FontIcon FontSize="20" Glyph="&#xE8AC;" />
                     </AppBarButton.Icon>
@@ -78,7 +78,7 @@
                 <AppBarButton IsCompact="True" 
                               Command="{x:Bind ViewModel.RecycleSelectedItemsCommand}"
                               ToolTipService.ToolTip="Delete"
-                              ToolTipService.Placement="Bottom">
+                              ToolTipService.Placement="Bottom" MaxWidth="55">
                     <AppBarButton.Icon>
                         <FontIcon FontSize="20" Glyph="&#xE74D;" />
                     </AppBarButton.Icon>

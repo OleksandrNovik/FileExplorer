@@ -1,12 +1,20 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿#nullable enable
+using CommunityToolkit.Mvvm.ComponentModel;
+using FileExplorer.Models.Ranges;
 
 namespace FileExplorer.Models
 {
     public sealed partial class SearchOptionsModel : ObservableObject
     {
-        public static readonly SearchOptionsModel Default = new SearchOptionsModel();
+        public static readonly SearchOptionsModel Default = new()
+        {
+            IsNestedSearch = true,
+            DateOption = default,
+        };
 
         [ObservableProperty]
         private bool isNestedSearch;
+
+        public DateRange? DateOption { get; set; }
     }
 }
