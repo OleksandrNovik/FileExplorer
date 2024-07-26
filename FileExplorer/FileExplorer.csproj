@@ -49,4 +49,9 @@
   <ItemGroup>
     <Resource Remove="Views\ShellPage.xaml" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Helpers\Helpers.csproj" />
+    <ProjectReference Include="..\Models\Models.csproj" />
+  </ItemGroup>
 </Project>

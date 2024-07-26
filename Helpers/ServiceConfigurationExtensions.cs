@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml.Controls;
 
-namespace FileExplorer.Helpers
+namespace Helpers
 {
     public static class ServiceConfigurationExtensions
     {

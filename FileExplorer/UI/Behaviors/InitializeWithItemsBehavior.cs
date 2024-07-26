@@ -1,7 +1,7 @@
-﻿using FileExplorer.Helpers;
-using FileExplorer.Models;
+﻿using Helpers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Xaml.Interactivity;
+using Models;
 using System.Collections.Generic;
 using System.Linq;
 

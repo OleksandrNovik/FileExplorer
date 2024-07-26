@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using FileExplorer.Models.StorageWrappers;
+using Helpers.StorageHelpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,12 +10,11 @@ using Windows.Storage.FileProperties;
 using Windows.Storage.Streams;
 using FileAttributes = System.IO.FileAttributes;
 
-namespace FileExplorer.Helpers.StorageHelpers
+namespace Models.ModelHelpers
 {
     public static class IconHelper
     {
         private static readonly Dictionary<string, IRandomAccessStream> CachedThumbnails = new();
-
         private static async Task<StorageItemThumbnail> GetIconFromItemPropsAsync(IStorageItemProperties item, uint size)
         {
             var thumbnail = await item.GetThumbnailAsync(ThumbnailMode.ListView, size);
@@ -43,7 +43,7 @@ namespace FileExplorer.Helpers.StorageHelpers
                 var itemProperties = await item.GetStorageItemPropertiesAsync();
                 thumbnail = await GetIconFromItemPropsAsync(itemProperties, 95);
 
-                if (!FileExtensionsHelper.IsImage(item.Name))
+                if (!FileExtensionsHelper.IsImage(item.Path))
                 {
                     CachedThumbnails.Add(key, thumbnail);
                 }

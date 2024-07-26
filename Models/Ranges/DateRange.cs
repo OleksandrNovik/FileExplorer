@@ -1,7 +1,7 @@
 ﻿using FileExplorer.Contracts;
 using System;
 
-namespace FileExplorer.Models.Ranges
+namespace Models.Ranges
 {
     public sealed class DateRange : IRange<DateTime>
     {

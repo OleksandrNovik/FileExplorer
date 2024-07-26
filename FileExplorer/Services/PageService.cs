@@ -1,9 +1,9 @@
 ﻿#nullable enable
 using FileExplorer.Contracts;
-using FileExplorer.Helpers.StorageHelpers;
 using FileExplorer.Models;
-using FileExplorer.Models.StorageWrappers;
 using FileExplorer.Views;
+using Helpers.StorageHelpers;
+using Models.StorageWrappers;
 using System;
 using Windows.Storage;
 

@@ -1,5 +1,5 @@
-﻿using FileExplorer.Models;
-using FileExplorer.ViewModels;
+﻿using FileExplorer.ViewModels;
+using Models;
 
 namespace FileExplorer.Contracts
 {

@@ -1,6 +1,6 @@
 ﻿#nullable enable
 using CommunityToolkit.Mvvm.ComponentModel;
-using FileExplorer.Models.Ranges;
+using Models.Ranges;
 
 namespace FileExplorer.Models
 {

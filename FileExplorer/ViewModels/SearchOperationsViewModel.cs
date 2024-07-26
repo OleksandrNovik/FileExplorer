@@ -2,7 +2,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FileExplorer.Models;
-using FileExplorer.Models.Ranges;
+using Models;
+using Models.Ranges;
 using System;
 using System.Collections.Generic;
 

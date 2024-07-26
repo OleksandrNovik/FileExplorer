@@ -1,7 +1,8 @@
 ﻿#nullable enable
 using CommunityToolkit.Mvvm.ComponentModel;
-using FileExplorer.Helpers.StorageHelpers;
 using Microsoft.UI.Xaml.Media.Imaging;
+using Models.ModelHelpers;
+using Models.StorageWrappers;
 using System;
 using System.ComponentModel;
 using System.IO;

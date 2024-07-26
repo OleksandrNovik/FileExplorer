@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace FileExplorer.Helpers
+namespace Helpers
 {
     public static class EnumerableExtensions
     {

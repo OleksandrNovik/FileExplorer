@@ -2,11 +2,12 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using FileExplorer.Models.StorageWrappers;
 using Windows.Storage;
 using Windows.System;
 using IOPath = System.IO.Path;
 
-namespace FileExplorer.Models.StorageWrappers
+namespace Models.StorageWrappers
 {
     public class FileWrapper : DirectoryItemWrapper
     {

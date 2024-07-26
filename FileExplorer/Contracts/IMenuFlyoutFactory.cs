@@ -1,5 +1,5 @@
-﻿using FileExplorer.Models;
-using Microsoft.UI.Xaml.Controls;
+﻿using Microsoft.UI.Xaml.Controls;
+using Models;
 using System.Collections.Generic;
 
 namespace FileExplorer.Contracts

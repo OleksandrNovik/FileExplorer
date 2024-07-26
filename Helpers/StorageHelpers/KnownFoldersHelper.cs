@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Windows.Storage;
 
-namespace FileExplorer.Helpers.StorageHelpers
+namespace Helpers.StorageHelpers
 {
     public static class KnownFoldersHelper
     {

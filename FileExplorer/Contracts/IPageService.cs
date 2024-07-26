@@ -1,6 +1,6 @@
 ﻿#nullable enable
 using FileExplorer.Models;
-using FileExplorer.Models.StorageWrappers;
+using Models.StorageWrappers;
 
 namespace FileExplorer.Contracts
 {

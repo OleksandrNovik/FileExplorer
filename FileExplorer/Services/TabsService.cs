@@ -1,9 +1,9 @@
 ﻿#nullable enable
 using FileExplorer.Contracts;
-using FileExplorer.Helpers;
 using FileExplorer.Models;
-using FileExplorer.Models.StorageWrappers;
+using Helpers;
 using Microsoft.UI.Xaml.Controls;
+using Models.StorageWrappers;
 using System.Collections.ObjectModel;
 
 namespace FileExplorer.Services

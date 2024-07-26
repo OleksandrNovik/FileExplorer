@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace FileExplorer.Models
+namespace Models
 {
     public class TabNavigationHistoryModel
     {

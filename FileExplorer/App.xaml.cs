@@ -1,8 +1,8 @@
 ﻿using FileExplorer.Contracts;
-using FileExplorer.Helpers;
 using FileExplorer.Services;
 using FileExplorer.ViewModels;
 using FileExplorer.Views;
+using Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.UI.Xaml;

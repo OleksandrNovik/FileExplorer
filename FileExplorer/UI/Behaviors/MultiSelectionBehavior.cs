@@ -1,4 +1,4 @@
-﻿using FileExplorer.Helpers;
+﻿using Helpers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Xaml.Interactivity;
 using System.Collections;

@@ -1,6 +1,6 @@
 ﻿using FileExplorer.Contracts;
-using FileExplorer.Helpers.StorageHelpers;
-using FileExplorer.Models.StorageWrappers;
+using Helpers.StorageHelpers;
+using Models.StorageWrappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;

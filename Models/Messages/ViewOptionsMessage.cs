@@ -1,5 +1,5 @@
 ﻿#nullable enable
-namespace FileExplorer.ViewModels.Messages
+namespace Models.Messages
 {
     public enum SortOptions
     {

@@ -2,7 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.Generic;
 
-namespace FileExplorer.Models
+namespace Models
 {
     public sealed class MenuFlyoutItemViewModel
     {

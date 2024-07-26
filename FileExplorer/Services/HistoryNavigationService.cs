@@ -1,5 +1,5 @@
 ﻿using FileExplorer.Contracts;
-using FileExplorer.Models;
+using Models;
 
 namespace FileExplorer.Services
 {
