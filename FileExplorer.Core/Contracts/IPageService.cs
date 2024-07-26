@@ -2,7 +2,7 @@
 using FileExplorer.Models;
 using Models.StorageWrappers;
 
-namespace FileExplorer.Contracts
+namespace FileExplorer.Core.Contracts
 {
     public interface IPageService
     {

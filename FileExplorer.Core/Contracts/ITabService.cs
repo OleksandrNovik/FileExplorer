@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 using Models.StorageWrappers;
 using System.Collections.ObjectModel;
 
-namespace FileExplorer.Contracts
+namespace FileExplorer.Core.Contracts
 {
     public interface ITabService
     {

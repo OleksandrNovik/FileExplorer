@@ -2,7 +2,7 @@
 using Models;
 using System.Collections.Generic;
 
-namespace FileExplorer.Contracts
+namespace FileExplorer.Core.Contracts
 {
     public interface IMenuFlyoutFactory
     {

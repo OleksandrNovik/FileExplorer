@@ -1,7 +1,6 @@
-﻿using FileExplorer.ViewModels;
-using Models;
+﻿using Models;
 
-namespace FileExplorer.Contracts
+namespace FileExplorer.Core.Contracts
 {
     public interface IHistoryNavigationService
     {
@@ -11,14 +10,14 @@ namespace FileExplorer.Contracts
         public bool CanGoBack { get; }
 
         /// <summary>
-        /// Should be called when <see cref="DirectoryPageViewModel"/> navigates forward through directory
+        /// Should be called when DirectoryPageViewModel navigates forward through directory
         /// Method saves previous location, so user can go back
         /// </summary>
         /// <param name="location"> New location we have navigated to </param>
         public void GoForward(DirectoryNavigationInfo location);
 
         /// <summary>
-        /// Should be called when <see cref="DirectoryPageViewModel"/> navigates up directory
+        /// Should be called when DirectoryPageViewModel navigates up directory
         /// Method sets new location as current directory and saves previous location, so we can always go forward to it
         /// </summary>
         /// <param name="location"></param>

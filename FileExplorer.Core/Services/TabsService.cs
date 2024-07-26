@@ -1,12 +1,12 @@
 ﻿#nullable enable
-using FileExplorer.Contracts;
+using FileExplorer.Core.Contracts;
 using FileExplorer.Models;
 using Helpers;
 using Microsoft.UI.Xaml.Controls;
 using Models.StorageWrappers;
 using System.Collections.ObjectModel;
 
-namespace FileExplorer.Services
+namespace FileExplorer.Core.Services
 {
     public class TabsService : ITabService
     {

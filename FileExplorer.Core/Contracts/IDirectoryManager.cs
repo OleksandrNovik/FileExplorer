@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Windows.Storage;
 using DirectoryItemWrapper = FileExplorer.Models.StorageWrappers.DirectoryItemWrapper;
 
-namespace FileExplorer.Contracts
+namespace FileExplorer.Core.Contracts
 {
     public interface IDirectoryManager
     {

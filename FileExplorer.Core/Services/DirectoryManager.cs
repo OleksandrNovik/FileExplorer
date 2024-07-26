@@ -1,4 +1,4 @@
-﻿using FileExplorer.Contracts;
+﻿using FileExplorer.Core.Contracts;
 using Helpers.StorageHelpers;
 using Models.StorageWrappers;
 using System;
@@ -9,7 +9,7 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 using DirectoryItemWrapper = FileExplorer.Models.StorageWrappers.DirectoryItemWrapper;
 
-namespace FileExplorer.Services
+namespace FileExplorer.Core.Services
 {
     public class DirectoryManager : IDirectoryManager
     {

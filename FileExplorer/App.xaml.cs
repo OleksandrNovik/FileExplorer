@@ -1,4 +1,6 @@
 ﻿using FileExplorer.Contracts;
+using FileExplorer.Core.Contracts;
+using FileExplorer.Core.Services;
 using FileExplorer.Services;
 using FileExplorer.ViewModels;
 using FileExplorer.Views;

@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using DirectoryItemWrapper = FileExplorer.Models.StorageWrappers.DirectoryItemWrapper;
 
-namespace FileExplorer.Services
+namespace FileExplorer.Core.Services
 {
     public class DirectoryRouteService : IDirectoryRouteService
     {
