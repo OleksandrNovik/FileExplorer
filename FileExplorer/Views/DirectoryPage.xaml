@@ -19,6 +19,10 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Page.Resources>
+        <Style x:Key="MenuButton" TargetType="Button">
+            <Setter Property="Padding" Value="10 8"  />
+            <Setter Property="Margin" Value="0 0 10 0" />
+        </Style>
         <DataTemplate x:Key="GridItemTemplate" x:DataType="storageWrappers:DirectoryItemWrapper">
             <Grid  Padding="10  20 10 10">
 
@@ -74,79 +78,190 @@
         </DataTemplate>
     </Page.Resources>
 
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
-        <controls:AdaptiveGridView x:Name="DirectoryItemsGrid"
+    <Grid Padding="20 20 5 5" KeyboardAcceleratorPlacementMode="Hidden">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="55" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid Margin="0 0 0 10">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="300" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Orientation="Horizontal">
+                <DropDownButton 
+                     Style="{StaticResource MenuButton}" 
+                     ToolTipService.ToolTip="New File"
+                     ToolTipService.Placement="Bottom">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Margin="0 0 7 0 " VerticalAlignment="Center">New</TextBlock>
+                        <FontIcon FontSize="12" Glyph="&#xE710;" />
+                    </StackPanel>
+                    <DropDownButton.Flyout>
+                        <MenuFlyout Placement="Bottom">
+                            <MenuFlyoutItem 
+                         Command="{x:Bind ViewModel.CreateFileCommand}"
+                         Text="File" />
+                            <MenuFlyoutItem 
+                         Command="{x:Bind ViewModel.CreateDirectoryCommand}"
+                         Text="Folder"/>
+                        </MenuFlyout>
+                    </DropDownButton.Flyout>
+                </DropDownButton>
+
+                <CommandBar OverflowButtonVisibility="Collapsed" >
+                    <AppBarButton IsCompact="True"
+                              ToolTipService.ToolTip="Copy"
+                              ToolTipService.Placement="Bottom" MaxWidth="55">
+                        <AppBarButton.Icon>
+                            <FontIcon FontSize="20" Glyph="&#xE8C8;" />
+                        </AppBarButton.Icon>
+                    </AppBarButton>
+                    <AppBarButton IsCompact="True"
+                              ToolTipService.ToolTip="Cut"
+                              ToolTipService.Placement="Bottom" MaxWidth="55">
+                        <AppBarButton.Icon>
+                            <FontIcon FontSize="20" Glyph="&#xE8C6;" />
+                        </AppBarButton.Icon>
+                    </AppBarButton>
+                    <AppBarButton IsCompact="True"
+                              ToolTipService.ToolTip="Paste"
+                              ToolTipService.Placement="Bottom" MaxWidth="55">
+                        <AppBarButton.Icon>
+                            <FontIcon FontSize="20" Glyph="&#xE77F;" />
+                        </AppBarButton.Icon>
+                    </AppBarButton>
+                    <AppBarButton IsCompact="True"
+                              Command="{x:Bind ViewModel.BeginRenamingSelectedItemCommand}"
+                              ToolTipService.ToolTip="Rename"
+                              ToolTipService.Placement="Bottom" MaxWidth="55">
+                        <AppBarButton.Icon>
+                            <FontIcon FontSize="20" Glyph="&#xE8AC;" />
+                        </AppBarButton.Icon>
+                    </AppBarButton>
+                    <AppBarButton IsCompact="True" 
+                              Command="{x:Bind ViewModel.RecycleSelectedItemsCommand}"
+                              ToolTipService.ToolTip="Delete"
+                              ToolTipService.Placement="Bottom" MaxWidth="55">
+                        <AppBarButton.Icon>
+                            <FontIcon FontSize="20" Glyph="&#xE74D;" />
+                        </AppBarButton.Icon>
+                    </AppBarButton>
+                </CommandBar>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <DropDownButton 
+                     Style="{StaticResource MenuButton}"
+                     ToolTipService.ToolTip="Change View Of Items"
+                     ToolTipService.Placement="Bottom">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Margin="0 0 7 0 " VerticalAlignment="Center">View</TextBlock>
+                        <FontIcon FontSize="12" Glyph="&#xF246;"  />
+                    </StackPanel>
+                </DropDownButton>
+                <DropDownButton 
+             Style="{StaticResource MenuButton}"
+             ToolTipService.ToolTip="Sort elements"
+             ToolTipService.Placement="Bottom">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Margin="0 0 7 0 " VerticalAlignment="Center">Sort</TextBlock>
+                        <FontIcon FontSize="12" Glyph="&#xE8CB;"  />
+                    </StackPanel>
+                </DropDownButton>
+                <Button 
+             Style="{StaticResource MenuButton}" 
+             Command="{x:Bind ViewModel.ShowDetailsCommand}"
+             ToolTipService.ToolTip="File Details"
+             ToolTipService.Placement="Bottom">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Margin="0 0 7 0 " VerticalAlignment="Center">Details</TextBlock>
+                        <FontIcon FontSize="14" Glyph="&#xE946;" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+
+        </Grid>
+
+        <Grid Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"  />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <controls:AdaptiveGridView x:Name="DirectoryItemsGrid"
                                        ItemHeight="155"
                                        RightTapped="OnDirectoryItemsGridRightTapped"
                                        ItemsSource="{x:Bind ViewModel.DirectoryItems, Mode=OneWay}" 
                                        ItemTemplate="{StaticResource GridItemTemplate}"
                                        SelectionMode="Extended"
                                        DesiredWidth="160">
-            <MenuFlyout x:Name="ContextMenu" />
-            <interactivity:Interaction.Behaviors>
-                <behaviors:MultiSelectionBehavior SelectedItems="{x:Bind ViewModel.SelectedItems, Mode=OneWay}" />
-            </interactivity:Interaction.Behaviors>
-        </controls:AdaptiveGridView>
+                <MenuFlyout x:Name="ContextMenu" />
+                <interactivity:Interaction.Behaviors>
+                    <behaviors:MultiSelectionBehavior SelectedItems="{x:Bind ViewModel.SelectedItems, Mode=OneWay}" />
+                </interactivity:Interaction.Behaviors>
+            </controls:AdaptiveGridView>
 
-        <Grid Width="300" Column="1" Visibility="{x:Bind ViewModel.IsDetailsShown, Mode=OneWay, 
+            <Grid Width="300" Column="1" Visibility="{x:Bind ViewModel.IsDetailsShown, Mode=OneWay, 
                 Converter={StaticResource BoolToVisibilityConverter}}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="60" />
-            </Grid.RowDefinitions>
-            <Grid.Resources>
-                <Style TargetType="FrameworkElement" x:Key="PanelItem">
-                    <Setter Property="HorizontalAlignment" Value="Center" />
-                    <Setter Property="Margin" Value="0 6" />
-                </Style>
-            </Grid.Resources>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="60" />
+                </Grid.RowDefinitions>
+                <Grid.Resources>
+                    <Style TargetType="FrameworkElement" x:Key="PanelItem">
+                        <Setter Property="HorizontalAlignment" Value="Center" />
+                        <Setter Property="Margin" Value="0 6" />
+                    </Style>
+                </Grid.Resources>
 
-            <ScrollViewer>
-                <StackPanel Padding="10 5">
+                <ScrollViewer>
+                    <StackPanel Padding="10 5">
 
-                    <Image Source="{x:Bind ViewModel.SelectedDirectoryItemAdditionalDetails.Thumbnail, Mode=OneWay}" Height="100" Style="{StaticResource PanelItem}" />
+                        <Image Source="{x:Bind ViewModel.SelectedDirectoryItemAdditionalDetails.Thumbnail, Mode=OneWay}" Height="100" Style="{StaticResource PanelItem}" />
 
-                    <TextBlock Text="{x:Bind ViewModel.SelectedDirectoryItemAdditionalDetails.Name, Mode=OneWay}" Style="{StaticResource TitleTextBlockStyle}" 
+                        <TextBlock Text="{x:Bind ViewModel.SelectedDirectoryItemAdditionalDetails.Name, Mode=OneWay}" Style="{StaticResource TitleTextBlockStyle}" 
                            HorizontalAlignment="Center" 
                            Margin="0 6"
                            FontSize="25"/>
 
-                    <TextBlock Text="{x:Bind ViewModel.SelectedDirectoryItemAdditionalDetails.TitleInfo, Mode=OneWay}" Style="{StaticResource BodyTextBlockStyle}" 
+                        <TextBlock Text="{x:Bind ViewModel.SelectedDirectoryItemAdditionalDetails.TitleInfo, Mode=OneWay}" Style="{StaticResource BodyTextBlockStyle}" 
                            HorizontalAlignment="Center" 
                            Margin="0 6"/>
 
-                    <StackPanel Style="{StaticResource PanelItem}" HorizontalAlignment="Stretch">
-                        <TextBlock Style="{StaticResource BodyTextBlockStyle}"> Modification date</TextBlock>
-                        <TextBlock Text="{x:Bind ViewModel.SelectedDirectoryItemAdditionalDetails.ModifiedDate, Mode=OneWay}" Style="{StaticResource BodyTextBlockStyle}"  />
+                        <StackPanel Style="{StaticResource PanelItem}" HorizontalAlignment="Stretch">
+                            <TextBlock Style="{StaticResource BodyTextBlockStyle}"> Modification date</TextBlock>
+                            <TextBlock Text="{x:Bind ViewModel.SelectedDirectoryItemAdditionalDetails.ModifiedDate, Mode=OneWay}" Style="{StaticResource BodyTextBlockStyle}"  />
+                        </StackPanel>
+
+                        <StackPanel Style="{StaticResource PanelItem}" HorizontalAlignment="Stretch">
+                            <TextBlock Style="{StaticResource BodyTextBlockStyle}"> Creation date</TextBlock>
+                            <TextBlock Text="{x:Bind ViewModel.SelectedDirectoryItemAdditionalDetails.CreationTime, Mode=OneWay}" Style="{StaticResource BodyTextBlockStyle}"  />
+                        </StackPanel>
+
+                        <StackPanel Style="{StaticResource PanelItem}" HorizontalAlignment="Stretch">
+                            <TextBlock Style="{StaticResource BodyTextBlockStyle}"> Full path</TextBlock>
+                            <TextBlock Text="{x:Bind ViewModel.SelectedDirectoryItemAdditionalDetails.FullPath, Mode=OneWay}" Style="{StaticResource BodyTextBlockStyle}"  />
+                        </StackPanel>
+
                     </StackPanel>
-
-                    <StackPanel Style="{StaticResource PanelItem}" HorizontalAlignment="Stretch">
-                        <TextBlock Style="{StaticResource BodyTextBlockStyle}"> Creation date</TextBlock>
-                        <TextBlock Text="{x:Bind ViewModel.SelectedDirectoryItemAdditionalDetails.CreationTime, Mode=OneWay}" Style="{StaticResource BodyTextBlockStyle}"  />
-                    </StackPanel>
-
-                    <StackPanel Style="{StaticResource PanelItem}" HorizontalAlignment="Stretch">
-                        <TextBlock Style="{StaticResource BodyTextBlockStyle}"> Full path</TextBlock>
-                        <TextBlock Text="{x:Bind ViewModel.SelectedDirectoryItemAdditionalDetails.FullPath, Mode=OneWay}" Style="{StaticResource BodyTextBlockStyle}"  />
-                    </StackPanel>
-
-                </StackPanel>
-            </ScrollViewer>
+                </ScrollViewer>
 
 
-            <Button Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Top" 
+                <Button Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Top" 
                         Command="{x:Bind ViewModel.CloseDetailsMenuCommand}">
-                <FontIcon FontSize="12" Glyph="&#xE8BB;" />
-            </Button>
+                    <FontIcon FontSize="12" Glyph="&#xE8BB;" />
+                </Button>
 
-            <Button Grid.Row="1" Style="{StaticResource PanelItem}" 
+                <Button Grid.Row="1" Style="{StaticResource PanelItem}" 
                         FontSize="16" HorizontalAlignment="Left" Padding="12 7"
                         Command="{x:Bind ViewModel.OpenSelectedItemCommand}">Open</Button>
+            </Grid>
         </Grid>
+
+
         <InfoBar Grid.Row="1"
                      Margin="0 0 6 6"
                      IsOpen="{x:Bind ViewModel.HasCopiedFiles, Mode=OneWay}" Severity="Informational"
@@ -157,7 +272,22 @@
             </interactivity:Interaction.Behaviors>
         </InfoBar>
 
+        <interactivity:Interaction.Behaviors>
+            <!--TODO: HotKey2 Del - Delete item-->
+            <toolkitBehaviors:KeyDownTriggerBehavior Key="Delete">
+                <core:InvokeCommandAction Command="{x:Bind ViewModel.RecycleSelectedItemsCommand}" />
+            </toolkitBehaviors:KeyDownTriggerBehavior>
+        </interactivity:Interaction.Behaviors>
         <Grid.KeyboardAccelerators>
+            <!--TODO: HotKey1 Ctrl+R - Rename-->
+            <ui:CommandKeyboardAccelerator 
+                Modifiers="Control" Key="R"
+                Command="{x:Bind ViewModel.BeginRenamingItemCommand}"
+            />
+            <ui:CommandKeyboardAccelerator 
+                Modifiers="Shift" Key="Delete"
+                Command="{x:Bind ViewModel.DeleteSelectedItemsCommand}"
+            />
             <!--TODO: HotKey3 Ctrl+A - SelectAll-->
             <KeyboardAccelerator Modifiers="Control" Key="A" Invoked="SelectAllItems" />
         </Grid.KeyboardAccelerators>

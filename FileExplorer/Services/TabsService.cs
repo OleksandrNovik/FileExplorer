@@ -49,7 +49,18 @@ namespace FileExplorer.Services
 
         public void Navigate(TabModel tab)
         {
-            CurrentTab?.Navigate(tab.TabType, tab);
+            var previousViewModel = CurrentTab.GetPageViewModel();
+
+            var navigated = CurrentTab.Navigate(tab.TabType, tab);
+
+            if (navigated)
+            {
+                if (previousViewModel is INavigationAware navigationAware)
+                {
+                    navigationAware.OnNavigatedFrom();
+                }
+            }
+
         }
 
         private void RegisterFrameEvents()

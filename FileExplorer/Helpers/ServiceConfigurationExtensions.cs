@@ -19,5 +19,6 @@ namespace FileExplorer.Helpers
             services.AddTransient<TPage>();
             services.AddTransient<TViewModel>();
         }
+
     }
 }

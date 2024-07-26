@@ -77,14 +77,8 @@
                     Grid.Column="1" 
                     ResizeBehavior="PreviousAndNext" />
 
-                <Grid Column="2" Padding="20 20 5 5" KeyboardAcceleratorPlacementMode="Hidden">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <userControls:DirectoryToolBar />
-                    <Frame Grid.Row="1" x:Name="NavigationFrame" />
-                </Grid>
+                <Frame Grid.Column="2" x:Name="NavigationFrame" />
+
             </Grid>
         </Grid>
 
