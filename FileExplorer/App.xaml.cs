@@ -34,8 +34,6 @@ namespace FileExplorer
                 .UseContentRoot(AppContext.BaseDirectory)
                 .ConfigureServices((context, services) =>
                 {
-                    //services.AddTransient<DirectoryPage>();
-                    //services.AddSingleton<DirectoryPageViewModel>();
                     services.AddPageAndViewModel<DirectoryPage, DirectoryPageViewModel>();
                     services.AddPageAndViewModel<ShellPage, ShellPageViewModel>();
 

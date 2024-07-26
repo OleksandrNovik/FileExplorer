@@ -83,6 +83,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="55" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <Grid Margin="0 0 0 10">
@@ -174,7 +175,7 @@
                 </DropDownButton>
                 <Button 
              Style="{StaticResource MenuButton}" 
-             Command="{x:Bind ViewModel.ShowDetailsCommand}"
+             Command="{x:Bind ViewModel.ShowDetailsOfSelectedItemCommand}"
              ToolTipService.ToolTip="File Details"
              ToolTipService.Placement="Bottom">
                     <StackPanel Orientation="Horizontal">
@@ -261,7 +262,6 @@
             </Grid>
         </Grid>
 
-
         <InfoBar Grid.Row="1"
                      Margin="0 0 6 6"
                      IsOpen="{x:Bind ViewModel.HasCopiedFiles, Mode=OneWay}" Severity="Informational"
@@ -271,6 +271,22 @@
                 <behaviors:InfoBarBehavior IsOpen="{x:Bind ViewModel.HasCopiedFiles, Mode=OneWay}" />
             </interactivity:Interaction.Behaviors>
         </InfoBar>
+
+        <StackPanel Grid.Row="2" 
+            Padding="15  5 15 0"
+            Grid.Column="0" 
+            HorizontalAlignment="Stretch" 
+            VerticalAlignment="Bottom" 
+            Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal" Margin="0 0 7 0">
+                <TextBlock Text="{x:Bind ViewModel.DirectoryItems.Count, Mode=OneWay}" Margin="4 0" />
+                <TextBlock Text="items" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="7 0">
+                <TextBlock Text="{x:Bind ViewModel.SelectedItems.Count, Mode=OneWay}" Margin="4 0" />
+                <TextBlock Text="items selected" />
+            </StackPanel>
+        </StackPanel>
 
         <interactivity:Interaction.Behaviors>
             <!--TODO: HotKey2 Del - Delete item-->
