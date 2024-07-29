@@ -4,11 +4,12 @@ using FileExplorer.Core.Services;
 using FileExplorer.Services;
 using FileExplorer.ViewModels;
 using FileExplorer.Views;
-using Helpers;
+using Helpers.Application;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.UI.Xaml;
 using System;
+using Windows.ApplicationModel.Background;
 using Hosting = Microsoft.Extensions.Hosting.Host;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -24,6 +25,8 @@ namespace FileExplorer
         public static WindowExtended MainWindow { get; } = new MainWindow();
         public IHost Host { get; }
 
+        private readonly ApplicationTrigger searchTrigger = new();
+
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -31,7 +34,8 @@ namespace FileExplorer
         /// </summary>
         public App()
         {
-            this.InitializeComponent();
+            SearchBackgroundTasksHelper.Register(searchTrigger);
+
             this.Host = Hosting.CreateDefaultBuilder()
                 .UseContentRoot(AppContext.BaseDirectory)
                 .ConfigureServices((context, services) =>
@@ -46,11 +50,13 @@ namespace FileExplorer
                     services.AddTransient<IDirectoryManager, DirectoryManager>();
 
                     services.AddTransient<DirectoriesNavigationViewModel>();
-                    services.AddTransient<SearchOperationsViewModel>();
+                    services.AddTransient(_ => new SearchOperationsViewModel(searchTrigger));
 
                     services.AddSingleton<ITabService, TabsService>();
                 })
                 .Build();
+
+            this.InitializeComponent();
         }
 
         /// <summary>

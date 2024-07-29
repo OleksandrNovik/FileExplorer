@@ -6,11 +6,20 @@ using Models;
 using Models.Ranges;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Windows.ApplicationModel.Background;
 
 namespace FileExplorer.ViewModels
 {
     public sealed partial class SearchOperationsViewModel : ObservableRecipient
     {
+        private readonly ApplicationTrigger searchTrigger;
+
+        public SearchOperationsViewModel(ApplicationTrigger trigger)
+        {
+            searchTrigger = trigger;
+        }
+
         public IEnumerable<MenuFlyoutItemViewModel> DateSearchOptions => new List<MenuFlyoutItemViewModel>
         {
             new MenuFlyoutItemViewModel("Any")
@@ -20,12 +29,12 @@ namespace FileExplorer.ViewModels
             new MenuFlyoutItemViewModel("Today")
             {
                 Command = SetDateOptionCommand,
-                CommandParameter = new DateRange(DateTime.Today)
+                CommandParameter = DateRange.TodayRange
             },
             new MenuFlyoutItemViewModel("Yesterday")
             {
                 Command = SetDateOptionCommand,
-                CommandParameter = new DateRange(DateTime.Today.AddDays(-1))
+                CommandParameter = DateRange.YesterdayRange
             },
             new MenuFlyoutItemViewModel("This week")
             {
@@ -79,6 +88,18 @@ namespace FileExplorer.ViewModels
         private void SetDateOption(DateRange? range)
         {
             Options.DateOption = range;
+        }
+
+        [RelayCommand]
+        private void SetTypeOption(Predicate<string> extensionFilter)
+        {
+            Options.ExtensionFilter = extensionFilter;
+        }
+
+        [RelayCommand]
+        private async Task InitiateSearch()
+        {
+            var result = await searchTrigger.RequestAsync();
         }
 
         private bool CanExecuteSearch() => !string.IsNullOrWhiteSpace(SearchQuery);

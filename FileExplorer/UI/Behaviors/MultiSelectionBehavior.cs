@@ -1,4 +1,4 @@
-﻿using Helpers;
+﻿using Helpers.General;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Xaml.Interactivity;
 using System.Collections;

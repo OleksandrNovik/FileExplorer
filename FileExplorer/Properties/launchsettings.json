@@ -1,0 +1,10 @@
+﻿{
+  "profiles": {
+    "FileExplorer (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "FileExplorer (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

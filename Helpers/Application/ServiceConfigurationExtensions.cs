@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml.Controls;
 
-namespace Helpers
+namespace Helpers.Application
 {
     public static class ServiceConfigurationExtensions
     {

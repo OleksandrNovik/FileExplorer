@@ -2,7 +2,7 @@
 using Microsoft.UI.Xaml.Media;
 using System.Collections.Generic;
 
-namespace Helpers
+namespace Helpers.Application
 {
     public static class WindowHelper
     {

@@ -5,7 +5,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using FileExplorer.Core.Contracts;
 using FileExplorer.Models;
 using FileExplorer.Services;
-using Helpers;
+using Helpers.General;
 using Microsoft.UI.Xaml.Controls;
 using Models;
 using Models.Messages;
