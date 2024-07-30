@@ -1,8 +1,8 @@
 ﻿#nullable enable
-using FileExplorer.Models.StorageWrappers;
 using Models.StorageWrappers;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using DirectoryItemWrapper = Models.StorageWrappers.DirectoryItemWrapper;
 
 namespace Models.Messages
 {

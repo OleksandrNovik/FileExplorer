@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using FileExplorer.Models.StorageWrappers;
 using Windows.Storage;
 using IOPath = System.IO.Path;
 
@@ -94,11 +93,6 @@ namespace Models.StorageWrappers
         }
 
         public override DirectoryWrapper GetCurrentDirectory() => this;
-        public override Task<uint> CalculateSizeAsync()
-        {
-            throw new NotImplementedException();
-        }
-
         private async Task<StorageFolder> AsStorageFolderAsync()
         {
             if (asStorageFolder is null)

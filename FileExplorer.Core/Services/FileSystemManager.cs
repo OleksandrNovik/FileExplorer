@@ -1,30 +1,23 @@
-﻿using FileExplorer.Core.Contracts;
-using Helpers.StorageHelpers;
-using Models.StorageWrappers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
-using DirectoryItemWrapper = FileExplorer.Models.StorageWrappers.DirectoryItemWrapper;
+using DirectoryItemWrapper = Models.StorageWrappers.DirectoryItemWrapper;
 
 namespace FileExplorer.Core.Services
 {
-    public class DirectoryManager : IDirectoryManager
+    public class FileSystemManager
     {
-        public StorageFolder CurrentFolder { get; set; }
-
-        public DirectoryWrapper CurrentDirectory { get; set; }
-
-        public void CreatePhysical(DirectoryItemWrapper wrapper)
+        public void CreatePhysical(DirectoryItemWrapper wrapper, string path)
         {
-            wrapper.CreatePhysical(CurrentDirectory.Path);
+            wrapper.CreatePhysical(path);
         }
 
         public void Rename(DirectoryItemWrapper item)
         {
-            item.Move(CurrentDirectory.Path);
+            item.Rename();
         }
 
         //public void CopyToClipboard(IEnumerable<DirectoryItemModel> items, DataPackageOperation operation)
@@ -48,7 +41,7 @@ namespace FileExplorer.Core.Services
             }
 
             var copiedItems = (await clipboardContent.GetStorageItemsAsync()).ToArray();
-            await copiedItems.CopyRangeAsync(CurrentFolder);
+            //await copiedItems.CopyRangeAsync(CurrentFolder);
 
             if ((clipboardContent.RequestedOperation & DataPackageOperation.Move) != 0)
             {

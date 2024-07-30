@@ -1,6 +1,4 @@
 using FileExplorer.Views;
-using System;
-using System.IO;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -14,7 +12,6 @@ namespace FileExplorer
     {
         public MainWindow()
         {
-            AppWindow.SetIcon(Path.Combine(AppContext.BaseDirectory, "Images/WindowIcon.ico"));
             this.InitializeComponent();
         }
     }

@@ -16,13 +16,12 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using DirectoryItemWrapper = FileExplorer.Models.StorageWrappers.DirectoryItemWrapper;
+using DirectoryItemWrapper = Models.StorageWrappers.DirectoryItemWrapper;
 
 namespace FileExplorer.ViewModels
 {
     public partial class DirectoryPageViewModel : ObservableRecipient, INavigationAware
     {
-        private readonly IDirectoryManager manager;
         private readonly IMenuFlyoutFactory menuFactory;
         private readonly ContextMenuMetadataBuilder menuBuilder;
 
@@ -31,9 +30,7 @@ namespace FileExplorer.ViewModels
 
         [ObservableProperty]
         private bool isDetailsShown;
-
-        [ObservableProperty]
-        private DirectoryWrapper currentDirectory;
+        public DirectoryWrapper CurrentDirectory { get; private set; }
 
         [ObservableProperty]
         private ObservableCollection<DirectoryItemWrapper> directoryItems;
@@ -42,9 +39,8 @@ namespace FileExplorer.ViewModels
         private ObservableCollection<DirectoryItemWrapper> selectedItems;
         public bool HasCopiedFiles { get; private set; }
 
-        public DirectoryPageViewModel(IDirectoryManager manager, IMenuFlyoutFactory factory)
+        public DirectoryPageViewModel(IMenuFlyoutFactory factory)
         {
-            this.manager = manager;
             menuFactory = factory;
             menuBuilder = new ContextMenuMetadataBuilder(this);
             SelectedItems = [];
@@ -119,7 +115,6 @@ namespace FileExplorer.ViewModels
         private async Task MoveToDirectoryAsync(DirectoryWrapper directory)
         {
             CurrentDirectory = directory;
-            manager.CurrentDirectory = directory;
             await InitializeDirectoryAsync();
             Messenger.Send(directory);
         }
@@ -182,7 +177,7 @@ namespace FileExplorer.ViewModels
         /// <param name="wrapper"> Wrapper that we are creating physical item for </param>
         private async Task CreateItemAsync(DirectoryItemWrapper wrapper)
         {
-            manager.CreatePhysical(wrapper);
+            wrapper.CreatePhysical(CurrentDirectory.Path);
 
             await wrapper.UpdateThumbnailAsync();
 
@@ -228,15 +223,13 @@ namespace FileExplorer.ViewModels
                 await App.MainWindow.ShowMessageDialogAsync("Item's name cannot be empty", "Empty name is illegal");
                 return;
             }
-            manager.Rename(item);
+            item.Rename();
 
             // If item's extension changed we need to update icon
             if (item.HasExtensionChanged)
             {
                 await item.UpdateThumbnailAsync();
             }
-
-            item.EndEdit();
 
             //TODO: New Sorting of items is required
         }
@@ -305,18 +298,18 @@ namespace FileExplorer.ViewModels
             {
                 if (isPermanent)
                 {
-                    manager.Delete(item);
+                    item.Delete();
                 }
                 else
                 {
-                    await manager.MoveToRecycleBinAsync(item);
+                    await item.RecycleAsync();
                 }
 
                 DirectoryItems.Remove(item);
             }
             catch (IOException e)
             {
-                await App.MainWindow.ShowMessageDialogAsync(e.Message, $"File operation canceled");
+                await App.MainWindow.ShowMessageDialogAsync(e.Message, "File operation canceled");
             }
             finally
             {

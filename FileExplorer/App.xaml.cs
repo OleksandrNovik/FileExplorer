@@ -1,5 +1,4 @@
-﻿using FileExplorer.Contracts;
-using FileExplorer.Core.Contracts;
+﻿using FileExplorer.Core.Contracts;
 using FileExplorer.Core.Services;
 using FileExplorer.Services;
 using FileExplorer.ViewModels;
@@ -11,6 +10,7 @@ using Microsoft.UI.Xaml;
 using System;
 using Windows.ApplicationModel.Background;
 using Hosting = Microsoft.Extensions.Hosting.Host;
+
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -25,7 +25,7 @@ namespace FileExplorer
         public static WindowExtended MainWindow { get; } = new MainWindow();
         public IHost Host { get; }
 
-        private readonly ApplicationTrigger searchTrigger = new();
+        private ApplicationTrigger searchTrigger = new();
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -34,8 +34,6 @@ namespace FileExplorer
         /// </summary>
         public App()
         {
-            SearchBackgroundTasksHelper.Register(searchTrigger);
-
             this.Host = Hosting.CreateDefaultBuilder()
                 .UseContentRoot(AppContext.BaseDirectory)
                 .ConfigureServices((context, services) =>
@@ -47,10 +45,9 @@ namespace FileExplorer
                     services.AddTransient<IDirectoryRouteService, DirectoryRouteService>();
                     services.AddTransient<IMenuFlyoutFactory, MenuFlyoutFactory>();
                     services.AddTransient<IPageService, PageService>();
-                    services.AddTransient<IDirectoryManager, DirectoryManager>();
 
                     services.AddTransient<DirectoriesNavigationViewModel>();
-                    services.AddTransient(_ => new SearchOperationsViewModel(searchTrigger));
+                    services.AddTransient<SearchOperationsViewModel>();
 
                     services.AddSingleton<ITabService, TabsService>();
                 })

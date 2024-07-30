@@ -2,7 +2,6 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using FileExplorer.Models.StorageWrappers;
 using Windows.Storage;
 using Windows.System;
 using IOPath = System.IO.Path;
@@ -82,12 +81,6 @@ namespace Models.StorageWrappers
 
             return parent;
         }
-
-        public override Task<uint> CalculateSizeAsync()
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<string> GetFileTypeAsync()
         {
             var storageFile = await AsStorageFileAsync();

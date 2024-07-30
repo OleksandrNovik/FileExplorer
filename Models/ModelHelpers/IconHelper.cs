@@ -1,5 +1,4 @@
 ﻿#nullable enable
-using FileExplorer.Models.StorageWrappers;
 using Helpers.StorageHelpers;
 using System;
 using System.Collections.Generic;
@@ -8,6 +7,7 @@ using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.FileProperties;
 using Windows.Storage.Streams;
+using DirectoryItemWrapper = Models.StorageWrappers.DirectoryItemWrapper;
 using FileAttributes = System.IO.FileAttributes;
 
 namespace Models.ModelHelpers

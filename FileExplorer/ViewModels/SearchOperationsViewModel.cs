@@ -7,19 +7,11 @@ using Models.Ranges;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.Background;
 
 namespace FileExplorer.ViewModels
 {
     public sealed partial class SearchOperationsViewModel : ObservableRecipient
     {
-        private readonly ApplicationTrigger searchTrigger;
-
-        public SearchOperationsViewModel(ApplicationTrigger trigger)
-        {
-            searchTrigger = trigger;
-        }
-
         public IEnumerable<MenuFlyoutItemViewModel> DateSearchOptions => new List<MenuFlyoutItemViewModel>
         {
             new MenuFlyoutItemViewModel("Any")
@@ -67,7 +59,6 @@ namespace FileExplorer.ViewModels
                 CommandParameter = DateRange.LastYearRange,
             },
         };
-
         public IEnumerable<MenuFlyoutItemViewModel> SizeSearchOptions => new List<MenuFlyoutItemViewModel>
         {
             new MenuFlyoutItemViewModel("Last year")
@@ -96,10 +87,14 @@ namespace FileExplorer.ViewModels
             Options.ExtensionFilter = extensionFilter;
         }
 
-        [RelayCommand]
+        private void MoveToSearchPage()
+        {
+
+        }
+
         private async Task InitiateSearch()
         {
-            var result = await searchTrigger.RequestAsync();
+            await Task.Delay(100);
         }
 
         private bool CanExecuteSearch() => !string.IsNullOrWhiteSpace(SearchQuery);

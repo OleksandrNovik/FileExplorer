@@ -1,15 +1,12 @@
-﻿using Models.StorageWrappers;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.Storage;
-using DirectoryItemWrapper = FileExplorer.Models.StorageWrappers.DirectoryItemWrapper;
+using DirectoryItemWrapper = Models.StorageWrappers.DirectoryItemWrapper;
 
 namespace FileExplorer.Core.Contracts
 {
     public interface IDirectoryManager
     {
-        public DirectoryWrapper CurrentDirectory { get; set; }
-
         public void CreatePhysical(DirectoryItemWrapper wrapper);
 
         public void Rename(DirectoryItemWrapper item);

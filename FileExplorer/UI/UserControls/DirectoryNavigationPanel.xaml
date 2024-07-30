@@ -151,7 +151,7 @@
                 <FontIcon FontSize="16" Glyph="&#xE712;" />
             </Button>
 
-            <Button Grid.Column="2" Command="{x:Bind ViewModel.SearchOperator.InitiateSearchCommand}"
+            <Button Grid.Column="2"
                     ToolTipService.ToolTip="Settings"
                     ToolTipService.Placement="Bottom"
                     Style="{StaticResource SmallIconButton}">

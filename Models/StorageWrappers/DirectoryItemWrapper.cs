@@ -1,8 +1,9 @@
 ﻿#nullable enable
 using CommunityToolkit.Mvvm.ComponentModel;
+using FileExplorer.Models;
 using Microsoft.UI.Xaml.Media.Imaging;
+using Models.Contracts;
 using Models.ModelHelpers;
-using Models.StorageWrappers;
 using System;
 using System.ComponentModel;
 using System.IO;
@@ -11,9 +12,9 @@ using Windows.Storage;
 using FileAttributes = System.IO.FileAttributes;
 using IOPath = System.IO.Path;
 
-namespace FileExplorer.Models.StorageWrappers
+namespace Models.StorageWrappers
 {
-    public abstract partial class DirectoryItemWrapper : ObservableObject, IEditableObject
+    public abstract partial class DirectoryItemWrapper : ObservableObject, IStorageWrapper, IEditableObject
     {
         private string backupName;
 
@@ -47,7 +48,7 @@ namespace FileExplorer.Models.StorageWrappers
         }
 
         /// <summary>
-        /// When physical item is changed sets new <see cref="Path"/> and <see cref="Name"/> for this wrapper
+        /// When physical item is changed sets new <see cref="Path"/> and <see cref="FileExplorer.Models.StorageWrappers.DirectoryItemWrapper.Name"/> for this wrapper
         /// </summary>
         protected void InitializeData()
         {
@@ -60,6 +61,15 @@ namespace FileExplorer.Models.StorageWrappers
         /// </summary>
         /// <param name="destination"> Path to the destination directory </param>
         public abstract void Copy(string destination);
+
+        public virtual void Rename()
+        {
+            var elementsDirectory = GetParentDirectory();
+            ArgumentNullException.ThrowIfNull(elementsDirectory);
+            Move(elementsDirectory.Path);
+            EndEdit();
+        }
+
         /// <summary>
         /// Moves item from current directory to destination
         /// </summary>
@@ -106,8 +116,6 @@ namespace FileExplorer.Models.StorageWrappers
                 Thumbnail = Thumbnail
             };
         }
-
-        public abstract Task<uint> CalculateSizeAsync();
 
         /// <summary>
         /// Gets parent directory for an item
@@ -156,7 +164,7 @@ namespace FileExplorer.Models.StorageWrappers
             await Thumbnail.SetSourceAsync(icon);
         }
 
-        public bool HasExtensionChanged => IOPath.GetExtension(backupName) != IOPath.GetExtension(Name);
+        public bool HasExtensionChanged => IOPath.GetExtension(backupName) != IOPath.GetExtension((string?)Name);
 
         public void BeginEdit()
         {

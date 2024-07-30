@@ -43,13 +43,6 @@
         <uap:DefaultTile Wide310x150Logo="Images\Wide310x150Logo.png" />
         <uap:SplashScreen Image="Images\SplashScreen.png"/>
       </uap:VisualElements>
-      <Extensions>
-        <Extension Category="windows.backgroundTasks" EntryPoint="FileExplorer.BackgroundTasks.SearchBackgroundTask">
-          <BackgroundTasks>
-            <Task Type="systemEvent"/>
-          </BackgroundTasks>
-        </Extension>
-      </Extensions>
     </Application>
   </Applications>
 
@@ -70,4 +63,5 @@
 			</InProcessServer>
 		</Extension>
 	</Extensions>
+	
 </Package>

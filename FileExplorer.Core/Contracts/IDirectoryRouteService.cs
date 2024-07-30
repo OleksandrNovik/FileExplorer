@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using DirectoryItemWrapper = FileExplorer.Models.StorageWrappers.DirectoryItemWrapper;
+using DirectoryItemWrapper = Models.StorageWrappers.DirectoryItemWrapper;
 
-namespace FileExplorer.Contracts
+namespace FileExplorer.Core.Contracts
 {
     public interface IDirectoryRouteService
     {
