@@ -1,8 +1,8 @@
 ﻿#nullable enable
+using Models.Contracts;
 using Models.StorageWrappers;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using DirectoryItemWrapper = Models.StorageWrappers.DirectoryItemWrapper;
+using System.Threading;
 
 namespace Models.Messages
 {
@@ -23,7 +23,7 @@ namespace Models.Messages
     /// </summary>
     /// <param name="TabDirectoryInfo"> Directory that current tab is holding </param>
     /// <param name="TabNavigationHistory"> Current tab's history </param>
-    public record NewTabOpened(DirectoryNavigationInfo TabDirectoryInfo, TabNavigationHistoryModel TabNavigationHistory);
+    public record TabOpenedMessage(DirectoryNavigationInfo TabDirectoryInfo, TabNavigationHistoryModel TabNavigationHistory);
 
     /// <summary>
     /// Message for ShellPageViewModel to open directory in a new tab
@@ -31,7 +31,9 @@ namespace Models.Messages
     /// <param name="TabDirectory"> Directory that has to be opened in new tab </param>
     public record OpenTabMessage(DirectoryWrapper TabDirectory);
 
-    public record InitializeToolBarMessage(DirectoryWrapper? CurrentDirectory, ObservableCollection<DirectoryItemWrapper>? SelectedItems);
+    public record SearchOperationRequiredMessage(CancellationTokenSource CancelSearch);
 
-    public record DirectoryChangedMessage(IList<DirectoryItemWrapper>? Added = null, IList<DirectoryItemWrapper>? Removed = null);
+    public record SearchDirectoryMessage(ISearchable<DirectoryItemWrapper> SearchedCatalog);
+
+    public record SearchIterationMessage(ICollection<DirectoryItemWrapper> Items, bool IsSearchFinished);
 }

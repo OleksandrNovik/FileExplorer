@@ -27,7 +27,7 @@ namespace Models.ModelHelpers
 
             if (CachedThumbnails.TryGetValue(key, out var cachedThumbnail))
             {
-                thumbnail = cachedThumbnail.CloneStream();
+                thumbnail = cachedThumbnail?.CloneStream();
             }
 
             return thumbnail;
@@ -45,7 +45,7 @@ namespace Models.ModelHelpers
 
                 if (!FileExtensionsHelper.IsImage(item.Path))
                 {
-                    CachedThumbnails.Add(key, thumbnail);
+                    CachedThumbnails.TryAdd(key, thumbnail);
                 }
             }
 

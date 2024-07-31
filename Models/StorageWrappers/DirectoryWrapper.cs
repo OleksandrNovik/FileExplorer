@@ -1,4 +1,6 @@
 ﻿#nullable enable
+using FileExplorer.Models;
+using Models.Contracts;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -6,48 +8,37 @@ using System.Linq;
 using System.Threading.Tasks;
 using Windows.Storage;
 using IOPath = System.IO.Path;
+using SearchOption = System.IO.SearchOption;
 
 namespace Models.StorageWrappers
 {
-    public class DirectoryWrapper : DirectoryItemWrapper
+    public class DirectoryWrapper : DirectoryItemWrapper, ISearchable<DirectoryItemWrapper>
     {
         private StorageFolder? asStorageFolder;
         public DirectoryWrapper() { }
         public DirectoryWrapper(DirectoryInfo info) : base(info) { }
         public DirectoryWrapper(string path) : base(new DirectoryInfo(path)) { }
 
-        public IEnumerable<FileWrapper> EnumerateFiles(string pattern = "*", SearchOption option = SearchOption.TopDirectoryOnly)
-        {
-            return Directory.EnumerateFiles(Path, pattern, option).Select(path => new FileWrapper(path));
-        }
-
-        public IEnumerable<DirectoryWrapper> EnumerateFolders(string pattern = "*", SearchOption option = SearchOption.TopDirectoryOnly)
-        {
-            return Directory.EnumerateDirectories(Path, pattern, option).Select(path => new DirectoryWrapper(path));
-        }
-
         public IEnumerable<DirectoryItemWrapper> EnumerateItems(string pattern = "*", SearchOption option = SearchOption.TopDirectoryOnly)
         {
-            foreach (var itemPath in Directory.EnumerateFileSystemEntries(Path, pattern, option))
+            return EnumerateWrappers(Directory.EnumerateFileSystemEntries(Path, pattern, option));
+        }
+
+        public IEnumerable<DirectoryItemWrapper> EnumerateItems(EnumerationOptions enumeration, string pattern = "*")
+        {
+            return EnumerateWrappers(Directory.EnumerateFileSystemEntries(Path, pattern, enumeration));
+        }
+
+        private IEnumerable<DirectoryItemWrapper> EnumerateWrappers(IEnumerable<string> paths)
+        {
+            foreach (var path in paths)
             {
-                if (File.Exists(itemPath))
-                    yield return new FileWrapper(itemPath);
+                if (File.Exists(path))
+                    yield return new FileWrapper(path);
                 else
-                    yield return new DirectoryWrapper(itemPath);
+                    yield return new DirectoryWrapper(path);
             }
         }
-
-        public int CountFiles(string pattern = "*", SearchOption option = SearchOption.TopDirectoryOnly)
-        {
-            //TODO: Access denied might be occured here
-            return Directory.EnumerateFiles(Path, pattern, option).AsParallel().Count();
-        }
-
-        public int CountFolders(string pattern = "*", SearchOption option = SearchOption.TopDirectoryOnly)
-        {
-            return Directory.EnumerateDirectories(Path, pattern, option).AsParallel().Count();
-        }
-
 
         public override void Copy(string destination)
         {
@@ -68,6 +59,28 @@ namespace Models.StorageWrappers
             asStorageFolder = null;
         }
 
+        public ParallelQuery<DirectoryItemWrapper> SearchParallel(SearchOptionsModel options)
+        {
+            var enumeration = new EnumerationOptions
+            {
+                IgnoreInaccessible = true,
+                RecurseSubdirectories = true
+            };
+
+            var found = EnumerateItems(enumeration, options.SearchPattern).AsParallel()
+                                                    // Any item that is used at provided date range
+                                                    .Where(item => options.AccessDateRange.Includes(item.LastAccess))
+                                                    // Any file types that satisfy filter
+                                                    .Where(item => options.ExtensionFilter(item.Name));
+
+            if (options.SearchName is not null)
+            {
+                found = found.Where(item => item.Name.Contains(options.SearchName, StringComparison.OrdinalIgnoreCase));
+            }
+
+            return found;
+
+        }
         public override async Task RecycleAsync()
         {
             var storageFolder = await AsStorageFolderAsync();

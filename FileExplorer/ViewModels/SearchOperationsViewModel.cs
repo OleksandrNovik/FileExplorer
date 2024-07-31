@@ -1,22 +1,42 @@
 ﻿#nullable enable
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using FileExplorer.Models;
+using Microsoft.UI.Dispatching;
 using Models;
+using Models.Contracts;
+using Models.Messages;
 using Models.Ranges;
+using Models.StorageWrappers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
+using PathHelper = Helpers.StorageHelpers.PathHelper;
 
 namespace FileExplorer.ViewModels
 {
     public sealed partial class SearchOperationsViewModel : ObservableRecipient
     {
+        public SearchOperationsViewModel()
+        {
+            Messenger.Register<SearchOperationsViewModel, SearchDirectoryMessage>(this, OnSearchSourceReceived);
+        }
+
+        private async void OnSearchSourceReceived(SearchOperationsViewModel _, SearchDirectoryMessage message)
+        {
+            await SearchItemsAsync(message.SearchedCatalog);
+        }
+
+        private CancellationTokenSource? cancellation;
         public IEnumerable<MenuFlyoutItemViewModel> DateSearchOptions => new List<MenuFlyoutItemViewModel>
         {
             new MenuFlyoutItemViewModel("Any")
             {
                 Command = SetDateOptionCommand,
+                CommandParameter = DateRange.Any
             },
             new MenuFlyoutItemViewModel("Today")
             {
@@ -71,14 +91,12 @@ namespace FileExplorer.ViewModels
 
         [ObservableProperty]
         private string searchQuery;
-
         public SearchOptionsModel Options => SearchOptionsModel.Default;
 
-
         [RelayCommand]
-        private void SetDateOption(DateRange? range)
+        private void SetDateOption(DateRange range)
         {
-            Options.DateOption = range;
+            Options.AccessDateRange = range;
         }
 
         [RelayCommand]
@@ -87,22 +105,63 @@ namespace FileExplorer.ViewModels
             Options.ExtensionFilter = extensionFilter;
         }
 
-        private void MoveToSearchPage()
+        [RelayCommand]
+        private void InitiateSearch()
         {
+            if (cancellation is not null)
+            {
+                cancellation.Cancel();
+                cancellation.Dispose();
+            }
 
+            cancellation = new CancellationTokenSource();
+            Messenger.Send(new SearchOperationRequiredMessage(cancellation));
         }
 
-        private async Task InitiateSearch()
+        private async Task SearchItemsAsync(ISearchable<DirectoryItemWrapper> searchCatalog)
         {
-            await Task.Delay(100);
-        }
+            var dispatcher = DispatcherQueue.GetForCurrentThread();
 
-        private bool CanExecuteSearch() => !string.IsNullOrWhiteSpace(SearchQuery);
+            Debug.Assert(cancellation is not null);
+            var token = cancellation.Token;
 
-        [RelayCommand(CanExecute = nameof(CanExecuteSearch))]
-        private void SearchItemsAsync()
-        {
+            await Task.Run(() =>
+            {
+                Options.SearchPattern = PathHelper.CreatePattern(SearchQuery);
 
+                // If we cannot generate more precise pattern we should search by name
+                if (Options.SearchPattern == "*")
+                {
+                    Options.SearchName = SearchQuery;
+                }
+
+                var found = searchCatalog.SearchParallel(Options).GetEnumerator();
+                int operatedItemsCount = 50;
+
+                while (true)
+                {
+                    var bunch = new List<DirectoryItemWrapper>();
+
+                    for (int i = 0; i < operatedItemsCount && found.MoveNext(); i++)
+                    {
+                        bunch.Add(found.Current);
+                    }
+
+                    if (token.IsCancellationRequested)
+                        break;
+
+                    dispatcher.TryEnqueue(() =>
+                    {
+                        Messenger.Send(new SearchIterationMessage(bunch, bunch.Count < operatedItemsCount));
+                    });
+
+                    if (bunch.Count < operatedItemsCount)
+                        break;
+                }
+
+                Debug.WriteLine("------------------ Task DONE -------------------");
+
+            }, token);
         }
     }
 }

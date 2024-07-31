@@ -27,10 +27,12 @@ namespace Models.StorageWrappers
         protected FileSystemInfo info;
 
         [ObservableProperty]
-        private BitmapImage thumbnail = new();
+        private BitmapImage? thumbnail;
 
         public FileAttributes Attributes => info.Attributes;
         public string Path { get; private set; }
+
+        public DateTime LastAccess => info.LastAccessTime;
 
         /// <summary>
         /// Empty constructor to create empty wrapper
@@ -161,7 +163,11 @@ namespace Models.StorageWrappers
         public async Task UpdateThumbnailAsync()
         {
             var icon = await IconHelper.GetThumbnailForItem(this);
-            await Thumbnail.SetSourceAsync(icon);
+            //TODO: Why icon of .ts file returns null?
+            if (icon is not null)
+            {
+                await Thumbnail.SetSourceAsync(icon);
+            }
         }
 
         public bool HasExtensionChanged => IOPath.GetExtension(backupName) != IOPath.GetExtension((string?)Name);

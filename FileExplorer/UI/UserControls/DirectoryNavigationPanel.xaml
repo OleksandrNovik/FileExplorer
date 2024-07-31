@@ -138,13 +138,24 @@
                 <ColumnDefinition Width="40" />
                 <ColumnDefinition Width="40" />
             </Grid.ColumnDefinitions>
-            <TextBox VerticalAlignment="Center"  AcceptsReturn="True" />
+            <TextBox VerticalAlignment="Center" TextWrapping="Wrap"
+                     Padding="0 5 0 0"
+                     Text="{x:Bind ViewModel.SearchOperator.SearchQuery, Mode=TwoWay, 
+                                        UpdateSourceTrigger=PropertyChanged}">
+                <interactivity:Interaction.Behaviors>
+
+                    <toolkitBehaviors:KeyDownTriggerBehavior Key="Enter">
+                        <core:InvokeCommandAction  Command="{x:Bind ViewModel.SearchOperator.InitiateSearchCommand}" />
+                    </toolkitBehaviors:KeyDownTriggerBehavior>
+
+                </interactivity:Interaction.Behaviors>
+            </TextBox>
             <Grid Column="0" Padding="12  0">
                 <FontIcon HorizontalAlignment="Right" FontSize="14" Glyph="&#xE721;" />
             </Grid>
 
             <Button Grid.Column="1"
-                    ToolTipService.ToolTip="Search options"
+                    ToolTipService.ToolTip="SearchParallel options"
                     ToolTipService.Placement="Bottom"
                     Flyout="{StaticResource SearchOptions}"
                     Style="{StaticResource SmallIconButton}">
@@ -153,7 +164,7 @@
 
             <Button Grid.Column="2"
                     ToolTipService.ToolTip="Settings"
-                    ToolTipService.Placement="Bottom"
+                    ToolTipService.Placement="Bottom" Command="{x:Bind ViewModel.SearchOperator.CancelCommand}"
                     Style="{StaticResource SmallIconButton}">
                 <FontIcon FontSize="16" Glyph="&#xE713;" />
             </Button>

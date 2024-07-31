@@ -6,8 +6,8 @@ namespace FileExplorer.Models
 {
     public partial class DirectoryItemAdditionalInfo : ObservableObject
     {
-        public DateTimeOffset ModifiedDate { get; set; }
-        public DateTimeOffset CreationTime { get; set; }
+        public DateTime ModifiedDate { get; set; }
+        public DateTime CreationTime { get; set; }
         public string FullPath { get; set; }
         public string Name { get; set; }
 

@@ -10,14 +10,17 @@ namespace FileExplorer.Models
         public static readonly SearchOptionsModel Default = new()
         {
             IsNestedSearch = true,
-            DateOption = default,
+            AccessDateRange = DateRange.Any,
             ExtensionFilter = _ => true,
+            SearchPattern = "*",
+            SearchName = null
         };
 
         [ObservableProperty]
         private bool isNestedSearch;
-
-        public DateRange? DateOption { get; set; }
+        public DateRange AccessDateRange { get; set; }
         public Predicate<string> ExtensionFilter { get; set; }
+        public string SearchPattern { get; set; }
+        public string? SearchName { get; set; }
     }
 }

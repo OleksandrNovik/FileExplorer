@@ -7,37 +7,54 @@ using FileExplorer.Models;
 using FileExplorer.Services;
 using Helpers.General;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Models;
 using Models.Messages;
 using Models.StorageWrappers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using DirectoryItemWrapper = Models.StorageWrappers.DirectoryItemWrapper;
 
 namespace FileExplorer.ViewModels
 {
-    public partial class DirectoryPageViewModel : ObservableRecipient, INavigationAware
+    public sealed partial class DirectoryPageViewModel : ObservableRecipient, INavigationAware
     {
+        /// <summary>
+        /// Factory to create right-click menu flyout for any item in directory or for a directory itself
+        /// </summary>
         private readonly IMenuFlyoutFactory menuFactory;
+
+        /// <summary>
+        /// Builder that decides what type of menu and with what options is being created.
+        /// Creates models to represent structure of menu, which can be used to create real menu with <see cref="menuFactory"/>
+        /// </summary>
         private readonly ContextMenuMetadataBuilder menuBuilder;
 
+        /// <summary>
+        /// Current additional info (details) that is shown
+        /// </summary>
         [ObservableProperty]
         private DirectoryItemAdditionalInfo _selectedDirectoryItemAdditionalDetails;
+
 
         [ObservableProperty]
         private bool isDetailsShown;
         public DirectoryWrapper CurrentDirectory { get; private set; }
 
         [ObservableProperty]
-        private ObservableCollection<DirectoryItemWrapper> directoryItems;
+        private ObservableWrappersCollection directoryItems;
 
         [ObservableProperty]
         private ObservableCollection<DirectoryItemWrapper> selectedItems;
         public bool HasCopiedFiles { get; private set; }
+
+        private CancellationTokenSource cancellation;
 
         public DirectoryPageViewModel(IMenuFlyoutFactory factory)
         {
@@ -48,6 +65,30 @@ namespace FileExplorer.ViewModels
 
             Messenger.Register<DirectoryPageViewModel, NavigationRequiredMessage>(this, HandleNavigationMessage);
             Messenger.Register<DirectoryPageViewModel, FileOpenRequiredMessage>(this, HandlerFileOpen);
+
+            //TODO: this
+            Messenger.Register<DirectoryPageViewModel, SearchOperationRequiredMessage>(this, (_, message) =>
+            {
+                DirectoryItems.Clear();
+
+                cancellation = message.CancelSearch;
+
+                Debug.Assert(CurrentDirectory is not null);
+
+                Messenger.Send(new SearchDirectoryMessage(CurrentDirectory));
+            });
+
+            Messenger.Register<DirectoryPageViewModel, SearchIterationMessage>(this, AddSearchedItems);
+        }
+
+        private async void AddSearchedItems(DirectoryPageViewModel _, SearchIterationMessage message)
+        {
+            await DirectoryItems.AddWrapperItemsAsync(message.Items);
+
+            if (message.IsSearchFinished)
+            {
+                //TODO: Show message
+            }
         }
 
         private async void HandlerFileOpen(DirectoryPageViewModel recipient, FileOpenRequiredMessage message)
@@ -89,11 +130,13 @@ namespace FileExplorer.ViewModels
         {
             DirectoryItems = [];
             var directoryContent = CurrentDirectory.EnumerateItems()
-                                                            .Where(i => (i.Attributes & FileAttributes.System) == 0)
-                                                            .ToArray();
-            await AddDirectoryItemsAsync(directoryContent);
+                .Where(i => (i.Attributes & FileAttributes.System) == 0)
+                .ToArray();
+
+            await DirectoryItems.AddWrapperItemsAsync(directoryContent);
             SelectedItems.Clear();
         }
+
 
         private async Task AddDirectoryItemsAsync(ICollection<DirectoryItemWrapper> items)
         {
@@ -101,8 +144,10 @@ namespace FileExplorer.ViewModels
 
             foreach (var item in items)
             {
+                //TODO: fix thumbnails
                 if ((item.Attributes & FileAttributes.Hidden) == 0)
                 {
+                    item.Thumbnail = new BitmapImage();
                     await item.UpdateThumbnailAsync();
                 }
             }
@@ -398,7 +443,7 @@ namespace FileExplorer.ViewModels
             {
                 await MoveToDirectoryAsync(tab.TabDirectory);
                 var navigationInfo = new DirectoryNavigationInfo(tab.TabDirectory);
-                Messenger.Send(new NewTabOpened(navigationInfo, tab.TabHistory));
+                Messenger.Send(new TabOpenedMessage(navigationInfo, tab.TabHistory));
             }
         }
 

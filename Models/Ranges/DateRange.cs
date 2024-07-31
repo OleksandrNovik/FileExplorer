@@ -5,6 +5,7 @@ namespace Models.Ranges
 {
     public sealed class DateRange : IRange<DateTime>
     {
+        public static DateRange Any => new(DateTime.MinValue, DateTime.MaxValue);
         public static DateRange TodayRange => new(DateTime.Today, DateTime.Today.AddDays(1).AddSeconds(-1));
         public static DateRange YesterdayRange => new(DateTime.Today.AddDays(-1), DateTime.Today.AddSeconds(-1));
         public static DateRange ThisWeekRange
@@ -67,6 +68,9 @@ namespace Models.Ranges
             return new DateRange(Start.AddYears(years), End.AddYears(years));
         }
 
+        /// <summary>
+        /// Decides if provided date is within range
+        /// </summary>
         public bool Includes(DateTime value)
         {
             return value <= End && value >= Start;

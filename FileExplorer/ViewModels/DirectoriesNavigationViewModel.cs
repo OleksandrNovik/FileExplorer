@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using FileExplorer.Contracts;
 using FileExplorer.Core.Contracts;
 using Models;
 using Models.Messages;
@@ -36,7 +35,7 @@ namespace FileExplorer.ViewModels
             SearchOperator = searchOperator;
 
             // Handler that is called when new tab is opened. New directory from that tab is initialized
-            Messenger.Register<DirectoriesNavigationViewModel, NewTabOpened>(this, (_, message) =>
+            Messenger.Register<DirectoriesNavigationViewModel, TabOpenedMessage>(this, (_, message) =>
             {
                 InitializeDirectory(message.TabDirectoryInfo);
                 _navigation.History = message.TabNavigationHistory;
