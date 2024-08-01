@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Models.Ranges;
 using System;
 
-namespace FileExplorer.Models
+namespace Models
 {
     public sealed partial class SearchOptionsModel : ObservableObject
     {

@@ -50,7 +50,7 @@ namespace Models.StorageWrappers
         }
 
         /// <summary>
-        /// When physical item is changed sets new <see cref="Path"/> and <see cref="FileExplorer.Models.StorageWrappers.DirectoryItemWrapper.Name"/> for this wrapper
+        /// When physical item is changed sets new <see cref="Path"/> and <see cref="Name"/> for this wrapper
         /// </summary>
         protected void InitializeData()
         {

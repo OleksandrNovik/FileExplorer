@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using FileExplorer.Core.Contracts;
+using FileExplorer.Core.Services;
 using FileExplorer.Models;
 using FileExplorer.Services;
 using Helpers.General;
@@ -29,6 +30,8 @@ namespace FileExplorer.ViewModels
         /// Factory to create right-click menu flyout for any item in directory or for a directory itself
         /// </summary>
         private readonly IMenuFlyoutFactory menuFactory;
+
+        private readonly BackgroundElementFetchingService attachService = new();
 
         /// <summary>
         /// Builder that decides what type of menu and with what options is being created.
@@ -67,28 +70,30 @@ namespace FileExplorer.ViewModels
             Messenger.Register<DirectoryPageViewModel, FileOpenRequiredMessage>(this, HandlerFileOpen);
 
             //TODO: this
-            Messenger.Register<DirectoryPageViewModel, SearchOperationRequiredMessage>(this, (_, message) =>
-            {
-                DirectoryItems.Clear();
-
-                cancellation = message.CancelSearch;
-
-                Debug.Assert(CurrentDirectory is not null);
-
-                Messenger.Send(new SearchDirectoryMessage(CurrentDirectory));
-            });
+            Messenger.Register<DirectoryPageViewModel, SearchOperationRequiredMessage>(this, Handler);
 
             Messenger.Register<DirectoryPageViewModel, SearchIterationMessage>(this, AddSearchedItems);
         }
 
+        private async void Handler(DirectoryPageViewModel _, SearchOperationRequiredMessage message)
+        {
+            var watch = new Stopwatch();
+            DirectoryItems.Clear();
+
+            Debug.Assert(CurrentDirectory is not null);
+
+            watch.Start();
+
+            var found = CurrentDirectory.SearchParallel(message.Options);
+            await attachService.AttachElementAsync(DirectoryItems, found, CancellationToken.None);
+
+            watch.Stop();
+            Debug.WriteLine("------------------- Elapsed: {0} -------------------", watch.ElapsedMilliseconds);
+        }
+
         private async void AddSearchedItems(DirectoryPageViewModel _, SearchIterationMessage message)
         {
-            await DirectoryItems.AddWrapperItemsAsync(message.Items);
-
-            if (message.IsSearchFinished)
-            {
-                //TODO: Show message
-            }
+            await DirectoryItems.AddEnumeration(message.Items);
         }
 
         private async void HandlerFileOpen(DirectoryPageViewModel recipient, FileOpenRequiredMessage message)

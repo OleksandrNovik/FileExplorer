@@ -28,5 +28,19 @@ namespace Models
                 }
             }
         }
+
+        public async Task AddEnumeration(IEnumerable<DirectoryItemWrapper> items)
+        {
+            foreach (var item in items)
+            {
+                Add(item);
+
+                if ((item.Attributes & FileAttributes.Hidden) == 0)
+                {
+                    item.Thumbnail = new BitmapImage();
+                    await item.UpdateThumbnailAsync();
+                }
+            }
+        }
     }
 }

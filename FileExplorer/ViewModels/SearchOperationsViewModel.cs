@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using FileExplorer.Models;
 using Microsoft.UI.Dispatching;
 using Models;
 using Models.Contracts;
@@ -27,7 +26,8 @@ namespace FileExplorer.ViewModels
 
         private async void OnSearchSourceReceived(SearchOperationsViewModel _, SearchDirectoryMessage message)
         {
-            await SearchItemsAsync(message.SearchedCatalog);
+            //await SearchItemsAsync(message.SearchedCatalog);
+            //await SearchAsync(message.SearchedCatalog);
         }
 
         private CancellationTokenSource? cancellation;
@@ -115,7 +115,16 @@ namespace FileExplorer.ViewModels
             }
 
             cancellation = new CancellationTokenSource();
-            Messenger.Send(new SearchOperationRequiredMessage(cancellation));
+
+            Options.SearchPattern = PathHelper.CreatePattern(SearchQuery);
+
+            // If we cannot generate more precise pattern we should search by name
+            if (Options.SearchPattern == "*")
+            {
+                Options.SearchName = SearchQuery;
+            }
+
+            Messenger.Send(new SearchOperationRequiredMessage(cancellation, Options));
         }
 
         private async Task SearchItemsAsync(ISearchable<DirectoryItemWrapper> searchCatalog)
@@ -152,7 +161,7 @@ namespace FileExplorer.ViewModels
 
                     dispatcher.TryEnqueue(() =>
                     {
-                        Messenger.Send(new SearchIterationMessage(bunch, bunch.Count < operatedItemsCount));
+                        //Messenger.Send(new SearchIterationMessage(bunch, bunch.Count < operatedItemsCount));
                     });
 
                     if (bunch.Count < operatedItemsCount)
@@ -163,5 +172,34 @@ namespace FileExplorer.ViewModels
 
             }, token);
         }
+
+        //private async Task SearchAsync(ISearchable<DirectoryItemWrapper> searchCatalog)
+        //{
+        //    var watch = new Stopwatch();
+
+        //    watch.Start();
+        //    var dispatcher = DispatcherQueue.GetForCurrentThread();
+
+        //    Debug.Assert(cancellation is not null);
+        //    var token = cancellation.Token;
+
+        //    await Task.Run(async () =>
+        //    {
+        //        while (true)
+        //        {
+        //            var searchIteration = await searchCatalog.ContinueSearchAsync();
+
+        //            if (searchIteration is null)
+        //                break;
+
+        //            dispatcher.TryEnqueue(() =>
+        //            {
+        //                Messenger.Send(new SearchIterationMessage(searchIteration));
+        //            });
+        //        }
+        //    }, token);
+        //    watch.Stop();
+        //    Debug.WriteLine("------------------- Elapsed: {0} -------------------", watch.ElapsedMilliseconds);
+        //}
     }
 }

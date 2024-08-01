@@ -155,7 +155,7 @@
             </Grid>
 
             <Button Grid.Column="1"
-                    ToolTipService.ToolTip="SearchParallel options"
+                    ToolTipService.ToolTip="SearchBETA options"
                     ToolTipService.Placement="Bottom"
                     Flyout="{StaticResource SearchOptions}"
                     Style="{StaticResource SmallIconButton}">
@@ -164,7 +164,7 @@
 
             <Button Grid.Column="2"
                     ToolTipService.ToolTip="Settings"
-                    ToolTipService.Placement="Bottom" Command="{x:Bind ViewModel.SearchOperator.CancelCommand}"
+                    ToolTipService.Placement="Bottom"
                     Style="{StaticResource SmallIconButton}">
                 <FontIcon FontSize="16" Glyph="&#xE713;" />
             </Button>

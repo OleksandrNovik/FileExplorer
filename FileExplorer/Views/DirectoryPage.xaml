@@ -13,8 +13,6 @@
     xmlns:toolkitBehaviors="using:CommunityToolkit.WinUI.UI.Behaviors"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:ui="using:FileExplorer.UI"
-    xmlns:userControls="using:FileExplorer.UI.UserControls"
-    xmlns:storageWrappers="using:FileExplorer.Models.StorageWrappers"
     xmlns:storageWrappers1="using:Models.StorageWrappers"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">

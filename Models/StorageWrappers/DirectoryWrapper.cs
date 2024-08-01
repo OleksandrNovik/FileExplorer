@@ -1,5 +1,4 @@
 ﻿#nullable enable
-using FileExplorer.Models;
 using Models.Contracts;
 using System;
 using System.Collections.Generic;
@@ -18,6 +17,18 @@ namespace Models.StorageWrappers
         public DirectoryWrapper() { }
         public DirectoryWrapper(DirectoryInfo info) : base(info) { }
         public DirectoryWrapper(string path) : base(new DirectoryInfo(path)) { }
+
+        public IEnumerable<ISearchable<DirectoryItemWrapper>> EnumerateSubDirectories()
+        {
+            try
+            {
+                return Directory.EnumerateDirectories(Path).Select(path => new DirectoryWrapper(path));
+            }
+            catch
+            {
+                return [];
+            }
+        }
 
         public IEnumerable<DirectoryItemWrapper> EnumerateItems(string pattern = "*", SearchOption option = SearchOption.TopDirectoryOnly)
         {
@@ -67,20 +78,22 @@ namespace Models.StorageWrappers
                 RecurseSubdirectories = true
             };
 
-            var found = EnumerateItems(enumeration, options.SearchPattern).AsParallel()
-                                                    // Any item that is used at provided date range
-                                                    .Where(item => options.AccessDateRange.Includes(item.LastAccess))
-                                                    // Any file types that satisfy filter
-                                                    .Where(item => options.ExtensionFilter(item.Name));
+            var found = EnumerateItems(enumeration, options.SearchPattern)
+                .AsParallel()
+                // Any item that is used at provided date range
+                .Where(item => options.AccessDateRange.Includes(item.LastAccess))
+                // Any file types that satisfy filter
+                .Where(item => options.ExtensionFilter(item.Name));
 
             if (options.SearchName is not null)
             {
-                found = found.Where(item => item.Name.Contains(options.SearchName, StringComparison.OrdinalIgnoreCase));
+                found = found.Where(item =>
+                    item.Name.Contains(options.SearchName, StringComparison.OrdinalIgnoreCase));
             }
 
             return found;
-
         }
+
         public override async Task RecycleAsync()
         {
             var storageFolder = await AsStorageFolderAsync();
