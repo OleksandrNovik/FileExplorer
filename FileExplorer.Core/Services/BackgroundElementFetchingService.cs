@@ -2,6 +2,7 @@
 using CommunityToolkit.WinUI;
 using Microsoft.UI.Dispatching;
 using Models;
+using Models.Services;
 using Models.StorageWrappers;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -53,6 +54,24 @@ namespace FileExplorer.Core.Services
                 Debug.WriteLine("------------------ Task DONE -------------------");
 
             }, token);
+        }
+
+        public async Task SearchAsync(ConcurrentAttachingService destination, DirectoryWrapper searchCatalog, SearchOptionsModel options)
+        {
+            var watch = new Stopwatch();
+
+            watch.Start();
+
+            await Task.Run(async () =>
+            {
+                await searchCatalog.ShallowSearch(destination, options);
+                await searchCatalog.DeepSearchAsync(destination, options);
+
+            }).ContinueWith(t =>
+            {
+                watch.Stop();
+                Debug.WriteLine("------------------- Elapsed: {0} -------------------", watch.ElapsedMilliseconds);
+            });
         }
 
     }

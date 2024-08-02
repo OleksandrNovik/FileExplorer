@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using Models.Contracts;
+using Models.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,6 +18,18 @@ namespace Models.StorageWrappers
         public DirectoryWrapper() { }
         public DirectoryWrapper(DirectoryInfo info) : base(info) { }
         public DirectoryWrapper(string path) : base(new DirectoryInfo(path)) { }
+
+        public IEnumerable<DirectoryWrapper> EnumerateSubDirectories()
+        {
+            try
+            {
+                return Directory.EnumerateDirectories(Path).Select(path => new DirectoryWrapper(path));
+            }
+            catch
+            {
+                return [];
+            }
+        }
 
         public IEnumerable<DirectoryItemWrapper> EnumerateItems(string pattern = "*", SearchOption option = SearchOption.TopDirectoryOnly)
         {
@@ -56,6 +69,50 @@ namespace Models.StorageWrappers
             info = new DirectoryInfo(newPath);
             InitializeData();
             asStorageFolder = null;
+        }
+
+        public async Task ShallowSearch(ConcurrentAttachingService destination, SearchOptionsModel options)
+        {
+            await destination.AddEnumerationAsync(SearchCopy(options, false));
+        }
+
+        public async Task DeepSearchAsync(ConcurrentAttachingService destination, SearchOptionsModel options)
+        {
+            var subdirectories = EnumerateSubDirectories();
+
+            var parallelOption = new ParallelOptions
+            {
+                MaxDegreeOfParallelism = 1
+            };
+
+            await Parallel.ForEachAsync(subdirectories, parallelOption, async (subdirectory, token) =>
+            {
+                await subdirectory.ShallowSearch(destination, options);
+                await subdirectory.DeepSearchAsync(destination, options);
+            });
+        }
+
+        public IEnumerable<DirectoryItemWrapper> SearchCopy(SearchOptionsModel options, bool isNested)
+        {
+            var enumeration = new EnumerationOptions
+            {
+                IgnoreInaccessible = true,
+                RecurseSubdirectories = isNested
+            };
+
+            var found = EnumerateItems(enumeration, options.SearchPattern)
+                // Any item that is used at provided date range
+                .Where(item => options.AccessDateRange.Includes(item.LastAccess))
+                // Any file types that satisfy filter
+                .Where(item => options.ExtensionFilter(item.Name));
+
+            if (options.SearchName is not null)
+            {
+                found = found.Where(item =>
+                    item.Name.Contains(options.SearchName, StringComparison.OrdinalIgnoreCase));
+            }
+
+            return found;
         }
 
         public ParallelQuery<DirectoryItemWrapper> SearchParallel(SearchOptionsModel options)

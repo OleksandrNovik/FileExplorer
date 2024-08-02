@@ -166,7 +166,7 @@ namespace Models.StorageWrappers
             //TODO: Why icon of .ts file returns null?
             if (icon is not null)
             {
-                await Thumbnail.SetSourceAsync(icon);
+                await Thumbnail?.SetSourceAsync(icon);
             }
         }
 

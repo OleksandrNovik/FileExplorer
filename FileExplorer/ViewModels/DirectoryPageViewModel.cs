@@ -9,6 +9,7 @@ using FileExplorer.Services;
 using Microsoft.UI.Xaml.Controls;
 using Models;
 using Models.Messages;
+using Models.Services;
 using Models.StorageWrappers;
 using System;
 using System.Collections.Generic;
@@ -84,18 +85,14 @@ namespace FileExplorer.ViewModels
         {
             CancelSearchIfNeeded();
 
-            var watch = new Stopwatch();
             DirectoryItems.Clear();
 
             Debug.Assert(CurrentDirectory is not null);
 
-            watch.Start();
+            //var found = CurrentDirectory.SearchParallel(message.Options);
+            //await attachService.AttachElementAsync(DirectoryItems, found, cancellation.Token);
 
-            var found = CurrentDirectory.SearchParallel(message.Options);
-            await attachService.AttachElementAsync(DirectoryItems, found, cancellation.Token);
-
-            watch.Stop();
-            Debug.WriteLine("------------------- Elapsed: {0} -------------------", watch.ElapsedMilliseconds);
+            await attachService.SearchAsync(new ConcurrentAttachingService(DirectoryItems), CurrentDirectory, message.Options);
         }
 
         private async void HandlerFileOpen(DirectoryPageViewModel recipient, FileOpenRequiredMessage message)
