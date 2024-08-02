@@ -1,9 +1,9 @@
 ﻿#nullable enable
 using Models.StorageWrappers;
 
-namespace Models
+namespace Models.General
 {
-    public record DirectoryNavigationInfo
+    public sealed record DirectoryNavigationInfo
     {
         public string Name { get; }
         public string FullPath { get; }

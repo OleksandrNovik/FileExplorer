@@ -1,7 +1,7 @@
 ﻿#nullable enable
-using FileExplorer.Models;
 using Microsoft.UI.Xaml.Controls;
 using Models.StorageWrappers;
+using Models.TabRelated;
 using System.Collections.ObjectModel;
 
 namespace FileExplorer.Core.Contracts

@@ -1,5 +1,6 @@
 ﻿using FileExplorer.Core.Contracts;
-using Models;
+using Models.General;
+using Models.TabRelated;
 
 namespace FileExplorer.Core.Services
 {

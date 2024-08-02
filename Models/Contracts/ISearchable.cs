@@ -16,7 +16,7 @@ namespace Models.Contracts
         /// <param name="destination"> Destination collection to add found elements </param>
         /// <param name="options"> Search options </param>
         /// <param name="token"> Cancellation token to cancel operation when it is no longer needed </param>
-        public Task SearchAsync(TDestination destination, SearchOptionsModel options, CancellationToken token);
+        public Task SearchAsync(TDestination destination, General.SearchOptionsModel options, CancellationToken token);
 
     }
 }

@@ -1,4 +1,5 @@
-﻿using Models;
+﻿using Models.General;
+using Models.TabRelated;
 
 namespace FileExplorer.Core.Contracts
 {

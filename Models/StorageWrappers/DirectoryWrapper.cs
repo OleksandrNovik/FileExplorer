@@ -74,7 +74,7 @@ namespace Models.StorageWrappers
             asStorageFolder = null;
         }
 
-        public async Task SearchAsync(ConcurrentWrappersCollection destination, SearchOptionsModel options, CancellationToken token)
+        public async Task SearchAsync(ConcurrentWrappersCollection destination, General.SearchOptionsModel options, CancellationToken token)
         {
             await ShallowSearchAsync(destination, options, token);
 
@@ -90,7 +90,7 @@ namespace Models.StorageWrappers
         /// <param name="destination"> Destination collection to add items into </param>
         /// <param name="options"> Search options for a current search </param>
         /// <param name="token"> Token for canceling operation </param>
-        public async Task ShallowSearchAsync(ConcurrentWrappersCollection destination, SearchOptionsModel options, CancellationToken token)
+        public async Task ShallowSearchAsync(ConcurrentWrappersCollection destination, General.SearchOptionsModel options, CancellationToken token)
         {
             await destination.EnqueueEnumerationAsync(SearchDirectory(options), token);
         }
@@ -101,7 +101,7 @@ namespace Models.StorageWrappers
         /// <param name="destination"> Destination collection to add items into </param>
         /// <param name="options"> Search options for a current search </param>
         /// <param name="token"> Token for canceling operation </param>
-        public async Task SearchSubdirectoriesAsync(ConcurrentWrappersCollection destination, SearchOptionsModel options, CancellationToken token)
+        public async Task SearchSubdirectoriesAsync(ConcurrentWrappersCollection destination, General.SearchOptionsModel options, CancellationToken token)
         {
             var subdirectories = EnumerateSubDirectories();
 
@@ -121,7 +121,7 @@ namespace Models.StorageWrappers
             }
         }
 
-        private IEnumerable<DirectoryItemWrapper> SearchDirectory(SearchOptionsModel options)
+        private IEnumerable<DirectoryItemWrapper> SearchDirectory(General.SearchOptionsModel options)
         {
             var enumeration = new EnumerationOptions
             {

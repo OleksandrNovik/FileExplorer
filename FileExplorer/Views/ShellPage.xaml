@@ -11,6 +11,7 @@
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:behaviors="using:FileExplorer.UI.Behaviors"
     xmlns:models="using:FileExplorer.Models"
+    xmlns:tabRelated="using:Models.TabRelated"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -33,7 +34,7 @@
                     <Style TargetType="TabViewItem">
                         <Setter Property="HeaderTemplate">
                             <Setter.Value>
-                                <DataTemplate x:DataType="models:TabModel">
+                                <DataTemplate x:DataType="tabRelated:TabModel">
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="{x:Bind TabDirectory.Name, Mode=OneWay}" />
                                     </StackPanel>

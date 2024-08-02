@@ -2,7 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using FileExplorer.Core.Contracts;
-using Models;
+using Models.General;
 using Models.Messages;
 using Models.StorageWrappers;
 using System;

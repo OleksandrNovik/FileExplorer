@@ -1,5 +1,7 @@
 ﻿#nullable enable
+using Models.General;
 using Models.StorageWrappers;
+using Models.TabRelated;
 
 namespace Models.Messages
 {
@@ -28,5 +30,5 @@ namespace Models.Messages
     /// <param name="TabDirectory"> Directory that has to be opened in new tab </param>
     public record OpenTabMessage(DirectoryWrapper TabDirectory);
 
-    public record SearchOperationRequiredMessage(SearchOptionsModel Options);
+    public record SearchOperationRequiredMessage(General.SearchOptionsModel Options);
 }
