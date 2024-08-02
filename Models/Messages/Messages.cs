@@ -1,9 +1,5 @@
 ﻿#nullable enable
-using FileExplorer.Models;
-using Models.Contracts;
 using Models.StorageWrappers;
-using System.Collections.Generic;
-using System.Threading;
 
 namespace Models.Messages
 {
@@ -32,9 +28,5 @@ namespace Models.Messages
     /// <param name="TabDirectory"> Directory that has to be opened in new tab </param>
     public record OpenTabMessage(DirectoryWrapper TabDirectory);
 
-    public record SearchOperationRequiredMessage(CancellationTokenSource CancelSearch, SearchOptionsModel Options);
-
-    public record SearchDirectoryMessage(ISearchable<DirectoryItemWrapper> SearchedCatalog);
-
-    public record SearchIterationMessage(IEnumerable<DirectoryItemWrapper>? Items);
+    public record SearchOperationRequiredMessage(SearchOptionsModel Options);
 }

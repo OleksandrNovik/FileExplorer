@@ -40,6 +40,7 @@
                                Visibility="{x:Bind IsRenamed, Mode=OneWay, 
                                         Converter = {StaticResource BoolToVisibilityConverter}, 
                                         ConverterParameter=True}" />
+
                     <TextBox  Text="{x:Bind Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                               TextWrapping="Wrap"
                               Padding="0 5 0 0"

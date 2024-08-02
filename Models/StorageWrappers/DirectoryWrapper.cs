@@ -18,18 +18,6 @@ namespace Models.StorageWrappers
         public DirectoryWrapper(DirectoryInfo info) : base(info) { }
         public DirectoryWrapper(string path) : base(new DirectoryInfo(path)) { }
 
-        public IEnumerable<ISearchable<DirectoryItemWrapper>> EnumerateSubDirectories()
-        {
-            try
-            {
-                return Directory.EnumerateDirectories(Path).Select(path => new DirectoryWrapper(path));
-            }
-            catch
-            {
-                return [];
-            }
-        }
-
         public IEnumerable<DirectoryItemWrapper> EnumerateItems(string pattern = "*", SearchOption option = SearchOption.TopDirectoryOnly)
         {
             return EnumerateWrappers(Directory.EnumerateFileSystemEntries(Path, pattern, option));
@@ -75,7 +63,7 @@ namespace Models.StorageWrappers
             var enumeration = new EnumerationOptions
             {
                 IgnoreInaccessible = true,
-                RecurseSubdirectories = true
+                RecurseSubdirectories = options.IsNestedSearch
             };
 
             var found = EnumerateItems(enumeration, options.SearchPattern)

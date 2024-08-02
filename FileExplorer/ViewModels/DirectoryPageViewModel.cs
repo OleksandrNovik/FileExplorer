@@ -6,9 +6,7 @@ using FileExplorer.Core.Contracts;
 using FileExplorer.Core.Services;
 using FileExplorer.Models;
 using FileExplorer.Services;
-using Helpers.General;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media.Imaging;
 using Models;
 using Models.Messages;
 using Models.StorageWrappers;
@@ -45,7 +43,6 @@ namespace FileExplorer.ViewModels
         [ObservableProperty]
         private DirectoryItemAdditionalInfo _selectedDirectoryItemAdditionalDetails;
 
-
         [ObservableProperty]
         private bool isDetailsShown;
         public DirectoryWrapper CurrentDirectory { get; private set; }
@@ -57,7 +54,7 @@ namespace FileExplorer.ViewModels
         private ObservableCollection<DirectoryItemWrapper> selectedItems;
         public bool HasCopiedFiles { get; private set; }
 
-        private CancellationTokenSource cancellation;
+        private CancellationTokenSource? cancellation;
 
         public DirectoryPageViewModel(IMenuFlyoutFactory factory)
         {
@@ -70,13 +67,23 @@ namespace FileExplorer.ViewModels
             Messenger.Register<DirectoryPageViewModel, FileOpenRequiredMessage>(this, HandlerFileOpen);
 
             //TODO: this
-            Messenger.Register<DirectoryPageViewModel, SearchOperationRequiredMessage>(this, Handler);
-
-            Messenger.Register<DirectoryPageViewModel, SearchIterationMessage>(this, AddSearchedItems);
+            Messenger.Register<DirectoryPageViewModel, SearchOperationRequiredMessage>(this, HandleSearch);
         }
 
-        private async void Handler(DirectoryPageViewModel _, SearchOperationRequiredMessage message)
+
+        private void CancelSearchIfNeeded()
         {
+            if (cancellation is not null)
+            {
+                cancellation.Cancel();
+                cancellation.Dispose();
+            }
+            cancellation = new CancellationTokenSource();
+        }
+        private async void HandleSearch(DirectoryPageViewModel _, SearchOperationRequiredMessage message)
+        {
+            CancelSearchIfNeeded();
+
             var watch = new Stopwatch();
             DirectoryItems.Clear();
 
@@ -85,15 +92,10 @@ namespace FileExplorer.ViewModels
             watch.Start();
 
             var found = CurrentDirectory.SearchParallel(message.Options);
-            await attachService.AttachElementAsync(DirectoryItems, found, CancellationToken.None);
+            await attachService.AttachElementAsync(DirectoryItems, found, cancellation.Token);
 
             watch.Stop();
             Debug.WriteLine("------------------- Elapsed: {0} -------------------", watch.ElapsedMilliseconds);
-        }
-
-        private async void AddSearchedItems(DirectoryPageViewModel _, SearchIterationMessage message)
-        {
-            await DirectoryItems.AddEnumeration(message.Items);
         }
 
         private async void HandlerFileOpen(DirectoryPageViewModel recipient, FileOpenRequiredMessage message)
@@ -135,27 +137,10 @@ namespace FileExplorer.ViewModels
         {
             DirectoryItems = [];
             var directoryContent = CurrentDirectory.EnumerateItems()
-                .Where(i => (i.Attributes & FileAttributes.System) == 0)
-                .ToArray();
+                .Where(i => (i.Attributes & FileAttributes.System) == 0);
 
-            await DirectoryItems.AddWrapperItemsAsync(directoryContent);
+            await DirectoryItems.AddEnumeration(directoryContent);
             SelectedItems.Clear();
-        }
-
-
-        private async Task AddDirectoryItemsAsync(ICollection<DirectoryItemWrapper> items)
-        {
-            DirectoryItems.AddRange(items);
-
-            foreach (var item in items)
-            {
-                //TODO: fix thumbnails
-                if ((item.Attributes & FileAttributes.Hidden) == 0)
-                {
-                    item.Thumbnail = new BitmapImage();
-                    await item.UpdateThumbnailAsync();
-                }
-            }
         }
 
         /// <summary>
@@ -164,6 +149,7 @@ namespace FileExplorer.ViewModels
         /// <param name="directory"> Given directory that is opened </param>
         private async Task MoveToDirectoryAsync(DirectoryWrapper directory)
         {
+            CancelSearchIfNeeded();
             CurrentDirectory = directory;
             await InitializeDirectoryAsync();
             Messenger.Send(directory);

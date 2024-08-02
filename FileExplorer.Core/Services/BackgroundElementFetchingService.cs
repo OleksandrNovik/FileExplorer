@@ -14,6 +14,13 @@ namespace FileExplorer.Core.Services
     public class BackgroundElementFetchingService
     {
         private readonly DispatcherQueue dispatcher = DispatcherQueue.GetForCurrentThread();
+
+        /// <summary>
+        /// Attaches files that are found in current search sequence to the source collection in background
+        /// </summary>
+        /// <param name="source"> Collection that needs to be filled with found directory item wrappers </param>
+        /// <param name="items"> Enumeration of files that is found in current directory </param>
+        /// <param name="token"> Cancellation token that used to cancel operation when user leaves search page </param>
         public async Task AttachElementAsync(ObservableWrappersCollection source, ParallelQuery<DirectoryItemWrapper> items, CancellationToken token)
         {
             await Task.Run(() =>
