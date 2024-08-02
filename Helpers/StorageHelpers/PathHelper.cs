@@ -10,7 +10,7 @@ namespace Helpers.StorageHelpers
 
             if (Path.HasExtension(query))
             {
-                var extension = Path.GetExtension(query);
+                var extension = Path.GetExtension(query).Remove(0, 1);
                 var name = Path.GetFileNameWithoutExtension(query);
                 pattern = $"*{name}*.*{extension}*";
             }

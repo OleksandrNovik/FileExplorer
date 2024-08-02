@@ -23,6 +23,7 @@ namespace Models.StorageWrappers
             await Launcher.LaunchFileAsync(storageFile);
         }
 
+        /// <inheritdoc />
         public override void Copy(string destination)
         {
             var uniqueName = GenerateUniqueName(destination, Name + " - Copy");
@@ -32,6 +33,7 @@ namespace Models.StorageWrappers
             InitializeData();
         }
 
+        /// <inheritdoc />
         public override void Move(string destination)
         {
             Name = GenerateUniqueName(destination, Name);
@@ -46,17 +48,20 @@ namespace Models.StorageWrappers
             asStorageFile = null;
         }
 
+        /// <inheritdoc />
         public override async Task RecycleAsync()
         {
             var storageFile = await AsStorageFileAsync();
             await storageFile.DeleteAsync(StorageDeleteOption.Default);
         }
 
+        /// <inheritdoc />
         public override void Delete()
         {
             File.Delete(Path);
         }
 
+        /// <inheritdoc />
         public override void CreatePhysical(string destination)
         {
             var uniqueName = GenerateUniqueName(destination, "New File");
@@ -68,11 +73,13 @@ namespace Models.StorageWrappers
             InitializeData();
         }
 
+        /// <inheritdoc />
         public override async Task<IStorageItemProperties> GetStorageItemPropertiesAsync()
         {
             return await AsStorageFileAsync();
         }
 
+        /// <inheritdoc />
         public override DirectoryWrapper GetCurrentDirectory()
         {
             var parent = GetParentDirectory();

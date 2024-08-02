@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Models.Contracts
 {
@@ -6,13 +8,15 @@ namespace Models.Contracts
     /// Interface to execute search trough item that implements it.
     /// Is used to create abstraction of a search logic, so item that we are searching decides how to search in itself
     /// </summary>
-    public interface ISearchable<T>
+    public interface ISearchable<in TDestination> where TDestination : IList
     {
         /// <summary>
-        /// Initiates search with provided options
+        /// An asynchronous search through current catalog with provided options.
         /// </summary>
-        /// <param name="options"> SearchParallel options that needs to be applied for a current search </param>
-        /// <returns> Enumeration of items that have been found </returns>
-        public ParallelQuery<T> SearchParallel(SearchOptionsModel options);
+        /// <param name="destination"> Destination collection to add found elements </param>
+        /// <param name="options"> Search options </param>
+        /// <param name="token"> Cancellation token to cancel operation when it is no longer needed </param>
+        public Task SearchAsync(TDestination destination, SearchOptionsModel options, CancellationToken token);
+
     }
 }

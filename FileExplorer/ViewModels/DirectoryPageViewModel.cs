@@ -3,13 +3,11 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using FileExplorer.Core.Contracts;
-using FileExplorer.Core.Services;
 using FileExplorer.Models;
 using FileExplorer.Services;
 using Microsoft.UI.Xaml.Controls;
 using Models;
 using Models.Messages;
-using Models.Services;
 using Models.StorageWrappers;
 using System;
 using System.Collections.Generic;
@@ -30,8 +28,6 @@ namespace FileExplorer.ViewModels
         /// </summary>
         private readonly IMenuFlyoutFactory menuFactory;
 
-        private readonly BackgroundElementFetchingService attachService = new();
-
         /// <summary>
         /// Builder that decides what type of menu and with what options is being created.
         /// Creates models to represent structure of menu, which can be used to create real menu with <see cref="menuFactory"/>
@@ -49,13 +45,13 @@ namespace FileExplorer.ViewModels
         public DirectoryWrapper CurrentDirectory { get; private set; }
 
         [ObservableProperty]
-        private ObservableWrappersCollection directoryItems;
+        private ConcurrentWrappersCollection directoryItems;
 
         [ObservableProperty]
         private ObservableCollection<DirectoryItemWrapper> selectedItems;
         public bool HasCopiedFiles { get; private set; }
 
-        private CancellationTokenSource? cancellation;
+        private CancellationTokenSource cancellation;
 
         public DirectoryPageViewModel(IMenuFlyoutFactory factory)
         {
@@ -67,10 +63,8 @@ namespace FileExplorer.ViewModels
             Messenger.Register<DirectoryPageViewModel, NavigationRequiredMessage>(this, HandleNavigationMessage);
             Messenger.Register<DirectoryPageViewModel, FileOpenRequiredMessage>(this, HandlerFileOpen);
 
-            //TODO: this
             Messenger.Register<DirectoryPageViewModel, SearchOperationRequiredMessage>(this, HandleSearch);
         }
-
 
         private void CancelSearchIfNeeded()
         {
@@ -89,10 +83,7 @@ namespace FileExplorer.ViewModels
 
             Debug.Assert(CurrentDirectory is not null);
 
-            //var found = CurrentDirectory.SearchParallel(message.Options);
-            //await attachService.AttachElementAsync(DirectoryItems, found, cancellation.Token);
-
-            await attachService.SearchAsync(new ConcurrentAttachingService(DirectoryItems), CurrentDirectory, message.Options);
+            await CurrentDirectory.SearchAsync(DirectoryItems, message.Options, cancellation.Token);
         }
 
         private async void HandlerFileOpen(DirectoryPageViewModel recipient, FileOpenRequiredMessage message)
@@ -136,7 +127,8 @@ namespace FileExplorer.ViewModels
             var directoryContent = CurrentDirectory.EnumerateItems()
                 .Where(i => (i.Attributes & FileAttributes.System) == 0);
 
-            await DirectoryItems.AddEnumeration(directoryContent);
+            await DirectoryItems.EnqueueEnumerationAsync(directoryContent, CancellationToken.None);
+
             SelectedItems.Clear();
         }
 

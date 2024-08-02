@@ -97,6 +97,10 @@ namespace FileExplorer.ViewModels
             {
                 Options.SearchName = SearchQuery;
             }
+            else
+            {
+                Options.SearchName = null;
+            }
 
             Messenger.Send(new SearchOperationRequiredMessage(Options));
         }

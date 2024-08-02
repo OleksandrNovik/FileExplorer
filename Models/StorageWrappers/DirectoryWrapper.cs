@@ -1,10 +1,11 @@
 ﻿#nullable enable
 using Models.Contracts;
-using Models.Services;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Storage;
 using IOPath = System.IO.Path;
@@ -12,14 +13,14 @@ using SearchOption = System.IO.SearchOption;
 
 namespace Models.StorageWrappers
 {
-    public class DirectoryWrapper : DirectoryItemWrapper, ISearchable<DirectoryItemWrapper>
+    public sealed class DirectoryWrapper : DirectoryItemWrapper, ISearchable<ConcurrentWrappersCollection>
     {
         private StorageFolder? asStorageFolder;
         public DirectoryWrapper() { }
         public DirectoryWrapper(DirectoryInfo info) : base(info) { }
         public DirectoryWrapper(string path) : base(new DirectoryInfo(path)) { }
 
-        public IEnumerable<DirectoryWrapper> EnumerateSubDirectories()
+        public IEnumerable<ISearchable<ConcurrentWrappersCollection>> EnumerateSubDirectories()
         {
             try
             {
@@ -52,11 +53,13 @@ namespace Models.StorageWrappers
             }
         }
 
+        /// <inheritdoc />
         public override void Copy(string destination)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public override void Move(string destination)
         {
             Name = GenerateUniqueName(destination, Name);
@@ -71,33 +74,59 @@ namespace Models.StorageWrappers
             asStorageFolder = null;
         }
 
-        public async Task ShallowSearch(ConcurrentAttachingService destination, SearchOptionsModel options)
+        public async Task SearchAsync(ConcurrentWrappersCollection destination, SearchOptionsModel options, CancellationToken token)
         {
-            await destination.AddEnumerationAsync(SearchCopy(options, false));
+            await ShallowSearchAsync(destination, options, token);
+
+            if (options.IsNestedSearch)
+            {
+                await SearchSubdirectoriesAsync(destination, options, token);
+            }
         }
 
-        public async Task DeepSearchAsync(ConcurrentAttachingService destination, SearchOptionsModel options)
+        /// <summary>
+        /// Initiates shallow search (only-top level of current directory)
+        /// </summary>
+        /// <param name="destination"> Destination collection to add items into </param>
+        /// <param name="options"> Search options for a current search </param>
+        /// <param name="token"> Token for canceling operation </param>
+        public async Task ShallowSearchAsync(ConcurrentWrappersCollection destination, SearchOptionsModel options, CancellationToken token)
+        {
+            await destination.EnqueueEnumerationAsync(SearchDirectory(options), token);
+        }
+
+        /// <summary>
+        /// Searches through subdirectories of current directory (recursive search) to get any file at any folder
+        /// </summary>
+        /// <param name="destination"> Destination collection to add items into </param>
+        /// <param name="options"> Search options for a current search </param>
+        /// <param name="token"> Token for canceling operation </param>
+        public async Task SearchSubdirectoriesAsync(ConcurrentWrappersCollection destination, SearchOptionsModel options, CancellationToken token)
         {
             var subdirectories = EnumerateSubDirectories();
 
             var parallelOption = new ParallelOptions
             {
-                MaxDegreeOfParallelism = 1
+                MaxDegreeOfParallelism = 1,
+                CancellationToken = token
             };
-
-            await Parallel.ForEachAsync(subdirectories, parallelOption, async (subdirectory, token) =>
+            try
             {
-                await subdirectory.ShallowSearch(destination, options);
-                await subdirectory.DeepSearchAsync(destination, options);
-            });
+                await Parallel.ForEachAsync(subdirectories, parallelOption,
+                    async (subdirectory, ct) => { await subdirectory.SearchAsync(destination, options, ct); });
+            }
+            catch (TaskCanceledException)
+            {
+                Debug.WriteLine("SearchSubdirectoriesAsync Cancelled");
+            }
         }
 
-        public IEnumerable<DirectoryItemWrapper> SearchCopy(SearchOptionsModel options, bool isNested)
+        private IEnumerable<DirectoryItemWrapper> SearchDirectory(SearchOptionsModel options)
         {
             var enumeration = new EnumerationOptions
             {
                 IgnoreInaccessible = true,
-                RecurseSubdirectories = isNested
+                RecurseSubdirectories = false
             };
 
             var found = EnumerateItems(enumeration, options.SearchPattern)
@@ -115,41 +144,20 @@ namespace Models.StorageWrappers
             return found;
         }
 
-        public ParallelQuery<DirectoryItemWrapper> SearchParallel(SearchOptionsModel options)
-        {
-            var enumeration = new EnumerationOptions
-            {
-                IgnoreInaccessible = true,
-                RecurseSubdirectories = options.IsNestedSearch
-            };
-
-            var found = EnumerateItems(enumeration, options.SearchPattern)
-                .AsParallel()
-                // Any item that is used at provided date range
-                .Where(item => options.AccessDateRange.Includes(item.LastAccess))
-                // Any file types that satisfy filter
-                .Where(item => options.ExtensionFilter(item.Name));
-
-            if (options.SearchName is not null)
-            {
-                found = found.Where(item =>
-                    item.Name.Contains(options.SearchName, StringComparison.OrdinalIgnoreCase));
-            }
-
-            return found;
-        }
-
+        /// <inheritdoc />
         public override async Task RecycleAsync()
         {
             var storageFolder = await AsStorageFolderAsync();
             await storageFolder.DeleteAsync(StorageDeleteOption.Default);
         }
 
+        /// <inheritdoc />
         public override void Delete()
         {
             Directory.Delete(Path, true);
         }
 
+        /// <inheritdoc />
         public override void CreatePhysical(string destination)
         {
             var uniqueName = GenerateUniqueName(destination, "New Folder");
@@ -158,11 +166,13 @@ namespace Models.StorageWrappers
             InitializeData();
         }
 
+        /// <inheritdoc />
         public override async Task<IStorageItemProperties> GetStorageItemPropertiesAsync()
         {
             return await AsStorageFolderAsync();
         }
 
+        /// <inheritdoc />
         public override DirectoryWrapper GetCurrentDirectory() => this;
         private async Task<StorageFolder> AsStorageFolderAsync()
         {
