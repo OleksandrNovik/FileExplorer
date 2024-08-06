@@ -1,8 +1,8 @@
 ﻿#nullable enable
 using Models.Contracts;
+using Models.General;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -13,14 +13,67 @@ using SearchOption = System.IO.SearchOption;
 
 namespace Models.StorageWrappers
 {
-    public sealed class DirectoryWrapper : DirectoryItemWrapper, ISearchable<ConcurrentWrappersCollection>
+    public sealed class DirectoryWrapper : DirectoryItemWrapper, ISystemSearchCatalog<DirectoryItemWrapper>
     {
         private StorageFolder? asStorageFolder;
         public DirectoryWrapper() { }
         public DirectoryWrapper(DirectoryInfo info) : base(info) { }
         public DirectoryWrapper(string path) : base(new DirectoryInfo(path)) { }
 
-        public IEnumerable<ISearchable<ConcurrentWrappersCollection>> EnumerateSubDirectories()
+        #region ISearchCatalog logic
+
+        public CachedCatalogSearch<DirectoryItemWrapper> Cache { get; set; }
+
+        public async Task SearchAsync(IEnqueuingCollection<DirectoryItemWrapper> destination, SearchOptionsModel options, CancellationToken token)
+        {
+            await ShallowSearchAsync(destination, options, token);
+
+            if (options.IsNestedSearch)
+            {
+                Cache.CachedSubCatalogs = EnumerateSubDirectories()
+                    .Select(sub => new CachedCatalogSearch<DirectoryItemWrapper>(sub))
+                    .ToArray();
+            }
+        }
+
+        /// <summary>
+        /// Initiates shallow search (only-top level of current directory)
+        /// </summary>
+        /// <param name="destination"> Destination collection to add items into </param>
+        /// <param name="options"> Search options for a current search </param>
+        /// <param name="token"> Token for canceling operation </param>
+        public async Task ShallowSearchAsync(IEnqueuingCollection<DirectoryItemWrapper> destination, SearchOptionsModel options, CancellationToken token)
+        {
+            await destination.EnqueueEnumerationAsync(SearchDirectory(options), token);
+            Cache.HasSearched = true;
+        }
+
+        private IEnumerable<DirectoryItemWrapper> SearchDirectory(SearchOptionsModel options)
+        {
+            var enumeration = new EnumerationOptions
+            {
+                IgnoreInaccessible = true,
+                RecurseSubdirectories = false
+            };
+
+            var found = EnumerateItems(enumeration, options.SearchPattern)
+                // Any item that is used at provided date range
+                .Where(item => options.AccessDateRange.Includes(item.LastAccess))
+                // Any file types that satisfy filter
+                .Where(item => options.ExtensionFilter(item.Name));
+
+            if (options.SearchName is not null)
+            {
+                found = found.Where(item =>
+                    item.Name.Contains(options.SearchName, StringComparison.OrdinalIgnoreCase));
+            }
+
+            return found;
+        }
+
+        #endregion
+
+        public IEnumerable<ISystemSearchCatalog<DirectoryItemWrapper>> EnumerateSubDirectories()
         {
             try
             {
@@ -72,76 +125,6 @@ namespace Models.StorageWrappers
             info = new DirectoryInfo(newPath);
             InitializeData();
             asStorageFolder = null;
-        }
-
-        public async Task SearchAsync(ConcurrentWrappersCollection destination, General.SearchOptionsModel options, CancellationToken token)
-        {
-            await ShallowSearchAsync(destination, options, token);
-
-            if (options.IsNestedSearch)
-            {
-                await SearchSubdirectoriesAsync(destination, options, token);
-            }
-        }
-
-        /// <summary>
-        /// Initiates shallow search (only-top level of current directory)
-        /// </summary>
-        /// <param name="destination"> Destination collection to add items into </param>
-        /// <param name="options"> Search options for a current search </param>
-        /// <param name="token"> Token for canceling operation </param>
-        public async Task ShallowSearchAsync(ConcurrentWrappersCollection destination, General.SearchOptionsModel options, CancellationToken token)
-        {
-            await destination.EnqueueEnumerationAsync(SearchDirectory(options), token);
-        }
-
-        /// <summary>
-        /// Searches through subdirectories of current directory (recursive search) to get any file at any folder
-        /// </summary>
-        /// <param name="destination"> Destination collection to add items into </param>
-        /// <param name="options"> Search options for a current search </param>
-        /// <param name="token"> Token for canceling operation </param>
-        public async Task SearchSubdirectoriesAsync(ConcurrentWrappersCollection destination, General.SearchOptionsModel options, CancellationToken token)
-        {
-            var subdirectories = EnumerateSubDirectories();
-
-            var parallelOption = new ParallelOptions
-            {
-                MaxDegreeOfParallelism = 1,
-                CancellationToken = token
-            };
-            try
-            {
-                await Parallel.ForEachAsync(subdirectories, parallelOption,
-                    async (subdirectory, ct) => { await subdirectory.SearchAsync(destination, options, ct); });
-            }
-            catch (TaskCanceledException)
-            {
-                Debug.WriteLine("SearchSubdirectoriesAsync Cancelled");
-            }
-        }
-
-        private IEnumerable<DirectoryItemWrapper> SearchDirectory(General.SearchOptionsModel options)
-        {
-            var enumeration = new EnumerationOptions
-            {
-                IgnoreInaccessible = true,
-                RecurseSubdirectories = false
-            };
-
-            var found = EnumerateItems(enumeration, options.SearchPattern)
-                // Any item that is used at provided date range
-                .Where(item => options.AccessDateRange.Includes(item.LastAccess))
-                // Any file types that satisfy filter
-                .Where(item => options.ExtensionFilter(item.Name));
-
-            if (options.SearchName is not null)
-            {
-                found = found.Where(item =>
-                    item.Name.Contains(options.SearchName, StringComparison.OrdinalIgnoreCase));
-            }
-
-            return found;
         }
 
         /// <inheritdoc />

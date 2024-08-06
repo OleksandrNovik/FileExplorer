@@ -8,6 +8,14 @@ namespace Models.General
         public string Name { get; }
         public string FullPath { get; }
         public string? ParentPath { get; }
+        public CachedSearchResult<DirectoryItemWrapper>? Cache { get; }
+
+        public DirectoryNavigationInfo(CachedSearchResult<DirectoryItemWrapper> cachedSearchResult)
+        {
+            Name = cachedSearchResult.RootCatalog.SearchCatalog.Name;
+            FullPath = cachedSearchResult.RootCatalog.SearchCatalog.Path;
+            Cache = cachedSearchResult;
+        }
 
         public DirectoryNavigationInfo(string path) : this(new DirectoryWrapper(path)) { }
 

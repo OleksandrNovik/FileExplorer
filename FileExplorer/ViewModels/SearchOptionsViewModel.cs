@@ -6,14 +6,30 @@ using Models;
 using Models.General;
 using Models.Messages;
 using Models.Ranges;
+using Models.StorageWrappers;
 using System;
 using System.Collections.Generic;
 using PathHelper = Helpers.StorageHelpers.PathHelper;
 
 namespace FileExplorer.ViewModels
 {
-    public sealed partial class SearchOperationsViewModel : ObservableRecipient
+    public sealed partial class SearchOptionsViewModel : ObservableRecipient
     {
+        public SearchOptionsViewModel()
+        {
+            Options = SearchOptionsModel.Default;
+
+            Messenger.Register<SearchOptionsViewModel, SearchStartedMessage<DirectoryItemWrapper>>(this,
+                (_, message) =>
+                {
+                    CachedSearch = message.CachedResult;
+                });
+
+            Messenger.Register<SearchOptionsViewModel, StopSearchMessage>(this, (_, _) =>
+            {
+                CachedSearch = null;
+            });
+        }
         public IEnumerable<MenuFlyoutItemViewModel> DateSearchOptions => new List<MenuFlyoutItemViewModel>
         {
             new MenuFlyoutItemViewModel("Any")
@@ -64,7 +80,7 @@ namespace FileExplorer.ViewModels
         };
         public IEnumerable<MenuFlyoutItemViewModel> SizeSearchOptions => new List<MenuFlyoutItemViewModel>
         {
-            new MenuFlyoutItemViewModel("Last year")
+            new MenuFlyoutItemViewModel("11111")
             {
                 Command = SetDateOptionCommand,
                 CommandParameter = DateRange.LastYearRange,
@@ -72,25 +88,47 @@ namespace FileExplorer.ViewModels
 
         };
 
+        public bool? IsSearchInProgress => CachedSearch?.InProgress;
+
+        [ObservableProperty]
+        private CachedSearchResult<DirectoryItemWrapper>? cachedSearch;
+
         [ObservableProperty]
         private string searchQuery;
-        public SearchOptionsModel Options => SearchOptionsModel.Default;
+        public SearchOptionsModel Options { get; }
 
         [RelayCommand]
         private void SetDateOption(DateRange range)
         {
             Options.AccessDateRange = range;
+            CancelSearch();
         }
 
         [RelayCommand]
         private void SetTypeOption(Predicate<string> extensionFilter)
         {
             Options.ExtensionFilter = extensionFilter;
+            CancelSearch();
         }
 
         [RelayCommand]
         private void InitiateSearch()
         {
+            if (CachedSearch is not null
+                && CachedSearch.SearchOptions.OriginalSearchQuery == SearchQuery)
+            {
+                Messenger.Send(new ContinueSearchMessage());
+            }
+            else
+            {
+                ExtractQueryString();
+                Messenger.Send(new SearchOperationRequiredMessage(Options));
+            }
+        }
+
+        private void ExtractQueryString()
+        {
+            Options.OriginalSearchQuery = SearchQuery;
             Options.SearchPattern = PathHelper.CreatePattern(SearchQuery);
 
             // If we cannot generate more precise pattern we should search by name
@@ -102,8 +140,14 @@ namespace FileExplorer.ViewModels
             {
                 Options.SearchName = null;
             }
+        }
 
-            Messenger.Send(new SearchOperationRequiredMessage(Options));
+        public void CancelSearch()
+        {
+            if (CachedSearch is not null)
+            {
+                Messenger.Send(new StopSearchMessage());
+            }
         }
     }
 }

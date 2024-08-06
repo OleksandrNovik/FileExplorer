@@ -162,6 +162,8 @@ namespace Models.StorageWrappers
 
         public async Task UpdateThumbnailAsync()
         {
+            Thumbnail ??= new BitmapImage();
+
             var icon = await IconHelper.GetThumbnailForItem(this);
             //TODO: Why icon of .ts file returns null?
             if (icon is not null)

@@ -47,7 +47,7 @@ namespace FileExplorer
                     services.AddTransient<IPageService, PageService>();
 
                     services.AddTransient<DirectoriesNavigationViewModel>();
-                    services.AddTransient<SearchOperationsViewModel>();
+                    services.AddTransient<SearchOptionsViewModel>();
 
                     services.AddSingleton<ITabService, TabsService>();
                 })

@@ -59,7 +59,7 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="160" />
-            <ColumnDefinition Width="2.5*" MinWidth="240" />
+            <ColumnDefinition Width="2.25*" MinWidth="240" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <StackPanel Orientation="Horizontal">
@@ -137,9 +137,10 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="40" />
                 <ColumnDefinition Width="40" />
+                <ColumnDefinition Width="40" />
             </Grid.ColumnDefinitions>
             <TextBox VerticalAlignment="Center" TextWrapping="Wrap"
-                     Padding="0 5 0 0"
+                     Padding="5  2"
                      Text="{x:Bind ViewModel.SearchOperator.SearchQuery, Mode=TwoWay, 
                                         UpdateSourceTrigger=PropertyChanged}">
                 <interactivity:Interaction.Behaviors>
@@ -155,14 +156,22 @@
             </Grid>
 
             <Button Grid.Column="1"
-                    ToolTipService.ToolTip="SearchBETA options"
+                    ToolTipService.ToolTip="Continue search"
+                    ToolTipService.Placement="Bottom"
+                    Style="{StaticResource SmallIconButton}">
+                <FontIcon FontSize="16" Glyph="&#xE768;" />
+            </Button>
+
+            <Button Grid.Column="2"
+                    ToolTipService.ToolTip="Search options"
                     ToolTipService.Placement="Bottom"
                     Flyout="{StaticResource SearchOptions}"
                     Style="{StaticResource SmallIconButton}">
                 <FontIcon FontSize="16" Glyph="&#xE712;" />
             </Button>
 
-            <Button Grid.Column="2"
+
+            <Button Grid.Column="3"
                     ToolTipService.ToolTip="Settings"
                     ToolTipService.Placement="Bottom"
                     Style="{StaticResource SmallIconButton}">

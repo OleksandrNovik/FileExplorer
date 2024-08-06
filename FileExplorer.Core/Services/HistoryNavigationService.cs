@@ -14,13 +14,19 @@ namespace FileExplorer.Core.Services
 
         public void GoForward(DirectoryNavigationInfo location)
         {
+            CurrentDirectory = location;
+        }
+
+        public void OpenDirectory(DirectoryNavigationInfo location)
+        {
+            History.ForwardStack.Clear();
             History.BackStack.Push(CurrentDirectory);
             CurrentDirectory = location;
         }
 
         public void GoBack(DirectoryNavigationInfo location)
         {
-            History.ForwardStack.Push(CurrentDirectory);
+            History.BackStack.Push(CurrentDirectory);
             CurrentDirectory = location;
         }
 

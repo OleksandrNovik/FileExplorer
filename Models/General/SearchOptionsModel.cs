@@ -10,13 +10,14 @@ namespace Models.General
     /// </summary>
     public sealed partial class SearchOptionsModel : ObservableObject
     {
-        public static readonly SearchOptionsModel Default = new()
+        public static SearchOptionsModel Default => new()
         {
             IsNestedSearch = true,
             AccessDateRange = DateRange.Any,
             ExtensionFilter = _ => true,
             SearchPattern = "*",
-            SearchName = null
+            SearchName = null,
+            OriginalSearchQuery = ""
         };
 
         /// <summary>
@@ -44,5 +45,10 @@ namespace Models.General
         /// If pattern cannot be created from query, stores query used to search files
         /// </summary>
         public string? SearchName { get; set; }
+
+        /// <summary>
+        /// Contains original search query that was written in search field 
+        /// </summary>
+        public string OriginalSearchQuery { get; set; }
     }
 }

@@ -9,7 +9,7 @@ using Windows.Storage;
 
 namespace FileExplorer.Services
 {
-    public class PageService : IPageService
+    public sealed class PageService : IPageService
     {
         private static readonly StorageFolder DefaultDirectory = KnownFoldersHelper.Documents;
 

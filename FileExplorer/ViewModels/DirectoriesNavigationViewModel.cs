@@ -16,7 +16,7 @@ namespace FileExplorer.ViewModels
         private readonly IHistoryNavigationService _navigation;
         private readonly IDirectoryRouteService _router;
         private DirectoryNavigationInfo CurrentDirectory => _navigation.CurrentDirectory;
-        public SearchOperationsViewModel SearchOperator { get; }
+        public SearchOptionsViewModel SearchOperator { get; }
 
         [ObservableProperty]
         private bool isWritingRoute;
@@ -27,7 +27,7 @@ namespace FileExplorer.ViewModels
         [ObservableProperty]
         private ObservableCollection<string> routeItems;
 
-        public DirectoriesNavigationViewModel(IHistoryNavigationService navigation, IDirectoryRouteService router, SearchOperationsViewModel searchOperator)
+        public DirectoriesNavigationViewModel(IHistoryNavigationService navigation, IDirectoryRouteService router, SearchOptionsViewModel searchOperator)
         {
             _navigation = navigation;
             _router = router;
@@ -45,9 +45,14 @@ namespace FileExplorer.ViewModels
             // Handler that is called when user is navigation inside current tab
             Messenger.Register<DirectoriesNavigationViewModel, DirectoryNavigationInfo>(this, (_, message) =>
             {
-                _navigation.GoForward(message);
-                RouteItems.Add(message.Name);
-                CurrentRoute = CurrentDirectory.FullPath;
+                _navigation.OpenDirectory(message);
+
+                if (message.Cache is null)
+                {
+                    RouteItems.Add(message.Name);
+                    CurrentRoute = CurrentDirectory.FullPath;
+                }
+
                 NotifyCanExecute();
             });
 
@@ -73,9 +78,7 @@ namespace FileExplorer.ViewModels
         {
             _navigation.GoForward();
 
-            var navigatedDirectory = _router.UseNavigationRoute(CurrentDirectory.FullPath)
-                                            .GetCurrentDirectory();
-            SendNavigationMessage(navigatedDirectory);
+            SendNavigationMessage(CurrentDirectory);
 
             RouteItems = new ObservableCollection<string>(_router.ExtractRouteItems(CurrentRoute));
         }
@@ -90,9 +93,7 @@ namespace FileExplorer.ViewModels
         {
             _navigation.GoBack();
 
-            var navigatedDirectory = _router.UseNavigationRoute(CurrentDirectory.FullPath)
-                                            .GetCurrentDirectory();
-            SendNavigationMessage(navigatedDirectory);
+            SendNavigationMessage(CurrentDirectory);
 
             RouteItems = new ObservableCollection<string>(_router.ExtractRouteItems(CurrentRoute));
         }
@@ -102,14 +103,14 @@ namespace FileExplorer.ViewModels
 
         #region RefreshAndNavigateUp
 
-        [RelayCommand]
+
+        [RelayCommand(CanExecute = nameof(CanRefresh))]
         private void Refresh()
         {
-            var currentFolder = _router.UseNavigationRoute(CurrentDirectory.FullPath)
-                                                     .GetCurrentDirectory();
-
-            Messenger.Send(new NavigationRequiredMessage(currentFolder));
+            SendNavigationMessage(CurrentDirectory);
         }
+
+        private bool CanRefresh() => CurrentDirectory?.Cache is null;
 
         [RelayCommand(CanExecute = nameof(CanNavigateUp))]
         private void NavigateUpDirectory()
@@ -118,9 +119,9 @@ namespace FileExplorer.ViewModels
             var navigationModel = new DirectoryNavigationInfo(CurrentDirectory.ParentPath);
 
             _navigation.GoBack(navigationModel);
-            var folder = _router.UseNavigationRoute(CurrentDirectory.FullPath)
-                                              .GetCurrentDirectory();
-            SendNavigationMessage(folder);
+
+            SendNavigationMessage(CurrentDirectory);
+
             RouteItems.RemoveAt(RouteItems.Count - 1);
         }
 
@@ -207,9 +208,26 @@ namespace FileExplorer.ViewModels
         /// <param name="item"> Folder that is being navigated </param>
         private void SendNavigationMessage(DirectoryWrapper item)
         {
+            SearchOperator.CancelSearch();
             Messenger.Send(new NavigationRequiredMessage(item));
             CurrentRoute = CurrentDirectory.FullPath;
             NotifyCanExecute();
+        }
+
+        public void SendNavigationMessage(DirectoryNavigationInfo info)
+        {
+            if (info.Cache is not null)
+            {
+                Messenger.Send(new NavigateToSearchResult<DirectoryItemWrapper>(info.Cache));
+                NotifyCanExecute();
+            }
+            else
+            {
+                var navigatedDirectory = _router.UseNavigationRoute(info.FullPath)
+                    .GetCurrentDirectory();
+
+                SendNavigationMessage(navigatedDirectory);
+            }
         }
 
         private void NotifyCanExecute()
@@ -217,6 +235,7 @@ namespace FileExplorer.ViewModels
             MoveBackCommand.NotifyCanExecuteChanged();
             MoveForwardCommand.NotifyCanExecuteChanged();
             NavigateUpDirectoryCommand.NotifyCanExecuteChanged();
+            RefreshCommand.NotifyCanExecuteChanged();
         }
 
     }

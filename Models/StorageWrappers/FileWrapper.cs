@@ -8,7 +8,7 @@ using IOPath = System.IO.Path;
 
 namespace Models.StorageWrappers
 {
-    public class FileWrapper : DirectoryItemWrapper
+    public sealed class FileWrapper : DirectoryItemWrapper
     {
         private StorageFile? asStorageFile;
         public FileWrapper() { }

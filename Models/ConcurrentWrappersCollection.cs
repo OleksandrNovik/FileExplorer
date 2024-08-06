@@ -1,10 +1,9 @@
 ﻿using CommunityToolkit.WinUI;
 using Microsoft.UI.Dispatching;
-using Microsoft.UI.Xaml.Media.Imaging;
+using Models.Contracts;
 using Models.StorageWrappers;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,9 +11,9 @@ using System.Threading.Tasks;
 namespace Models
 {
     /// <summary>
-    /// Wrapper on <see cref="ObservableCollection{T}"/> to add <see cref="DirectoryItemWrapper"/> asynchornosly
+    /// Wrapper on <see cref="ObservableCollection{T}"/> to add <see cref="DirectoryItemWrapper"/> asynchronously
     /// </summary>
-    public class ConcurrentWrappersCollection : ObservableCollection<DirectoryItemWrapper>
+    public class ConcurrentWrappersCollection : ObservableCollection<DirectoryItemWrapper>, IEnqueuingCollection<DirectoryItemWrapper>
     {
         /// <summary>
         /// Dispatcher that provides access to main thread (where collection is created)
@@ -31,11 +30,7 @@ namespace Models
         {
             foreach (var item in items)
             {
-                if (token.IsCancellationRequested)
-                {
-                    Debug.WriteLine("EnqueueEnumerationAsync Cancelled");
-                    break;
-                }
+                token.ThrowIfCancellationRequested();
 
                 await dispatcher.EnqueueAsync(async () =>
                 {
@@ -43,7 +38,6 @@ namespace Models
 
                     if ((item.Attributes & FileAttributes.Hidden) == 0)
                     {
-                        item.Thumbnail = new BitmapImage();
                         await item.UpdateThumbnailAsync();
                     }
                 });

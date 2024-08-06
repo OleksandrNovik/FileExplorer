@@ -33,5 +33,7 @@ namespace FileExplorer.Core.Contracts
         /// Sets back directory as current directory and saves previous location to be forward
         /// </summary>
         public void GoBack();
+
+        public void OpenDirectory(DirectoryNavigationInfo location);
     }
 }

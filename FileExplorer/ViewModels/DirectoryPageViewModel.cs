@@ -14,7 +14,6 @@ using Models.TabRelated;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -36,6 +35,8 @@ namespace FileExplorer.ViewModels
         /// </summary>
         private readonly ContextMenuMetadataBuilder menuBuilder;
 
+        public SearchOperationViewModel SearchOperations { get; } = new();
+
         /// <summary>
         /// Current additional info (details) that is shown
         /// </summary>
@@ -53,7 +54,8 @@ namespace FileExplorer.ViewModels
         private ObservableCollection<DirectoryItemWrapper> selectedItems;
         public bool HasCopiedFiles { get; private set; }
 
-        private CancellationTokenSource cancellation;
+        //[ObservableProperty]
+        //private bool isSearching;
 
         public DirectoryPageViewModel(IMenuFlyoutFactory factory)
         {
@@ -62,33 +64,19 @@ namespace FileExplorer.ViewModels
             SelectedItems = [];
             SelectedItems.CollectionChanged += NotifyCommandsCanExecute;
 
-            Messenger.Register<DirectoryPageViewModel, NavigationRequiredMessage>(this, HandleNavigationMessage);
-            Messenger.Register<DirectoryPageViewModel, FileOpenRequiredMessage>(this, HandlerFileOpen);
+            Messenger.Register<DirectoryPageViewModel, NavigationRequiredMessage>(this, OnNavigationRequired);
+            Messenger.Register<DirectoryPageViewModel, FileOpenRequiredMessage>(this, OnFileOpenRequired);
 
-            Messenger.Register<DirectoryPageViewModel, SearchOperationRequiredMessage>(this, HandleSearch);
+            Messenger.Register<DirectoryPageViewModel, NavigateToSearchResult<DirectoryItemWrapper>>(this, OnSearchResultNavigation);
         }
 
-        private void CancelSearchIfNeeded()
+        private async void OnSearchResultNavigation(DirectoryPageViewModel _, NavigateToSearchResult<DirectoryItemWrapper> message)
         {
-            if (cancellation is not null)
-            {
-                cancellation.Cancel();
-                cancellation.Dispose();
-            }
-            cancellation = new CancellationTokenSource();
-        }
-        private async void HandleSearch(DirectoryPageViewModel _, SearchOperationRequiredMessage message)
-        {
-            CancelSearchIfNeeded();
-
             DirectoryItems.Clear();
-
-            Debug.Assert(CurrentDirectory is not null);
-
-            await CurrentDirectory.SearchAsync(DirectoryItems, message.Options, cancellation.Token);
+            await DirectoryItems.EnqueueEnumerationAsync(message.SearchResult.SearchResultItems, CancellationToken.None);
         }
 
-        private async void HandlerFileOpen(DirectoryPageViewModel recipient, FileOpenRequiredMessage message)
+        private async void OnFileOpenRequired(DirectoryPageViewModel _, FileOpenRequiredMessage message)
         {
             await message.OpenFile.LaunchAsync();
         }
@@ -98,9 +86,9 @@ namespace FileExplorer.ViewModels
         /// Handles navigation messages from <see cref="DirectoriesNavigationViewModel"/>
         /// and decides how to execute new navigation command
         /// </summary>
-        /// <param name="receiver"> Message receiver (this) </param>
+        /// <param name="_"> Message receiver (this) </param>
         /// <param name="massage"> Navigation message that contains new path </param>
-        private async void HandleNavigationMessage(DirectoryPageViewModel receiver, NavigationRequiredMessage massage)
+        private async void OnNavigationRequired(DirectoryPageViewModel _, NavigationRequiredMessage massage)
         {
             await MoveToDirectoryAsync(massage.NavigatedDirectory);
         }
@@ -140,10 +128,13 @@ namespace FileExplorer.ViewModels
         /// <param name="directory"> Given directory that is opened </param>
         private async Task MoveToDirectoryAsync(DirectoryWrapper directory)
         {
-            CancelSearchIfNeeded();
+            Messenger.Send(new StopSearchMessage());
+
             CurrentDirectory = directory;
             await InitializeDirectoryAsync();
             Messenger.Send(directory);
+
+            SearchOperations.InitializeSearchData(CurrentDirectory, DirectoryItems);
         }
 
         #region Open logic
@@ -425,6 +416,7 @@ namespace FileExplorer.ViewModels
             {
                 await MoveToDirectoryAsync(tab.TabDirectory);
                 var navigationInfo = new DirectoryNavigationInfo(tab.TabDirectory);
+
                 Messenger.Send(new TabOpenedMessage(navigationInfo, tab.TabHistory));
             }
         }
@@ -439,6 +431,7 @@ namespace FileExplorer.ViewModels
         public void OnNavigatedFrom()
         {
             Messenger.UnregisterAll(this);
+            SearchOperations.UnregisterAll();
         }
 
         public List<MenuFlyoutItemBase> OnContextMenuRequired()

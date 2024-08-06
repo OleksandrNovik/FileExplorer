@@ -30,5 +30,19 @@ namespace Models.Messages
     /// <param name="TabDirectory"> Directory that has to be opened in new tab </param>
     public record OpenTabMessage(DirectoryWrapper TabDirectory);
 
-    public record SearchOperationRequiredMessage(General.SearchOptionsModel Options);
+    public record SearchOperationRequiredMessage(SearchOptionsModel Options);
+
+    /// <summary>
+    /// Message to notify search view model to continue search that was stopped time ago
+    /// </summary>
+    public record ContinueSearchMessage;
+
+    /// <summary>
+    /// Message to notify search view model to stop searching items
+    /// </summary>
+    public record StopSearchMessage;
+
+    public record SearchStartedMessage<TElement>(CachedSearchResult<TElement> CachedResult);
+
+    public record NavigateToSearchResult<TElement>(CachedSearchResult<TElement> SearchResult);
 }
