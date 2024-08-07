@@ -8,7 +8,7 @@ namespace Models.General
     /// <summary>
     /// Model that stores all necessary data to initiate catalog search
     /// </summary>
-    public sealed partial class SearchOptionsModel : ObservableObject
+    public sealed class SearchOptionsModel : ObservableObject
     {
         public static SearchOptionsModel Default => new()
         {
@@ -23,8 +23,7 @@ namespace Models.General
         /// <summary>
         /// Is search on a top level (false) or all levels (true)
         /// </summary>
-        [ObservableProperty]
-        private bool isNestedSearch;
+        public bool IsNestedSearch { get; set; }
 
         /// <summary>
         /// Range that LastAccessDate of file needs to be in to satisfy search request 

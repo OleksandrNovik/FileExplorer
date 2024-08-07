@@ -13,17 +13,41 @@ namespace FileExplorer.ViewModels
 {
     public partial class DirectoriesNavigationViewModel : ObservableRecipient
     {
+        /// <summary>
+        /// Stores and updates navigation history for a tab (that is currently opened)
+        /// </summary>
         private readonly IHistoryNavigationService _navigation;
+
+        /// <summary>
+        /// Has methods to work with routes (get navigated item, split route into subfolders to conveniently navigate ot create route from parts)
+        /// </summary>
         private readonly IDirectoryRouteService _router;
+
+        /// <summary>
+        /// Directory or search result that is currently opened 
+        /// </summary>
         private DirectoryNavigationInfo CurrentDirectory => _navigation.CurrentDirectory;
+
+        /// <summary>
+        /// View model that works with search options and search query, this view model sends message to start the search when user needs to
+        /// </summary>
         public SearchOptionsViewModel SearchOperator { get; }
 
+        /// <summary>
+        /// Decides if user is currently writing route into the text box or using route breadcrumb bar
+        /// </summary>
         [ObservableProperty]
         private bool isWritingRoute;
 
+        /// <summary>
+        /// Stores information about route (in string representation) that we are currently located in
+        /// </summary>
         [ObservableProperty]
         private string currentRoute;
 
+        /// <summary>
+        /// Stores parts of the route for breadcrumb bar to easily navigate to up-folders 
+        /// </summary>
         [ObservableProperty]
         private ObservableCollection<string> routeItems;
 
@@ -55,6 +79,24 @@ namespace FileExplorer.ViewModels
 
                 NotifyCanExecute();
             });
+
+            Messenger.Register<DirectoriesNavigationViewModel, SearchStartedMessage<DirectoryItemWrapper>>(this,
+                (_, message) =>
+                {
+                    // If currently regular page is opened
+                    if (CurrentDirectory.Cache is null)
+                    {
+                        // We move forward to save this directory and show the user search result
+                        _navigation.OpenDirectory(new DirectoryNavigationInfo(message.CachedResult));
+                        NotifyCanExecute();
+                    }
+                    // If current page is a search result
+                    else
+                    {
+                        // Override previous search result
+                        CurrentDirectory.Cache = message.CachedResult;
+                    }
+                });
 
         }
 
@@ -208,12 +250,15 @@ namespace FileExplorer.ViewModels
         /// <param name="item"> Folder that is being navigated </param>
         private void SendNavigationMessage(DirectoryWrapper item)
         {
-            SearchOperator.CancelSearch();
             Messenger.Send(new NavigationRequiredMessage(item));
             CurrentRoute = CurrentDirectory.FullPath;
             NotifyCanExecute();
         }
 
+        /// <summary>
+        /// Uses navigation info to send navigation message if info is a cached search result sends corresponding message
+        /// </summary>
+        /// <param name="info"> Part of history that needs to be navigated into </param>
         public void SendNavigationMessage(DirectoryNavigationInfo info)
         {
             if (info.Cache is not null)

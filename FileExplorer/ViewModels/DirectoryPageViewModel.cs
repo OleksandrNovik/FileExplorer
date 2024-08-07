@@ -74,6 +74,8 @@ namespace FileExplorer.ViewModels
         {
             DirectoryItems.Clear();
             await DirectoryItems.EnqueueEnumerationAsync(message.SearchResult.SearchResultItems, CancellationToken.None);
+
+            SearchOperations.InitializeSearchData(CurrentDirectory, DirectoryItems, message.SearchResult);
         }
 
         private async void OnFileOpenRequired(DirectoryPageViewModel _, FileOpenRequiredMessage message)

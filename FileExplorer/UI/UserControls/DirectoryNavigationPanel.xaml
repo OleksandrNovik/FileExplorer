@@ -15,7 +15,7 @@
     <UserControl.Resources>
         <MenuFlyout x:Key="SearchOptions" Placement="BottomEdgeAlignedRight">
 
-            <ToggleMenuFlyoutItem Text="All nested folders" IsChecked="{x:Bind ViewModel.SearchOperator.Options.IsNestedSearch, Mode=TwoWay}">
+            <ToggleMenuFlyoutItem Text="All nested folders" IsChecked="{x:Bind ViewModel.SearchOperator.IsNestedSearch, Mode=TwoWay}">
                 <ToggleMenuFlyoutItem.Icon>
                     <FontIcon FontSize="14" Glyph="&#xED25;" />
                 </ToggleMenuFlyoutItem.Icon>
@@ -156,10 +156,24 @@
             </Grid>
 
             <Button Grid.Column="1"
-                    ToolTipService.ToolTip="Continue search"
+                    ToolTipService.ToolTip="Start search"
                     ToolTipService.Placement="Bottom"
+                    Command="{x:Bind ViewModel.SearchOperator.InitiateSearchCommand}"
+                    Visibility="{x:Bind ViewModel.SearchOperator.IsSearchRunning, Mode=OneWay, 
+                        Converter = {StaticResource BoolToVisibilityConverter}, 
+                        ConverterParameter=True}"
                     Style="{StaticResource SmallIconButton}">
                 <FontIcon FontSize="16" Glyph="&#xE768;" />
+            </Button>
+
+            <Button Grid.Column="1"
+                    ToolTipService.ToolTip="Stop search"
+                    ToolTipService.Placement="Bottom"
+                    Visibility="{x:Bind ViewModel.SearchOperator.IsSearchRunning, Mode=OneWay, 
+                     Converter = {StaticResource BoolToVisibilityConverter}}"
+                    Command="{x:Bind ViewModel.SearchOperator.StopSearchCommand}"
+                    Style="{StaticResource SmallIconButton}">
+                <FontIcon FontSize="13" Glyph="&#xE71A;" />
             </Button>
 
             <Button Grid.Column="2"

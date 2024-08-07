@@ -6,7 +6,6 @@ using Models;
 using Models.General;
 using Models.Messages;
 using Models.Ranges;
-using Models.StorageWrappers;
 using System;
 using System.Collections.Generic;
 using PathHelper = Helpers.StorageHelpers.PathHelper;
@@ -19,16 +18,13 @@ namespace FileExplorer.ViewModels
         {
             Options = SearchOptionsModel.Default;
 
-            Messenger.Register<SearchOptionsViewModel, SearchStartedMessage<DirectoryItemWrapper>>(this,
+            IsNestedSearch = Options.IsNestedSearch;
+
+            Messenger.Register<SearchOptionsViewModel, StopSearchMessage>(this,
                 (_, message) =>
                 {
-                    CachedSearch = message.CachedResult;
+                    IsSearchRunning = false;
                 });
-
-            Messenger.Register<SearchOptionsViewModel, StopSearchMessage>(this, (_, _) =>
-            {
-                CachedSearch = null;
-            });
         }
         public IEnumerable<MenuFlyoutItemViewModel> DateSearchOptions => new List<MenuFlyoutItemViewModel>
         {
@@ -88,42 +84,39 @@ namespace FileExplorer.ViewModels
 
         };
 
-        public bool? IsSearchInProgress => CachedSearch?.InProgress;
-
-        [ObservableProperty]
-        private CachedSearchResult<DirectoryItemWrapper>? cachedSearch;
-
         [ObservableProperty]
         private string searchQuery;
+
         public SearchOptionsModel Options { get; }
+
+        [ObservableProperty]
+        private bool isNestedSearch;
+
+        [ObservableProperty]
+        private bool isSearchRunning;
 
         [RelayCommand]
         private void SetDateOption(DateRange range)
         {
             Options.AccessDateRange = range;
-            CancelSearch();
+            StopSearch();
         }
 
         [RelayCommand]
         private void SetTypeOption(Predicate<string> extensionFilter)
         {
             Options.ExtensionFilter = extensionFilter;
-            CancelSearch();
+            StopSearch();
         }
 
         [RelayCommand]
         private void InitiateSearch()
         {
-            if (CachedSearch is not null
-                && CachedSearch.SearchOptions.OriginalSearchQuery == SearchQuery)
-            {
-                Messenger.Send(new ContinueSearchMessage());
-            }
-            else
-            {
-                ExtractQueryString();
-                Messenger.Send(new SearchOperationRequiredMessage(Options));
-            }
+            ExtractQueryString();
+            Options.IsNestedSearch = IsNestedSearch;
+            Messenger.Send(new SearchOperationRequiredMessage(Options));
+            IsSearchRunning = true;
+            //TODO: React to a search completed message
         }
 
         private void ExtractQueryString()
@@ -142,9 +135,15 @@ namespace FileExplorer.ViewModels
             }
         }
 
-        public void CancelSearch()
+        partial void OnIsNestedSearchChanging(bool value)
         {
-            if (CachedSearch is not null)
+            StopSearch();
+        }
+
+        [RelayCommand]
+        private void StopSearch()
+        {
+            if (IsSearchRunning)
             {
                 Messenger.Send(new StopSearchMessage());
             }

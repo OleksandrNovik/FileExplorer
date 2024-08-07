@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using Models.Contracts;
 using Models.General;
+using Models.ModelHelpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,17 +23,13 @@ namespace Models.StorageWrappers
 
         #region ISearchCatalog logic
 
-        public CachedCatalogSearch<DirectoryItemWrapper> Cache { get; set; }
-
         public async Task SearchAsync(IEnqueuingCollection<DirectoryItemWrapper> destination, SearchOptionsModel options, CancellationToken token)
         {
             await ShallowSearchAsync(destination, options, token);
 
             if (options.IsNestedSearch)
             {
-                Cache.CachedSubCatalogs = EnumerateSubDirectories()
-                    .Select(sub => new CachedCatalogSearch<DirectoryItemWrapper>(sub))
-                    .ToArray();
+                await EnumerateSubDirectories().SearchCatalogsAsync(destination, options, token);
             }
         }
 
@@ -45,7 +42,6 @@ namespace Models.StorageWrappers
         public async Task ShallowSearchAsync(IEnqueuingCollection<DirectoryItemWrapper> destination, SearchOptionsModel options, CancellationToken token)
         {
             await destination.EnqueueEnumerationAsync(SearchDirectory(options), token);
-            Cache.HasSearched = true;
         }
 
         private IEnumerable<DirectoryItemWrapper> SearchDirectory(SearchOptionsModel options)
@@ -60,7 +56,7 @@ namespace Models.StorageWrappers
                 // Any item that is used at provided date range
                 .Where(item => options.AccessDateRange.Includes(item.LastAccess))
                 // Any file types that satisfy filter
-                .Where(item => options.ExtensionFilter(item.Name));
+                .Where(item => options.ExtensionFilter.Invoke(item.Name));
 
             if (options.SearchName is not null)
             {

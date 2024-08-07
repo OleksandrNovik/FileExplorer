@@ -23,7 +23,9 @@
             <Setter Property="Margin" Value="0 0 10 0" />
         </Style>
         <DataTemplate x:Key="GridItemTemplate" x:DataType="storageWrappers1:DirectoryItemWrapper">
-            <Grid  Padding="10  20 10 10">
+            <Grid  Padding="10  20 10 10" 
+                   ToolTipService.ToolTip="{x:Bind Path}"
+                   ToolTipService.Placement="Bottom">
 
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />

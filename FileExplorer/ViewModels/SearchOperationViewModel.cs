@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace FileExplorer.ViewModels
 {
-    public sealed partial class SearchOperationViewModel : ObservableRecipient
+    public sealed class SearchOperationViewModel : ObservableRecipient
     {
         private ISystemSearchCatalog<DirectoryItemWrapper> searchCatalog;
 
@@ -23,20 +23,16 @@ namespace FileExplorer.ViewModels
 
         private CancellationTokenSource searchCancellation;
 
-        [ObservableProperty]
-        private bool isSearching;
-
-        public void InitializeSearchData(ISystemSearchCatalog<DirectoryItemWrapper> searchCatalog, IEnqueuingCollection<DirectoryItemWrapper> destination)
+        public void InitializeSearchData(ISystemSearchCatalog<DirectoryItemWrapper> searchCatalog, IEnqueuingCollection<DirectoryItemWrapper> destination, CachedSearchResult<DirectoryItemWrapper>? cachedSearch = null)
         {
             this.searchCatalog = searchCatalog;
             this.destination = destination;
+            this.cachedSearch = cachedSearch;
         }
 
         public SearchOperationViewModel()
         {
             Messenger.Register<SearchOperationViewModel, SearchOperationRequiredMessage>(this, OnSearchMessage);
-
-            Messenger.Register<SearchOperationViewModel, ContinueSearchMessage>(this, ContinueSearchAsync);
 
             Messenger.Register<SearchOperationViewModel, StopSearchMessage>(this, (_, _) =>
             {
@@ -44,19 +40,11 @@ namespace FileExplorer.ViewModels
             });
         }
 
-        private async void ContinueSearchAsync(SearchOperationViewModel recipient, ContinueSearchMessage message)
-        {
-            await SearchAsync();
-        }
-
         private async void OnSearchMessage(SearchOperationViewModel _, SearchOperationRequiredMessage message)
         {
             Debug.WriteLine("Search started");
 
-            cachedSearch = new CachedSearchResult<DirectoryItemWrapper>(searchCatalog, destination, message.Options)
-            {
-                RootCatalog = new CachedCatalogSearch<DirectoryItemWrapper>(searchCatalog)
-            };
+            cachedSearch = new CachedSearchResult<DirectoryItemWrapper>(searchCatalog, destination, message.Options);
 
             Messenger.Send(new SearchStartedMessage<DirectoryItemWrapper>(cachedSearch));
 
@@ -77,11 +65,7 @@ namespace FileExplorer.ViewModels
 
             try
             {
-                Messenger.Send(new DirectoryNavigationInfo(cachedSearch));
-
                 destination.Clear();
-
-                cachedSearch.InProgress = true;
 
                 await cachedSearch.RootCatalog.SearchAsync(destination, cachedSearch.SearchOptions,
                     searchCancellation.Token);
@@ -95,7 +79,6 @@ namespace FileExplorer.ViewModels
             }
             finally
             {
-                cachedSearch.InProgress = false;
                 // When search is over or interrupted we can save found items into another collection
                 cachedSearch.SearchResultItems = destination.ToArray();
             }

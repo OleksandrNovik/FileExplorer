@@ -5,12 +5,12 @@ using System.Collections.Generic;
 
 namespace Models.General;
 
-public sealed partial class CachedSearchResult<TElement> : ObservableObject
+public sealed class CachedSearchResult<TElement> : ObservableObject
 {
     /// <summary>
     /// Cached search result from root catalog 
     /// </summary>
-    public CachedCatalogSearch<TElement> RootCatalog { get; set; }
+    public ISystemSearchCatalog<TElement> RootCatalog { get; set; }
 
     /// <summary>
     /// Configurations of search
@@ -27,15 +27,9 @@ public sealed partial class CachedSearchResult<TElement> : ObservableObject
     /// </summary>
     public bool HasCompleted { get; set; }
 
-    /// <summary>
-    /// Is search in progress (this property can be used to see if search is running right now)
-    /// </summary>
-    [ObservableProperty]
-    private bool inProgress;
-
     public CachedSearchResult(ISystemSearchCatalog<TElement> searchCatalog, IEnqueuingCollection<TElement> destination, SearchOptionsModel options)
     {
-        RootCatalog = new CachedCatalogSearch<TElement>(searchCatalog);
+        RootCatalog = searchCatalog;
         SearchOptions = options;
         SearchResultItems = destination;
     }

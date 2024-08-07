@@ -3,7 +3,7 @@ using System;
 
 namespace Models.Ranges
 {
-    public sealed class DateRange : IRange<DateTime>
+    public sealed class DateRange : IRange<DateTime>, IEquatable<DateRange>
     {
         public static DateRange Any => new(DateTime.MinValue, DateTime.MaxValue);
         public static DateRange TodayRange => new(DateTime.Today, DateTime.Today.AddDays(1).AddSeconds(-1));
@@ -74,6 +74,23 @@ namespace Models.Ranges
         public bool Includes(DateTime value)
         {
             return value <= End && value >= Start;
+        }
+
+        public bool Equals(DateRange other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return Start.Equals(other.Start) && End.Equals(other.End);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return ReferenceEquals(this, obj) || obj is DateRange other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Start, End);
         }
     }
 }
