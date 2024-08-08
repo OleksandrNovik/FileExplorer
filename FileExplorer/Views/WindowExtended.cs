@@ -7,11 +7,17 @@ namespace FileExplorer.Views
 {
     public class WindowExtended : WindowEx
     {
+        public async Task ShowCustomDialog(ContentDialog dialog)
+        {
+            dialog.XamlRoot = Content.XamlRoot;
+            await dialog.ShowAsync();
+        }
+
         public async Task<ContentDialogResult> ShowYesNoDialog(string content, string title)
         {
             var dialog = new ContentDialog
             {
-                XamlRoot = base.Content.XamlRoot,
+                XamlRoot = Content.XamlRoot,
                 Title = title,
                 Content = content,
                 SecondaryButtonText = "No",

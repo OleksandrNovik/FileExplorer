@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentDialog 
+    x:Class="FileExplorer.Views.Settings.SettingsContentDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"    
+    xmlns:settings="using:CommunityToolkit.WinUI.Controls"
+    xmlns:helpers="using:FileExplorer.UI.Helpers"
+    mc:Ignorable="d" Width="800">
+
+    <ContentDialog.Resources>
+        <Thickness x:Key="ContentDialogPadding"> 0,0,0,0 </Thickness>
+        <x:Double x:Key="ContentDialogMaxWidth">900</x:Double>
+    </ContentDialog.Resources>
+
+    <Grid>
+        <NavigationView x:Name="SettingsNavigationView"
+            AlwaysShowHeader="True"
+            SelectedItem="{x:Bind ViewModel.Selected, Mode=OneWay}"
+            Background="Transparent"
+            IsSettingsVisible="False"
+            IsBackButtonVisible="Collapsed"
+            PaneDisplayMode="Left"
+            OpenPaneLength="220"
+            IsPaneToggleButtonVisible="False"
+            Header="{x:Bind ((ContentControl)ViewModel.Selected).Content, Mode=OneWay}">
+
+            <NavigationView.MenuItems>
+                <NavigationViewItem Content="Preferences" Tag="Preferences" 
+                                    helpers:NavigationHelper.NavigateTo="FileExplorer.Views.Settings.Pages.SettingsExplorerPage">
+                    <NavigationViewItem.Icon>
+                        <FontIcon FontSize="14" Glyph="&#xF354;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
+                <NavigationViewItem Content="On Startup" Tag="OnStartup" 
+                                    helpers:NavigationHelper.NavigateTo="FileExplorer.Views.Settings.Pages.SettingsExplorerPage">
+                    <NavigationViewItem.Icon>
+                        <FontIcon FontSize="14" Glyph="&#xE7E8;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
+                <NavigationViewItem Content="Explorer" Tag="Explorer" 
+                                    helpers:NavigationHelper.NavigateTo="FileExplorer.Views.Settings.Pages.SettingsExplorerPage">
+                    <NavigationViewItem.Icon>
+                        <FontIcon FontSize="14" Glyph="&#xEC51;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+            </NavigationView.MenuItems>
+            
+            <NavigationView.FooterMenuItems>
+                <NavigationViewItem Content="About" Tag="About" 
+                                    helpers:NavigationHelper.NavigateTo="FileExplorer.Views.Settings.Pages.SettingsExplorerPage">
+                    <NavigationViewItem.Icon>
+                        <FontIcon FontSize="14" Glyph="&#xE946;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+            </NavigationView.FooterMenuItems>
+
+            <Grid Height="420" Width="600">
+
+                <Frame x:Name="CurrentSettingsPage" />
+
+                <ScrollViewer>
+                    <StackPanel>
+                        <settings:SettingsCard
+                            Header="Show hidden items"
+                            Description="Show hidden files and folders">
+                            <settings:SettingsCard.HeaderIcon>
+                                <FontIcon FontSize="14" Glyph="&#xE7B3;" />
+                            </settings:SettingsCard.HeaderIcon>
+
+                            <settings:SettingsCard.Content>
+                                <ToggleSwitch />
+                            </settings:SettingsCard.Content>
+
+                        </settings:SettingsCard>
+
+                        <settings:SettingsCard
+                            Header="Hide system files"
+                            Description="Hides protected system files (Recommended setting)">
+                            <settings:SettingsCard.HeaderIcon>
+                                <FontIcon FontSize="14" Glyph="&#xECE4;" />
+                            </settings:SettingsCard.HeaderIcon>
+
+                            <settings:SettingsCard.Content>
+                                <ToggleSwitch />
+                            </settings:SettingsCard.Content>
+
+                        </settings:SettingsCard>
+
+                        <settings:SettingsCard
+                            Header="Show extensions"
+                            Description="Shows extensions for all files">
+                            <settings:SettingsCard.HeaderIcon>
+                                <FontIcon FontSize="14" Glyph="&#xE9F9;" />
+                            </settings:SettingsCard.HeaderIcon>
+
+                            <settings:SettingsCard.Content>
+                                <ToggleSwitch />
+                            </settings:SettingsCard.Content>
+
+                        </settings:SettingsCard>
+                    </StackPanel>
+                </ScrollViewer>
+
+            </Grid>
+        </NavigationView>
+
+        <AppBarButton Click="OnCloseButtonClick" IsCompact="True"
+                      VerticalAlignment="Top" HorizontalAlignment="Right">
+            <AppBarButton.Icon>
+                <FontIcon FontSize="1" Glyph="&#xE8BB;" />
+            </AppBarButton.Icon>
+        </AppBarButton>
+
+    </Grid>
+</ContentDialog>

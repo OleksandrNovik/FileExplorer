@@ -1,40 +1,19 @@
 ﻿#nullable enable
 using FileExplorer.Core.Contracts;
+using FileExplorer.Core.Services.General;
 using Helpers.Application;
 using Microsoft.UI.Xaml.Controls;
 using Models.StorageWrappers;
 using Models.TabRelated;
+using System;
 using System.Collections.ObjectModel;
 
 namespace FileExplorer.Core.Services
 {
-    public class TabsService : ITabService
+    public class TabsService : BaseNavigationService, ITabService
     {
         private readonly IPageService pageService;
         public ObservableCollection<TabModel> Tabs { get; } = new();
-
-        private Frame? currentTab;
-        public Frame? CurrentTab
-        {
-            get => currentTab;
-            set
-            {
-                UnregisterFrameEvents();
-                currentTab = value;
-                RegisterFrameEvents();
-            }
-        }
-
-        private void OnNavigated(object sender, Microsoft.UI.Xaml.Navigation.NavigationEventArgs e)
-        {
-            if (sender is Frame frame)
-            {
-                if (frame.GetPageViewModel() is INavigationAware navigationAware)
-                {
-                    navigationAware.OnNavigatedTo(e.Parameter);
-                }
-            }
-        }
 
         public TabsService(IPageService pageService)
         {
@@ -47,11 +26,13 @@ namespace FileExplorer.Core.Services
             Tabs.Add(newTab);
         }
 
-        public void Navigate(TabModel tab)
+        public void NavigateTo(TabModel tab)
         {
-            var previousViewModel = CurrentTab.GetPageViewModel();
+            var previousViewModel = Frame.GetPageViewModel();
 
-            var navigated = CurrentTab.Navigate(tab.TabType, tab);
+            ArgumentNullException.ThrowIfNull(Frame);
+
+            var navigated = Frame.Navigate(tab.TabType, tab);
 
             if (navigated)
             {
@@ -62,22 +43,5 @@ namespace FileExplorer.Core.Services
             }
 
         }
-
-        private void RegisterFrameEvents()
-        {
-            if (currentTab != null)
-            {
-                currentTab.Navigated += OnNavigated;
-            }
-        }
-
-        private void UnregisterFrameEvents()
-        {
-            if (currentTab != null)
-            {
-                currentTab.Navigated -= OnNavigated;
-            }
-        }
-
     }
 }

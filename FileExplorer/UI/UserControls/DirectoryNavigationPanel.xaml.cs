@@ -1,4 +1,6 @@
 using FileExplorer.ViewModels;
+using FileExplorer.Views.Settings;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -13,6 +15,11 @@ namespace FileExplorer.UI.UserControls
         {
             this.ViewModel = App.GetService<DirectoriesNavigationViewModel>();
             this.InitializeComponent();
+        }
+
+        private async void OnSettingsButtonClick(object sender, RoutedEventArgs e)
+        {
+            await App.MainWindow.ShowCustomDialog(new SettingsContentDialog());
         }
     }
 }

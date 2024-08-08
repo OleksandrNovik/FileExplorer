@@ -195,12 +195,13 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <controls:AdaptiveGridView x:Name="DirectoryItemsGrid"
-                                       ItemHeight="155"
+                                       StretchContentForSingleRow="False"
+                                       DesiredWidth="180"
+                                       ItemHeight="160"
                                        RightTapped="OnDirectoryItemsGridRightTapped"
                                        ItemsSource="{x:Bind ViewModel.DirectoryItems, Mode=OneWay}" 
                                        ItemTemplate="{StaticResource GridItemTemplate}"
-                                       SelectionMode="Extended"
-                                       DesiredWidth="160">
+                                       SelectionMode="Extended">
                 <MenuFlyout x:Name="ContextMenu" />
                 <interactivity:Interaction.Behaviors>
                     <behaviors:MultiSelectionBehavior SelectedItems="{x:Bind ViewModel.SelectedItems, Mode=OneWay}" />

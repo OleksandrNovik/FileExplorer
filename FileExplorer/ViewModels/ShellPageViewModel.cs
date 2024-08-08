@@ -52,7 +52,7 @@ namespace FileExplorer.ViewModels
         private void NavigateToTab(TabModel item)
         {
             selectedTab = item;
-            TabService.Navigate(item);
+            TabService.NavigateTo(item);
         }
 
         [RelayCommand]

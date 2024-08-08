@@ -1,5 +1,7 @@
 ﻿using FileExplorer.Core.Contracts;
+using FileExplorer.Core.Contracts.Settings;
 using FileExplorer.Core.Services;
+using FileExplorer.Core.Services.Settings;
 using FileExplorer.Services;
 using FileExplorer.ViewModels;
 using FileExplorer.Views;
@@ -8,8 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.UI.Xaml;
 using System;
-using Windows.ApplicationModel.Background;
 using Hosting = Microsoft.Extensions.Hosting.Host;
+using SettingsPagesService = FileExplorer.Services.SettingsPagesService;
 
 
 // To learn more about WinUI, the WinUI project structure,
@@ -25,8 +27,6 @@ namespace FileExplorer
         public static WindowExtended MainWindow { get; } = new MainWindow();
         public IHost Host { get; }
 
-        private ApplicationTrigger searchTrigger = new();
-
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -41,15 +41,26 @@ namespace FileExplorer
                     services.AddPageAndViewModel<DirectoryPage, DirectoryPageViewModel>();
                     services.AddPageAndViewModel<ShellPage, ShellPageViewModel>();
 
+                    // History and directory navigation services
                     services.AddTransient<IHistoryNavigationService, HistoryNavigationService>();
                     services.AddTransient<IDirectoryRouteService, DirectoryRouteService>();
-                    services.AddTransient<IMenuFlyoutFactory, MenuFlyoutFactory>();
+
+                    // Tab services
                     services.AddTransient<IPageService, PageService>();
+                    services.AddTransient<ITabService, TabsService>();
+
+                    //Settings services
+                    services.AddSingleton<ISettingsNavigationService, SettingsNavigationService>();
+                    services.AddTransient<ISettingsPagesService, SettingsPagesService>();
+                    services.AddTransient<ISettingsNavigationViewService, SettingsNavigationViewService>();
+
+                    services.AddTransient<IMenuFlyoutFactory, MenuFlyoutFactory>();
 
                     services.AddTransient<DirectoriesNavigationViewModel>();
+                    services.AddTransient<SettingsViewModel>();
                     services.AddTransient<SearchOptionsViewModel>();
 
-                    services.AddSingleton<ITabService, TabsService>();
+
                 })
                 .Build();
 

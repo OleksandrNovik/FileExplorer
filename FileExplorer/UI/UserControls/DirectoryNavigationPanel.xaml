@@ -188,6 +188,7 @@
             <Button Grid.Column="3"
                     ToolTipService.ToolTip="Settings"
                     ToolTipService.Placement="Bottom"
+                    Click="OnSettingsButtonClick"
                     Style="{StaticResource SmallIconButton}">
                 <FontIcon FontSize="16" Glyph="&#xE713;" />
             </Button>

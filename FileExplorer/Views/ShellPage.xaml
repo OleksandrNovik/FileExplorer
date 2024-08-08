@@ -12,8 +12,13 @@
     xmlns:behaviors="using:FileExplorer.UI.Behaviors"
     xmlns:models="using:FileExplorer.Models"
     xmlns:tabRelated="using:Models.TabRelated"
+    xmlns:settings="using:FileExplorer.Views.Settings"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Page.Resources>
+        <settings:SettingsContentDialog x:Name="SettingsDialog" />
+    </Page.Resources>
 
     <Grid>
 
@@ -78,7 +83,9 @@
                     Grid.Column="1" 
                     ResizeBehavior="PreviousAndNext" />
 
-                <Frame Grid.Column="2" x:Name="NavigationFrame" />
+                <Grid Column="2">
+                    <Frame  x:Name="NavigationFrame" />
+                </Grid>
 
             </Grid>
         </Grid>
