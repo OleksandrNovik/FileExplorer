@@ -6,10 +6,52 @@
     xmlns:local="using:FileExplorer.Views.Settings.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-        <TextBlock>SettingsExplorerPage</TextBlock>
+        <ScrollViewer>
+            <StackPanel>
+                <controls:SettingsCard
+                    Header="Show hidden items"
+                    Description="Show hidden files and folders">
+                    <controls:SettingsCard.HeaderIcon>
+                        <FontIcon FontSize="14" Glyph="&#xE7B3;" />
+                    </controls:SettingsCard.HeaderIcon>
+
+                    <controls:SettingsCard.Content>
+                        <ToggleSwitch />
+                    </controls:SettingsCard.Content>
+
+                </controls:SettingsCard>
+
+                <controls:SettingsCard
+                    Header="Hide system files"
+                    Description="Hides protected system files (Recommended setting)">
+                    <controls:SettingsCard.HeaderIcon>
+                        <FontIcon FontSize="14" Glyph="&#xECE4;" />
+                    </controls:SettingsCard.HeaderIcon>
+
+                    <controls:SettingsCard.Content>
+                        <ToggleSwitch />
+                    </controls:SettingsCard.Content>
+
+                </controls:SettingsCard>
+
+                <controls:SettingsCard
+                    Header="Show extensions"
+                    Description="Shows extensions for all files">
+                    <controls:SettingsCard.HeaderIcon>
+                        <FontIcon FontSize="14" Glyph="&#xE9F9;" />
+                    </controls:SettingsCard.HeaderIcon>
+
+                    <controls:SettingsCard.Content>
+                        <ToggleSwitch />
+                    </controls:SettingsCard.Content>
+
+                </controls:SettingsCard>
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </Page>

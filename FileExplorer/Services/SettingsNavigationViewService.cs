@@ -46,7 +46,14 @@ namespace FileExplorer.Services
 
         public NavigationViewItem? GetSelectedItem(Type pageType)
         {
-            return GetSelectedItem(navigation!.MenuItems, pageType);
+            var navigationItem = GetSelectedItem(navigation!.MenuItems, pageType);
+
+            if (navigationItem == null)
+            {
+                navigationItem = GetSelectedItem(navigation!.FooterMenuItems, pageType);
+            }
+
+            return navigationItem;
         }
 
         private NavigationViewItem? GetSelectedItem(IEnumerable<object> menuItems, Type pageType)

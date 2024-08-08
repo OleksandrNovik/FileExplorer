@@ -11,7 +11,10 @@ namespace FileExplorer.Services
     {
         private readonly FrozenDictionary<string, Type> pages = new Dictionary<string, Type>
         {
-            { typeof(SettingsExplorerPage).FullName, typeof(SettingsExplorerPage) }
+            { typeof(SettingsPreferencesPage).FullName, typeof(SettingsPreferencesPage) },
+            { typeof(SettingsOnStartupPage).FullName, typeof(SettingsOnStartupPage) },
+            { typeof(SettingsExplorerPage).FullName, typeof(SettingsExplorerPage) },
+            { typeof(SettingsAboutPage).FullName, typeof(SettingsAboutPage) },
 
         }.ToFrozenDictionary();
 
