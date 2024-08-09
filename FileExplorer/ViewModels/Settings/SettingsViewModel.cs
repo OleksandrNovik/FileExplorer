@@ -2,7 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using FileExplorer.Core.Contracts.Settings;
 
-namespace FileExplorer.ViewModels
+namespace FileExplorer.ViewModels.Settings
 {
     public sealed partial class SettingsViewModel : ObservableObject
     {

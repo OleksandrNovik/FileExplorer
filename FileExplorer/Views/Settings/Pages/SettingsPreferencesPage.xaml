@@ -6,10 +6,71 @@
     xmlns:local="using:FileExplorer.Views.Settings.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-        <TextBlock>Preferences</TextBlock>
+        <StackPanel>
+
+            <controls:SettingsCard Header="Language">
+
+                <controls:SettingsCard.HeaderIcon>
+                    <FontIcon FontSize="14" Glyph="&#xF2B7;" />
+                </controls:SettingsCard.HeaderIcon>
+
+                <ComboBox ItemsSource="{x:Bind ViewModel.Languages}"
+                        SelectedItem="{x:Bind ViewModel.PageSettings.Language, Mode=TwoWay}" />
+
+            </controls:SettingsCard>
+
+            <controls:SettingsCard Header="Theme">
+
+                <controls:SettingsCard.HeaderIcon>
+                    <FontIcon FontSize="14" Glyph="&#xE790;" />
+                </controls:SettingsCard.HeaderIcon>
+
+                <ComboBox ItemsSource="{x:Bind ViewModel.Themes}"
+                          SelectedItem="{x:Bind ViewModel.SelectedTheme, Mode=TwoWay}" />
+
+            </controls:SettingsCard>
+
+            <controls:SettingsCard Header="Date format">
+
+                <controls:SettingsCard.HeaderIcon>
+                    <FontIcon FontSize="14" Glyph="&#xEC92;" />
+                </controls:SettingsCard.HeaderIcon>
+
+                <ComboBox ItemsSource="{x:Bind ViewModel.DateFormats}"
+                          />
+
+            </controls:SettingsCard>
+
+            <controls:SettingsCard
+                Header="Show confirmation message"
+                Description="Show confirmation message before permanently deleting item">
+                <controls:SettingsCard.HeaderIcon>
+                    <FontIcon FontSize="14" Glyph="&#xE74D;" />
+                </controls:SettingsCard.HeaderIcon>
+
+                <controls:SettingsCard.Content>
+                    <ToggleSwitch IsOn="{x:Bind ViewModel.PageSettings.ShowConfirmationMessage, Mode=TwoWay}" />
+                </controls:SettingsCard.Content>
+
+            </controls:SettingsCard>
+
+            <controls:SettingsCard
+                Header="Open folder in new tab">
+                <controls:SettingsCard.HeaderIcon>
+                    <FontIcon FontSize="14" Glyph="&#xF12B;" />
+                </controls:SettingsCard.HeaderIcon>
+
+                <controls:SettingsCard.Content>
+                    <ToggleSwitch IsOn="{x:Bind ViewModel.PageSettings.OpenFolderInNewTab, Mode=TwoWay}" />
+                </controls:SettingsCard.Content>
+
+            </controls:SettingsCard>
+
+        </StackPanel>
     </Grid>
 </Page>

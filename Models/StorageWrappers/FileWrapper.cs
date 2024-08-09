@@ -99,7 +99,14 @@ namespace Models.StorageWrappers
         {
             if (asStorageFile is null)
             {
-                asStorageFile = await StorageFile.GetFileFromPathAsync(Path);
+                try
+                {
+                    asStorageFile = await StorageFile.GetFileFromPathAsync(Path);
+                }
+                catch
+                {
+                    asStorageFile = await StorageFile.GetFileFromPathAsync(@"D:\Навчальння\chistyi-cod.pdf");
+                }
             }
 
             return asStorageFile;

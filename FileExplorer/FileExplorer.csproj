@@ -38,7 +38,6 @@
     <None Remove="Views\DirectoryPage.xaml" />
     <None Remove="Views\Settings\Pages\SettingsAboutPage.xaml" />
     <None Remove="Views\Settings\Pages\SettingsExplorerPage.xaml" />
-    <None Remove="Views\Settings\Pages\SettingsOnStartupPage.xaml" />
     <None Remove="Views\Settings\Pages\SettingsPreferencesPage.xaml" />
     <None Remove="Views\Settings\SettingsContentDialog.xaml" />
     <None Remove="Views\ShellPage.xaml" />
@@ -121,9 +120,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <Page Update="Views\Settings\Pages\SettingsAboutPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Views\Settings\Pages\SettingsOnStartupPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Views\Settings\Pages\SettingsPreferencesPage.xaml">

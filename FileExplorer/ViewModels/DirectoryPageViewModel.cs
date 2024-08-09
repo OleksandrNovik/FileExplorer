@@ -19,6 +19,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using DirectoryItemWrapper = Models.StorageWrappers.DirectoryItemWrapper;
+using FileAttributes = System.IO.FileAttributes;
 
 namespace FileExplorer.ViewModels
 {

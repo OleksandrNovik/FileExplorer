@@ -4,6 +4,7 @@ using FileExplorer.Core.Services;
 using FileExplorer.Core.Services.Settings;
 using FileExplorer.Services;
 using FileExplorer.ViewModels;
+using FileExplorer.ViewModels.Settings;
 using FileExplorer.Views;
 using Helpers.Application;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,6 +13,7 @@ using Microsoft.UI.Xaml;
 using System;
 using Hosting = Microsoft.Extensions.Hosting.Host;
 using SettingsPagesService = FileExplorer.Services.SettingsPagesService;
+using SettingsViewModel = FileExplorer.ViewModels.Settings.SettingsViewModel;
 
 
 // To learn more about WinUI, the WinUI project structure,
@@ -57,7 +59,10 @@ namespace FileExplorer
                     services.AddTransient<IMenuFlyoutFactory, MenuFlyoutFactory>();
 
                     services.AddTransient<DirectoriesNavigationViewModel>();
+
                     services.AddTransient<SettingsViewModel>();
+                    services.AddTransient<SettingsPreferencesViewModel>();
+                    services.AddTransient<SettingsExplorerViewModel>();
                     services.AddTransient<SearchOptionsViewModel>();
 
 

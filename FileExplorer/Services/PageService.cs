@@ -1,17 +1,16 @@
 ﻿#nullable enable
 using FileExplorer.Core.Contracts;
 using FileExplorer.Views;
-using Helpers.StorageHelpers;
+using Models.ModelHelpers;
 using Models.StorageWrappers;
 using Models.TabRelated;
 using System;
-using Windows.Storage;
 
 namespace FileExplorer.Services
 {
     public sealed class PageService : IPageService
     {
-        private static readonly StorageFolder DefaultDirectory = KnownFoldersHelper.Documents;
+        private static readonly DirectoryWrapper DefaultDirectory = KnownFoldersHelper.Documents;
 
         public TabModel CreateTabFromDirectory(DirectoryWrapper? dir)
         {
@@ -21,7 +20,7 @@ namespace FileExplorer.Services
             {
                 //TODO: Open ThisPC instead
                 tabType = typeof(DirectoryPage);
-                dir = new DirectoryWrapper(DefaultDirectory.Path);
+                dir = DefaultDirectory;
             }
             else
             {

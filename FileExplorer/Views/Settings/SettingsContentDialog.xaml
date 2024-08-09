@@ -34,13 +34,6 @@
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
-                <NavigationViewItem Content="On Startup"
-                                    helpers:NavigationHelper.NavigateTo="FileExplorer.Views.Settings.Pages.SettingsOnStartupPage">
-                    <NavigationViewItem.Icon>
-                        <FontIcon FontSize="14" Glyph="&#xE7E8;" />
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-
                 <NavigationViewItem Content="Explorer"
                                     helpers:NavigationHelper.NavigateTo="FileExplorer.Views.Settings.Pages.SettingsExplorerPage">
                     <NavigationViewItem.Icon>
