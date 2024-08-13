@@ -5,7 +5,7 @@ using Models;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FileExplorer.Core.Services
+namespace FileExplorer.Core.Services.ContextMenu
 {
     public class MenuFlyoutFactory : IMenuFlyoutFactory
     {

@@ -21,7 +21,7 @@ namespace FileExplorer.Views.Settings
 
         private void OnContentDialogOpened(ContentDialog sender, ContentDialogOpenedEventArgs args)
         {
-            ViewModel.NavigationService.NavigateToDefault();
+            ViewModel.NavigationService.NavigateTo(null);
         }
 
         private void OnCloseButtonClick(object sender, RoutedEventArgs e)

@@ -13,11 +13,20 @@
     xmlns:models="using:FileExplorer.Models"
     xmlns:tabRelated="using:Models.TabRelated"
     xmlns:settings="using:FileExplorer.Views.Settings"
+    xmlns:helpers="using:FileExplorer.UI.Helpers"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Page.Resources>
         <settings:SettingsContentDialog x:Name="SettingsDialog" />
+
+        <DataTemplate x:Key="ExpandedTemplate">
+            <NavigationViewItem helpers:NavigationHelper.NavigateTo="FileExplorer.Views.DirectoryPage">
+                <NavigationViewItem.Icon>
+                    <ImageIcon Source="../Resources/Folder.png" />
+                </NavigationViewItem.Icon>
+            </NavigationViewItem>
+        </DataTemplate>
     </Page.Resources>
 
     <Grid>
@@ -78,6 +87,37 @@
                     <ColumnDefinition Width="5" />
                     <ColumnDefinition Width="3.8*" MinWidth="200" />
                 </Grid.ColumnDefinitions>
+
+                <NavigationView x:Name="NavigationView"
+                                AlwaysShowHeader="True"
+                                PaneDisplayMode="Left"
+                                SelectedItem="{x:Bind ViewModel.Selected, Mode=TwoWay}"
+                                IsBackButtonVisible="Collapsed"
+                                IsSettingsVisible="False"
+                                IsPaneToggleButtonVisible="False"
+                                OpenPaneLength="1000">
+                    <NavigationView.MenuItems>
+                        <NavigationViewItem Content="Home"
+                                            helpers:NavigationHelper.NavigateTo="FileExplorer.Views.DirectoryPage">
+                            <NavigationViewItem.Icon>
+                                <FontIcon FontSize="14" Glyph="&#xF354;" />
+                            </NavigationViewItem.Icon>
+                        </NavigationViewItem>
+
+                        <NavigationViewItem Content="Pinned" FontSize="12"
+                                            helpers:NavigationHelper.NavigateTo="FileExplorer.Views.DirectoryPage">
+                        </NavigationViewItem>
+
+                        <NavigationViewItem Content="Drives" FontSize="12"
+                                            helpers:NavigationHelper.NavigateTo="FileExplorer.Views.DirectoryPage">
+                        </NavigationViewItem>
+
+                        <NavigationViewItem Content="Libraries" FontSize="12"
+                                            helpers:NavigationHelper.NavigateTo="FileExplorer.Views.DirectoryPage">
+                        </NavigationViewItem>
+
+                    </NavigationView.MenuItems>
+                </NavigationView>
 
                 <ui:InteractiveGridSplitter
                     Grid.Column="1" 

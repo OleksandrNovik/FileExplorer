@@ -2,9 +2,9 @@
 using Microsoft.UI.Xaml.Controls;
 using System;
 
-namespace FileExplorer.Core.Contracts.Settings
+namespace FileExplorer.Core.Contracts.General
 {
-    public interface ISettingsNavigationViewService
+    public interface IBaseNavigationViewService
     {
         public void Initialize(NavigationView navigationView);
         void UnregisterEvents();

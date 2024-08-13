@@ -2,6 +2,7 @@
 using FileExplorer.Core.Contracts;
 using Helpers.Application;
 using Microsoft.UI.Xaml.Controls;
+using System;
 
 namespace FileExplorer.Core.Services.General
 {
@@ -42,6 +43,23 @@ namespace FileExplorer.Core.Services.General
                 if (frame.GetPageViewModel() is INavigationAware navigationAware)
                 {
                     navigationAware.OnNavigatedTo(e.Parameter);
+                }
+            }
+        }
+
+        protected void UseNavigationFrame(Type pageType, object? parameter = null)
+        {
+            ArgumentNullException.ThrowIfNull(Frame);
+
+            var previousViewModel = Frame.GetPageViewModel();
+
+            bool navigated = Frame.Navigate(pageType, parameter);
+
+            if (navigated)
+            {
+                if (previousViewModel is INavigationAware navigationAware)
+                {
+                    navigationAware.OnNavigatedFrom();
                 }
             }
         }

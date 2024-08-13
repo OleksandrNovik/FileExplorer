@@ -3,26 +3,22 @@ using Models.StorageWrappers;
 
 namespace Models.General
 {
-    public sealed record DirectoryNavigationInfo
+    public sealed class DirectoryNavigationInfo : BasicStorageInfo
     {
-        public string Name { get; }
-        public string FullPath { get; }
         public string? ParentPath { get; }
         public CachedSearchResult<DirectoryItemWrapper>? Cache { get; set; }
 
         public DirectoryNavigationInfo(CachedSearchResult<DirectoryItemWrapper> cachedSearchResult)
+            : base(cachedSearchResult.RootCatalog.Name, cachedSearchResult.RootCatalog.Path)
         {
-            Name = cachedSearchResult.RootCatalog.Name;
-            FullPath = cachedSearchResult.RootCatalog.Path;
             Cache = cachedSearchResult;
         }
 
         public DirectoryNavigationInfo(string path) : this(new DirectoryWrapper(path)) { }
 
         public DirectoryNavigationInfo(DirectoryWrapper folder)
+            : base(folder.Name, folder.Path)
         {
-            Name = folder.Name;
-            FullPath = folder.Path;
             var parent = folder.GetParentDirectory();
             ParentPath = parent?.Path;
         }

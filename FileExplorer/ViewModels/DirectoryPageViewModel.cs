@@ -3,12 +3,12 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using FileExplorer.Core.Contracts;
-using FileExplorer.Models;
-using FileExplorer.Services;
+using FileExplorer.ViewModels.Search;
 using Microsoft.UI.Xaml.Controls;
 using Models;
 using Models.General;
 using Models.Messages;
+using Models.ModelHelpers;
 using Models.StorageWrappers;
 using Models.TabRelated;
 using System;
@@ -25,17 +25,6 @@ namespace FileExplorer.ViewModels
 {
     public sealed partial class DirectoryPageViewModel : ObservableRecipient, INavigationAware
     {
-        /// <summary>
-        /// Factory to create right-click menu flyout for any item in directory or for a directory itself
-        /// </summary>
-        private readonly IMenuFlyoutFactory menuFactory;
-
-        /// <summary>
-        /// Builder that decides what type of menu and with what options is being created.
-        /// Creates models to represent structure of menu, which can be used to create real menu with <see cref="menuFactory"/>
-        /// </summary>
-        private readonly ContextMenuMetadataBuilder menuBuilder;
-
         public SearchOperationViewModel SearchOperations { get; } = new();
 
         /// <summary>
@@ -58,10 +47,8 @@ namespace FileExplorer.ViewModels
         //[ObservableProperty]
         //private bool isSearching;
 
-        public DirectoryPageViewModel(IMenuFlyoutFactory factory)
+        public DirectoryPageViewModel()
         {
-            menuFactory = factory;
-            menuBuilder = new ContextMenuMetadataBuilder(this);
             SelectedItems = [];
             SelectedItems.CollectionChanged += NotifyCommandsCanExecute;
 
@@ -182,22 +169,24 @@ namespace FileExplorer.ViewModels
         private async Task CreateFile()
         {
             var wrapper = new FileWrapper();
-            await CreateItemAsync(wrapper);
+            // await CreateItem(wrapper);
         }
 
-        [RelayCommand]
         private async Task CreateDirectory()
         {
             var wrapper = new DirectoryWrapper();
-            await CreateItemAsync(wrapper);
+            // await CreateItem(wrapper);
         }
 
         /// <summary>
         /// Uses manager to create new item in current directory
         /// </summary>
-        /// <param name="wrapper"> Wrapper that we are creating physical item for </param>
-        private async Task CreateItemAsync(DirectoryItemWrapper wrapper)
+        /// <param name="isFile"> Wrapper that we are creating physical item for </param>
+        [RelayCommand]
+        private async Task CreateItem(bool isFile)
         {
+            DirectoryItemWrapper wrapper = isFile ? new FileWrapper() : new DirectoryWrapper();
+
             wrapper.CreatePhysical(CurrentDirectory.Path);
 
             await wrapper.UpdateThumbnailAsync();
@@ -439,19 +428,46 @@ namespace FileExplorer.ViewModels
 
         public List<MenuFlyoutItemBase> OnContextMenuRequired()
         {
-            List<MenuFlyoutItemViewModel> menu;
+            List<MenuFlyoutItemViewModel> menu = new();
+            bool hasSelectedItems = HasSelectedItems();
+            var parameter = hasSelectedItems ? SelectedItems[0] : CurrentDirectory;
 
-            if (HasSelectedItems())
+            if (hasSelectedItems)
             {
-                menu = menuBuilder.BuildMenuForItem(SelectedItems[0]);
+                menu.WithOpen(OpenCommand, parameter);
+
+                if (parameter is DirectoryWrapper)
+                {
+                    menu.WithOpenInNewTab(OpenInNewTabCommand, parameter);
+                }
+
+                menu.WithFileOperations(
+                    [
+                        CopySelectedItemsCommand,
+                        CutSelectedItemsCommand,
+                        BeginRenamingSelectedItemCommand,
+                        RecycleSelectedItemsCommand
+                    ]);
             }
             else
             {
-                menu = menuBuilder.BuildDefaultMenu();
+
             }
 
-            return menuFactory.Create(menu);
-        }
+            menu.WithDetails(ShowDetailsCommand, parameter);
 
+            //if (HasSelectedItems())
+            //{
+            //    menu = menuBuilder.BuildMenuForItem(SelectedItems[0]);
+            //}
+            //else
+            //{
+            //    menu = menuBuilder.BuildDefaultMenu();
+            //}
+
+            //return menuFactory.Create(menu);
+
+            return [];
+        }
     }
 }

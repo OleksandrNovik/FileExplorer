@@ -1,6 +1,5 @@
 ﻿#nullable enable
 using CommunityToolkit.Mvvm.ComponentModel;
-using FileExplorer.Models;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Models.Contracts;
 using Models.ModelHelpers;
@@ -199,15 +198,6 @@ namespace Models.StorageWrappers
                 backupName = Name;
                 IsRenamed = false;
             }
-        }
-
-        public override bool Equals(object? obj)
-        {
-            if (obj is DirectoryItemWrapper wrapper)
-            {
-                return Path == wrapper.Path;
-            }
-            return false;
         }
     }
 }

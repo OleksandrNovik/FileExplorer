@@ -1,18 +1,16 @@
 ﻿#nullable enable
-using CommunityToolkit.Mvvm.ComponentModel;
 using FileExplorer.Core.Contracts.Settings;
+using FileExplorer.Services.NavigationViewServices;
+using FileExplorer.ViewModels.General;
 
 namespace FileExplorer.ViewModels.Settings
 {
-    public sealed partial class SettingsViewModel : ObservableObject
+    public sealed class SettingsViewModel : BaseNavigationViewModel
     {
-        public ISettingsNavigationViewService NavigationViewService { get; }
+        public BaseNavigationViewService<string> NavigationViewService { get; }
         public ISettingsNavigationService NavigationService { get; }
 
-        [ObservableProperty]
-        public object? selected;
-
-        public SettingsViewModel(ISettingsNavigationViewService navigationViewService, ISettingsNavigationService navigationService)
+        public SettingsViewModel(BaseNavigationViewService<string> navigationViewService, ISettingsNavigationService navigationService)
         {
             NavigationViewService = navigationViewService;
             NavigationService = navigationService;

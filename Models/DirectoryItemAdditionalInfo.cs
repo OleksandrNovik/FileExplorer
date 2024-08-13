@@ -2,7 +2,7 @@
 using Microsoft.UI.Xaml.Media;
 using System;
 
-namespace FileExplorer.Models
+namespace Models
 {
     public partial class DirectoryItemAdditionalInfo : ObservableObject
     {

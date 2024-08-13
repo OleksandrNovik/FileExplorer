@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using PathHelper = Helpers.StorageHelpers.PathHelper;
 
-namespace FileExplorer.ViewModels
+namespace FileExplorer.ViewModels.Search
 {
     public sealed partial class SearchOptionsViewModel : ObservableRecipient
     {
@@ -86,7 +86,6 @@ namespace FileExplorer.ViewModels
 
         [ObservableProperty]
         private string searchQuery;
-
         public SearchOptionsModel Options { get; }
 
         [ObservableProperty]

@@ -1,4 +1,5 @@
-﻿using FileExplorer.Core.Contracts.Settings;
+﻿#nullable enable
+using FileExplorer.Core.Contracts.Settings;
 using FileExplorer.Views.Settings.Pages;
 using System;
 using System.Collections.Frozen;
@@ -7,7 +8,7 @@ using System.Linq;
 
 namespace FileExplorer.Services
 {
-    public sealed class SettingsPagesService : ISettingsPagesService
+    public sealed class BasicPageService : IBasicPageService
     {
         private readonly FrozenDictionary<string, Type> pages = new Dictionary<string, Type>
         {
@@ -17,19 +18,21 @@ namespace FileExplorer.Services
 
         }.ToFrozenDictionary();
 
-        public Type GetPage(string key)
+        public Type GetPage(string? key)
         {
-            if (!pages.TryGetValue(key, out var pageType))
+            Type? pageType;
+
+            if (string.IsNullOrEmpty(key) || !pages.ContainsKey(key))
             {
-                throw new ArgumentException($"There is no such a page with name: {key}", nameof(key));
+                pageType = pages.First().Value;
+            }
+            else
+            {
+                pageType = pages[key];
             }
 
             return pageType;
         }
 
-        public Type GetDefaultPage()
-        {
-            return pages.First().Value;
-        }
     }
 }

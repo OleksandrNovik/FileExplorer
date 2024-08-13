@@ -16,22 +16,22 @@ namespace FileExplorer.ViewModels
         /// <summary>
         /// Stores and updates navigation history for a tab (that is currently opened)
         /// </summary>
-        private readonly IHistoryNavigationService _navigation;
+        private readonly IHistoryNavigationService navigation;
 
         /// <summary>
         /// Has methods to work with routes (get navigated item, split route into subfolders to conveniently navigate ot create route from parts)
         /// </summary>
-        private readonly IDirectoryRouteService _router;
+        private readonly IDirectoryRouteService router;
 
         /// <summary>
         /// Directory or search result that is currently opened 
         /// </summary>
-        private DirectoryNavigationInfo CurrentDirectory => _navigation.CurrentDirectory;
+        private DirectoryNavigationInfo CurrentDirectory => navigation.CurrentDirectory;
 
         /// <summary>
         /// View model that works with search options and search query, this view model sends message to start the search when user needs to
         /// </summary>
-        public SearchOptionsViewModel SearchOperator { get; }
+        public Search.SearchOptionsViewModel SearchOperator { get; }
 
         /// <summary>
         /// Decides if user is currently writing route into the text box or using route breadcrumb bar
@@ -51,10 +51,10 @@ namespace FileExplorer.ViewModels
         [ObservableProperty]
         private ObservableCollection<string> routeItems;
 
-        public DirectoriesNavigationViewModel(IHistoryNavigationService navigation, IDirectoryRouteService router, SearchOptionsViewModel searchOperator)
+        public DirectoriesNavigationViewModel(IHistoryNavigationService navigation, IDirectoryRouteService router, Search.SearchOptionsViewModel searchOperator)
         {
-            _navigation = navigation;
-            _router = router;
+            this.navigation = navigation;
+            this.router = router;
 
             SearchOperator = searchOperator;
 
@@ -62,19 +62,19 @@ namespace FileExplorer.ViewModels
             Messenger.Register<DirectoriesNavigationViewModel, TabOpenedMessage>(this, (_, message) =>
             {
                 InitializeDirectory(message.TabDirectoryInfo);
-                _navigation.History = message.TabNavigationHistory;
+                this.navigation.History = message.TabNavigationHistory;
                 NotifyCanExecute();
             });
 
             // Handler that is called when user is navigation inside current tab
             Messenger.Register<DirectoriesNavigationViewModel, DirectoryNavigationInfo>(this, (_, message) =>
             {
-                _navigation.OpenDirectory(message);
+                this.navigation.OpenDirectory(message);
 
                 if (message.Cache is null)
                 {
                     RouteItems.Add(message.Name);
-                    CurrentRoute = CurrentDirectory.FullPath;
+                    CurrentRoute = CurrentDirectory.Path;
                 }
 
                 NotifyCanExecute();
@@ -87,7 +87,7 @@ namespace FileExplorer.ViewModels
                     if (CurrentDirectory.Cache is null)
                     {
                         // We move forward to save this directory and show the user search result
-                        _navigation.OpenDirectory(new DirectoryNavigationInfo(message.CachedResult));
+                        this.navigation.OpenDirectory(new DirectoryNavigationInfo(message.CachedResult));
                         NotifyCanExecute();
                     }
                     // If current page is a search result
@@ -106,11 +106,11 @@ namespace FileExplorer.ViewModels
         /// <param name="directory"> Directory that is held in tab </param>
         private void InitializeDirectory(DirectoryNavigationInfo directory)
         {
-            _navigation.CurrentDirectory = directory;
+            navigation.CurrentDirectory = directory;
 
-            CurrentRoute = CurrentDirectory.FullPath;
+            CurrentRoute = CurrentDirectory.Path;
 
-            RouteItems = new ObservableCollection<string>(_router.ExtractRouteItems(CurrentRoute));
+            RouteItems = new ObservableCollection<string>(router.ExtractRouteItems(CurrentRoute));
         }
 
         #region GoForward
@@ -118,13 +118,13 @@ namespace FileExplorer.ViewModels
         [RelayCommand(CanExecute = nameof(CanGoForward))]
         private void MoveForward()
         {
-            _navigation.GoForward();
+            navigation.GoForward();
 
             SendNavigationMessage(CurrentDirectory);
 
-            RouteItems = new ObservableCollection<string>(_router.ExtractRouteItems(CurrentRoute));
+            RouteItems = new ObservableCollection<string>(router.ExtractRouteItems(CurrentRoute));
         }
-        private bool CanGoForward() => _navigation.CanGoForward;
+        private bool CanGoForward() => navigation.CanGoForward;
 
         #endregion
 
@@ -133,13 +133,13 @@ namespace FileExplorer.ViewModels
         [RelayCommand(CanExecute = nameof(CanGoBack))]
         private void MoveBack()
         {
-            _navigation.GoBack();
+            navigation.GoBack();
 
             SendNavigationMessage(CurrentDirectory);
 
-            RouteItems = new ObservableCollection<string>(_router.ExtractRouteItems(CurrentRoute));
+            RouteItems = new ObservableCollection<string>(router.ExtractRouteItems(CurrentRoute));
         }
-        private bool CanGoBack() => _navigation.CanGoBack;
+        private bool CanGoBack() => navigation.CanGoBack;
 
         #endregion
 
@@ -160,7 +160,7 @@ namespace FileExplorer.ViewModels
             ArgumentNullException.ThrowIfNull(CurrentDirectory.ParentPath);
             var navigationModel = new DirectoryNavigationInfo(CurrentDirectory.ParentPath);
 
-            _navigation.GoBack(navigationModel);
+            navigation.GoBack(navigationModel);
 
             SendNavigationMessage(CurrentDirectory);
 
@@ -183,13 +183,13 @@ namespace FileExplorer.ViewModels
                 RouteItems.RemoveAt(i);
             }
 
-            var selectedRoute = _router.CreatePathFrom(RouteItems);
-            var navigationItem = _router.UseNavigationRoute(selectedRoute);
+            var selectedRoute = router.CreatePathFrom(RouteItems);
+            var navigationItem = router.UseNavigationRoute(selectedRoute);
 
             var folder = new DirectoryWrapper(navigationItem.Path);
             var navigationModel = new DirectoryNavigationInfo(folder);
 
-            _navigation.GoForward(navigationModel);
+            navigation.GoForward(navigationModel);
             SendNavigationMessage(folder);
         }
 
@@ -204,7 +204,7 @@ namespace FileExplorer.ViewModels
 
             if (!CanUseRouteInput())
             {
-                CurrentRoute = _router.CreatePathFrom(RouteItems);
+                CurrentRoute = router.CreatePathFrom(RouteItems);
             }
         }
 
@@ -214,7 +214,7 @@ namespace FileExplorer.ViewModels
         [RelayCommand(CanExecute = nameof(CanUseRouteInput))]
         private void NavigateUsingRouteInput()
         {
-            var navigationItem = _router.UseNavigationRoute(CurrentRoute);
+            var navigationItem = router.UseNavigationRoute(CurrentRoute);
             var currentDirectory = navigationItem.GetCurrentDirectory();
 
             var navigationModel = new DirectoryNavigationInfo(currentDirectory);
@@ -224,12 +224,12 @@ namespace FileExplorer.ViewModels
                 Messenger.Send(new FileOpenRequiredMessage(file));
             }
 
-            _navigation.GoForward(navigationModel);
+            navigation.GoForward(navigationModel);
 
             SendNavigationMessage(currentDirectory);
 
             IsWritingRoute = !IsWritingRoute;
-            RouteItems = new ObservableCollection<string>(_router.ExtractRouteItems(CurrentRoute));
+            RouteItems = new ObservableCollection<string>(router.ExtractRouteItems(CurrentRoute));
         }
 
         private bool CanUseRouteInput() => Path.Exists(CurrentRoute);
@@ -251,7 +251,7 @@ namespace FileExplorer.ViewModels
         private void SendNavigationMessage(DirectoryWrapper item)
         {
             Messenger.Send(new NavigationRequiredMessage(item));
-            CurrentRoute = CurrentDirectory.FullPath;
+            CurrentRoute = CurrentDirectory.Path;
             NotifyCanExecute();
         }
 
@@ -268,7 +268,7 @@ namespace FileExplorer.ViewModels
             }
             else
             {
-                var navigatedDirectory = _router.UseNavigationRoute(info.FullPath)
+                var navigatedDirectory = router.UseNavigationRoute(info.Path)
                     .GetCurrentDirectory();
 
                 SendNavigationMessage(navigatedDirectory);

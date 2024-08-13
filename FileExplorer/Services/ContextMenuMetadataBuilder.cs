@@ -1,5 +1,4 @@
-﻿using FileExplorer.ViewModels;
-using Models;
+﻿using Models;
 using Models.StorageWrappers;
 using System.Collections.Generic;
 
@@ -7,9 +6,8 @@ namespace FileExplorer.Services
 {
     public sealed class ContextMenuMetadataBuilder
     {
-        private readonly DirectoryPageViewModel viewModel;
-
-        public ContextMenuMetadataBuilder(DirectoryPageViewModel viewModel)
+        private readonly MenuFlyoutItemViewModel viewModel;
+        public ContextMenuMetadataBuilder(MenuFlyoutItemViewModel viewModel)
         {
             this.viewModel = viewModel;
         }
@@ -27,42 +25,42 @@ namespace FileExplorer.Services
                 new MenuFlyoutItemViewModel("Open")
                 {
                     IconGlyph = "\uED25",
-                    Command = viewModel.OpenCommand,
+                    //Command = viewModel.OpenCommand,
                     CommandParameter = item
                 },
 
                 new MenuFlyoutItemViewModel("Copy")
                 {
                     IconGlyph = "\uE8C8",
-                    Command = viewModel.CopyItemCommand,
+                    //Command = viewModel.CopyItemCommand,
                     CommandParameter = item
                 },
 
                 new MenuFlyoutItemViewModel("Cut")
                 {
                     IconGlyph = "\uE8C6",
-                    Command = viewModel.CutItemCommand,
+                    //Command = viewModel.CutItemCommand,
                     CommandParameter = item
                 },
 
                 new MenuFlyoutItemViewModel("Delete")
                 {
                     IconGlyph = "\uE74D",
-                    Command = viewModel.RecycleItemCommand,
+                    //Command = viewModel.RecycleItemCommand,
                     CommandParameter = item
                 },
 
                 new MenuFlyoutItemViewModel("Rename")
                 {
                     IconGlyph = "\uE8AC",
-                    Command = viewModel.BeginRenamingItemCommand,
+                    //Command = viewModel.BeginRenamingItemCommand,
                     CommandParameter = item
                 },
 
                 new MenuFlyoutItemViewModel("Details")
                 {
                     IconGlyph = "\uE946",
-                    Command = viewModel.ShowDetailsCommand,
+                    //Command = viewModel.ShowDetailsCommand,
                     CommandParameter = item
                 }
             ];
@@ -72,7 +70,7 @@ namespace FileExplorer.Services
                 menuCommands.Insert(1, new MenuFlyoutItemViewModel("Open in new tab")
                 {
                     IconGlyph = "\uE8B4",
-                    Command = viewModel.OpenInNewTabCommand,
+                    //Command = viewModel.OpenInNewTabCommand,
                     CommandParameter = folder
                 });
             }
@@ -92,7 +90,7 @@ namespace FileExplorer.Services
                 new MenuFlyoutItemViewModel("Refresh")
                 {
                     IconGlyph = "\uE72C",
-                    Command = viewModel.RefreshCommand
+                    //Command = viewModel.RefreshCommand
                 },
 
                 new MenuFlyoutItemViewModel("Create")
@@ -102,11 +100,11 @@ namespace FileExplorer.Services
                     {
                         new MenuFlyoutItemViewModel("File")
                         {
-                            Command = viewModel.CreateFileCommand
+                            //Command = viewModel.CreateFileCommand
                         },
                         new MenuFlyoutItemViewModel("Folder")
                         {
-                            Command = viewModel.CreateDirectoryCommand
+                            //Command = viewModel.CreateDirectoryCommand
                         },
                     }
                 },
@@ -114,14 +112,14 @@ namespace FileExplorer.Services
                 new MenuFlyoutItemViewModel("Paste")
                 {
                     IconGlyph = "\uE77F",
-                    Command = viewModel.PasteItemsCommand
+                    //Command = viewModel.PasteItemsCommand
                 },
 
                 new MenuFlyoutItemViewModel("Details")
                 {
                     IconGlyph = "\uE946",
-                    Command = viewModel.ShowDetailsCommand,
-                    CommandParameter = viewModel.CurrentDirectory
+                    //Command = viewModel.ShowDetailsCommand,
+                    //CommandParameter = viewModel.CurrentDirectory
                 }
             ];
         }

@@ -1,47 +1,26 @@
 ﻿#nullable enable
 using FileExplorer.Core.Contracts;
-using FileExplorer.Core.Services.General;
-using Helpers.Application;
-using Microsoft.UI.Xaml.Controls;
 using Models.StorageWrappers;
 using Models.TabRelated;
-using System;
 using System.Collections.ObjectModel;
 
 namespace FileExplorer.Core.Services
 {
-    public class TabsService : BaseNavigationService, ITabService
+    public class TabsService : ITabService
     {
-        private readonly IPageService pageService;
+        private readonly IPageTypesService pageTypesService;
+
         public ObservableCollection<TabModel> Tabs { get; } = new();
 
-        public TabsService(IPageService pageService)
+        public TabsService(IPageTypesService pageTypesService)
         {
-            this.pageService = pageService;
+            this.pageTypesService = pageTypesService;
         }
 
         public void CreateNewTab(DirectoryWrapper? directory)
         {
-            var newTab = pageService.CreateTabFromDirectory(directory);
+            var newTab = pageTypesService.CreateTabFromDirectory(directory);
             Tabs.Add(newTab);
-        }
-
-        public void NavigateTo(TabModel tab)
-        {
-            var previousViewModel = Frame.GetPageViewModel();
-
-            ArgumentNullException.ThrowIfNull(Frame);
-
-            var navigated = Frame.Navigate(tab.TabType, tab);
-
-            if (navigated)
-            {
-                if (previousViewModel is INavigationAware navigationAware)
-                {
-                    navigationAware.OnNavigatedFrom();
-                }
-            }
-
         }
     }
 }
