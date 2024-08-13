@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using FileExplorer.Core.Contracts;
+using FileExplorer.ViewModels.General;
 using FileExplorer.ViewModels.Search;
 using Microsoft.UI.Xaml.Controls;
 using Models;
@@ -11,7 +12,6 @@ using Models.Messages;
 using Models.ModelHelpers;
 using Models.StorageWrappers;
 using Models.TabRelated;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -25,10 +25,15 @@ namespace FileExplorer.ViewModels
 {
     public sealed partial class DirectoryPageViewModel : ObservableRecipient, INavigationAware
     {
+        /// <summary>
+        /// Factory to create right-click menu flyout for any item in directory or for a directory itself
+        /// </summary>
+        private readonly IMenuFlyoutFactory menuFactory;
         public SearchOperationViewModel SearchOperations { get; } = new();
+        public FileOperationsViewModel FileOperations { get; } = new();
 
         /// <summary>
-        /// Current additional info (details) that is shown
+        /// Current additional info (Details) that is shown
         /// </summary>
         [ObservableProperty]
         private DirectoryItemAdditionalInfo _selectedDirectoryItemAdditionalDetails;
@@ -47,8 +52,9 @@ namespace FileExplorer.ViewModels
         //[ObservableProperty]
         //private bool isSearching;
 
-        public DirectoryPageViewModel()
+        public DirectoryPageViewModel(IMenuFlyoutFactory factory)
         {
+            menuFactory = factory;
             SelectedItems = [];
             SelectedItems.CollectionChanged += NotifyCommandsCanExecute;
 
@@ -56,6 +62,12 @@ namespace FileExplorer.ViewModels
             Messenger.Register<DirectoryPageViewModel, FileOpenRequiredMessage>(this, OnFileOpenRequired);
 
             Messenger.Register<DirectoryPageViewModel, NavigateToSearchResult<DirectoryItemWrapper>>(this, OnSearchResultNavigation);
+
+            Messenger.Register<DirectoryPageViewModel, ShowDetailsMessage>(this, (_, message) =>
+            {
+                SelectedDirectoryItemAdditionalDetails = message.Details;
+                IsDetailsShown = true;
+            });
         }
 
         private async void OnSearchResultNavigation(DirectoryPageViewModel _, NavigateToSearchResult<DirectoryItemWrapper> message)
@@ -132,56 +144,35 @@ namespace FileExplorer.ViewModels
         [RelayCommand(CanExecute = nameof(HasSelectedItems))]
         private async Task OpenSelectedItem()
         {
-            await Open(SelectedItems[0]);
-        }
-
-        [RelayCommand]
-        private async Task Open(DirectoryItemWrapper item)
-        {
-            await EndRenamingIfNeeded(item);
-
-            switch (item)
-            {
-                case FileWrapper fileWrapper:
-                    await fileWrapper.LaunchAsync();
-                    break;
-                case DirectoryWrapper directoryWrapper:
-                    await MoveToDirectoryAsync(directoryWrapper);
-                    var navigationModel = new DirectoryNavigationInfo(directoryWrapper);
-                    Messenger.Send(navigationModel);
-                    break;
-                default:
-                    throw new ArgumentException("Cannot open provided item. It is not a directory or file.", nameof(item));
-            }
-        }
-
-        [RelayCommand]
-        private void OpenInNewTab(DirectoryWrapper directory)
-        {
-            Messenger.Send(new OpenTabMessage(directory));
+            await FileOperations.Open(SelectedItems[0]);
         }
 
         #endregion
 
         #region Creating logic
 
+        /// <summary>
+        /// Creates file in <see cref="CurrentDirectory"/>
+        /// </summary>
         [RelayCommand]
         private async Task CreateFile()
         {
-            var wrapper = new FileWrapper();
-            // await CreateItem(wrapper);
-        }
-
-        private async Task CreateDirectory()
-        {
-            var wrapper = new DirectoryWrapper();
-            // await CreateItem(wrapper);
+            await CreateItem(true);
         }
 
         /// <summary>
-        /// Uses manager to create new item in current directory
+        /// Creates folder in <see cref="CurrentDirectory"/>
         /// </summary>
-        /// <param name="isFile"> Wrapper that we are creating physical item for </param>
+        [RelayCommand]
+        private async Task CreateDirectory()
+        {
+            await CreateItem(false);
+        }
+
+        /// <summary>
+        /// Creates new item in <see cref="CurrentDirectory"/> 
+        /// </summary>
+        /// <param name="isFile"> True - if file should be created, false - if directory is being created </param>
         [RelayCommand]
         private async Task CreateItem(bool isFile)
         {
@@ -192,7 +183,7 @@ namespace FileExplorer.ViewModels
             await wrapper.UpdateThumbnailAsync();
 
             DirectoryItems.Insert(0, wrapper);
-            BeginRenamingItem(wrapper);
+            FileOperations.BeginRenamingItem(wrapper);
         }
 
         #endregion
@@ -202,23 +193,10 @@ namespace FileExplorer.ViewModels
         [RelayCommand(CanExecute = nameof(HasSelectedItems))]
         private void BeginRenamingSelectedItem()
         {
-            BeginRenamingItem(SelectedItems[0]);
+            FileOperations.BeginRenamingItem(SelectedItems[0]);
         }
 
-        /// <summary>
-        /// Begins renaming provided item
-        /// </summary>
-        /// <param name="item"> Item that is renamed </param>
-        [RelayCommand]
-        private void BeginRenamingItem(DirectoryItemWrapper item) => item.BeginEdit();
-
         private bool HasSelectedItems() => SelectedItems.Count > 0;
-
-        /// <summary>
-        /// Ends renaming only when needed to prevent double renaming of item at the same time
-        /// (Example: It can happen when user presses enter and renames file and after that lost focus event is called renaming same file again)
-        /// </summary>
-        public AsyncRelayCommand<DirectoryItemWrapper> EndRenamingIfNeededCommand => new(EndRenamingIfNeeded!);
 
         /// <summary>
         /// Ends renaming item if it is actually possible
@@ -227,34 +205,9 @@ namespace FileExplorer.ViewModels
         [RelayCommand]
         private async Task EndRenamingItem(DirectoryItemWrapper item)
         {
-            if (string.IsNullOrWhiteSpace(item.Name))
-            {
-                item.CancelEdit();
-                await App.MainWindow.ShowMessageDialogAsync("Item's name cannot be empty", "Empty name is illegal");
-                return;
-            }
-            item.Rename();
-
-            // If item's extension changed we need to update icon
-            if (item.HasExtensionChanged)
-            {
-                await item.UpdateThumbnailAsync();
-            }
+            await FileOperations.EndRenamingItem(item);
 
             //TODO: New Sorting of items is required
-        }
-
-        /// <summary>
-        /// Ends renaming item when it is renamed.
-        /// This method is called before any operation with item to be sure it's not renamed while executing operation
-        /// </summary>
-        /// <param name="item"> Item that we are checking for renaming </param>
-        private async Task EndRenamingIfNeeded(DirectoryItemWrapper item)
-        {
-            if (item.IsRenamed)
-            {
-                await EndRenamingItem(item);
-            }
         }
 
         #endregion
@@ -302,7 +255,7 @@ namespace FileExplorer.ViewModels
         /// <returns> true if item is successfully deleted, otherwise - false </returns>
         private async Task TryDeleteItem(DirectoryItemWrapper item, bool isPermanent = false)
         {
-            await EndRenamingIfNeeded(item);
+            await FileOperations.EndRenamingIfNeeded(item);
 
             try
             {
@@ -374,29 +327,7 @@ namespace FileExplorer.ViewModels
         [RelayCommand(CanExecute = nameof(HasSelectedItems))]
         private async Task ShowDetailsOfSelectedItem()
         {
-            await ShowDetails(SelectedItems[0]);
-        }
-
-        [RelayCommand]
-        private async Task ShowDetails(DirectoryItemWrapper item)
-        {
-            SelectedDirectoryItemAdditionalDetails = item.GetBasicInfo();
-            IsDetailsShown = true;
-
-            switch (item)
-            {
-                case DirectoryWrapper dir:
-                    {
-
-                        //SelectedDirectoryItemAdditionalDetails.TitleInfo = $"Files: {files} Folders: {folders}";
-                        break;
-                    }
-                case FileWrapper file:
-                    SelectedDirectoryItemAdditionalDetails.TitleInfo = await file.GetFileTypeAsync();
-                    break;
-                default:
-                    throw new ArgumentException("Item not a directory or file.", nameof(item));
-            }
+            await FileOperations.ShowDetails(SelectedItems[0]);
         }
 
         [RelayCommand]
@@ -434,40 +365,31 @@ namespace FileExplorer.ViewModels
 
             if (hasSelectedItems)
             {
-                menu.WithOpen(OpenCommand, parameter);
+                menu.WithOpen(FileOperations.OpenCommand, parameter);
 
                 if (parameter is DirectoryWrapper)
                 {
-                    menu.WithOpenInNewTab(OpenInNewTabCommand, parameter);
+                    menu.WithOpenInNewTab(FileOperations.OpenInNewTabCommand, parameter)
+                        .WithPin(FileOperations.PinCommand, parameter);
                 }
 
                 menu.WithFileOperations(
                     [
                         CopySelectedItemsCommand,
                         CutSelectedItemsCommand,
-                        BeginRenamingSelectedItemCommand,
-                        RecycleSelectedItemsCommand
-                    ]);
+                        BeginRenamingSelectedItemCommand
+
+                    ]).WithDelete(RecycleSelectedItemsCommand);
             }
             else
             {
-
+                menu.WithRefresh(RefreshCommand)
+                    .WithCreate(CreateItemCommand)
+                    .WithPaste(PasteItemsCommand);
             }
 
-            menu.WithDetails(ShowDetailsCommand, parameter);
-
-            //if (HasSelectedItems())
-            //{
-            //    menu = menuBuilder.BuildMenuForItem(SelectedItems[0]);
-            //}
-            //else
-            //{
-            //    menu = menuBuilder.BuildDefaultMenu();
-            //}
-
-            //return menuFactory.Create(menu);
-
-            return [];
+            return menuFactory.Create(menu
+                .WithDetails(FileOperations.ShowDetailsCommand, parameter));
         }
     }
 }

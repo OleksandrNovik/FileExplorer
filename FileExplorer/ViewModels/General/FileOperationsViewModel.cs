@@ -37,5 +37,72 @@ namespace FileExplorer.ViewModels.General
             Messenger.Send(new OpenTabMessage(directory));
         }
 
+        /// <summary>
+        /// Begins renaming provided item
+        /// </summary>
+        /// <param name="item"> Item that is renamed </param>
+        [RelayCommand]
+        public void BeginRenamingItem(DirectoryItemWrapper item) => item.BeginEdit();
+
+        /// <summary>
+        /// Ends renaming item if it is actually possible
+        /// </summary>
+        /// <param name="item"> Item that has to be given new name </param>
+        public async Task EndRenamingItem(DirectoryItemWrapper item)
+        {
+            if (string.IsNullOrWhiteSpace(item.Name))
+            {
+                item.CancelEdit();
+                await App.MainWindow.ShowMessageDialogAsync("Item's name cannot be empty", "Empty name is illegal");
+                return;
+            }
+            item.Rename();
+
+            // If item's extension changed we need to update icon
+            if (item.HasExtensionChanged)
+            {
+                await item.UpdateThumbnailAsync();
+            }
+        }
+
+
+        /// <summary>
+        /// Ends renaming item when it is renamed.
+        /// This method is called before any operation with item to be sure it's not renamed while executing operation
+        /// </summary>
+        /// <param name="item"> Item that we are checking for renaming </param>
+        [RelayCommand]
+        public async Task EndRenamingIfNeeded(DirectoryItemWrapper item)
+        {
+            if (item.IsRenamed)
+            {
+                await EndRenamingItem(item);
+            }
+        }
+
+        [RelayCommand]
+        public async Task ShowDetails(DirectoryItemWrapper item)
+        {
+            var details = item.GetBasicInfo();
+
+            if (item is FileWrapper file)
+            {
+                details.TitleInfo = await file.GetFileTypeAsync();
+            }
+
+            Messenger.Send(new ShowDetailsMessage(details));
+        }
+
+        [RelayCommand]
+        private void Pin()
+        {
+
+        }
+
+        [RelayCommand]
+        private void Unpin()
+        {
+
+        }
     }
 }

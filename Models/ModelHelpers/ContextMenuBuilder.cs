@@ -96,10 +96,10 @@ namespace Models.ModelHelpers
         }
 
         /// <summary>
-        /// Adds details menu item to an existing menu
+        /// Adds Details menu item to an existing menu
         /// </summary>
         /// <param name="menu"> Provided menu </param>
-        /// <param name="command"> Command to show details </param>
+        /// <param name="command"> Command to show Details </param>
         /// <param name="commandParameter"> Parameter to te command </param>
         public static List<MenuFlyoutItemViewModel> WithDetails(this List<MenuFlyoutItemViewModel> menu,
             IRelayCommand command, object? commandParameter = null)
@@ -108,22 +108,59 @@ namespace Models.ModelHelpers
         }
 
         /// <summary>
-        /// Adds details menu item to an existing menu
+        /// Adds Details menu item to an existing menu
         /// </summary>
         /// <param name="menu"> Provided menu </param>
-        /// <param name="command"> Command to show details </param>
+        /// <param name="command"> Command to show Details </param>
         /// <param name="commandParameter"> Parameter to te command </param>
         public static List<MenuFlyoutItemViewModel> WithFileOperations(this List<MenuFlyoutItemViewModel> menu,
             IReadOnlyList<IRelayCommand> commands, object? commandParameter = null)
         {
-            Debug.Assert(commands.Count > 3);
+            Debug.Assert(commands.Count > 2);
 
             menu.FromCommandData(new CommandData("Copy", "\uE8C8", commands[0], commandParameter))
                 .FromCommandData(new CommandData("Cut", "\uE8C6", commands[1], commandParameter))
-                .FromCommandData(new CommandData("Rename", "\uE8AC", commands[2], commandParameter))
-                .FromCommandData(new CommandData("Delete", "\uE74D", commands[3], commandParameter));
+                .FromCommandData(new CommandData("Rename", "\uE8AC", commands[2], commandParameter));
 
             return menu;
+        }
+
+
+        /// <summary>
+        /// Adds delete menu item to an existing menu
+        /// </summary>
+        /// <param name="menu"> Provided menu </param>
+        /// <param name="command"> Command to delete item </param>
+        /// <param name="commandParameter"> Parameter to te command </param>
+        public static List<MenuFlyoutItemViewModel> WithDelete(this List<MenuFlyoutItemViewModel> menu,
+            IRelayCommand command, object? commandParameter = null)
+        {
+            return menu.FromCommandData(new CommandData("Delete", "\uE74D", command, commandParameter));
+        }
+
+
+        /// <summary>
+        /// Adds pin menu item to an existing menu
+        /// </summary>
+        /// <param name="menu"> Provided menu </param>
+        /// <param name="command"> Command to pin item </param>
+        /// <param name="commandParameter"> Parameter to te command </param>
+        public static List<MenuFlyoutItemViewModel> WithPin(this List<MenuFlyoutItemViewModel> menu,
+            IRelayCommand command, object? commandParameter = null)
+        {
+            return menu.FromCommandData(new CommandData("Pin", "\uE840", command, commandParameter));
+        }
+
+        /// <summary>
+        /// Adds unpin menu item to an existing menu
+        /// </summary>
+        /// <param name="menu"> Provided menu </param>
+        /// <param name="command"> Command to unpin item </param>
+        /// <param name="commandParameter"> Parameter to te command </param>
+        public static List<MenuFlyoutItemViewModel> WithUnpin(this List<MenuFlyoutItemViewModel> menu,
+            IRelayCommand command, object? commandParameter = null)
+        {
+            return menu.FromCommandData(new CommandData("Unpin", "\uE77A", command, commandParameter));
         }
 
         /// <summary>

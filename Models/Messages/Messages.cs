@@ -45,4 +45,6 @@ namespace Models.Messages
     public record SearchStartedMessage<TElement>(CachedSearchResult<TElement> CachedResult);
 
     public record NavigateToSearchResult<TElement>(CachedSearchResult<TElement> SearchResult);
+
+    public record ShowDetailsMessage(DirectoryItemAdditionalInfo Details);
 }

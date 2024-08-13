@@ -21,8 +21,8 @@ namespace FileExplorer.Views
         {
             this.ViewModel = App.GetService<DirectoryPageViewModel>();
             this.Resources["EndRenamingCommand"] = this.ViewModel.EndRenamingItemCommand;
-            this.Resources["EndRenamingIfLostFocusCommand"] = this.ViewModel.EndRenamingIfNeededCommand;
-            this.Resources["OpenCommand"] = this.ViewModel.OpenCommand;
+            this.Resources["EndRenamingIfLostFocusCommand"] = this.ViewModel.FileOperations.EndRenamingIfNeededCommand;
+            this.Resources["OpenCommand"] = this.ViewModel.FileOperations.OpenCommand;
             this.InitializeComponent();
         }
 
@@ -30,7 +30,6 @@ namespace FileExplorer.Views
         {
             DirectoryItemsGrid.SelectAll();
         }
-
 
         private void OnDirectoryItemsGridRightTapped(object sender, RightTappedRoutedEventArgs e)
         {

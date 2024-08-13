@@ -7,7 +7,6 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
-    xmlns:models="using:FileExplorer.Models"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:behaviors="using:FileExplorer.UI.Behaviors"
     xmlns:toolkitBehaviors="using:CommunityToolkit.WinUI.UI.Behaviors"
@@ -108,10 +107,10 @@
                         <MenuFlyout Placement="Bottom">
                             <MenuFlyoutItem 
                          Command="{x:Bind ViewModel.CreateFileCommand}"
-                         Text="File" />
+                             Text="File" />
                             <MenuFlyoutItem 
                          Command="{x:Bind ViewModel.CreateDirectoryCommand}"
-                         Text="Folder"/>
+                             Text="Folder"/>
                         </MenuFlyout>
                     </DropDownButton.Flyout>
                 </DropDownButton>
@@ -301,7 +300,7 @@
             <!--TODO: HotKey1 Ctrl+R - Rename-->
             <ui:CommandKeyboardAccelerator 
                 Modifiers="Control" Key="R"
-                Command="{x:Bind ViewModel.BeginRenamingItemCommand}"
+                Command="{x:Bind ViewModel.BeginRenamingSelectedItemCommand}"
             />
             <ui:CommandKeyboardAccelerator 
                 Modifiers="Shift" Key="Delete"

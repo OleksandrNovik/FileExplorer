@@ -34,7 +34,7 @@ namespace FileExplorer.Services
             if (dir is null)
             {
                 //TODO: Fix later
-                dir = KnownFoldersHelper.Documents;
+                dir = KnownFoldersHelper.Libraries[2];
             }
 
             return new TabModel(dir, tabType);

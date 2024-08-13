@@ -6,7 +6,7 @@ namespace Models.ModelHelpers
 {
     public static class KnownFoldersHelper
     {
-        public static IReadOnlyCollection<DirectoryWrapper> Libraries { get; }
+        public static IReadOnlyList<DirectoryWrapper> Libraries { get; }
 
         static KnownFoldersHelper()
         {
