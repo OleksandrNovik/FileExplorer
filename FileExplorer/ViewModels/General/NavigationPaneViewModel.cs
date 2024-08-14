@@ -1,5 +1,4 @@
-﻿using FileExplorer.Views;
-using Models.ModelHelpers;
+﻿using Models.ModelHelpers;
 using Models.Navigation;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -21,25 +20,21 @@ namespace FileExplorer.ViewModels.General
             [
                 new NavigationItemModel("Home", string.Empty)
                 {
-                    NavigationPage = typeof(DirectoryPage).FullName,
                     SubItems = null
                 },
-                new NavigationItemModel("Pinned", string.Empty)
+                new NavigationItemModel("Pinned")
                 {
-                    NavigationPage = typeof(DirectoryPage).FullName,
                     SubItems = new ObservableCollection<NavigationItemModel>(libraries.Select(item => new NavigationItemModel(item.Name, item.Path)
                     {
                         IsPinned = true
                     }))
                 },
-                new NavigationItemModel("Drives", "")
+                new NavigationItemModel("Drives")
                 {
-                    NavigationPage = typeof(DirectoryPage).FullName,
                     SubItems = null
                 },
-                new NavigationItemModel("Libraries", string.Empty)
+                new NavigationItemModel("Libraries")
                 {
-                    NavigationPage = typeof(DirectoryPage).FullName,
                     SubItems = new ObservableCollection<NavigationItemModel>(libraries)
                 }
             ];

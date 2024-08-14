@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using FileExplorer.Core.Contracts;
+using FileExplorer.Core.Contracts.DirectoriesNavigation;
 using FileExplorer.ViewModels.General;
 using Models.Messages;
 using Models.StorageWrappers;
@@ -15,22 +16,24 @@ namespace FileExplorer.ViewModels
     {
         public NavigationPaneViewModel NavigationPaneViewModel { get; } = new();
         public ITabService TabService { get; }
+        public INavigationService NavigationService { get; }
 
         [ObservableProperty]
         private ObservableCollection<TabModel> tabs;
 
         private TabModel selectedTab;
 
-        public ShellPageViewModel(ITabService tabService)
+        public ShellPageViewModel(ITabService tabService, INavigationService navigationService)
         {
             TabService = tabService;
-            tabs = this.TabService.Tabs;
+            NavigationService = navigationService;
+            tabs = TabService.Tabs;
 
-            Messenger.Register<ShellPageViewModel, DirectoryWrapper>(this, (_, message) =>
+            Messenger.Register<ShellPageViewModel, TabDirectoryChangedMessage>(this, (_, message) =>
             {
                 if (selectedTab != null)
                 {
-                    selectedTab.TabDirectory = message;
+                    selectedTab.TabDirectory = message.Directory;
                 }
                 NavigationPaneViewModel.SetIcons();
             });
@@ -55,7 +58,7 @@ namespace FileExplorer.ViewModels
         private void NavigateToTab(TabModel item)
         {
             selectedTab = item;
-            TabService.TabNavigationService.NavigateTo(item);
+            NavigationService.NavigateTo(item.TabDirectory.Path, item);
         }
 
         [RelayCommand]

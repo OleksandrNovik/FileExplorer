@@ -12,6 +12,12 @@ namespace Models.Messages
     public record NavigationRequiredMessage(DirectoryWrapper NavigatedDirectory);
 
     /// <summary>
+    /// Message that notify listeners that current tab's directory has changed
+    /// </summary>
+    /// <param name="Directory"></param>
+    public record TabDirectoryChangedMessage(DirectoryWrapper Directory);
+
+    /// <summary>
     /// Message for DirectoryPageViewModel to open file path for which has been written in the route
     /// </summary>
     /// <param name="OpenFile"> File that has to be opened </param>
@@ -31,11 +37,6 @@ namespace Models.Messages
     public record OpenTabMessage(DirectoryWrapper TabDirectory);
 
     public record SearchOperationRequiredMessage(SearchOptionsModel Options);
-
-    /// <summary>
-    /// Message to notify search view model to continue search that was stopped time ago
-    /// </summary>
-    public record ContinueSearchMessage;
 
     /// <summary>
     /// Message to notify search view model to stop searching items

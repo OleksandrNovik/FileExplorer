@@ -8,7 +8,7 @@ using System;
 
 namespace FileExplorer.Services
 {
-    public sealed class PageTypesTypesService : IPageTypesService
+    public sealed class PageTypesService : IPageTypesService
     {
         public Type GetPage(string? path)
         {
@@ -27,17 +27,17 @@ namespace FileExplorer.Services
             return pageType;
         }
 
-        public TabModel CreateTabFromDirectory(DirectoryWrapper? dir)
+        public TabModel CreateTabFromDirectory(DirectoryWrapper? directory)
         {
-            var tabType = GetPage(dir?.Path);
+            var tabType = GetPage(directory?.Path);
 
-            if (dir is null)
+            if (directory is null)
             {
                 //TODO: Fix later
-                dir = KnownFoldersHelper.Libraries[2];
+                directory = KnownFoldersHelper.Libraries[2];
             }
 
-            return new TabModel(dir, tabType);
+            return new TabModel(directory, tabType);
         }
     }
 }

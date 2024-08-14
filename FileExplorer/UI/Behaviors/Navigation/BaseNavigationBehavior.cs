@@ -33,14 +33,12 @@ namespace FileExplorer.UI.Behaviors.Navigation
         {
             base.OnAttached();
             AssociatedObject.ItemInvoked += OnItemInvoked;
-            AssociatedObject.Loaded += OnNavigationViewLoaded;
         }
 
         protected override void OnDetaching()
         {
             base.OnDetaching();
             AssociatedObject.ItemInvoked -= OnItemInvoked;
-            AssociatedObject.Loaded -= OnNavigationViewLoaded;
         }
 
         /// <summary>
@@ -50,19 +48,13 @@ namespace FileExplorer.UI.Behaviors.Navigation
         {
             var selectedItem = args.InvokedItemContainer as NavigationViewItem;
 
-            if (selectedItem?.GetValue(NavigationHelper.NavigateToProperty) is TNavigationParam key)
+            if (selectedItem?.GetValue(NavigationHelper.NavigationKeyProperty) is TNavigationParam key)
             {
                 navigationService.NavigateTo(key);
             }
         }
 
-        /// <summary>
-        /// When <see cref="NavigationView"/> is loaded selects first element of <see cref="NavigationView"/> items
-        /// </summary>
-        private void OnNavigationViewLoaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
-        {
-            AssociatedObject.SelectedItem = AssociatedObject.MenuItems[0];
-            navigationService.NavigateTo();
-        }
+
+
     }
 }

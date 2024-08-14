@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml;
+﻿#nullable enable
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
 namespace FileExplorer.UI.Helpers
@@ -9,11 +10,11 @@ namespace FileExplorer.UI.Helpers
     /// </summary>
     public class NavigationHelper
     {
-        public static string GetNavigateTo(NavigationViewItem item) => (string)item.GetValue(NavigateToProperty);
+        public static string? GetNavigationKey(NavigationViewItem item) => item.GetValue(NavigationKeyProperty) as string;
 
-        public static void SetNavigateTo(NavigationViewItem item, string value) => item.SetValue(NavigateToProperty, value);
+        public static void SetNavigationKey(NavigationViewItem item, string? value) => item.SetValue(NavigationKeyProperty, value);
 
-        public static readonly DependencyProperty NavigateToProperty =
-            DependencyProperty.RegisterAttached("NavigateTo", typeof(string), typeof(NavigationHelper), new PropertyMetadata(null));
+        public static readonly DependencyProperty NavigationKeyProperty =
+            DependencyProperty.RegisterAttached("NavigationKey", typeof(string), typeof(NavigationHelper), new PropertyMetadata(null));
     }
 }

@@ -18,7 +18,7 @@ namespace FileExplorer.Views
         {
             this.ViewModel = vm;
             this.InitializeComponent();
-            this.ViewModel.TabService.TabNavigationService.Frame = NavigationFrame;
+            this.ViewModel.NavigationService.Frame = NavigationFrame;
         }
 
         private void OnTabViewLoaded(object sender, RoutedEventArgs e)

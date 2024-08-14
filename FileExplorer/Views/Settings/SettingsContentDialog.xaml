@@ -30,14 +30,14 @@
 
             <NavigationView.MenuItems>
                 <NavigationViewItem Content="Preferences"
-                                    helpers:NavigationHelper.NavigateTo="FileExplorer.Views.Settings.Pages.SettingsPreferencesPage">
+                                    helpers:NavigationHelper.NavigationKey="FileExplorer.Views.Settings.Pages.SettingsPreferencesPage">
                     <NavigationViewItem.Icon>
                         <FontIcon FontSize="14" Glyph="&#xF354;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
                 <NavigationViewItem Content="Explorer"
-                                    helpers:NavigationHelper.NavigateTo="FileExplorer.Views.Settings.Pages.SettingsExplorerPage">
+                                    helpers:NavigationHelper.NavigationKey="FileExplorer.Views.Settings.Pages.SettingsExplorerPage">
                     <NavigationViewItem.Icon>
                         <FontIcon FontSize="14" Glyph="&#xEC51;" />
                     </NavigationViewItem.Icon>
@@ -46,7 +46,7 @@
             
             <NavigationView.FooterMenuItems>
                 <NavigationViewItem Content="About"
-                                    helpers:NavigationHelper.NavigateTo="FileExplorer.Views.Settings.Pages.SettingsAboutPage">
+                                    helpers:NavigationHelper.NavigationKey="FileExplorer.Views.Settings.Pages.SettingsAboutPage">
                     <NavigationViewItem.Icon>
                         <FontIcon FontSize="14" Glyph="&#xE946;" />
                     </NavigationViewItem.Icon>

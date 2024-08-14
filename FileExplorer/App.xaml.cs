@@ -57,7 +57,8 @@ namespace FileExplorer
                     services.AddTransient<ITabNavigationService, TabNavigationService>();
 
                     //Navigation
-                    services.AddTransient<IPageTypesService, PageTypesTypesService>();
+                    services.AddTransient<IPageTypesService, PageTypesService>();
+                    services.AddSingleton<INavigationService, NavigationService>();
 
                     //Settings services
                     services.AddTransient<IBasicPageService<string>, BasicPageService>();

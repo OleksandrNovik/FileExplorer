@@ -13,6 +13,7 @@ using Models.Messages;
 using Models.ModelHelpers;
 using Models.StorageWrappers;
 using Models.TabRelated;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -135,7 +136,7 @@ namespace FileExplorer.ViewModels
 
             CurrentDirectory = directory;
             await InitializeDirectoryAsync();
-            Messenger.Send(directory);
+            Messenger.Send(new TabDirectoryChangedMessage(directory));
 
             SearchOperations.InitializeSearchData(CurrentDirectory, DirectoryItems);
         }
@@ -336,13 +337,28 @@ namespace FileExplorer.ViewModels
 
         public async void OnNavigatedTo(object parameter)
         {
+            DirectoryWrapper directory;
+            TabNavigationHistoryModel history;
+
             if (parameter is TabModel tab)
             {
-                await MoveToDirectoryAsync(tab.TabDirectory);
-                var navigationInfo = new DirectoryNavigationInfo(tab.TabDirectory);
-
-                Messenger.Send(new TabOpenedMessage(navigationInfo, tab.TabHistory));
+                directory = tab.TabDirectory;
+                history = tab.TabHistory;
             }
+            else if (parameter is DirectoryWrapper dir)
+            {
+                directory = dir;
+                history = new TabNavigationHistoryModel();
+            }
+            else
+            {
+                throw new ArgumentException();
+            }
+
+            await MoveToDirectoryAsync(directory);
+            var navigationInfo = new DirectoryNavigationInfo(directory);
+
+            Messenger.Send(new TabOpenedMessage(navigationInfo, history));
         }
 
         [RelayCommand]
