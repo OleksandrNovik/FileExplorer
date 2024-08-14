@@ -5,6 +5,7 @@ using DirectoryItemWrapper = Models.StorageWrappers.DirectoryItemWrapper;
 
 namespace FileExplorer.Core.Contracts
 {
+    //TODO: this interface should be changed to a clipboard manager
     public interface IDirectoryManager
     {
         public void CreatePhysical(DirectoryItemWrapper wrapper);

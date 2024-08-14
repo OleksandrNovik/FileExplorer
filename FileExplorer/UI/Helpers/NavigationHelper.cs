@@ -3,6 +3,10 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace FileExplorer.UI.Helpers
 {
+    /// <summary>
+    /// Helper class to create NavigateTo property for a <see cref="NavigationViewItem"/>
+    /// that is used to identify page type when item is invoked
+    /// </summary>
     public class NavigationHelper
     {
         public static string GetNavigateTo(NavigationViewItem item) => (string)item.GetValue(NavigateToProperty);

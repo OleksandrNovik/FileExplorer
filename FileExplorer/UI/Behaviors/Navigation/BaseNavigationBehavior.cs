@@ -1,5 +1,4 @@
 ﻿using FileExplorer.Core.Contracts.General;
-using FileExplorer.Core.Contracts.Settings;
 using FileExplorer.UI.Helpers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Xaml.Interactivity;
@@ -13,11 +12,18 @@ namespace FileExplorer.UI.Behaviors.Navigation
     /// <typeparam name="TNavigationParam"> Navigation parameter type </typeparam>
     public abstract class BaseNavigationBehavior<TNavigationParam> : Behavior<NavigationView>
     {
+        /// <summary>
+        /// Navigation service to initiate navigation
+        /// </summary>
         protected readonly IBasicNavigationService<TNavigationParam> navigationService;
 
-        protected readonly IBasicPageService pageService;
+        /// <summary>
+        /// Page service to get page type from key before navigation 
+        /// </summary>
+        protected readonly IBasicPageService<TNavigationParam> pageService;
 
-        public BaseNavigationBehavior(IBasicNavigationService<TNavigationParam> navigationService, IBasicPageService pageService)
+        public BaseNavigationBehavior(IBasicNavigationService<TNavigationParam> navigationService,
+            IBasicPageService<TNavigationParam> pageService)
         {
             this.navigationService = navigationService;
             this.pageService = pageService;
@@ -37,6 +43,9 @@ namespace FileExplorer.UI.Behaviors.Navigation
             AssociatedObject.Loaded -= OnNavigationViewLoaded;
         }
 
+        /// <summary>
+        /// Basic version of ItemInvoked event handler
+        /// </summary>
         protected virtual void OnItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
         {
             var selectedItem = args.InvokedItemContainer as NavigationViewItem;
@@ -47,6 +56,9 @@ namespace FileExplorer.UI.Behaviors.Navigation
             }
         }
 
+        /// <summary>
+        /// When <see cref="NavigationView"/> is loaded selects first element of <see cref="NavigationView"/> items
+        /// </summary>
         private void OnNavigationViewLoaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
         {
             AssociatedObject.SelectedItem = AssociatedObject.MenuItems[0];

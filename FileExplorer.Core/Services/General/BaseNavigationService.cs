@@ -4,63 +4,65 @@ using Helpers.Application;
 using Microsoft.UI.Xaml.Controls;
 using System;
 
-namespace FileExplorer.Core.Services.General
+namespace FileExplorer.Core.Services.General;
+
+/// <summary>
+/// Basic navigation service that contains all necessary methods and members for a navigation service
+/// </summary>
+public abstract class BaseNavigationService
 {
-    public abstract class BaseNavigationService
+    private Frame? frame;
+    public Frame? Frame
     {
-        private Frame? frame;
-        public Frame? Frame
+        get => frame;
+        set
         {
-            get => frame;
-            set
+            UnregisterFrameEvents();
+            frame = value;
+            RegisterFrameEvents();
+        }
+    }
+
+    private void RegisterFrameEvents()
+    {
+        if (frame != null)
+        {
+            frame.Navigated += OnNavigated;
+        }
+    }
+
+    private void UnregisterFrameEvents()
+    {
+        if (frame != null)
+        {
+            frame.Navigated -= OnNavigated;
+        }
+    }
+
+    protected virtual void OnNavigated(object sender, Microsoft.UI.Xaml.Navigation.NavigationEventArgs e)
+    {
+        if (sender is Frame frame)
+        {
+            if (frame.GetPageViewModel() is INavigationAware navigationAware)
             {
-                UnregisterFrameEvents();
-                frame = value;
-                RegisterFrameEvents();
+                navigationAware.OnNavigatedTo(e.Parameter);
             }
         }
+    }
 
-        private void RegisterFrameEvents()
+    protected void UseNavigationFrame(Type pageType, object? parameter = null)
+    {
+        ArgumentNullException.ThrowIfNull(Frame);
+
+        var previousViewModel = Frame.GetPageViewModel();
+
+        bool navigated = Frame.Navigate(pageType, parameter);
+
+        if (navigated)
         {
-            if (frame != null)
+            if (previousViewModel is INavigationAware navigationAware)
             {
-                frame.Navigated += OnNavigated;
-            }
-        }
-
-        private void UnregisterFrameEvents()
-        {
-            if (frame != null)
-            {
-                frame.Navigated -= OnNavigated;
-            }
-        }
-
-        protected virtual void OnNavigated(object sender, Microsoft.UI.Xaml.Navigation.NavigationEventArgs e)
-        {
-            if (sender is Frame frame)
-            {
-                if (frame.GetPageViewModel() is INavigationAware navigationAware)
-                {
-                    navigationAware.OnNavigatedTo(e.Parameter);
-                }
-            }
-        }
-
-        protected void UseNavigationFrame(Type pageType, object? parameter = null)
-        {
-            ArgumentNullException.ThrowIfNull(Frame);
-
-            var previousViewModel = Frame.GetPageViewModel();
-
-            bool navigated = Frame.Navigate(pageType, parameter);
-
-            if (navigated)
-            {
-                if (previousViewModel is INavigationAware navigationAware)
-                {
-                    navigationAware.OnNavigatedFrom();
-                }
+                navigationAware.OnNavigatedFrom();
             }
         }
     }

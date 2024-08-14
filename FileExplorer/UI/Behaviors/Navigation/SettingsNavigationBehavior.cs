@@ -1,4 +1,5 @@
-﻿using FileExplorer.Core.Contracts.Settings;
+﻿using FileExplorer.Core.Contracts.General;
+using FileExplorer.Core.Contracts.Settings;
 
 namespace FileExplorer.UI.Behaviors.Navigation
 {
@@ -6,8 +7,7 @@ namespace FileExplorer.UI.Behaviors.Navigation
     {
         public SettingsNavigationBehavior() : base(
             App.GetService<ISettingsNavigationService>(),
-            App.GetService<IBasicPageService>()
-            )
+            App.GetService<IBasicPageService<string>>())
         { }
     }
 }

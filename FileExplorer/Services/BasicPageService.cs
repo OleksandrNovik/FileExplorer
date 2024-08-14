@@ -1,5 +1,5 @@
 ﻿#nullable enable
-using FileExplorer.Core.Contracts.Settings;
+using FileExplorer.Core.Contracts.General;
 using FileExplorer.Views.Settings.Pages;
 using System;
 using System.Collections.Frozen;
@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace FileExplorer.Services
 {
-    public sealed class BasicPageService : IBasicPageService
+    public sealed class BasicPageService : IBasicPageService<string>
     {
         private readonly FrozenDictionary<string, Type> pages = new Dictionary<string, Type>
         {

@@ -1,13 +1,13 @@
 ﻿using FileExplorer.Core.Contracts;
 using FileExplorer.Core.Contracts.DirectoriesNavigation;
 using FileExplorer.Core.Contracts.Factories;
+using FileExplorer.Core.Contracts.General;
 using FileExplorer.Core.Contracts.Settings;
 using FileExplorer.Core.Services;
 using FileExplorer.Core.Services.DirectoriesNavigation;
 using FileExplorer.Core.Services.Factories;
 using FileExplorer.Core.Services.Settings;
 using FileExplorer.Services;
-using FileExplorer.Services.NavigationViewServices;
 using FileExplorer.ViewModels;
 using FileExplorer.ViewModels.Settings;
 using FileExplorer.Views;
@@ -15,7 +15,6 @@ using Helpers.Application;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.UI.Xaml;
-using Models.TabRelated;
 using System;
 using Hosting = Microsoft.Extensions.Hosting.Host;
 using SearchOptionsViewModel = FileExplorer.ViewModels.Search.SearchOptionsViewModel;
@@ -54,16 +53,17 @@ namespace FileExplorer
                     services.AddTransient<IDirectoryRouteService, DirectoryRouteService>();
 
                     // Tab services
-                    services.AddTransient<IPageTypesService, PageTypesTypesService>();
                     services.AddTransient<ITabService, TabsService>();
+                    services.AddTransient<ITabNavigationService, TabNavigationService>();
+
                     //Navigation
-                    services.AddSingleton<ITabNavigationService, TabNavigationService>();
-                    services.AddTransient<BaseNavigationViewService<TabModel>, NavigationViewService>();
+                    services.AddTransient<IPageTypesService, PageTypesTypesService>();
 
                     //Settings services
+                    services.AddTransient<IBasicPageService<string>, BasicPageService>();
                     services.AddSingleton<ISettingsNavigationService, SettingsNavigationService>();
-                    services.AddTransient<IBasicPageService, BasicPageService>();
 
+                    // Menu flyout making
                     services.AddTransient<IMenuFlyoutFactory, MenuFlyoutFactory>();
 
                     services.AddTransient<DirectoriesNavigationViewModel>();

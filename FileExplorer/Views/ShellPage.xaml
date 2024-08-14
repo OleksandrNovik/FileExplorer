@@ -24,7 +24,8 @@
         <DataTemplate x:Key="ExpandedTemplate" x:DataType="navigation:NavigationItemModel">
             <NavigationViewItem SelectsOnInvoked="{x:Bind NoChildren}"
                                 MenuItemsSource="{x:Bind SubItems}"
-                                helpers:NavigationHelper.NavigateTo="{x:Bind NavigationPage}">
+                                helpers:NavigationHelper.NavigateTo="{x:Bind NavigationPage}"
+                                helpers:PathIdentifyHelper.Path="{x:Bind Path}">
 
                 <NavigationViewItem.Content>
                     <Grid>

@@ -1,17 +1,18 @@
-﻿using FileExplorer.Core.Contracts.DirectoriesNavigation;
+﻿#nullable enable
+using FileExplorer.Core.Contracts.DirectoriesNavigation;
 using FileExplorer.Core.Services.General;
-using Microsoft.UI.Xaml.Navigation;
 using Models.TabRelated;
 
 namespace FileExplorer.Core.Services.DirectoriesNavigation
 {
     public class TabNavigationService : BaseNavigationService, ITabNavigationService
     {
-        public void NavigateTo(TabModel value)
+        public void NavigateTo(TabModel? value = default, object? parameter = null)
         {
-            UseNavigationFrame(value.TabType, value);
+            if (value is not null)
+            {
+                UseNavigationFrame(value.TabType, parameter ?? value);
+            }
         }
-
-        public event NavigatedEventHandler Navigated;
     }
 }
