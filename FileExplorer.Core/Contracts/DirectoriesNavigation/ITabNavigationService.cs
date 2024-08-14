@@ -3,5 +3,5 @@ using Models.TabRelated;
 
 namespace FileExplorer.Core.Contracts.DirectoriesNavigation
 {
-    public interface INavigationService : IBasicNavigationService<TabModel>;
+    public interface ITabNavigationService : IBasicNavigationService<TabModel>;
 }

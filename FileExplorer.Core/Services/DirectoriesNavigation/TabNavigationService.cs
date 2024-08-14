@@ -5,7 +5,7 @@ using Models.TabRelated;
 
 namespace FileExplorer.Core.Services.DirectoriesNavigation
 {
-    public class NavigationService : BaseNavigationService, INavigationService
+    public class TabNavigationService : BaseNavigationService, ITabNavigationService
     {
         public void NavigateTo(TabModel value)
         {

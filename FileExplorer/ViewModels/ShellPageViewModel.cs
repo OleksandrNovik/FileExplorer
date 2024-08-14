@@ -3,8 +3,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using FileExplorer.Core.Contracts;
-using FileExplorer.Core.Contracts.DirectoriesNavigation;
-using FileExplorer.Services.NavigationViewServices;
 using FileExplorer.ViewModels.General;
 using Models.Messages;
 using Models.StorageWrappers;
@@ -15,22 +13,18 @@ namespace FileExplorer.ViewModels
 {
     public sealed partial class ShellPageViewModel : BaseNavigationViewModel
     {
-        public INavigationService NavigationService { get; }
-        public BaseNavigationViewService<TabModel> NavigationViewService { get; }
-
-        public readonly ITabService tabService;
+        public NavigationPaneViewModel NavigationPaneViewModel { get; } = new();
+        public ITabService TabService { get; }
 
         [ObservableProperty]
         private ObservableCollection<TabModel> tabs;
 
         private TabModel selectedTab;
 
-        public ShellPageViewModel(ITabService tabService, INavigationService navigationService, BaseNavigationViewService<TabModel> navigationViewService)
+        public ShellPageViewModel(ITabService tabService)
         {
-            this.tabService = tabService;
-            tabs = this.tabService.Tabs;
-            NavigationService = navigationService;
-            NavigationViewService = navigationViewService;
+            TabService = tabService;
+            tabs = this.TabService.Tabs;
 
             Messenger.Register<ShellPageViewModel, DirectoryWrapper>(this, (_, message) =>
             {
@@ -38,6 +32,7 @@ namespace FileExplorer.ViewModels
                 {
                     selectedTab.TabDirectory = message;
                 }
+                NavigationPaneViewModel.SetIcons();
             });
 
             Messenger.Register<ShellPageViewModel, OpenTabMessage>(this, (_, message) =>
@@ -54,13 +49,13 @@ namespace FileExplorer.ViewModels
 
         private void NewTab(DirectoryWrapper? directory = null)
         {
-            tabService.CreateNewTab(directory);
+            TabService.CreateNewTab(directory);
         }
 
         private void NavigateToTab(TabModel item)
         {
             selectedTab = item;
-            NavigationService.NavigateTo(item);
+            TabService.TabNavigationService.NavigateTo(item);
         }
 
         [RelayCommand]

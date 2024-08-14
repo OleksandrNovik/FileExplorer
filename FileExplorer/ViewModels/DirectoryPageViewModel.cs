@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using FileExplorer.Core.Contracts;
+using FileExplorer.Core.Contracts.Factories;
 using FileExplorer.ViewModels.General;
 using FileExplorer.ViewModels.Search;
 using Microsoft.UI.Xaml.Controls;

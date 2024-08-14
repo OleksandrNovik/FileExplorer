@@ -20,7 +20,7 @@ namespace FileExplorer.Core.Contracts.General
         /// Navigates to a parameter if it is provided. If not - navigates to a default page
         /// </summary>
         /// <param name="value"> Navigation parameter </param>
-        public void NavigateTo(TParam? value);
+        public void NavigateTo(TParam? value = default);
 
         /// <summary>
         /// Event that fires every time navigating is occured

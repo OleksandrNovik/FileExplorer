@@ -1,11 +1,11 @@
-﻿using FileExplorer.Core.Contracts;
+﻿using FileExplorer.Core.Contracts.Factories;
 using Helpers.General;
 using Microsoft.UI.Xaml.Controls;
 using Models;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FileExplorer.Core.Services.ContextMenu
+namespace FileExplorer.Core.Services.Factories
 {
     public class MenuFlyoutFactory : IMenuFlyoutFactory
     {

@@ -11,8 +11,8 @@ namespace FileExplorer.Services.NavigationViewServices
 {
     public class NavigationViewService : BaseNavigationViewService<TabModel>
     {
-        public NavigationViewService(INavigationService navigationService, IBasicPageService pageService) :
-            base(navigationService, pageService)
+        public NavigationViewService(ITabNavigationService tabNavigationService, IBasicPageService pageService) :
+            base(tabNavigationService, pageService)
         {
         }
 

@@ -7,6 +7,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"    
     xmlns:settings="using:CommunityToolkit.WinUI.Controls"
     xmlns:helpers="using:FileExplorer.UI.Helpers"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:navigation="using:FileExplorer.UI.Behaviors.Navigation"
     mc:Ignorable="d" Width="800">
 
     <ContentDialog.Resources>
@@ -17,7 +19,7 @@
     <Grid>
         <NavigationView x:Name="SettingsNavigationView"
             AlwaysShowHeader="True"
-            SelectedItem="{x:Bind ViewModel.Selected, Mode=OneWay}"
+            SelectedItem="{x:Bind ViewModel.Selected, Mode=TwoWay}"
             Background="Transparent"
             IsSettingsVisible="False"
             IsBackButtonVisible="Collapsed"
@@ -54,6 +56,10 @@
             <Grid Height="420" Width="600" Padding="0 10">
                 <Frame x:Name="CurrentSettingsPage" />
             </Grid>
+
+            <interactivity:Interaction.Behaviors>
+                <navigation:SettingsNavigationBehavior />
+            </interactivity:Interaction.Behaviors>
         </NavigationView>
 
         <AppBarButton Click="OnCloseButtonClick" IsCompact="True"

@@ -14,15 +14,15 @@ namespace FileExplorer.Services.NavigationViewServices
     /// <typeparam name="TNavigationParam"> Navigation parameter for navigation service </typeparam>
     public abstract class BaseNavigationViewService<TNavigationParam> : IBaseNavigationViewService
     {
-        protected readonly IBasicNavigationService<TNavigationParam> navigationService;
+        protected readonly IBasicNavigationService<TNavigationParam> TabNavigationService;
 
         protected readonly IBasicPageService pageService;
 
         protected NavigationView? navigation;
 
-        public BaseNavigationViewService(IBasicNavigationService<TNavigationParam> navigationService, IBasicPageService pageService)
+        public BaseNavigationViewService(IBasicNavigationService<TNavigationParam> tabNavigationService, IBasicPageService pageService)
         {
-            this.navigationService = navigationService;
+            this.TabNavigationService = tabNavigationService;
             this.pageService = pageService;
         }
 
@@ -62,7 +62,7 @@ namespace FileExplorer.Services.NavigationViewServices
 
             if (selectedItem?.GetValue(NavigationHelper.NavigateToProperty) is TNavigationParam key)
             {
-                navigationService.NavigateTo(key);
+                TabNavigationService.NavigateTo(key);
             }
         }
     }

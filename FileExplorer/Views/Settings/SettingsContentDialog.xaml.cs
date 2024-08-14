@@ -15,13 +15,6 @@ namespace FileExplorer.Views.Settings
             ViewModel = App.GetService<SettingsViewModel>();
             this.InitializeComponent();
             ViewModel.NavigationService.Frame = CurrentSettingsPage;
-            ViewModel.NavigationViewService.Initialize(SettingsNavigationView);
-            base.Opened += OnContentDialogOpened;
-        }
-
-        private void OnContentDialogOpened(ContentDialog sender, ContentDialogOpenedEventArgs args)
-        {
-            ViewModel.NavigationService.NavigateTo(null);
         }
 
         private void OnCloseButtonClick(object sender, RoutedEventArgs e)

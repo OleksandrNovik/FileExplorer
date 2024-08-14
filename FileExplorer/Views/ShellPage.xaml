@@ -10,21 +10,39 @@
     xmlns:ui="using:FileExplorer.UI"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:behaviors="using:FileExplorer.UI.Behaviors"
-    xmlns:models="using:FileExplorer.Models"
     xmlns:tabRelated="using:Models.TabRelated"
     xmlns:settings="using:FileExplorer.Views.Settings"
     xmlns:helpers="using:FileExplorer.UI.Helpers"
+    xmlns:navigation="using:Models.Navigation"
+    xmlns:tabs="using:FileExplorer.UI.Behaviors.Tabs"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Page.Resources>
         <settings:SettingsContentDialog x:Name="SettingsDialog" />
 
-        <DataTemplate x:Key="ExpandedTemplate">
-            <NavigationViewItem helpers:NavigationHelper.NavigateTo="FileExplorer.Views.DirectoryPage">
-                <NavigationViewItem.Icon>
-                    <ImageIcon Source="../Resources/Folder.png" />
-                </NavigationViewItem.Icon>
+        <DataTemplate x:Key="ExpandedTemplate" x:DataType="navigation:NavigationItemModel">
+            <NavigationViewItem SelectsOnInvoked="{x:Bind NoChildren}"
+                                MenuItemsSource="{x:Bind SubItems}"
+                                helpers:NavigationHelper.NavigateTo="{x:Bind NavigationPage}">
+
+                <NavigationViewItem.Content>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="3*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <ImageIcon Source="{x:Bind Thumbnail}" Height="20" HorizontalAlignment="Left" />
+
+                        <TextBlock Grid.Column="1" Text="{x:Bind Name, Mode=OneWay}" HorizontalAlignment="Left" />
+
+                        <FontIcon Grid.Column="2" Glyph="&#xE840;" FontSize="14" 
+                                  HorizontalAlignment="Right"
+                                  Visibility="{x:Bind IsPinned, Converter={StaticResource BoolToVisibilityConverter}}" />
+                    </Grid>
+                </NavigationViewItem.Content>
             </NavigationViewItem>
         </DataTemplate>
     </Page.Resources>
@@ -59,10 +77,17 @@
                 </TabView.Resources>
 
                 <interactivity:Interaction.Behaviors>
-                    <behaviors:TabViewBehavior 
-                        OpenTabCommand="{x:Bind ViewModel.OpenNewTabCommand}" 
-                        CloseTabCommand="{x:Bind ViewModel.RemoveTabCommand}" 
-                        SelectTabCommand="{x:Bind ViewModel.SelectTabCommand}" />
+                    
+                    <interactivity:BehaviorCollection>
+
+                        <tabs:TabOpenedBehavior Command="{x:Bind ViewModel.OpenNewTabCommand}" />
+
+                        <tabs:TabCloseBehavior Command="{x:Bind ViewModel.RemoveTabCommand}" />
+
+                        <tabs:TabSelectionChangedBehavior Command="{x:Bind ViewModel.SelectTabCommand}" />
+
+                    </interactivity:BehaviorCollection>
+
                 </interactivity:Interaction.Behaviors>
                 <TabView.TabStripHeader>
                     <Grid Background="Transparent" />
@@ -95,29 +120,8 @@
                                 IsBackButtonVisible="Collapsed"
                                 IsSettingsVisible="False"
                                 IsPaneToggleButtonVisible="False"
-                                OpenPaneLength="1000">
-                    <NavigationView.MenuItems>
-                        <NavigationViewItem Content="Home"
-                                            helpers:NavigationHelper.NavigateTo="FileExplorer.Views.DirectoryPage">
-                            <NavigationViewItem.Icon>
-                                <FontIcon FontSize="14" Glyph="&#xF354;" />
-                            </NavigationViewItem.Icon>
-                        </NavigationViewItem>
-
-                        <NavigationViewItem Content="Pinned" FontSize="12"
-                                            helpers:NavigationHelper.NavigateTo="FileExplorer.Views.DirectoryPage">
-                        </NavigationViewItem>
-
-                        <NavigationViewItem Content="Drives" FontSize="12"
-                                            helpers:NavigationHelper.NavigateTo="FileExplorer.Views.DirectoryPage">
-                        </NavigationViewItem>
-
-                        <NavigationViewItem Content="Libraries" FontSize="12"
-                                            helpers:NavigationHelper.NavigateTo="FileExplorer.Views.DirectoryPage">
-                        </NavigationViewItem>
-
-                    </NavigationView.MenuItems>
-                </NavigationView>
+                                MenuItemsSource="{x:Bind ViewModel.NavigationPaneViewModel.NavigationItems}"
+                                MenuItemTemplate="{StaticResource ExpandedTemplate}" />
 
                 <ui:InteractiveGridSplitter
                     Grid.Column="1" 
@@ -132,3 +136,4 @@
 
     </Grid>
 </Page>
+ 

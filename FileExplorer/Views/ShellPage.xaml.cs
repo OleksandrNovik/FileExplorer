@@ -18,10 +18,7 @@ namespace FileExplorer.Views
         {
             this.ViewModel = vm;
             this.InitializeComponent();
-            this.ViewModel.NavigationService.Frame = NavigationFrame;
-            //TODO: Fix default page later
-            this.ViewModel.OpenNewTabCommand.Execute(null);
-            this.ViewModel.NavigationViewService.Initialize(NavigationView);
+            this.ViewModel.TabService.TabNavigationService.Frame = NavigationFrame;
         }
 
         private void OnTabViewLoaded(object sender, RoutedEventArgs e)
