@@ -1,9 +1,12 @@
 ﻿using FileExplorer.UI.Behaviors.BaseBehaviors;
 using Microsoft.UI.Xaml;
 
-namespace FileExplorer.UI.Behaviors
+namespace FileExplorer.UI.Behaviors.General
 {
-    public class LostFocusBehavior : BaseCommandBehavior<UIElement>
+    /// <summary>
+    /// General behavior that runs a command when <see cref="UIElement"/> loses focus
+    /// </summary>
+    public sealed class LostFocusBehavior : BaseCommandBehavior<UIElement>
     {
         protected override void OnAttached()
         {

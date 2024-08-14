@@ -13,6 +13,7 @@
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:ui="using:FileExplorer.UI"
     xmlns:storageWrappers1="using:Models.StorageWrappers"
+    xmlns:generalBehaviors="using:FileExplorer.UI.Behaviors.General"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -55,7 +56,7 @@
                                     Condition="{x:Bind IsRenamed, Mode=TwoWay}"
                                     />
 
-                                <behaviors:LostFocusBehavior 
+                                <generalBehaviors:LostFocusBehavior 
                                     Command="{StaticResource EndRenamingIfLostFocusCommand}"
                                     CommandParameter="{x:Bind}"
                                     />
@@ -72,7 +73,7 @@
                 </Grid>
 
                 <interactivity:Interaction.Behaviors>
-                    <behaviors:DoubleClickBehavior Command="{StaticResource OpenCommand}" CommandParameter="{x:Bind}"  />
+                    <generalBehaviors:DoubleClickBehavior Command="{StaticResource OpenCommand}" CommandParameter="{x:Bind}"  />
                 </interactivity:Interaction.Behaviors>
 
             </Grid>
