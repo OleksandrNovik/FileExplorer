@@ -225,15 +225,7 @@
 
         </Grid>
 
-        <InfoBar Grid.Row="1"
-                     Margin="0 0 6 6"
-                     IsOpen="{x:Bind ViewModel.HasCopiedFiles, Mode=OneWay}" Severity="Informational"
-                     Background="{ThemeResource MenuFlyoutItemFocusedBackgroundThemeBrush}"
-                     Title="Copied successfully" VerticalAlignment="Bottom" HorizontalAlignment="Right">
-            <interactivity:Interaction.Behaviors>
-                <behaviors:InfoBarBehavior IsOpen="{x:Bind ViewModel.HasCopiedFiles, Mode=OneWay}" />
-            </interactivity:Interaction.Behaviors>
-        </InfoBar>
+        <userControls:CommandedInfoBar Grid.Row="1" />
 
         <StackPanel Grid.Row="2" 
             Padding="15  5 15 0"

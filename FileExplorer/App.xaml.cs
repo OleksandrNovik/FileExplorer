@@ -79,6 +79,7 @@ namespace FileExplorer
 
                     // Informational
                     services.AddTransient<DirectoryItemInfoViewModel>();
+                    services.AddTransient<InfoBarViewModel>();
 
                 })
                 .Build();

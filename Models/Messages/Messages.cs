@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using Microsoft.UI.Xaml.Controls;
 using Models.General;
 using Models.StorageWrappers;
 using Models.TabRelated;
@@ -48,4 +49,6 @@ namespace Models.Messages
     public record NavigateToSearchResult<TElement>(CachedSearchResult<TElement> SearchResult);
 
     public record ShowDetailsMessage(DirectoryItemAdditionalInfo Details);
+
+    public record ShowInfoBarMessage(InfoBarSeverity Severity, string Title, string? Message = null);
 }

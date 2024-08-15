@@ -7,7 +7,7 @@ namespace FileExplorer.UI.Behaviors
 {
     public class InfoBarBehavior : Behavior<InfoBar>
     {
-        public DispatcherTimer ClosingTimer { get; }
+        private readonly DispatcherTimer closeTimer;
         public bool IsOpen
         {
             get => (bool)GetValue(IsOpenProperty);
@@ -20,9 +20,9 @@ namespace FileExplorer.UI.Behaviors
 
         public InfoBarBehavior()
         {
-            ClosingTimer = new DispatcherTimer();
-            ClosingTimer.Interval = TimeSpan.FromSeconds(2);
-            ClosingTimer.Tick += CloseAfterTimeout;
+            closeTimer = new DispatcherTimer();
+            closeTimer.Interval = TimeSpan.FromSeconds(2);
+            closeTimer.Tick += CloseAfterTimeout;
         }
 
         private void CloseAfterTimeout(object sender, object e)
@@ -44,7 +44,7 @@ namespace FileExplorer.UI.Behaviors
 
         private void OnClosing(InfoBar sender, InfoBarClosingEventArgs args)
         {
-            ClosingTimer.Stop();
+            closeTimer.Stop();
         }
 
         private static void OnRenamedPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -53,7 +53,7 @@ namespace FileExplorer.UI.Behaviors
             {
                 if ((bool)e.NewValue)
                 {
-                    behavior.ClosingTimer.Start();
+                    behavior.closeTimer.Start();
                 }
             }
         }

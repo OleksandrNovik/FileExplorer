@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.UI.Xaml.Controls;
 using Models.Contracts;
 using Models.General;
 using Models.Messages;
@@ -54,6 +55,7 @@ namespace FileExplorer.ViewModels.Search
         private async Task SearchAsync()
         {
             CancelSearchIfNeeded();
+            searchCancellation = new CancellationTokenSource();
             Debug.Assert(cachedSearch is not null);
 
             //If this search has already completed just get the result collection form it by navigating to the search result
@@ -70,7 +72,7 @@ namespace FileExplorer.ViewModels.Search
                 await cachedSearch.RootCatalog.SearchAsync(destination, cachedSearch.SearchOptions,
                     searchCancellation.Token);
 
-                //TODO: Raise search completed message
+                Messenger.Send(new ShowInfoBarMessage(InfoBarSeverity.Success, "Search is completed!"));
                 cachedSearch.HasCompleted = true;
             }
             catch (OperationCanceledException)
@@ -81,6 +83,7 @@ namespace FileExplorer.ViewModels.Search
             {
                 // When search is over or interrupted we can save found items into another collection
                 cachedSearch.SearchResultItems = destination.ToArray();
+                Messenger.Send(new StopSearchMessage());
             }
         }
         public void CancelSearchIfNeeded()
@@ -89,8 +92,6 @@ namespace FileExplorer.ViewModels.Search
             {
                 searchCancellation.Cancel();
             }
-            ;
-            searchCancellation = new CancellationTokenSource();
         }
 
         public void UnregisterAll()
