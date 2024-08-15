@@ -15,19 +15,28 @@
     xmlns:helpers="using:FileExplorer.UI.Helpers"
     xmlns:navigation="using:Models.Navigation"
     xmlns:tabs="using:FileExplorer.UI.Behaviors.Tabs"
-    xmlns:navigation1="using:FileExplorer.UI.Behaviors.Navigation"
+    xmlns:navigationBehaviors="using:FileExplorer.UI.Behaviors.Navigation"
+    xmlns:contextMenu="using:FileExplorer.UI.Behaviors.ContextMenu"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Page.Resources>
         <settings:SettingsContentDialog x:Name="SettingsDialog" />
 
+        <ui:BuildingMenuFlyout x:Key="RightClickMenu">
+            <interactivity:Interaction.Behaviors>
+                <contextMenu:MenuFlyoutBuildingBehavior Builder="{x:Bind ViewModel}" />
+            </interactivity:Interaction.Behaviors>
+        </ui:BuildingMenuFlyout>
+
         <DataTemplate x:Key="ExpandedTemplate" x:DataType="navigation:NavigationItemModel">
             <NavigationViewItem SelectsOnInvoked="{x:Bind NoChildren}"
                                 MenuItemsSource="{x:Bind SubItems}"
-                                helpers:NavigationHelper.NavigationKey="{x:Bind Path}">
+                                helpers:NavigationHelper.NavigationKey="{x:Bind Path}"
+                                ContextFlyout="{StaticResource RightClickMenu}">
 
                 <NavigationViewItem.Content>
+
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -43,8 +52,15 @@
                                   HorizontalAlignment="Right"
                                   Visibility="{x:Bind IsPinned, Converter={StaticResource BoolToVisibilityConverter}}" />
                     </Grid>
+
                 </NavigationViewItem.Content>
+
+                <interactivity:Interaction.Behaviors>
+                    <contextMenu:BuildingContextMenuBehavior Parameter="{x:Bind}" />
+                </interactivity:Interaction.Behaviors>
+
             </NavigationViewItem>
+
         </DataTemplate>
     </Page.Resources>
 
@@ -110,7 +126,7 @@
             <Grid Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" MinWidth="190" />
-                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition Width="2" />
                     <ColumnDefinition Width="3.8*" MinWidth="200" />
                 </Grid.ColumnDefinitions>
 
@@ -121,11 +137,16 @@
                                 IsBackButtonVisible="Collapsed"
                                 IsSettingsVisible="False"
                                 IsPaneToggleButtonVisible="False"
+                                OpenPaneLength="1000"
                                 MenuItemsSource="{x:Bind ViewModel.NavigationPaneViewModel.NavigationItems}"
                                 MenuItemTemplate="{StaticResource ExpandedTemplate}">
 
                     <interactivity:Interaction.Behaviors>
-                        <navigation1:NavigationBehavior />
+                        <interactivity:BehaviorCollection>
+
+                            <navigationBehaviors:NavigationBehavior />
+
+                        </interactivity:BehaviorCollection>
                     </interactivity:Interaction.Behaviors>
                 </NavigationView>
 

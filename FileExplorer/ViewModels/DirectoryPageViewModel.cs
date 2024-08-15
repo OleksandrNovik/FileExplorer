@@ -25,12 +25,8 @@ using FileAttributes = System.IO.FileAttributes;
 
 namespace FileExplorer.ViewModels
 {
-    public sealed partial class DirectoryPageViewModel : ObservableRecipient, INavigationAware
+    public sealed partial class DirectoryPageViewModel : ContextMenuCreatorViewModel, INavigationAware
     {
-        /// <summary>
-        /// Factory to create right-click menu flyout for any item in directory or for a directory itself
-        /// </summary>
-        private readonly IMenuFlyoutFactory menuFactory;
         public SearchOperationViewModel SearchOperations { get; } = new();
         public FileOperationsViewModel FileOperations { get; } = new();
 
@@ -54,9 +50,8 @@ namespace FileExplorer.ViewModels
         //[ObservableProperty]
         //private bool isSearching;
 
-        public DirectoryPageViewModel(IMenuFlyoutFactory factory)
+        public DirectoryPageViewModel(IMenuFlyoutFactory factory) : base(factory)
         {
-            menuFactory = factory;
             SelectedItems = [];
             SelectedItems.CollectionChanged += NotifyCommandsCanExecute;
 
@@ -375,13 +370,11 @@ namespace FileExplorer.ViewModels
             SearchOperations.UnregisterAll();
         }
 
-        public List<MenuFlyoutItemBase> OnContextMenuRequired()
+        public override List<MenuFlyoutItemBase> BuildContextMenu(object? parameter = null)
         {
             List<MenuFlyoutItemViewModel> menu = new();
-            bool hasSelectedItems = HasSelectedItems();
-            var parameter = hasSelectedItems ? SelectedItems[0] : CurrentDirectory;
 
-            if (hasSelectedItems)
+            if (parameter is not null)
             {
                 menu.WithOpen(FileOperations.OpenCommand, parameter);
 
@@ -401,6 +394,7 @@ namespace FileExplorer.ViewModels
             }
             else
             {
+                parameter = CurrentDirectory;
                 menu.WithRefresh(RefreshCommand)
                     .WithCreate(CreateItemCommand)
                     .WithPaste(PasteItemsCommand);

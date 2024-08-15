@@ -4,24 +4,30 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using FileExplorer.Core.Contracts;
 using FileExplorer.Core.Contracts.DirectoriesNavigation;
+using FileExplorer.Core.Contracts.Factories;
 using FileExplorer.ViewModels.General;
+using Microsoft.UI.Xaml.Controls;
 using Models.Messages;
 using Models.StorageWrappers;
 using Models.TabRelated;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace FileExplorer.ViewModels
 {
-    public sealed partial class ShellPageViewModel : ObservableRecipient
+    public sealed partial class ShellPageViewModel : ContextMenuCreatorViewModel
     {
         public NavigationPaneViewModel NavigationPaneViewModel { get; } = new();
+        public FileOperationsViewModel FileOperationsViewModel { get; } = new();
+
         public ITabService TabService { get; }
         public INavigationService NavigationService { get; }
 
         [ObservableProperty]
         private ObservableCollection<TabModel> tabs;
 
-        public ShellPageViewModel(ITabService tabService, INavigationService navigationService)
+        public ShellPageViewModel(IMenuFlyoutFactory factory, ITabService tabService, INavigationService navigationService)
+            : base(factory)
         {
             TabService = tabService;
             NavigationService = navigationService;
@@ -67,6 +73,17 @@ namespace FileExplorer.ViewModels
         private void SelectTab(TabModel item)
         {
             NavigateToTab(item);
+        }
+
+        public override IEnumerable<MenuFlyoutItemBase> BuildContextMenu(object? parameter = null)
+        {
+            return
+            [
+                new MenuFlyoutItem
+                {
+                    Text = "Created"
+                }
+            ];
         }
     }
 }

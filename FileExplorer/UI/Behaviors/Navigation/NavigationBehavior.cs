@@ -18,11 +18,10 @@ namespace FileExplorer.UI.Behaviors.Navigation
             App.GetService<INavigationService>(),
             App.GetService<IPageTypesService>())
         {
-            if (navigationService is INavigationService ns)
+            if (navigationService is INavigationService eventProvider)
             {
-                ns.TabOpened += OnTabOpened;
+                eventProvider.TabOpened += OnTabOpened;
             }
-
         }
 
         /// <summary>
