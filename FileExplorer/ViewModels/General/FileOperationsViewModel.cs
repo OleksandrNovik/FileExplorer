@@ -83,14 +83,14 @@ namespace FileExplorer.ViewModels.General
         [RelayCommand]
         public async Task ShowDetails(DirectoryItemWrapper item)
         {
+            await item.UpdateThumbnailAsync();
+
             var details = item.GetBasicInfo();
 
             if (item is FileWrapper file)
             {
                 details.TitleInfo = await file.GetFileTypeAsync();
             }
-
-            await item.UpdateThumbnailAsync();
 
             Messenger.Send(new ShowDetailsMessage(details));
         }

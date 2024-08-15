@@ -29,15 +29,6 @@ namespace FileExplorer.ViewModels
     {
         public SearchOperationViewModel SearchOperations { get; } = new();
         public FileOperationsViewModel FileOperations { get; } = new();
-
-        /// <summary>
-        /// Current additional info (Details) that is shown
-        /// </summary>
-        [ObservableProperty]
-        private DirectoryItemAdditionalInfo _selectedDirectoryItemAdditionalDetails;
-
-        [ObservableProperty]
-        private bool isDetailsShown;
         public DirectoryWrapper CurrentDirectory { get; private set; }
 
         [ObservableProperty]
@@ -59,12 +50,6 @@ namespace FileExplorer.ViewModels
             Messenger.Register<DirectoryPageViewModel, FileOpenRequiredMessage>(this, OnFileOpenRequired);
 
             Messenger.Register<DirectoryPageViewModel, NavigateToSearchResult<DirectoryItemWrapper>>(this, OnSearchResultNavigation);
-
-            Messenger.Register<DirectoryPageViewModel, ShowDetailsMessage>(this, (_, message) =>
-            {
-                SelectedDirectoryItemAdditionalDetails = message.Details;
-                IsDetailsShown = true;
-            });
         }
 
         private async void OnSearchResultNavigation(DirectoryPageViewModel _, NavigateToSearchResult<DirectoryItemWrapper> message)
@@ -326,9 +311,6 @@ namespace FileExplorer.ViewModels
         {
             await FileOperations.ShowDetails(SelectedItems[0]);
         }
-
-        [RelayCommand]
-        private void CloseDetailsMenu() => IsDetailsShown = false;
 
         public async void OnNavigatedTo(object parameter)
         {

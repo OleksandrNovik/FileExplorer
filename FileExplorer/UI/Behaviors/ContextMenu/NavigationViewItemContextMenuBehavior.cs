@@ -10,6 +10,9 @@ namespace FileExplorer.UI.Behaviors.ContextMenu
     /// </summary>
     public sealed class NavigationViewItemContextMenuBehavior : BaseContextMenuBehavior<NavigationViewItem>
     {
+        /// <summary>
+        /// Parameter which is used to build menu flyout
+        /// </summary>
         public object? Parameter { get; set; }
 
         protected override void OnRightTapped(object sender, RightTappedRoutedEventArgs e)

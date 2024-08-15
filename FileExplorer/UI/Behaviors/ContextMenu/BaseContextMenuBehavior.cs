@@ -31,6 +31,10 @@ namespace FileExplorer.UI.Behaviors.ContextMenu
             RightClickWithParameter(AssociatedObject.DataContext);
         }
 
+        /// <summary>
+        /// Uses context menu ability to store parameter, which is used to build it when it is opening
+        /// </summary>
+        /// <param name="parameter"> Provided parameter for building </param>
         protected void RightClickWithParameter(object? parameter)
         {
             if (AssociatedObject.ContextFlyout is BuildingMenuFlyout buildingFlyout)

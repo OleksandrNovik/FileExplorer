@@ -15,6 +15,7 @@
     xmlns:storageWrappers1="using:Models.StorageWrappers"
     xmlns:generalBehaviors="using:FileExplorer.UI.Behaviors.General"
     xmlns:contextMenu="using:FileExplorer.UI.Behaviors.ContextMenu"
+    xmlns:userControls="using:FileExplorer.UI.UserControls"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -220,61 +221,8 @@
                 </interactivity:Interaction.Behaviors>
             </controls:AdaptiveGridView>
 
-            <Grid Width="300" Column="1" Visibility="{x:Bind ViewModel.IsDetailsShown, Mode=OneWay, 
-                Converter={StaticResource BoolToVisibilityConverter}}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="60" />
-                </Grid.RowDefinitions>
-                <Grid.Resources>
-                    <Style TargetType="FrameworkElement" x:Key="PanelItem">
-                        <Setter Property="HorizontalAlignment" Value="Center" />
-                        <Setter Property="Margin" Value="0 6" />
-                    </Style>
-                </Grid.Resources>
+            <userControls:DirectoryItemInfoPane Grid.Column="1" />
 
-                <ScrollViewer>
-                    <StackPanel Padding="10 5">
-
-                        <Image Source="{x:Bind ViewModel.SelectedDirectoryItemAdditionalDetails.Thumbnail, Mode=OneWay}" Height="100" Style="{StaticResource PanelItem}" />
-
-                        <TextBlock Text="{x:Bind ViewModel.SelectedDirectoryItemAdditionalDetails.Name, Mode=OneWay}" Style="{StaticResource TitleTextBlockStyle}" 
-                           HorizontalAlignment="Center" 
-                           Margin="0 6"
-                           FontSize="25"/>
-
-                        <TextBlock Text="{x:Bind ViewModel.SelectedDirectoryItemAdditionalDetails.TitleInfo, Mode=OneWay}" Style="{StaticResource BodyTextBlockStyle}" 
-                           HorizontalAlignment="Center" 
-                           Margin="0 6"/>
-
-                        <StackPanel Style="{StaticResource PanelItem}" HorizontalAlignment="Stretch">
-                            <TextBlock Style="{StaticResource BodyTextBlockStyle}"> Modification date</TextBlock>
-                            <TextBlock Text="{x:Bind ViewModel.SelectedDirectoryItemAdditionalDetails.ModifiedDate, Mode=OneWay}" Style="{StaticResource BodyTextBlockStyle}"  />
-                        </StackPanel>
-
-                        <StackPanel Style="{StaticResource PanelItem}" HorizontalAlignment="Stretch">
-                            <TextBlock Style="{StaticResource BodyTextBlockStyle}"> Creation date</TextBlock>
-                            <TextBlock Text="{x:Bind ViewModel.SelectedDirectoryItemAdditionalDetails.CreationTime, Mode=OneWay}" Style="{StaticResource BodyTextBlockStyle}"  />
-                        </StackPanel>
-
-                        <StackPanel Style="{StaticResource PanelItem}" HorizontalAlignment="Stretch">
-                            <TextBlock Style="{StaticResource BodyTextBlockStyle}"> Full path</TextBlock>
-                            <TextBlock Text="{x:Bind ViewModel.SelectedDirectoryItemAdditionalDetails.FullPath, Mode=OneWay}" Style="{StaticResource BodyTextBlockStyle}"  />
-                        </StackPanel>
-
-                    </StackPanel>
-                </ScrollViewer>
-
-
-                <Button Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Top" 
-                        Command="{x:Bind ViewModel.CloseDetailsMenuCommand}">
-                    <FontIcon FontSize="12" Glyph="&#xE8BB;" />
-                </Button>
-
-                <Button Grid.Row="1" Style="{StaticResource PanelItem}" 
-                        FontSize="16" HorizontalAlignment="Left" Padding="12 7"
-                        Command="{x:Bind ViewModel.OpenSelectedItemCommand}">Open</Button>
-            </Grid>
         </Grid>
 
         <InfoBar Grid.Row="1"

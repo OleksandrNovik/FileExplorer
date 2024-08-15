@@ -9,6 +9,7 @@ using FileExplorer.Core.Services.Factories;
 using FileExplorer.Core.Services.Settings;
 using FileExplorer.Services;
 using FileExplorer.ViewModels;
+using FileExplorer.ViewModels.Informational;
 using FileExplorer.ViewModels.Settings;
 using FileExplorer.Views;
 using Helpers.Application;
@@ -68,11 +69,16 @@ namespace FileExplorer
 
                     services.AddTransient<DirectoriesNavigationViewModel>();
 
+                    //Settings
                     services.AddTransient<SettingsViewModel>();
                     services.AddTransient<SettingsPreferencesViewModel>();
                     services.AddTransient<SettingsExplorerViewModel>();
+
+                    // Search
                     services.AddTransient<SearchOptionsViewModel>();
 
+                    // Informational
+                    services.AddTransient<DirectoryItemInfoViewModel>();
 
                 })
                 .Build();
