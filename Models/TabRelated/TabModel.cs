@@ -1,6 +1,6 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿#nullable enable
+using CommunityToolkit.Mvvm.ComponentModel;
 using Models.StorageWrappers;
-using System;
 
 namespace Models.TabRelated
 {
@@ -10,9 +10,10 @@ namespace Models.TabRelated
     public sealed partial class TabModel : ObservableObject
     {
         /// <summary>
-        /// Type of page that is opened in the tab 
+        /// Selected menu option in this tab
         /// </summary>
-        public Type TabType { get; }
+        [ObservableProperty]
+        private object? selected;
 
         /// <summary>
         /// Directory that is opened in the tab
@@ -25,10 +26,9 @@ namespace Models.TabRelated
         /// </summary>
         public TabNavigationHistoryModel TabHistory { get; }
 
-        public TabModel(DirectoryWrapper directory, Type tabType)
+        public TabModel(DirectoryWrapper directory)
         {
-            TabType = tabType;
-            TabDirectory = directory;
+            tabDirectory = directory;
             TabHistory = new TabNavigationHistoryModel();
         }
     }

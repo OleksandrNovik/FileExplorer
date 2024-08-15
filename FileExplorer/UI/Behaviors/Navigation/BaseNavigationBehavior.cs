@@ -53,8 +53,5 @@ namespace FileExplorer.UI.Behaviors.Navigation
                 navigationService.NavigateTo(key);
             }
         }
-
-
-
     }
 }

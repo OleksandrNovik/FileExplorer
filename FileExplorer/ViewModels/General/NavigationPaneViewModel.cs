@@ -18,7 +18,7 @@ namespace FileExplorer.ViewModels.General
 
             NavigationItems =
             [
-                new NavigationItemModel("Home", string.Empty)
+                new NavigationItemModel("Home", "C:\\Users\\HP\\Documents")
                 {
                     SubItems = null
                 },

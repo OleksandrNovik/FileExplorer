@@ -349,6 +349,7 @@ namespace FileExplorer.ViewModels
             {
                 directory = dir;
                 history = new TabNavigationHistoryModel();
+                //TODO: Go forward message should be raised here
             }
             else
             {

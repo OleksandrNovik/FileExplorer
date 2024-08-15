@@ -2,6 +2,8 @@
 using FileExplorer.Core.Contracts;
 using FileExplorer.Core.Contracts.DirectoriesNavigation;
 using FileExplorer.Core.Services.General;
+using Models.TabRelated;
+using System;
 
 namespace FileExplorer.Core.Services.DirectoriesNavigation
 {
@@ -11,5 +13,12 @@ namespace FileExplorer.Core.Services.DirectoriesNavigation
     public class NavigationService : GenericNavigationService<string>, INavigationService
     {
         public NavigationService(IPageTypesService pageService) : base(pageService) { }
+
+        public void NotifyTabOpened(TabModel openedTab)
+        {
+            TabOpened?.Invoke(this, openedTab);
+        }
+
+        public event EventHandler<TabModel>? TabOpened;
     }
 }

@@ -12,7 +12,7 @@ using System.Collections.ObjectModel;
 
 namespace FileExplorer.ViewModels
 {
-    public sealed partial class ShellPageViewModel : BaseNavigationViewModel
+    public sealed partial class ShellPageViewModel : ObservableRecipient
     {
         public NavigationPaneViewModel NavigationPaneViewModel { get; } = new();
         public ITabService TabService { get; }
@@ -20,8 +20,6 @@ namespace FileExplorer.ViewModels
 
         [ObservableProperty]
         private ObservableCollection<TabModel> tabs;
-
-        private TabModel selectedTab;
 
         public ShellPageViewModel(ITabService tabService, INavigationService navigationService)
         {
@@ -31,10 +29,7 @@ namespace FileExplorer.ViewModels
 
             Messenger.Register<ShellPageViewModel, TabDirectoryChangedMessage>(this, (_, message) =>
             {
-                if (selectedTab != null)
-                {
-                    selectedTab.TabDirectory = message.Directory;
-                }
+                TabService.SelectedTab.TabDirectory = message.Directory;
                 NavigationPaneViewModel.SetIcons();
             });
 
@@ -57,8 +52,9 @@ namespace FileExplorer.ViewModels
 
         private void NavigateToTab(TabModel item)
         {
-            selectedTab = item;
-            NavigationService.NavigateTo(item.TabDirectory.Path, item);
+            TabService.SelectedTab = item;
+            NavigationService.NavigateTo(item.TabDirectory.Path, item.TabDirectory);
+            NavigationService.NotifyTabOpened(item);
         }
 
         [RelayCommand]

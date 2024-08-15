@@ -9,8 +9,8 @@ namespace FileExplorer.Core.Services
     public class TabsService : ITabService
     {
         private readonly IPageTypesService pageTypesService;
-
         public ObservableCollection<TabModel> Tabs { get; } = new();
+        public TabModel SelectedTab { get; set; }
 
         public TabsService(IPageTypesService pageTypesService)
         {

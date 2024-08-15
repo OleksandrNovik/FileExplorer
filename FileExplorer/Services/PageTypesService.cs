@@ -29,15 +29,13 @@ namespace FileExplorer.Services
 
         public TabModel CreateTabFromDirectory(DirectoryWrapper? directory)
         {
-            var tabType = GetPage(directory?.Path);
-
             if (directory is null)
             {
                 //TODO: Fix later
                 directory = KnownFoldersHelper.Libraries[2];
             }
 
-            return new TabModel(directory, tabType);
+            return new TabModel(directory);
         }
     }
 }

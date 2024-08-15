@@ -4,6 +4,8 @@ using FileExplorer.Core.Contracts.DirectoriesNavigation;
 using FileExplorer.UI.Helpers;
 using Microsoft.UI.Xaml.Controls;
 using Models.StorageWrappers;
+using Models.TabRelated;
+using System.Collections;
 
 namespace FileExplorer.UI.Behaviors.Navigation
 {
@@ -15,7 +17,13 @@ namespace FileExplorer.UI.Behaviors.Navigation
         public NavigationBehavior() : base(
             App.GetService<INavigationService>(),
             App.GetService<IPageTypesService>())
-        { }
+        {
+            if (navigationService is INavigationService ns)
+            {
+                ns.TabOpened += OnTabOpened;
+            }
+
+        }
 
         /// <summary>
         /// Extracts path from <see cref="NavigationViewItem"/> if possible,
@@ -30,6 +38,16 @@ namespace FileExplorer.UI.Behaviors.Navigation
             if (!string.IsNullOrEmpty(key))
             {
                 navigationService.NavigateTo(key, new DirectoryWrapper(key));
+            }
+        }
+
+        private void OnTabOpened(object? sender, TabModel openTab)
+        {
+            AssociatedObject.SelectedItem = openTab.Selected;
+
+            if (openTab.Selected is null && AssociatedObject.MenuItemsSource is IList source)
+            {
+                AssociatedObject.SelectedItem = source[0];
             }
         }
     }

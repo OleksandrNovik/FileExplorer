@@ -117,7 +117,7 @@
                 <NavigationView
                                 AlwaysShowHeader="True"
                                 PaneDisplayMode="Left"
-                                SelectedItem="{x:Bind ViewModel.Selected, Mode=TwoWay}"
+                                SelectedItem="{x:Bind ViewModel.TabService.SelectedTab.Selected, Mode=TwoWay}"
                                 IsBackButtonVisible="Collapsed"
                                 IsSettingsVisible="False"
                                 IsPaneToggleButtonVisible="False"
