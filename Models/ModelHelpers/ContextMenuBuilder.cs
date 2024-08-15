@@ -108,23 +108,34 @@ namespace Models.ModelHelpers
         }
 
         /// <summary>
-        /// Adds Details menu item to an existing menu
+        /// Adds cut & rename menu item to an existing menu
         /// </summary>
         /// <param name="menu"> Provided menu </param>
-        /// <param name="command"> Command to show Details </param>
+        /// <param name="commands"> Commands that cut, rename item  </param>
         /// <param name="commandParameter"> Parameter to te command </param>
         public static List<MenuFlyoutItemViewModel> WithFileOperations(this List<MenuFlyoutItemViewModel> menu,
             IReadOnlyList<IRelayCommand> commands, object? commandParameter = null)
         {
-            Debug.Assert(commands.Count > 2);
+            Debug.Assert(commands.Count > 1);
 
-            menu.FromCommandData(new CommandData("Copy", "\uE8C8", commands[0], commandParameter))
-                .FromCommandData(new CommandData("Cut", "\uE8C6", commands[1], commandParameter))
-                .FromCommandData(new CommandData("Rename", "\uE8AC", commands[2], commandParameter));
+            menu.FromCommandData(new CommandData("Cut", "\uE8C6", commands[0], commandParameter))
+                .FromCommandData(new CommandData("Rename", "\uE8AC", commands[1], commandParameter));
 
             return menu;
         }
 
+
+        /// <summary>
+        /// Adds copy menu item to an existing menu
+        /// </summary>
+        /// <param name="menu"> Provided menu </param>
+        /// <param name="command"> Command to copy item </param>
+        /// <param name="commandParameter"> Parameter to te command </param>
+        public static List<MenuFlyoutItemViewModel> WithCopy(this List<MenuFlyoutItemViewModel> menu,
+            IRelayCommand command, object? commandParameter = null)
+        {
+            return menu.FromCommandData(new CommandData("Copy", "\uE8C8", command, commandParameter));
+        }
 
         /// <summary>
         /// Adds delete menu item to an existing menu

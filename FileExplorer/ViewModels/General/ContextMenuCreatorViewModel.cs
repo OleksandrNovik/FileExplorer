@@ -17,6 +17,6 @@ namespace FileExplorer.ViewModels.General
         {
             menuFactory = factory;
         }
-        public abstract IEnumerable<MenuFlyoutItemBase> BuildContextMenu(object? parameter = null);
+        public abstract IList<MenuFlyoutItemBase> BuildContextMenu(object? parameter = null);
     }
 }

@@ -56,7 +56,7 @@
                 </NavigationViewItem.Content>
 
                 <interactivity:Interaction.Behaviors>
-                    <contextMenu:BuildingContextMenuBehavior Parameter="{x:Bind}" />
+                    <contextMenu:NavigationViewItemContextMenuBehavior Parameter="{x:Bind}" />
                 </interactivity:Interaction.Behaviors>
 
             </NavigationViewItem>

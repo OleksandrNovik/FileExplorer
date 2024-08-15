@@ -90,17 +90,25 @@ namespace FileExplorer.ViewModels.General
                 details.TitleInfo = await file.GetFileTypeAsync();
             }
 
+            await item.UpdateThumbnailAsync();
+
             Messenger.Send(new ShowDetailsMessage(details));
         }
 
         [RelayCommand]
-        private void Pin()
+        private void Pin(DirectoryWrapper directory)
         {
 
         }
 
         [RelayCommand]
-        private void Unpin()
+        private void Unpin(DirectoryWrapper directory)
+        {
+
+        }
+
+        [RelayCommand]
+        private void Copy(DirectoryItemWrapper item)
         {
 
         }

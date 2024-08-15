@@ -370,7 +370,7 @@ namespace FileExplorer.ViewModels
             SearchOperations.UnregisterAll();
         }
 
-        public override List<MenuFlyoutItemBase> BuildContextMenu(object? parameter = null)
+        public override IList<MenuFlyoutItemBase> BuildContextMenu(object? parameter = null)
         {
             List<MenuFlyoutItemViewModel> menu = new();
 
@@ -384,9 +384,9 @@ namespace FileExplorer.ViewModels
                         .WithPin(FileOperations.PinCommand, parameter);
                 }
 
-                menu.WithFileOperations(
+                menu.WithCopy(CopySelectedItemsCommand)
+                    .WithFileOperations(
                     [
-                        CopySelectedItemsCommand,
                         CutSelectedItemsCommand,
                         BeginRenamingSelectedItemCommand
 

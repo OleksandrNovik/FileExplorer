@@ -12,6 +12,6 @@ namespace FileExplorer.Core.Contracts.Factories
         /// <summary>
         /// Creates enumeration of menu flyout items
         /// </summary>
-        public IEnumerable<MenuFlyoutItemBase> BuildContextMenu(object? parameter = null);
+        public IList<MenuFlyoutItemBase> BuildContextMenu(object? parameter = null);
     }
 }

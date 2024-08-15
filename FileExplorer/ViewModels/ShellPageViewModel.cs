@@ -7,7 +7,10 @@ using FileExplorer.Core.Contracts.DirectoriesNavigation;
 using FileExplorer.Core.Contracts.Factories;
 using FileExplorer.ViewModels.General;
 using Microsoft.UI.Xaml.Controls;
+using Models;
 using Models.Messages;
+using Models.ModelHelpers;
+using Models.Navigation;
 using Models.StorageWrappers;
 using Models.TabRelated;
 using System.Collections.Generic;
@@ -75,15 +78,35 @@ namespace FileExplorer.ViewModels
             NavigateToTab(item);
         }
 
-        public override IEnumerable<MenuFlyoutItemBase> BuildContextMenu(object? parameter = null)
+        /// <inheritdoc />
+        public override IList<MenuFlyoutItemBase> BuildContextMenu(object? parameter = null)
         {
-            return
-            [
-                new MenuFlyoutItem
+            List<MenuFlyoutItemViewModel> menu = new();
+
+            if (parameter is NavigationItemModel navigationModel)
+            {
+                if (navigationModel.Path is null)
+                    return [];
+
+                var directory = new DirectoryWrapper(navigationModel.Path);
+
+                menu.WithOpen(FileOperationsViewModel.OpenCommand, directory)
+                    .WithOpenInNewTab(FileOperationsViewModel.OpenInNewTabCommand, directory);
+
+                if (navigationModel.IsPinned)
                 {
-                    Text = "Created"
+                    menu.WithUnpin(FileOperationsViewModel.UnpinCommand, directory);
                 }
-            ];
+                else
+                {
+                    menu.WithPin(FileOperationsViewModel.PinCommand, directory);
+                }
+
+                menu.WithCopy(FileOperationsViewModel.CopyCommand, directory)
+                    .WithDetails(FileOperationsViewModel.ShowDetailsCommand, directory);
+            }
+
+            return menuFactory.Create(menu);
         }
     }
 }
