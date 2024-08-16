@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.FileProperties;
 using Windows.Storage.Streams;
-using DirectoryItemWrapper = Models.StorageWrappers.DirectoryItemWrapper;
+using DirectoryItemWrapper = Models.Storage.Windows.DirectoryItemWrapper;
 using FileAttributes = System.IO.FileAttributes;
 
 namespace Models.ModelHelpers

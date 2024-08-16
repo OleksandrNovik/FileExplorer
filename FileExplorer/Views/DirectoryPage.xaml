@@ -16,6 +16,7 @@
     xmlns:generalBehaviors="using:FileExplorer.UI.Behaviors.General"
     xmlns:contextMenu="using:FileExplorer.UI.Behaviors.ContextMenu"
     xmlns:userControls="using:FileExplorer.UI.UserControls"
+    xmlns:windows="using:Models.Storage.Windows"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -24,7 +25,7 @@
             <Setter Property="Padding" Value="10 8"  />
             <Setter Property="Margin" Value="0 0 10 0" />
         </Style>
-        <DataTemplate x:Key="GridItemTemplate" x:DataType="storageWrappers1:DirectoryItemWrapper">
+        <DataTemplate x:Key="GridItemTemplate" x:DataType="windows:DirectoryItemWrapper">
             <Grid  Padding="10  20 10 10" 
                    ToolTipService.ToolTip="{x:Bind Path}"
                    ToolTipService.Placement="Bottom">

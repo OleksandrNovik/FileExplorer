@@ -1,12 +1,12 @@
 ﻿using CommunityToolkit.WinUI;
 using Microsoft.UI.Dispatching;
 using Models.Contracts;
-using Models.StorageWrappers;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using DirectoryItemWrapper = Models.Storage.Windows.DirectoryItemWrapper;
 
 namespace Models
 {

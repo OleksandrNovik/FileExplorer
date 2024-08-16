@@ -11,7 +11,7 @@ using Models;
 using Models.General;
 using Models.Messages;
 using Models.ModelHelpers;
-using Models.StorageWrappers;
+using Models.Storage.Windows;
 using Models.TabRelated;
 using System;
 using System.Collections.Generic;
@@ -20,7 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using DirectoryItemWrapper = Models.StorageWrappers.DirectoryItemWrapper;
+using DirectoryItemWrapper = Models.Storage.Windows.DirectoryItemWrapper;
 using FileAttributes = System.IO.FileAttributes;
 
 namespace FileExplorer.ViewModels

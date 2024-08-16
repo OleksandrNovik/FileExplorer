@@ -1,6 +1,6 @@
 ﻿#nullable enable
 using FileExplorer.Core.Contracts.General;
-using Models.StorageWrappers;
+using Models.Storage.Windows;
 using Models.TabRelated;
 
 namespace FileExplorer.Core.Contracts

@@ -1,5 +1,6 @@
 ﻿#nullable enable
-using Models.StorageWrappers;
+using Models.Storage.Windows;
+using DirectoryItemWrapper = Models.Storage.Windows.DirectoryItemWrapper;
 
 namespace Models.General
 {

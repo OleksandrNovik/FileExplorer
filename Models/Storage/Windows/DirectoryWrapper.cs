@@ -12,7 +12,7 @@ using Windows.Storage;
 using IOPath = System.IO.Path;
 using SearchOption = System.IO.SearchOption;
 
-namespace Models.StorageWrappers
+namespace Models.Storage.Windows
 {
     public sealed class DirectoryWrapper : DirectoryItemWrapper, ISystemSearchCatalog<DirectoryItemWrapper>
     {
@@ -49,7 +49,8 @@ namespace Models.StorageWrappers
             var enumeration = new EnumerationOptions
             {
                 IgnoreInaccessible = true,
-                RecurseSubdirectories = false
+                RecurseSubdirectories = false,
+                MatchCasing = MatchCasing.CaseInsensitive,
             };
 
             var found = EnumerateItems(enumeration, options.SearchPattern)

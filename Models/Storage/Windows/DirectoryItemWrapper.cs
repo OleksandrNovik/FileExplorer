@@ -1,34 +1,25 @@
 ﻿#nullable enable
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml.Media.Imaging;
+using Models.Contracts.Storage;
 using Models.ModelHelpers;
 using System;
-using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
 using Windows.Storage;
 using FileAttributes = System.IO.FileAttributes;
 using IOPath = System.IO.Path;
 
-namespace Models.StorageWrappers
+namespace Models.Storage.Windows
 {
-    public abstract partial class DirectoryItemWrapper : ObservableObject, IEditableObject
+    public abstract partial class DirectoryItemWrapper : RenamableObject
     {
-        private string backupName;
-
-        [ObservableProperty]
-        private string name;
-
-        [ObservableProperty]
-        private bool isRenamed;
-
         protected FileSystemInfo info;
 
         [ObservableProperty]
         private BitmapImage? thumbnail;
 
         public FileAttributes Attributes => info.Attributes;
-        public string Path { get; private set; }
 
         public DateTime LastAccess => info.LastAccessTime;
 
@@ -48,7 +39,7 @@ namespace Models.StorageWrappers
         }
 
         /// <summary>
-        /// When physical item is changed sets new <see cref="Path"/> and <see cref="Name"/> for this wrapper
+        /// When physical item is changed sets new <see cref="Path"/> and <see cref="StorageWrappers.DirectoryItemWrapper.Name"/> for this wrapper
         /// </summary>
         protected void InitializeData()
         {
@@ -172,31 +163,5 @@ namespace Models.StorageWrappers
 
         public bool HasExtensionChanged => IOPath.GetExtension(backupName) != IOPath.GetExtension((string?)Name);
 
-        public void BeginEdit()
-        {
-            if (!IsRenamed)
-            {
-                backupName = Name;
-                IsRenamed = true;
-            }
-        }
-
-        public void CancelEdit()
-        {
-            if (IsRenamed)
-            {
-                Name = backupName;
-                IsRenamed = false;
-            }
-        }
-
-        public void EndEdit()
-        {
-            if (IsRenamed)
-            {
-                backupName = Name;
-                IsRenamed = false;
-            }
-        }
     }
 }
