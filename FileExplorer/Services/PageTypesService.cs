@@ -12,17 +12,8 @@ namespace FileExplorer.Services
     {
         public Type GetPage(string? path)
         {
-            Type pageType;
-
-            if (string.IsNullOrEmpty(path))
-            {
-                //TODO: Open ThisPC instead
-                pageType = typeof(DirectoryPage);
-            }
-            else
-            {
-                pageType = typeof(DirectoryPage);
-            }
+            // Empty string means no parameter, so default page should be shown (my pc)
+            var pageType = string.IsNullOrEmpty(path) ? typeof(DrivesPage) : typeof(DirectoryPage);
 
             return pageType;
         }

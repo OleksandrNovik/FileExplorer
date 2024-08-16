@@ -46,7 +46,7 @@ namespace FileExplorer.ViewModels.Informational
         public InfoBarViewModel()
         {
             timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromSeconds(2.5);
+            timer.Interval = TimeSpan.FromSeconds(2.2);
             timer.Tick += CloseAfterTime; ;
             isOpen = false;
 

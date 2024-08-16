@@ -38,6 +38,7 @@
     <None Remove="UI\UserControls\DirectoryItemInfoPane.xaml" />
     <None Remove="UI\UserControls\DirectoryNavigationPanel.xaml" />
     <None Remove="Views\DirectoryPage.xaml" />
+    <None Remove="Views\DrivesPage.xaml" />
     <None Remove="Views\Settings\Pages\SettingsAboutPage.xaml" />
     <None Remove="Views\Settings\Pages\SettingsExplorerPage.xaml" />
     <None Remove="Views\Settings\Pages\SettingsPreferencesPage.xaml" />
@@ -143,5 +144,13 @@
 
   <ItemGroup Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
     <ProjectCapability Include="Msix" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <CustomAdditionalCompileInputs Remove="Views\DrivesPage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Remove="Views\DrivesPage.xaml" />
   </ItemGroup>
 </Project>

@@ -1,7 +1,6 @@
 ﻿#nullable enable
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml.Media.Imaging;
-using Models.Contracts;
 using Models.ModelHelpers;
 using System;
 using System.ComponentModel;
@@ -13,7 +12,7 @@ using IOPath = System.IO.Path;
 
 namespace Models.StorageWrappers
 {
-    public abstract partial class DirectoryItemWrapper : ObservableObject, IStorageWrapper, IEditableObject
+    public abstract partial class DirectoryItemWrapper : ObservableObject, IEditableObject
     {
         private string backupName;
 
