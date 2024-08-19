@@ -12,7 +12,7 @@
     <EnableMsixTooling>true</EnableMsixTooling>
         <GenerateAppInstallerFile>True</GenerateAppInstallerFile>
 	  <UseRidGraph>true</UseRidGraph>
-        <AppxPackageSigningEnabled>False</AppxPackageSigningEnabled>
+        <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
@@ -20,6 +20,8 @@
     <AppxBundle>Never</AppxBundle>
     <AppInstallerUri>D:\Програмування\Work C# Projects\Publish</AppInstallerUri>
     <ApplicationIcon>Images\WindowIcon.ico</ApplicationIcon>
+    <PackageCertificateKeyFile>FileExplorer_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Images\LockScreenLogo.scale-200.png" />
@@ -37,6 +39,7 @@
     <None Remove="UI\UserControls\CommandedInfoBar.xaml" />
     <None Remove="UI\UserControls\DirectoryItemInfoPane.xaml" />
     <None Remove="UI\UserControls\DirectoryNavigationPanel.xaml" />
+    <None Remove="UI\UserControls\DriveInformationItem.xaml" />
     <None Remove="Views\DirectoryPage.xaml" />
     <None Remove="Views\DrivesPage.xaml" />
     <None Remove="Views\Settings\Pages\SettingsAboutPage.xaml" />
@@ -122,6 +125,9 @@
     <None Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Page Update="UI\UserControls\DriveInformationItem.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="UI\UserControls\CommandedInfoBar.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

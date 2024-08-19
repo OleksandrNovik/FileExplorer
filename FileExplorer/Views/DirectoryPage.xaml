@@ -12,7 +12,6 @@
     xmlns:toolkitBehaviors="using:CommunityToolkit.WinUI.UI.Behaviors"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:ui="using:FileExplorer.UI"
-    xmlns:storageWrappers1="using:Models.StorageWrappers"
     xmlns:generalBehaviors="using:FileExplorer.UI.Behaviors.General"
     xmlns:contextMenu="using:FileExplorer.UI.Behaviors.ContextMenu"
     xmlns:userControls="using:FileExplorer.UI.UserControls"
@@ -35,7 +34,7 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <Image Source="{x:Bind Thumbnail, Mode=OneWay}" />
+                <Image Source="{x:Bind Thumbnail.Source, Mode=OneWay}" />
                 <Grid Row="1">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="30" />

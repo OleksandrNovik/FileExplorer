@@ -18,7 +18,7 @@ namespace FileExplorer.ViewModels.General
 
             NavigationItems =
             [
-                new NavigationItemModel("Home", "C:\\Users\\HP\\Documents")
+                new NavigationItemModel("Home", string.Empty)
                 {
                     SubItems = null
                 },
@@ -42,10 +42,10 @@ namespace FileExplorer.ViewModels.General
 
         public void SetIcons()
         {
-            foreach (var item in NavigationItems)
-            {
-                item.Thumbnail.SetSource(IconHelper.TryGetCachedThumbnail("True"));
-            }
+            //foreach (var item in NavigationItems)
+            //{
+            //    item.Thumbnail.SetSource(IconHelper.TryGetCachedThumbnail("True"));
+            //}
         }
     }
 }

@@ -38,7 +38,7 @@ namespace Models
 
                     if ((item.Attributes & FileAttributes.Hidden) == 0)
                     {
-                        await item.UpdateThumbnailAsync();
+                        await item.UpdateThumbnailAsync(90);
                     }
                 });
             }

@@ -67,6 +67,7 @@ namespace FileExplorer
                     // Menu flyout making
                     services.AddTransient<IMenuFlyoutFactory, MenuFlyoutFactory>();
 
+                    services.AddTransient<DrivesViewModel>();
                     services.AddTransient<DirectoriesNavigationViewModel>();
 
                     //Settings

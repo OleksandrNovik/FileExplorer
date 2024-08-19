@@ -162,7 +162,7 @@ namespace FileExplorer.ViewModels
 
             wrapper.CreatePhysical(CurrentDirectory.Path);
 
-            await wrapper.UpdateThumbnailAsync();
+            await wrapper.UpdateThumbnailAsync(90);
 
             DirectoryItems.Insert(0, wrapper);
             FileOperations.BeginRenamingItem(wrapper);

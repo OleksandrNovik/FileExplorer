@@ -1,9 +1,6 @@
 ﻿#nullable enable
 using FileExplorer.Core.Contracts;
 using FileExplorer.Views;
-using Models.ModelHelpers;
-using Models.Storage.Windows;
-using Models.TabRelated;
 using System;
 
 namespace FileExplorer.Services
@@ -16,17 +13,6 @@ namespace FileExplorer.Services
             var pageType = string.IsNullOrEmpty(path) ? typeof(DrivesPage) : typeof(DirectoryPage);
 
             return pageType;
-        }
-
-        public TabModel CreateTabFromDirectory(DirectoryWrapper? directory)
-        {
-            if (directory is null)
-            {
-                //TODO: Fix later
-                directory = KnownFoldersHelper.Libraries[2];
-            }
-
-            return new TabModel(directory);
         }
     }
 }

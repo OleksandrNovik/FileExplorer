@@ -1,8 +1,9 @@
 ﻿#nullable enable
-using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml.Media.Imaging;
+using Models.Contracts.Additional;
 using Models.Contracts.Storage;
-using Models.ModelHelpers;
+using Models.Storage.Abstractions;
+using Models.Storage.Additional;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -12,12 +13,10 @@ using IOPath = System.IO.Path;
 
 namespace Models.Storage.Windows
 {
-    public abstract partial class DirectoryItemWrapper : RenamableObject
+    public abstract class DirectoryItemWrapper : RenamableObject, IThumbnailProvider
     {
         protected FileSystemInfo info;
-
-        [ObservableProperty]
-        private BitmapImage? thumbnail;
+        public IThumbnail Thumbnail { get; } = new Thumbnail();
 
         public FileAttributes Attributes => info.Attributes;
 
@@ -45,6 +44,7 @@ namespace Models.Storage.Windows
         {
             Name = info.Name;
             Path = info.FullName;
+            Thumbnail.ItemPath = Path;
         }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace Models.Storage.Windows
                 CreationTime = info.CreationTime,
                 FullPath = Path,
                 Name = Name,
-                Thumbnail = Thumbnail
+                Thumbnail = new BitmapImage()
             };
         }
 
@@ -149,19 +149,11 @@ namespace Models.Storage.Windows
             return newName;
         }
 
-        public async Task UpdateThumbnailAsync()
+        public async Task UpdateThumbnailAsync(int size)
         {
-            Thumbnail ??= new BitmapImage();
-
-            var icon = await IconHelper.GetThumbnailForItem(this);
-            //TODO: Why icon of .ts file returns null?
-            if (icon is not null)
-            {
-                await Thumbnail?.SetSourceAsync(icon);
-            }
+            await Thumbnail.UpdateAsync(size);
         }
 
         public bool HasExtensionChanged => IOPath.GetExtension(backupName) != IOPath.GetExtension((string?)Name);
-
     }
 }

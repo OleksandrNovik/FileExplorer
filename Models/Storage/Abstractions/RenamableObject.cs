@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Models.Contracts.Storage;
 
-namespace Models.Contracts.Storage
+namespace Models.Storage.Abstractions
 {
     /// <summary>
     /// Abstract class to contain logic that needed to rename item 

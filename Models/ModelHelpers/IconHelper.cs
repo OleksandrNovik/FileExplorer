@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using Helpers.StorageHelpers;
+using Helpers.Win32Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -50,6 +51,19 @@ namespace Models.ModelHelpers
             }
 
             return thumbnail;
+        }
+
+        public static byte[]? GetThumbnailFromPath(string path, int size)
+        {
+            // Trying to get icon from cache
+            var bytes = Win32Helper.GetIcon(path, size, true);
+
+            if (bytes is null)
+            {
+                bytes = Win32Helper.GetIcon(path, size);
+            }
+
+            return bytes;
         }
     }
 }

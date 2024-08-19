@@ -3,7 +3,7 @@ using FileExplorer.Core.Contracts;
 using FileExplorer.Core.Contracts.DirectoriesNavigation;
 using FileExplorer.UI.Helpers;
 using Microsoft.UI.Xaml.Controls;
-using Models.StorageWrappers;
+using Models.Storage.Windows;
 using Models.TabRelated;
 using System.Collections;
 
@@ -32,11 +32,16 @@ namespace FileExplorer.UI.Behaviors.Navigation
         {
             var selectedItem = args.InvokedItemContainer as NavigationViewItem;
 
-            string? key = selectedItem?.GetValue(NavigationHelper.NavigationKeyProperty) as string;
-
-            if (!string.IsNullOrEmpty(key))
+            if (selectedItem?.GetValue(NavigationHelper.NavigationKeyProperty) is string key)
             {
-                navigationService.NavigateTo(key, new DirectoryWrapper(key));
+                if (key != string.Empty)
+                {
+                    navigationService.NavigateTo(key, new DirectoryWrapper(key));
+                }
+                else
+                {
+                    navigationService.NavigateTo(key);
+                }
             }
         }
 

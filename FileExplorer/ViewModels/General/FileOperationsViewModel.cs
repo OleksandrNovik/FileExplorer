@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Models.Contracts.Storage;
 using Models.General;
 using Models.Messages;
 using Models.Storage.Windows;
@@ -42,7 +43,7 @@ namespace FileExplorer.ViewModels.General
         /// </summary>
         /// <param name="item"> Item that is renamed </param>
         [RelayCommand]
-        public void BeginRenamingItem(DirectoryItemWrapper item) => item.BeginEdit();
+        public void BeginRenamingItem(IRenameableObject item) => item.BeginEdit();
 
         /// <summary>
         /// Ends renaming item if it is actually possible
@@ -61,7 +62,7 @@ namespace FileExplorer.ViewModels.General
             // If item's extension changed we need to update icon
             if (item.HasExtensionChanged)
             {
-                await item.UpdateThumbnailAsync();
+                await item.UpdateThumbnailAsync(90);
             }
         }
 
@@ -83,7 +84,7 @@ namespace FileExplorer.ViewModels.General
         [RelayCommand]
         public async Task ShowDetails(DirectoryItemWrapper item)
         {
-            await item.UpdateThumbnailAsync();
+            await item.UpdateThumbnailAsync(90);
 
             var details = item.GetBasicInfo();
 

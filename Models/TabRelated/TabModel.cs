@@ -16,19 +16,38 @@ namespace Models.TabRelated
         private object? selected;
 
         /// <summary>
-        /// Directory that is opened in the tab
+        /// Name of the tab that depends on current tab's directory
         /// </summary>
         [ObservableProperty]
-        private DirectoryWrapper tabDirectory;
+        private string tabName;
+
+        private DirectoryWrapper? tabDirectory;
+
+        /// <summary>
+        /// Full prop to change tab name when directory is changed
+        /// </summary>
+        public DirectoryWrapper? TabDirectory
+        {
+            get => tabDirectory;
+            set
+            {
+                if (tabDirectory != value)
+                {
+                    tabDirectory = value;
+                    TabName = tabDirectory?.Name ?? "Home";
+                }
+            }
+        }
 
         /// <summary>
         /// Navigation history of the tab
         /// </summary>
         public TabNavigationHistoryModel TabHistory { get; }
 
-        public TabModel(DirectoryWrapper directory)
+        public TabModel(DirectoryWrapper? directory)
         {
             tabDirectory = directory;
+            tabName = tabDirectory?.Name ?? "Home";
             TabHistory = new TabNavigationHistoryModel();
         }
     }

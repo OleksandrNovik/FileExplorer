@@ -62,7 +62,7 @@ namespace FileExplorer.ViewModels
         private void NavigateToTab(TabModel item)
         {
             TabService.SelectedTab = item;
-            NavigationService.NavigateTo(item.TabDirectory.Path, item.TabDirectory);
+            NavigationService.NavigateTo(item.TabDirectory?.Path, item.TabDirectory);
             NavigationService.NotifyTabOpened(item);
         }
 

@@ -6,10 +6,20 @@
     xmlns:local="using:FileExplorer.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:drives="using:Models.Storage.Drives"
+    xmlns:userControls="using:FileExplorer.UI.UserControls"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
+    <Page.Resources>
+        <DataTemplate x:DataType="drives:DriveWrapper" x:Key="DrivesTemplate">
+            <userControls:DriveInformationItem Drive="{x:Bind}" />
+        </DataTemplate>
+    </Page.Resources>
+
     <Grid>
-        <TextBlock Text="Drives page" />
+        <GridView ItemsSource="{x:Bind ViewModel.Drives}" 
+                  SelectionMode="Single"
+                  ItemTemplate="{StaticResource DrivesTemplate}" Loaded="ItemsLoaded"></GridView>
     </Grid>
 </Page>
