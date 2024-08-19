@@ -26,5 +26,7 @@ namespace Models.Contracts.Additional
         /// <param name="size"> Required size of the thumbnail </param>
         public Task UpdateAsync(int size);
 
+        public void Update(int size);
+
     }
 }

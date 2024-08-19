@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Helpers.General;
 using Models.Storage.Drives;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -12,7 +13,6 @@ namespace FileExplorer.ViewModels
     {
         //TODO: Send navigation messages
         public ObservableCollection<DriveWrapper> Drives { get; }
-
         public DrivesViewModel()
         {
             //Getting only ready drives
@@ -26,10 +26,12 @@ namespace FileExplorer.ViewModels
         [RelayCommand]
         private async Task InitializeAsync()
         {
-            //TODO: Make icon service that has dispatcher for receiving icons in main thread
             foreach (var drive in Drives)
             {
-                await drive.UpdateThumbnailAsync(90);
+                await ThreadingHelper.EnqueueAsync(async () =>
+                {
+                    await drive.UpdateThumbnailAsync(40);
+                });
             }
         }
     }

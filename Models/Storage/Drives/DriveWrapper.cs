@@ -1,12 +1,10 @@
 ﻿#nullable enable
 using CommunityToolkit.Mvvm.ComponentModel;
 using Models.Contracts;
-using Models.Contracts.Additional;
 using Models.Contracts.Storage;
 using Models.General;
 using Models.ModelHelpers;
 using Models.Storage.Abstractions;
-using Models.Storage.Additional;
 using Models.Storage.Windows;
 using System.Collections.Generic;
 using System.IO;
@@ -15,9 +13,8 @@ using System.Threading.Tasks;
 
 namespace Models.Storage.Drives
 {
-    public sealed partial class DriveWrapper : RenamableObject, ISearchCatalog<DirectoryItemWrapper>, IThumbnailProvider
+    public sealed partial class DriveWrapper : InteractiveStorageItem, ISearchCatalog<DirectoryItemWrapper>, IThumbnailProvider
     {
-        public IThumbnail Thumbnail { get; } = new Thumbnail();
         /// <summary>
         /// Rive info that wrapper is containing
         /// </summary>
@@ -70,11 +67,6 @@ namespace Models.Storage.Drives
         {
             driveInfo.VolumeLabel = Name;
             FriendlyName = driveInfo.GetFriendlyName();
-        }
-
-        public async Task UpdateThumbnailAsync(int size)
-        {
-            await Thumbnail.UpdateAsync(size);
         }
     }
 }

@@ -35,5 +35,21 @@ namespace Models.Storage.Additional
                 }
             }
         }
+
+        public void Update(int size)
+        {
+            Size = size;
+            Source ??= new BitmapImage();
+
+            var iconBytes = IconHelper.GetThumbnailFromPath(ItemPath, size);
+
+            if (iconBytes is not null)
+            {
+                using (var ms = new MemoryStream(iconBytes))
+                {
+                    Source.SetSource(ms.AsRandomAccessStream());
+                }
+            }
+        }
     }
 }

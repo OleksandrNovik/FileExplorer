@@ -17,6 +17,7 @@
     xmlns:tabs="using:FileExplorer.UI.Behaviors.Tabs"
     xmlns:navigationBehaviors="using:FileExplorer.UI.Behaviors.Navigation"
     xmlns:contextMenu="using:FileExplorer.UI.Behaviors.ContextMenu"
+    xmlns:general="using:FileExplorer.UI.Behaviors.General"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -44,7 +45,7 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
-                        <ImageIcon Source="{x:Bind Thumbnail}" Height="20" HorizontalAlignment="Left" />
+                        <ImageIcon Source="{x:Bind Thumbnail.Source}" Height="15" HorizontalAlignment="Left" />
 
                         <TextBlock Grid.Column="1" Text="{x:Bind Name, Mode=OneWay}" HorizontalAlignment="Left" />
 
@@ -145,6 +146,8 @@
                         <interactivity:BehaviorCollection>
 
                             <navigationBehaviors:NavigationBehavior />
+
+                            <general:LoadingCommandBehavior Command="{x:Bind ViewModel.NavigationPaneViewModel.InitializeCommand}" />
 
                         </interactivity:BehaviorCollection>
                     </interactivity:Interaction.Behaviors>

@@ -1,9 +1,6 @@
 ﻿#nullable enable
 using Microsoft.UI.Xaml.Media.Imaging;
-using Models.Contracts.Additional;
-using Models.Contracts.Storage;
 using Models.Storage.Abstractions;
-using Models.Storage.Additional;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -13,11 +10,9 @@ using IOPath = System.IO.Path;
 
 namespace Models.Storage.Windows
 {
-    public abstract class DirectoryItemWrapper : RenamableObject, IThumbnailProvider
+    public abstract class DirectoryItemWrapper : InteractiveStorageItem
     {
         protected FileSystemInfo info;
-        public IThumbnail Thumbnail { get; } = new Thumbnail();
-
         public FileAttributes Attributes => info.Attributes;
 
         public DateTime LastAccess => info.LastAccessTime;
@@ -149,9 +144,12 @@ namespace Models.Storage.Windows
             return newName;
         }
 
-        public async Task UpdateThumbnailAsync(int size)
+        public override async Task UpdateThumbnailAsync(int size)
         {
-            await Thumbnail.UpdateAsync(size);
+            if (HasExtensionChanged)
+            {
+                await base.UpdateThumbnailAsync(size);
+            }
         }
 
         public bool HasExtensionChanged => IOPath.GetExtension(backupName) != IOPath.GetExtension((string?)Name);

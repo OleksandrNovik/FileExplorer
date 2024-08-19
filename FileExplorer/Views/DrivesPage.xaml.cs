@@ -1,5 +1,4 @@
 using FileExplorer.ViewModels;
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -17,11 +16,6 @@ namespace FileExplorer.Views
         {
             ViewModel = App.GetService<DrivesViewModel>();
             this.InitializeComponent();
-        }
-
-        private void ItemsLoaded(object sender, RoutedEventArgs e)
-        {
-            ViewModel.InitializeCommand.Execute(null);
         }
     }
 }

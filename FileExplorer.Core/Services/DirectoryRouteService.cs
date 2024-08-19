@@ -26,6 +26,7 @@ namespace FileExplorer.Core.Services
 
         public string CreatePathFrom(IEnumerable<string> pathParts)
         {
+            //TODO: fix empty path
             return string.Join(Path.DirectorySeparatorChar, pathParts);
         }
 

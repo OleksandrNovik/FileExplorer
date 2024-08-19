@@ -6,7 +6,7 @@ namespace Models.Storage.Abstractions
     /// <summary>
     /// Abstract class to contain logic that needed to rename item 
     /// </summary>
-    public abstract partial class RenamableObject : ObservableObject, IRenameableObject
+    public abstract partial class InteractiveStorageItem : BaseThumbnailProvider, IRenameableObject
     {
         /// <summary>
         /// Item's name that can be changed using UI

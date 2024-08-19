@@ -1,9 +1,7 @@
-﻿using CommunityToolkit.WinUI;
-using Microsoft.UI.Dispatching;
+﻿using Helpers.General;
 using Models.Contracts;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using DirectoryItemWrapper = Models.Storage.Windows.DirectoryItemWrapper;
@@ -16,11 +14,6 @@ namespace Models
     public class ConcurrentWrappersCollection : ObservableCollection<DirectoryItemWrapper>, IEnqueuingCollection<DirectoryItemWrapper>
     {
         /// <summary>
-        /// Dispatcher that provides access to main thread (where collection is created)
-        /// </summary>
-        private readonly DispatcherQueue dispatcher = DispatcherQueue.GetForCurrentThread();
-
-        /// <summary>
         /// Enqueue adding enumeration of <see cref="DirectoryItemWrapper"/> in main thread
         /// Also updates icons of added items
         /// </summary>
@@ -32,14 +25,10 @@ namespace Models
             {
                 token.ThrowIfCancellationRequested();
 
-                await dispatcher.EnqueueAsync(async () =>
+                await ThreadingHelper.EnqueueAsync(async () =>
                 {
                     Add(item);
-
-                    if ((item.Attributes & FileAttributes.Hidden) == 0)
-                    {
-                        await item.UpdateThumbnailAsync(90);
-                    }
+                    await item.UpdateThumbnailAsync(90);
                 });
             }
         }

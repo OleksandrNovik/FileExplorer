@@ -7,7 +7,6 @@ namespace Models.ModelHelpers
     public static class KnownFoldersHelper
     {
         public static IReadOnlyList<DirectoryWrapper> Libraries { get; }
-
         static KnownFoldersHelper()
         {
             var currentUserPaths = UserDataPaths.GetDefault();

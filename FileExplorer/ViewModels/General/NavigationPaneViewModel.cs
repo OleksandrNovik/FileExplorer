@@ -1,12 +1,15 @@
-﻿using Models.ModelHelpers;
+﻿using CommunityToolkit.Mvvm.Input;
+using Helpers.General;
+using Models.ModelHelpers;
 using Models.Navigation;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace FileExplorer.ViewModels.General
 {
-    public sealed class NavigationPaneViewModel
+    public sealed partial class NavigationPaneViewModel
     {
         public List<NavigationItemModel> NavigationItems { get; }
         public NavigationPaneViewModel()
@@ -40,12 +43,17 @@ namespace FileExplorer.ViewModels.General
             ];
         }
 
-        public void SetIcons()
+        [RelayCommand]
+        public async Task InitializeAsync()
         {
-            //foreach (var item in NavigationItems)
-            //{
-            //    item.Thumbnail.SetSource(IconHelper.TryGetCachedThumbnail("True"));
-            //}
+            foreach (var navigationItem in NavigationItems)
+            {
+                await ThreadingHelper.EnqueueAsync(async () =>
+                {
+                    await navigationItem.UpdateThumbnailAsync(15);
+                });
+            }
         }
+
     }
 }

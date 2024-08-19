@@ -8,6 +8,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:drives="using:Models.Storage.Drives"
     xmlns:userControls="using:FileExplorer.UI.UserControls"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:general="using:FileExplorer.UI.Behaviors.General"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -20,6 +22,10 @@
     <Grid>
         <GridView ItemsSource="{x:Bind ViewModel.Drives}" 
                   SelectionMode="Single"
-                  ItemTemplate="{StaticResource DrivesTemplate}" Loaded="ItemsLoaded"></GridView>
+                  ItemTemplate="{StaticResource DrivesTemplate}">
+            <interactivity:Interaction.Behaviors>
+                <general:LoadingCommandBehavior Command="{x:Bind ViewModel.InitializeCommand}" />
+            </interactivity:Interaction.Behaviors>
+        </GridView>
     </Grid>
 </Page>

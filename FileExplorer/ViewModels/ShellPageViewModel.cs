@@ -39,7 +39,6 @@ namespace FileExplorer.ViewModels
             Messenger.Register<ShellPageViewModel, TabDirectoryChangedMessage>(this, (_, message) =>
             {
                 TabService.SelectedTab.TabDirectory = message.Directory;
-                NavigationPaneViewModel.SetIcons();
             });
 
             Messenger.Register<ShellPageViewModel, OpenTabMessage>(this, (_, message) =>
