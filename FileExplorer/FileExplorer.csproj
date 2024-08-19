@@ -21,6 +21,7 @@
     <AppInstallerUri>D:\Програмування\Work C# Projects\Publish</AppInstallerUri>
     <ApplicationIcon>Images\WindowIcon.ico</ApplicationIcon>
     <PackageCertificateKeyFile>FileExplorer_TemporaryKey.pfx</PackageCertificateKeyFile>
+	  <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
   </PropertyGroup>
   <ItemGroup>
