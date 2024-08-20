@@ -8,6 +8,7 @@ using FileExplorer.Core.Contracts.Factories;
 using FileExplorer.ViewModels.General;
 using Microsoft.UI.Xaml.Controls;
 using Models;
+using Models.Contracts.Storage;
 using Models.Messages;
 using Models.ModelHelpers;
 using Models.Navigation;
@@ -36,33 +37,34 @@ namespace FileExplorer.ViewModels
             NavigationService = navigationService;
             tabs = TabService.Tabs;
 
-            Messenger.Register<ShellPageViewModel, TabDirectoryChangedMessage>(this, (_, message) =>
+            Messenger.Register<ShellPageViewModel, TabStorageChangedMessage>(this, (_, message) =>
             {
-                TabService.SelectedTab.TabDirectory = message.Directory;
+                TabService.SelectedTab.OpenedStorage = message.Directory;
             });
 
             Messenger.Register<ShellPageViewModel, OpenTabMessage>(this, (_, message) =>
             {
-                NewTab(message.TabDirectory);
+                NewTab(message.TabStorage);
             });
         }
 
         [RelayCommand]
-        private void OpenNewTab(DirectoryWrapper? directory = null)
+        private void OpenNewTab(IStorage<DirectoryItemWrapper> storage)
         {
-            NewTab(directory);
+            NewTab(storage);
         }
 
-        private void NewTab(DirectoryWrapper? directory = null)
+        private void NewTab(IStorage<DirectoryItemWrapper> storage)
         {
-            TabService.CreateNewTab(directory);
+            TabService.CreateNewTab(storage);
         }
 
         private void NavigateToTab(TabModel item)
         {
             TabService.SelectedTab = item;
-            NavigationService.NavigateTo(item.TabDirectory?.Path, item.TabDirectory);
             NavigationService.NotifyTabOpened(item);
+
+            NavigationService.NavigateTo(item.OpenedStorage.Path, item.OpenedStorage);
         }
 
         [RelayCommand]

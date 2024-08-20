@@ -8,7 +8,7 @@ using FileExplorer.ViewModels.General;
 using FileExplorer.ViewModels.Search;
 using Microsoft.UI.Xaml.Controls;
 using Models;
-using Models.General;
+using Models.Contracts.Storage;
 using Models.Messages;
 using Models.ModelHelpers;
 using Models.Storage.Windows;
@@ -29,7 +29,7 @@ namespace FileExplorer.ViewModels
     {
         public SearchOperationViewModel SearchOperations { get; } = new();
         public FileOperationsViewModel FileOperations { get; } = new();
-        public DirectoryWrapper CurrentDirectory { get; private set; }
+        public IStorage<DirectoryItemWrapper> CurrentDirectory { get; private set; }
 
         [ObservableProperty]
         private ConcurrentWrappersCollection directoryItems;
@@ -74,7 +74,7 @@ namespace FileExplorer.ViewModels
         /// <param name="massage"> Navigation message that contains new path </param>
         private async void OnNavigationRequired(DirectoryPageViewModel _, NavigationRequiredMessage massage)
         {
-            await MoveToDirectoryAsync(massage.NavigatedDirectory);
+            await MoveToDirectoryAsync(massage.NavigatedStorage);
         }
 
         /// <summary>
@@ -110,13 +110,13 @@ namespace FileExplorer.ViewModels
         /// Changes current directory and initializes its items
         /// </summary>
         /// <param name="directory"> Given directory that is opened </param>
-        private async Task MoveToDirectoryAsync(DirectoryWrapper directory)
+        private async Task MoveToDirectoryAsync(IStorage<DirectoryItemWrapper> directory)
         {
             Messenger.Send(new StopSearchMessage());
+            Messenger.Send(new TabStorageChangedMessage(directory));
 
             CurrentDirectory = directory;
             await InitializeDirectoryAsync();
-            Messenger.Send(new TabDirectoryChangedMessage(directory));
 
             SearchOperations.InitializeSearchData(CurrentDirectory, DirectoryItems);
         }
@@ -314,17 +314,17 @@ namespace FileExplorer.ViewModels
 
         public async void OnNavigatedTo(object parameter)
         {
-            DirectoryWrapper directory;
+            IStorage<DirectoryItemWrapper> storage;
             TabNavigationHistoryModel history;
 
             if (parameter is TabModel tab)
             {
-                directory = tab.TabDirectory;
+                storage = tab.OpenedStorage;
                 history = tab.TabHistory;
             }
             else if (parameter is DirectoryWrapper dir)
             {
-                directory = dir;
+                storage = dir;
                 history = new TabNavigationHistoryModel();
                 //TODO: Go forward message should be raised here
             }
@@ -333,10 +333,8 @@ namespace FileExplorer.ViewModels
                 throw new ArgumentException();
             }
 
-            await MoveToDirectoryAsync(directory);
-            var navigationInfo = new DirectoryNavigationInfo(directory);
-
-            Messenger.Send(new TabOpenedMessage(navigationInfo, history));
+            await MoveToDirectoryAsync(storage);
+            Messenger.Send(new TabOpenedMessage(storage, history));
         }
 
         [RelayCommand]

@@ -86,7 +86,7 @@
                             <Setter.Value>
                                 <DataTemplate x:DataType="tabRelated:TabModel">
                                     <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{x:Bind TabName, Mode=OneWay}" />
+                                        <TextBlock Text="{x:Bind Title, Mode=OneWay}" />
                                     </StackPanel>
                                 </DataTemplate>
                             </Setter.Value>

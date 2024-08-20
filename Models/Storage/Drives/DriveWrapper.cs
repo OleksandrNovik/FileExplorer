@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Models.Storage.Drives
 {
-    public sealed partial class DriveWrapper : InteractiveStorageItem, ISearchCatalog<DirectoryItemWrapper>, IThumbnailProvider
+    public sealed partial class DriveWrapper : InteractiveStorageItem, IStorage<DirectoryItemWrapper>
     {
         /// <summary>
         /// Rive info that wrapper is containing
@@ -45,28 +45,32 @@ namespace Models.Storage.Drives
             Thumbnail.ItemPath = rootDirectory.Path;
         }
 
-        /// <inheritdoc />
-        public IEnumerable<DirectoryItemWrapper> EnumerateItems(string pattern = "*", SearchOption option = SearchOption.TopDirectoryOnly)
-        {
-            return rootDirectory.EnumerateItems(pattern, option);
-        }
-
-        /// <inheritdoc />
-        public IEnumerable<DirectoryItemWrapper> EnumerateItems(EnumerationOptions enumeration, string pattern = "*")
-        {
-            return rootDirectory.EnumerateItems(enumeration, pattern);
-        }
-
-        /// <inheritdoc />
-        public async Task SearchAsync(IEnqueuingCollection<DirectoryItemWrapper> destination, SearchOptionsModel options, CancellationToken token)
-        {
-            await rootDirectory.SearchAsync(destination, options, token);
-        }
-
         public void Rename()
         {
             driveInfo.VolumeLabel = Name;
             FriendlyName = driveInfo.GetFriendlyName();
+        }
+
+        public IStorage<DirectoryItemWrapper>? Parent => rootDirectory.Parent;
+
+        /// <summary>
+        /// Returns items inside <see cref="rootDirectory"/>
+        /// </summary>
+        public IEnumerable<DirectoryItemWrapper> EnumerateItems()
+        {
+            return rootDirectory.EnumerateItems();
+        }
+
+        /// <summary>
+        /// Returns <see cref="rootDirectory"/> of drive
+        /// </summary>
+        public IEnumerable<IStorage<DirectoryItemWrapper>> EnumerateSubDirectories()
+        {
+            return [rootDirectory];
+        }
+        public async Task SearchAsync(IEnqueuingCollection<DirectoryItemWrapper> destination, SearchOptionsModel options, CancellationToken token)
+        {
+            await rootDirectory.SearchAsync(destination, options, token);
         }
     }
 }

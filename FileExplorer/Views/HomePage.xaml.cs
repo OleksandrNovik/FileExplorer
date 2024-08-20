@@ -11,10 +11,10 @@ namespace FileExplorer.Views
     /// </summary>
     public sealed partial class DrivesPage : Page
     {
-        public DrivesViewModel ViewModel { get; }
+        public HomePageViewModel ViewModel { get; }
         public DrivesPage()
         {
-            ViewModel = App.GetService<DrivesViewModel>();
+            ViewModel = App.GetService<HomePageViewModel>();
             this.InitializeComponent();
         }
     }

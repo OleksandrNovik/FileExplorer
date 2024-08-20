@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using FileExplorer.Core.Contracts;
 using FileExplorer.Core.Contracts.DirectoriesNavigation;
+using FileExplorer.Core.Contracts.Factories;
 using FileExplorer.UI.Helpers;
 using Microsoft.UI.Xaml.Controls;
 using Models.Storage.Windows;
@@ -14,6 +15,7 @@ namespace FileExplorer.UI.Behaviors.Navigation
     /// </summary>
     public class NavigationBehavior : BaseNavigationBehavior<string>
     {
+        private readonly IStorageFactory<DirectoryItemWrapper> factory;
         public NavigationBehavior() : base(
             App.GetService<INavigationService>(),
             App.GetService<IPageTypesService>())
@@ -22,6 +24,8 @@ namespace FileExplorer.UI.Behaviors.Navigation
             {
                 eventProvider.TabOpened += OnTabOpened;
             }
+
+            factory = App.GetService<IStorageFactory<DirectoryItemWrapper>>();
         }
 
         /// <summary>
@@ -34,14 +38,7 @@ namespace FileExplorer.UI.Behaviors.Navigation
 
             if (selectedItem?.GetValue(NavigationHelper.NavigationKeyProperty) is string key)
             {
-                if (key != string.Empty)
-                {
-                    navigationService.NavigateTo(key, new DirectoryWrapper(key));
-                }
-                else
-                {
-                    navigationService.NavigateTo(key);
-                }
+                navigationService.NavigateTo(key, factory.CreateFromKey(key));
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿using FileExplorer.UI.Behaviors.BaseBehaviors;
 using Microsoft.UI.Xaml.Controls;
+using Models.Storage.Drives;
 using System.Linq;
 
 namespace FileExplorer.UI.Behaviors.Tabs
@@ -37,6 +38,12 @@ namespace FileExplorer.UI.Behaviors.Tabs
         private void OnTabViewLoaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
         {
             //TODO: Need to restore tabs from file if user selected corresponding option
+
+            if (CommandParameter is null)
+            {
+                CommandParameter = new ObservableDrivesCollection();
+            }
+
             ExecuteIfCan(Command, CommandParameter);
         }
     }

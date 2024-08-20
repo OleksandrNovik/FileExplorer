@@ -2,7 +2,8 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using FileExplorer.Core.Contracts;
-using Models.General;
+using FileExplorer.ViewModels.Search;
+using Models.Contracts.Storage;
 using Models.Messages;
 using Models.Storage.Windows;
 using System;
@@ -26,12 +27,12 @@ namespace FileExplorer.ViewModels
         /// <summary>
         /// Directory or search result that is currently opened 
         /// </summary>
-        private DirectoryNavigationInfo CurrentDirectory => navigation.CurrentDirectory;
+        private IStorage<DirectoryItemWrapper> CurrentDirectory => navigation.CurrentDirectory;
 
         /// <summary>
         /// View model that works with search options and search query, this view model sends message to start the search when user needs to
         /// </summary>
-        public Search.SearchOptionsViewModel SearchOperator { get; }
+        public SearchOptionsViewModel SearchOperator { get; }
 
         /// <summary>
         /// Decides if user is currently writing route into the text box or using route breadcrumb bar
@@ -51,60 +52,32 @@ namespace FileExplorer.ViewModels
         [ObservableProperty]
         private ObservableCollection<string> routeItems;
 
-        public DirectoriesNavigationViewModel(IHistoryNavigationService navigation, IDirectoryRouteService router, Search.SearchOptionsViewModel searchOperator)
+        public DirectoriesNavigationViewModel(IHistoryNavigationService navigation, IDirectoryRouteService router)
         {
             this.navigation = navigation;
             this.router = router;
 
-            SearchOperator = searchOperator;
-
             // Handler that is called when new tab is opened. New directory from that tab is initialized
             Messenger.Register<DirectoriesNavigationViewModel, TabOpenedMessage>(this, (_, message) =>
             {
-                InitializeDirectory(message.TabDirectoryInfo);
+                InitializeDirectory(message.TabStorage);
                 this.navigation.History = message.TabNavigationHistory;
                 NotifyCanExecute();
             });
 
             // Handler that is called when user is navigation inside current tab
-            Messenger.Register<DirectoriesNavigationViewModel, DirectoryNavigationInfo>(this, (_, message) =>
+            Messenger.Register<DirectoriesNavigationViewModel, StorageNavigatedMessage>(this, (_, message) =>
             {
-                this.navigation.OpenDirectory(message);
-
-                if (message.Cache is null)
-                {
-                    RouteItems.Add(message.Name);
-                    CurrentRoute = CurrentDirectory.Path;
-                }
-
+                this.navigation.OpenDirectory(message.NavigatedStorage);
                 NotifyCanExecute();
             });
-
-            Messenger.Register<DirectoriesNavigationViewModel, SearchStartedMessage<DirectoryItemWrapper>>(this,
-                (_, message) =>
-                {
-                    // If currently regular page is opened
-                    if (CurrentDirectory.Cache is null)
-                    {
-                        // We move forward to save this directory and show the user search result
-                        this.navigation.OpenDirectory(new DirectoryNavigationInfo(message.CachedResult));
-                        NotifyCanExecute();
-                    }
-                    // If current page is a search result
-                    else
-                    {
-                        // Override previous search result
-                        CurrentDirectory.Cache = message.CachedResult;
-                    }
-                });
-
         }
 
         /// <summary>
         /// Is called when new tab is opened, so directory in that tab should be initialized
         /// </summary>
         /// <param name="directory"> Directory that is held in tab </param>
-        private void InitializeDirectory(DirectoryNavigationInfo directory)
+        private void InitializeDirectory(IStorage<DirectoryItemWrapper> directory)
         {
             navigation.CurrentDirectory = directory;
 
@@ -145,29 +118,26 @@ namespace FileExplorer.ViewModels
 
         #region RefreshAndNavigateUp
 
-
-        [RelayCommand(CanExecute = nameof(CanRefresh))]
+        [RelayCommand]
         private void Refresh()
         {
-            SendNavigationMessage(CurrentDirectory);
+            //TODO: Refresh this component
         }
 
-        private bool CanRefresh() => CurrentDirectory?.Cache is null;
 
         [RelayCommand(CanExecute = nameof(CanNavigateUp))]
         private void NavigateUpDirectory()
         {
-            ArgumentNullException.ThrowIfNull(CurrentDirectory.ParentPath);
-            var navigationModel = new DirectoryNavigationInfo(CurrentDirectory.ParentPath);
+            ArgumentNullException.ThrowIfNull(CurrentDirectory.Parent);
 
-            navigation.GoBack(navigationModel);
+            navigation.GoBack(CurrentDirectory.Parent);
 
             SendNavigationMessage(CurrentDirectory);
 
             RouteItems.RemoveAt(RouteItems.Count - 1);
         }
 
-        private bool CanNavigateUp() => CurrentDirectory?.ParentPath != null;
+        private bool CanNavigateUp() => CurrentDirectory?.Parent is not null;
 
         #endregion
 
@@ -187,9 +157,8 @@ namespace FileExplorer.ViewModels
             var navigationItem = router.UseNavigationRoute(selectedRoute);
 
             var folder = new DirectoryWrapper(navigationItem.Path);
-            var navigationModel = new DirectoryNavigationInfo(folder);
 
-            navigation.GoForward(navigationModel);
+            navigation.GoForward(folder);
             SendNavigationMessage(folder);
         }
 
@@ -217,14 +186,12 @@ namespace FileExplorer.ViewModels
             var navigationItem = router.UseNavigationRoute(CurrentRoute);
             var currentDirectory = navigationItem.GetCurrentDirectory();
 
-            var navigationModel = new DirectoryNavigationInfo(currentDirectory);
-
             if (navigationItem is FileWrapper file)
             {
                 Messenger.Send(new FileOpenRequiredMessage(file));
             }
 
-            navigation.GoForward(navigationModel);
+            navigation.GoForward(currentDirectory);
 
             SendNavigationMessage(currentDirectory);
 
@@ -248,31 +215,11 @@ namespace FileExplorer.ViewModels
         /// Sends message to all listeners that navigation is required to a certain path
         /// </summary>
         /// <param name="item"> Folder that is being navigated </param>
-        private void SendNavigationMessage(DirectoryWrapper item)
+        private void SendNavigationMessage(IStorage<DirectoryItemWrapper> item)
         {
             Messenger.Send(new NavigationRequiredMessage(item));
             CurrentRoute = CurrentDirectory.Path;
             NotifyCanExecute();
-        }
-
-        /// <summary>
-        /// Uses navigation info to send navigation message if info is a cached search result sends corresponding message
-        /// </summary>
-        /// <param name="info"> Part of history that needs to be navigated into </param>
-        public void SendNavigationMessage(DirectoryNavigationInfo info)
-        {
-            if (info.Cache is not null)
-            {
-                Messenger.Send(new NavigateToSearchResult<DirectoryItemWrapper>(info.Cache));
-                NotifyCanExecute();
-            }
-            else
-            {
-                var navigatedDirectory = router.UseNavigationRoute(info.Path)
-                    .GetCurrentDirectory();
-
-                SendNavigationMessage(navigatedDirectory);
-            }
         }
 
         private void NotifyCanExecute()
@@ -280,7 +227,6 @@ namespace FileExplorer.ViewModels
             MoveBackCommand.NotifyCanExecuteChanged();
             MoveForwardCommand.NotifyCanExecuteChanged();
             NavigateUpDirectoryCommand.NotifyCanExecuteChanged();
-            RefreshCommand.NotifyCanExecuteChanged();
         }
 
     }

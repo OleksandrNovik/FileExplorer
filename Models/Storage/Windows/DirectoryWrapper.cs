@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using Models.Contracts;
+using Models.Contracts.Storage;
 using Models.General;
 using Models.ModelHelpers;
 using System;
@@ -14,7 +15,7 @@ using SearchOption = System.IO.SearchOption;
 
 namespace Models.Storage.Windows
 {
-    public sealed class DirectoryWrapper : DirectoryItemWrapper, ISystemSearchCatalog<DirectoryItemWrapper>
+    public sealed class DirectoryWrapper : DirectoryItemWrapper, IStorage<DirectoryItemWrapper>
     {
         private StorageFolder? asStorageFolder;
         public DirectoryWrapper() { }
@@ -70,7 +71,14 @@ namespace Models.Storage.Windows
 
         #endregion
 
-        public IEnumerable<ISystemSearchCatalog<DirectoryItemWrapper>> EnumerateSubDirectories()
+        public IStorage<DirectoryItemWrapper>? Parent => GetParentDirectory();
+
+        public IEnumerable<DirectoryItemWrapper> EnumerateItems()
+        {
+            return EnumerateWrappers(Directory.EnumerateFileSystemEntries(Path));
+        }
+
+        public IEnumerable<IStorage<DirectoryItemWrapper>> EnumerateSubDirectories()
         {
             try
             {

@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.UI.Xaml.Controls;
 using Models.Contracts;
+using Models.Contracts.Storage;
 using Models.General;
 using Models.Messages;
 using Models.Storage.Windows;
@@ -16,7 +17,7 @@ namespace FileExplorer.ViewModels.Search
 {
     public sealed class SearchOperationViewModel : ObservableRecipient
     {
-        private ISystemSearchCatalog<DirectoryItemWrapper> searchCatalog;
+        private IStorage<DirectoryItemWrapper> searchCatalog;
 
         private IEnqueuingCollection<DirectoryItemWrapper> destination;
 
@@ -24,7 +25,7 @@ namespace FileExplorer.ViewModels.Search
 
         private CancellationTokenSource searchCancellation;
 
-        public void InitializeSearchData(ISystemSearchCatalog<DirectoryItemWrapper> searchCatalog, IEnqueuingCollection<DirectoryItemWrapper> destination, CachedSearchResult<DirectoryItemWrapper>? cachedSearch = null)
+        public void InitializeSearchData(IStorage<DirectoryItemWrapper> searchCatalog, IEnqueuingCollection<DirectoryItemWrapper> destination, CachedSearchResult<DirectoryItemWrapper>? cachedSearch = null)
         {
             this.searchCatalog = searchCatalog;
             this.destination = destination;
@@ -47,7 +48,7 @@ namespace FileExplorer.ViewModels.Search
 
             cachedSearch = new CachedSearchResult<DirectoryItemWrapper>(searchCatalog, destination, message.Options);
 
-            Messenger.Send(new SearchStartedMessage<DirectoryItemWrapper>(cachedSearch));
+            Messenger.Send(new StorageNavigatedMessage(cachedSearch));
 
             await SearchAsync();
         }

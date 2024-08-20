@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using CommunityToolkit.Mvvm.ComponentModel;
+using Models.Contracts.Storage;
 using Models.Storage.Windows;
 
 namespace Models.TabRelated
@@ -15,26 +16,23 @@ namespace Models.TabRelated
         [ObservableProperty]
         private object? selected;
 
-        /// <summary>
-        /// Name of the tab that depends on current tab's directory
-        /// </summary>
         [ObservableProperty]
-        private string tabName;
+        private string title;
 
-        private DirectoryWrapper? tabDirectory;
+        private IStorage<DirectoryItemWrapper> openedStorage;
 
         /// <summary>
-        /// Full prop to change tab name when directory is changed
+        /// Directory (or something that stores items) that is opened in the tab
         /// </summary>
-        public DirectoryWrapper? TabDirectory
+        public IStorage<DirectoryItemWrapper> OpenedStorage
         {
-            get => tabDirectory;
+            get => openedStorage;
             set
             {
-                if (tabDirectory != value)
+                if (openedStorage != value)
                 {
-                    tabDirectory = value;
-                    TabName = tabDirectory?.Name ?? "Home";
+                    openedStorage = value;
+                    Title = openedStorage.Name;
                 }
             }
         }
@@ -44,11 +42,10 @@ namespace Models.TabRelated
         /// </summary>
         public TabNavigationHistoryModel TabHistory { get; }
 
-        public TabModel(DirectoryWrapper? directory)
+        public TabModel(IStorage<DirectoryItemWrapper> opened)
         {
-            tabDirectory = directory;
-            tabName = tabDirectory?.Name ?? "Home";
-            TabHistory = new TabNavigationHistoryModel();
+            OpenedStorage = opened;
         }
+
     }
 }

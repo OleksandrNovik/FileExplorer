@@ -1,5 +1,6 @@
 ﻿using FileExplorer.Core.Contracts;
-using Models.General;
+using Models.Contracts.Storage;
+using Models.Storage.Windows;
 using Models.TabRelated;
 
 namespace FileExplorer.Core.Services
@@ -7,24 +8,24 @@ namespace FileExplorer.Core.Services
     public class HistoryNavigationService : IHistoryNavigationService
     {
         public TabNavigationHistoryModel History { get; set; }
-        public DirectoryNavigationInfo CurrentDirectory { get; set; }
+        public IStorage<DirectoryItemWrapper> CurrentDirectory { get; set; }
 
         public bool CanGoForward => History is { CanGoForward: true };
         public bool CanGoBack => History is { CanGoBack: true };
 
-        public void GoForward(DirectoryNavigationInfo location)
+        public void GoForward(IStorage<DirectoryItemWrapper> location)
         {
             CurrentDirectory = location;
         }
 
-        public void OpenDirectory(DirectoryNavigationInfo location)
+        public void OpenDirectory(IStorage<DirectoryItemWrapper> location)
         {
             History.ForwardStack.Clear();
             History.BackStack.Push(CurrentDirectory);
             CurrentDirectory = location;
         }
 
-        public void GoBack(DirectoryNavigationInfo location)
+        public void GoBack(IStorage<DirectoryItemWrapper> location)
         {
             History.BackStack.Push(CurrentDirectory);
             CurrentDirectory = location;

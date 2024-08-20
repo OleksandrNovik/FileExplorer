@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Models.Contracts.Storage;
-using Models.General;
 using Models.Messages;
 using Models.Storage.Windows;
 using System;
@@ -24,8 +23,7 @@ namespace FileExplorer.ViewModels.General
                     // Send message for directory page (new directory should be opened)
                     Messenger.Send(new NavigationRequiredMessage(directoryWrapper));
                     // Send message to navigation view model to notify that new directory is opened
-                    var navigationModel = new DirectoryNavigationInfo(directoryWrapper);
-                    Messenger.Send(navigationModel);
+                    Messenger.Send(new StorageNavigatedMessage(directoryWrapper));
                     break;
                 default:
                     throw new ArgumentException("Cannot open provided item. It is not a directory or file.", nameof(wrapper));

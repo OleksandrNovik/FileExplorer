@@ -1,6 +1,4 @@
 ﻿using Models.General;
-using System.Collections.Generic;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,17 +11,6 @@ namespace Models.Contracts
     /// <typeparam name="TElement"> Type of search element </typeparam>
     public interface ISearchCatalog<TElement>
     {
-        /// <summary>
-        /// Enumerates all items in search catalog 
-        /// </summary>
-        public IEnumerable<TElement> EnumerateItems(string pattern = "*",
-            SearchOption option = SearchOption.TopDirectoryOnly);
-
-        /// <summary>
-        /// Enumerates all items in search catalog 
-        /// </summary>
-        public IEnumerable<TElement> EnumerateItems(EnumerationOptions enumeration, string pattern = "*");
-
         /// <summary>
         /// An asynchronous search through current catalog with provided options.
         /// </summary>

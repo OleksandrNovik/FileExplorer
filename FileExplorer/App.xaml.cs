@@ -16,6 +16,7 @@ using Helpers.Application;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.UI.Xaml;
+using Models.Storage.Windows;
 using System;
 using Hosting = Microsoft.Extensions.Hosting.Host;
 using SearchOptionsViewModel = FileExplorer.ViewModels.Search.SearchOptionsViewModel;
@@ -64,10 +65,11 @@ namespace FileExplorer
                     services.AddTransient<IBasicPageService<string>, BasicPageService>();
                     services.AddSingleton<ISettingsNavigationService, SettingsNavigationService>();
 
-                    // Menu flyout making
+                    // Factories
                     services.AddTransient<IMenuFlyoutFactory, MenuFlyoutFactory>();
+                    services.AddTransient<IStorageFactory<DirectoryItemWrapper>, StorageFactory>();
 
-                    services.AddTransient<DrivesViewModel>();
+                    services.AddTransient<HomePageViewModel>();
                     services.AddTransient<DirectoriesNavigationViewModel>();
 
                     //Settings
