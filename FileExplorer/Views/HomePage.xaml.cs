@@ -9,10 +9,10 @@ namespace FileExplorer.Views
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class DrivesPage : Page
+    public sealed partial class HomePage : Page
     {
         public HomePageViewModel ViewModel { get; }
-        public DrivesPage()
+        public HomePage()
         {
             ViewModel = App.GetService<HomePageViewModel>();
             this.InitializeComponent();

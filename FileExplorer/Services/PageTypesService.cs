@@ -10,7 +10,7 @@ namespace FileExplorer.Services
         public Type GetPage(string? path)
         {
             // Empty string means no parameter, so default page should be shown (my pc)
-            var pageType = string.IsNullOrEmpty(path) ? typeof(DrivesPage) : typeof(DirectoryPage);
+            var pageType = string.IsNullOrEmpty(path) ? typeof(HomePage) : typeof(DirectoryPage);
 
             return pageType;
         }

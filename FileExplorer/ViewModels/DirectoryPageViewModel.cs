@@ -12,7 +12,6 @@ using Models.Contracts.Storage;
 using Models.Messages;
 using Models.ModelHelpers;
 using Models.Storage.Windows;
-using Models.TabRelated;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -36,17 +35,13 @@ namespace FileExplorer.ViewModels
 
         [ObservableProperty]
         private ObservableCollection<DirectoryItemWrapper> selectedItems;
-        public bool HasCopiedFiles { get; private set; }
-
-        //[ObservableProperty]
-        //private bool isSearching;
 
         public DirectoryPageViewModel(IMenuFlyoutFactory factory) : base(factory)
         {
             SelectedItems = [];
             SelectedItems.CollectionChanged += NotifyCommandsCanExecute;
 
-            Messenger.Register<DirectoryPageViewModel, NavigationRequiredMessage>(this, OnNavigationRequired);
+            //Messenger.Register<DirectoryPageViewModel, NavigationRequiredMessage>(this, OnNavigationRequired);
             Messenger.Register<DirectoryPageViewModel, FileOpenRequiredMessage>(this, OnFileOpenRequired);
 
             Messenger.Register<DirectoryPageViewModel, NavigateToSearchResult<DirectoryItemWrapper>>(this, OnSearchResultNavigation);
@@ -314,27 +309,14 @@ namespace FileExplorer.ViewModels
 
         public async void OnNavigatedTo(object parameter)
         {
-            IStorage<DirectoryItemWrapper> storage;
-            TabNavigationHistoryModel history;
-
-            if (parameter is TabModel tab)
+            if (parameter is IStorage<DirectoryItemWrapper> storage)
             {
-                storage = tab.OpenedStorage;
-                history = tab.TabHistory;
-            }
-            else if (parameter is DirectoryWrapper dir)
-            {
-                storage = dir;
-                history = new TabNavigationHistoryModel();
-                //TODO: Go forward message should be raised here
+                await MoveToDirectoryAsync(storage);
             }
             else
             {
                 throw new ArgumentException();
             }
-
-            await MoveToDirectoryAsync(storage);
-            Messenger.Send(new TabOpenedMessage(storage, history));
         }
 
         [RelayCommand]

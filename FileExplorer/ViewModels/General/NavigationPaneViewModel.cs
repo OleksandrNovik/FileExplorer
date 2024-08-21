@@ -32,7 +32,7 @@ namespace FileExplorer.ViewModels.General
                         IsPinned = true
                     }))
                 },
-                new NavigationItemModel("ObservableDrives")
+                new NavigationItemModel("Drives")
                 {
                     SubItems = null
                 },

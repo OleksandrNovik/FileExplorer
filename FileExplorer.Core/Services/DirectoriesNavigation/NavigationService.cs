@@ -12,7 +12,10 @@ namespace FileExplorer.Core.Services.DirectoriesNavigation
     /// </summary>
     public class NavigationService : GenericNavigationService<string>, INavigationService
     {
-        public NavigationService(IPageTypesService pageService) : base(pageService) { }
+        public NavigationService(IPageTypesService pageService) : base(pageService)
+        {
+            enableCache = false;
+        }
 
         public void NotifyTabOpened(TabModel openedTab)
         {

@@ -46,6 +46,11 @@ namespace FileExplorer.ViewModels
             {
                 NewTab(message.TabStorage);
             });
+
+            Messenger.Register<ShellPageViewModel, NavigationRequiredMessage>(this, (_, message) =>
+            {
+                NavigationService.NavigateTo(message.NavigatedStorage.Path, message.NavigatedStorage);
+            });
         }
 
         [RelayCommand]
@@ -62,9 +67,10 @@ namespace FileExplorer.ViewModels
         private void NavigateToTab(TabModel item)
         {
             TabService.SelectedTab = item;
+            NavigationService.NavigateTo(item.OpenedStorage.Path, item.OpenedStorage);
             NavigationService.NotifyTabOpened(item);
 
-            NavigationService.NavigateTo(item.OpenedStorage.Path, item.OpenedStorage);
+            Messenger.Send(new TabOpenedMessage(item.OpenedStorage, item.TabHistory));
         }
 
         [RelayCommand]

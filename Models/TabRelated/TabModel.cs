@@ -44,6 +44,7 @@ namespace Models.TabRelated
 
         public TabModel(IStorage<DirectoryItemWrapper> opened)
         {
+            TabHistory = new TabNavigationHistoryModel();
             OpenedStorage = opened;
         }
 

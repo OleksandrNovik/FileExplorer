@@ -2,6 +2,7 @@
 using FileExplorer.Core.Contracts;
 using Helpers.Application;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
 using System;
 
 namespace FileExplorer.Core.Services.General;
@@ -11,6 +12,11 @@ namespace FileExplorer.Core.Services.General;
 /// </summary>
 public abstract class BaseNavigationService
 {
+    /// <summary>
+    /// Decides if navigation services caches navigated pages 
+    /// </summary>
+    protected bool enableCache = true;
+
     private Frame? frame;
     public Frame? Frame
     {
@@ -39,7 +45,7 @@ public abstract class BaseNavigationService
         }
     }
 
-    protected virtual void OnNavigated(object sender, Microsoft.UI.Xaml.Navigation.NavigationEventArgs e)
+    protected virtual void OnNavigated(object sender, NavigationEventArgs e)
     {
         if (sender is Frame frame)
         {
@@ -55,8 +61,19 @@ public abstract class BaseNavigationService
         ArgumentNullException.ThrowIfNull(Frame);
 
         var previousViewModel = Frame.GetPageViewModel();
+        bool navigated;
 
-        bool navigated = Frame.Navigate(pageType, parameter);
+        if (enableCache)
+        {
+            navigated = Frame.Navigate(pageType, parameter);
+        }
+        else
+        {
+            navigated = Frame.NavigateToType(pageType, parameter, new FrameNavigationOptions
+            {
+                IsNavigationStackEnabled = false
+            });
+        }
 
         if (navigated)
         {
