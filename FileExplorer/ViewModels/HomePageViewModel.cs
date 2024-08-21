@@ -1,24 +1,29 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
-using FileExplorer.Core.Contracts;
+using FileExplorer.Core.Contracts.Factories;
+using FileExplorer.ViewModels.Abstractions;
 using Helpers.General;
+using Microsoft.UI.Xaml.Controls;
 using Models.Messages;
 using Models.Storage.Drives;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FileExplorer.ViewModels
 {
-    public sealed partial class HomePageViewModel : ObservableRecipient, INavigationAware
+    public sealed partial class HomePageViewModel : StorageViewModel
     {
-        //TODO: Send navigation messages
-        public ObservableDrivesCollection ObservableDrives { get; private set; }
+        public ObservableDrivesCollection Drives { get; private set; }
+
+        public HomePageViewModel(IMenuFlyoutFactory factory) : base(factory)
+        {
+        }
 
         [RelayCommand]
         private async Task InitializeAsync()
         {
-            foreach (var drive in ObservableDrives)
+            foreach (var drive in Drives)
             {
                 await ThreadingHelper.EnqueueAsync(async () =>
                 {
@@ -27,19 +32,25 @@ namespace FileExplorer.ViewModels
             }
         }
 
-        public void OnNavigatedTo(object parameter)
+        public override void OnNavigatedTo(object parameter)
         {
-            if (parameter is ObservableDrivesCollection drives)
-            {
-                ObservableDrives = drives;
-                Messenger.Send(new TabStorageChangedMessage(drives));
-            }
-            else
-                throw new ArgumentException("Parameter is not ObservableDrivesCollection", nameof(parameter));
+            base.OnNavigatedTo(parameter);
+            Drives = Storage as ObservableDrivesCollection;
+            ArgumentNullException.ThrowIfNull(Drives);
         }
 
-        public void OnNavigatedFrom()
+        public override void OnNavigatedFrom()
         {
+        }
+
+        public override void HandleSearchMessage(ObservableRecipient recipient, SearchOperationRequiredMessage message)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override IList<MenuFlyoutItemBase> BuildContextMenu(object parameter = null)
+        {
+            throw new NotImplementedException();
         }
     }
 }

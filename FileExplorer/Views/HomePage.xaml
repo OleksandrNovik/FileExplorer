@@ -20,7 +20,7 @@
     </Page.Resources>
 
     <Grid>
-        <GridView ItemsSource="{x:Bind ViewModel.ObservableDrives}" 
+        <GridView ItemsSource="{x:Bind ViewModel.Drives}" 
                   SelectionMode="Single"
                   ItemTemplate="{StaticResource DrivesTemplate}">
             <interactivity:Interaction.Behaviors>

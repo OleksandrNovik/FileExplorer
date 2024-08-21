@@ -23,7 +23,6 @@ namespace FileExplorer.ViewModels
     {
         public NavigationPaneViewModel NavigationPaneViewModel { get; } = new();
         public FileOperationsViewModel FileOperationsViewModel { get; } = new();
-
         public ITabService TabService { get; }
         public INavigationService NavigationService { get; }
 

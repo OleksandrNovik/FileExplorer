@@ -2,8 +2,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using FileExplorer.Core.Contracts;
 using FileExplorer.Core.Contracts.Factories;
+using FileExplorer.ViewModels.Abstractions;
 using FileExplorer.ViewModels.General;
 using FileExplorer.ViewModels.Search;
 using Microsoft.UI.Xaml.Controls;
@@ -24,11 +24,10 @@ using FileAttributes = System.IO.FileAttributes;
 
 namespace FileExplorer.ViewModels
 {
-    public sealed partial class DirectoryPageViewModel : ContextMenuCreatorViewModel, INavigationAware
+    public sealed partial class DirectoryPageViewModel : StorageViewModel
     {
         public SearchOperationViewModel SearchOperations { get; } = new();
         public FileOperationsViewModel FileOperations { get; } = new();
-        public IStorage<DirectoryItemWrapper> CurrentDirectory { get; private set; }
 
         [ObservableProperty]
         private ConcurrentWrappersCollection directoryItems;
@@ -52,7 +51,7 @@ namespace FileExplorer.ViewModels
             DirectoryItems.Clear();
             await DirectoryItems.EnqueueEnumerationAsync(message.SearchResult.SearchResultItems, CancellationToken.None);
 
-            SearchOperations.InitializeSearchData(CurrentDirectory, DirectoryItems, message.SearchResult);
+            SearchOperations.InitializeSearchData(Storage, DirectoryItems, message.SearchResult);
         }
 
         private async void OnFileOpenRequired(DirectoryPageViewModel _, FileOpenRequiredMessage message)
@@ -93,7 +92,7 @@ namespace FileExplorer.ViewModels
         private async Task InitializeDirectoryAsync()
         {
             DirectoryItems = [];
-            var directoryContent = CurrentDirectory.EnumerateItems()
+            var directoryContent = Storage.EnumerateItems()
                 .Where(i => (i.Attributes & FileAttributes.System) == 0);
 
             await DirectoryItems.EnqueueEnumerationAsync(directoryContent, CancellationToken.None);
@@ -110,10 +109,10 @@ namespace FileExplorer.ViewModels
             Messenger.Send(new StopSearchMessage());
             Messenger.Send(new TabStorageChangedMessage(directory));
 
-            CurrentDirectory = directory;
+            Storage = directory;
             await InitializeDirectoryAsync();
 
-            SearchOperations.InitializeSearchData(CurrentDirectory, DirectoryItems);
+            SearchOperations.InitializeSearchData(Storage, DirectoryItems);
         }
 
         #region Open logic
@@ -147,7 +146,7 @@ namespace FileExplorer.ViewModels
         }
 
         /// <summary>
-        /// Creates new item in <see cref="CurrentDirectory"/> 
+        /// Creates new item in <see cref="Storage"/> 
         /// </summary>
         /// <param name="isFile"> True - if file should be created, false - if directory is being created </param>
         [RelayCommand]
@@ -155,7 +154,7 @@ namespace FileExplorer.ViewModels
         {
             DirectoryItemWrapper wrapper = isFile ? new FileWrapper() : new DirectoryWrapper();
 
-            wrapper.CreatePhysical(CurrentDirectory.Path);
+            wrapper.CreatePhysical(Storage.Path);
 
             await wrapper.UpdateThumbnailAsync(90);
 
@@ -307,26 +306,20 @@ namespace FileExplorer.ViewModels
             await FileOperations.ShowDetails(SelectedItems[0]);
         }
 
-        public async void OnNavigatedTo(object parameter)
+        public override async void OnNavigatedTo(object parameter)
         {
-            if (parameter is IStorage<DirectoryItemWrapper> storage)
-            {
-                await MoveToDirectoryAsync(storage);
-            }
-            else
-            {
-                throw new ArgumentException();
-            }
+            base.OnNavigatedTo(parameter);
+            await MoveToDirectoryAsync(Storage);
         }
 
         [RelayCommand]
         private async Task Refresh()
         {
             //TODO: Fix this later
-            await MoveToDirectoryAsync(CurrentDirectory);
+            await MoveToDirectoryAsync(Storage);
         }
 
-        public void OnNavigatedFrom()
+        public override void OnNavigatedFrom()
         {
             Messenger.UnregisterAll(this);
             SearchOperations.UnregisterAll();
@@ -356,7 +349,7 @@ namespace FileExplorer.ViewModels
             }
             else
             {
-                parameter = CurrentDirectory;
+                parameter = Storage;
                 menu.WithRefresh(RefreshCommand)
                     .WithCreate(CreateItemCommand)
                     .WithPaste(PasteItemsCommand);
@@ -364,6 +357,11 @@ namespace FileExplorer.ViewModels
 
             return menuFactory.Create(menu
                 .WithDetails(FileOperations.ShowDetailsCommand, parameter));
+        }
+
+        public override void HandleSearchMessage(ObservableRecipient recipient, SearchOperationRequiredMessage message)
+        {
+            throw new NotImplementedException();
         }
     }
 }
