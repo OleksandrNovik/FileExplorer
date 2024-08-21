@@ -1,7 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using FileExplorer.Core.Contracts;
 using Helpers.General;
+using Models.Messages;
 using Models.Storage.Drives;
 using System;
 using System.Threading.Tasks;
@@ -30,6 +32,7 @@ namespace FileExplorer.ViewModels
             if (parameter is ObservableDrivesCollection drives)
             {
                 ObservableDrives = drives;
+                Messenger.Send(new TabStorageChangedMessage(drives));
             }
             else
                 throw new ArgumentException("Parameter is not ObservableDrivesCollection", nameof(parameter));

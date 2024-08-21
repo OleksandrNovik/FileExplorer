@@ -85,6 +85,12 @@ namespace FileExplorer.ViewModels
             NavigateToTab(item);
         }
 
+        [RelayCommand]
+        private void SelectMenuItem(IStorage<DirectoryItemWrapper> selectedStorage)
+        {
+            Messenger.Send(new StorageNavigatedMessage(selectedStorage));
+        }
+
         /// <inheritdoc />
         public override IList<MenuFlyoutItemBase> BuildContextMenu(object? parameter = null)
         {

@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using CommunityToolkit.Mvvm.Input;
 using FileExplorer.Core.Contracts;
 using FileExplorer.Core.Contracts.DirectoriesNavigation;
 using FileExplorer.Core.Contracts.Factories;
@@ -15,6 +16,8 @@ namespace FileExplorer.UI.Behaviors.Navigation
     /// </summary>
     public class NavigationBehavior : BaseNavigationBehavior<string>
     {
+        public IRelayCommand? ItemInvokedCommand { get; set; }
+
         private readonly IStorageFactory<DirectoryItemWrapper> factory;
         public NavigationBehavior() : base(
             App.GetService<INavigationService>(),
@@ -38,7 +41,14 @@ namespace FileExplorer.UI.Behaviors.Navigation
 
             if (selectedItem?.GetValue(NavigationHelper.NavigationKeyProperty) is string key)
             {
-                navigationService.NavigateTo(key, factory.CreateFromKey(key));
+                var selectedStorage = factory.CreateFromKey(key);
+
+                if (ItemInvokedCommand is not null)
+                {
+                    ItemInvokedCommand.Execute(selectedStorage);
+                }
+
+                navigationService.NavigateTo(key, selectedStorage);
             }
         }
 

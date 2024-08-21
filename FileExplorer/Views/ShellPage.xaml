@@ -145,7 +145,7 @@
                     <interactivity:Interaction.Behaviors>
                         <interactivity:BehaviorCollection>
 
-                            <navigationBehaviors:NavigationBehavior />
+                            <navigationBehaviors:NavigationBehavior ItemInvokedCommand="{x:Bind ViewModel.SelectMenuItemCommand}" />
 
                             <general:LoadingCommandBehavior Command="{x:Bind ViewModel.NavigationPaneViewModel.InitializeCommand}" />
 

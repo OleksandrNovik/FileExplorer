@@ -1,5 +1,6 @@
 using FileExplorer.ViewModels.Settings;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -14,6 +15,7 @@ namespace FileExplorer.Views.Settings.Pages
         public SettingsExplorerViewModel ViewModel { get; }
         public SettingsExplorerPage()
         {
+            NavigationCacheMode = NavigationCacheMode.Required;
             ViewModel = App.GetService<SettingsExplorerViewModel>();
             this.InitializeComponent();
         }

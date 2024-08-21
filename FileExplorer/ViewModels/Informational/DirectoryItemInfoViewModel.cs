@@ -37,7 +37,7 @@ namespace FileExplorer.ViewModels.Informational
         }
 
         /// <summary>
-        /// Command to close details pane
+        /// ItemInvokedCommand to close details pane
         /// </summary>
         [RelayCommand]
         private void Close() => PaneVisibility = Visibility.Collapsed;
