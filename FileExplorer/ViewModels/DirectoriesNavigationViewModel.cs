@@ -25,7 +25,7 @@ namespace FileExplorer.ViewModels
         private readonly IDirectoryRouteService router;
 
         /// <summary>
-        /// Directory or search result that is currently opened 
+        /// Storage or search result that is currently opened 
         /// </summary>
         private IStorage<DirectoryItemWrapper> CurrentDirectory => navigation.CurrentDirectory;
 
@@ -52,10 +52,11 @@ namespace FileExplorer.ViewModels
         [ObservableProperty]
         private ObservableCollection<string> routeItems;
 
-        public DirectoriesNavigationViewModel(IHistoryNavigationService navigation, IDirectoryRouteService router)
+        public DirectoriesNavigationViewModel(IHistoryNavigationService navigation, IDirectoryRouteService router, SearchOptionsViewModel searchOperator)
         {
             this.navigation = navigation;
             this.router = router;
+            SearchOperator = searchOperator;
 
             // Handler that is called when new tab is opened. New directory from that tab is initialized
             Messenger.Register<DirectoriesNavigationViewModel, TabOpenedMessage>(this, (_, message) =>
@@ -76,7 +77,7 @@ namespace FileExplorer.ViewModels
         /// <summary>
         /// Is called when new tab is opened, so directory in that tab should be initialized
         /// </summary>
-        /// <param name="directory"> Directory that is held in tab </param>
+        /// <param name="directory"> Storage that is held in tab </param>
         private void InitializeDirectory(IStorage<DirectoryItemWrapper> directory)
         {
             navigation.CurrentDirectory = directory;

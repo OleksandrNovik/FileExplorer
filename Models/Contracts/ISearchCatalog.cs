@@ -1,5 +1,4 @@
-﻿using Models.General;
-using System.Threading;
+﻿using Models.Storage.Additional;
 using System.Threading.Tasks;
 
 namespace Models.Contracts
@@ -14,9 +13,7 @@ namespace Models.Contracts
         /// <summary>
         /// An asynchronous search through current catalog with provided options.
         /// </summary>
-        /// <param name="destination"> Destination collection to add found elements </param>
-        /// <param name="options"> Search options </param>
-        /// <param name="token"> Cancellation token to cancel operation when it is no longer needed </param>
-        public Task SearchAsync(IEnqueuingCollection<TElement> destination, SearchOptionsModel options, CancellationToken token);
+        /// <param name="searchOptions"> Provided options for this search </param>
+        public Task SearchAsync(SearchOptions searchOptions);
     }
 }

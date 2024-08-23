@@ -1,10 +1,8 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.Input;
 using FileExplorer.Core.Contracts.Factories;
 using FileExplorer.ViewModels.Abstractions;
 using Helpers.General;
 using Microsoft.UI.Xaml.Controls;
-using Models.Messages;
 using Models.Storage.Drives;
 using System;
 using System.Collections.Generic;
@@ -37,15 +35,6 @@ namespace FileExplorer.ViewModels
             base.OnNavigatedTo(parameter);
             Drives = Storage as ObservableDrivesCollection;
             ArgumentNullException.ThrowIfNull(Drives);
-        }
-
-        public override void OnNavigatedFrom()
-        {
-        }
-
-        public override void HandleSearchMessage(ObservableRecipient recipient, SearchOperationRequiredMessage message)
-        {
-            throw new NotImplementedException();
         }
 
         public override IList<MenuFlyoutItemBase> BuildContextMenu(object parameter = null)

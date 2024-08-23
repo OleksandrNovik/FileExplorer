@@ -8,7 +8,7 @@ using Models.TabRelated;
 namespace Models.Messages
 {
     /// <summary>
-    /// Message for DirectoryPageViewModel to navigate into a directory
+    /// Message for StorageViewModel to navigate into a directory
     /// </summary>
     /// <param name="NavigatedStorage"></param>
     public record NavigationRequiredMessage(IStorage<DirectoryItemWrapper> NavigatedStorage);
@@ -18,8 +18,8 @@ namespace Models.Messages
     /// <summary>
     /// Message that notify listeners that current tab's directory has changed
     /// </summary>
-    /// <param name="Directory"></param>
-    public record TabStorageChangedMessage(IStorage<DirectoryItemWrapper> Directory);
+    /// <param name="Storage"></param>
+    public record TabStorageChangedMessage(IStorage<DirectoryItemWrapper> Storage);
 
     /// <summary>
     /// Message for DirectoryPageViewModel to open file path for which has been written in the route
@@ -40,16 +40,27 @@ namespace Models.Messages
     /// <param name="TabStorage"> Storage that has to be opened in new tab </param>
     public record OpenTabMessage(IStorage<DirectoryItemWrapper> TabStorage);
 
-    public record SearchOperationRequiredMessage(SearchOptionsModel Options);
+    public record SearchOperationRequiredMessage(SearchFilter Options);
 
     /// <summary>
     /// Message to notify search view model to stop searching items
     /// </summary>
     public record StopSearchMessage;
 
-    public record NavigateToSearchResult<TElement>(CachedSearchResult<TElement> SearchResult);
-
     public record ShowDetailsMessage(DirectoryItemAdditionalInfo Details);
 
+    /// <summary>
+    /// Message that notifies InfoBar view model to show InfoBar with provided content
+    /// </summary>
+    /// <param name="Severity"> InfoBar severity to show particular type of message (warning or success for example) </param>
+    /// <param name="Title"> Title of shown message </param>
+    /// <param name="Message"> Inner text of shown message </param>
     public record ShowInfoBarMessage(InfoBarSeverity Severity, string Title, string? Message = null);
+
+    /// <summary>
+    /// Message to begin search in provided <see cref="IStorage{TElement}"/> item 
+    /// </summary>
+    /// <param name="Storage"> Storage that's being searched </param>
+    /// <param name="Options"> Search options </param>
+    public record SearchStorageMessage(IStorage<DirectoryItemWrapper> Storage, SearchFilter Options);
 }

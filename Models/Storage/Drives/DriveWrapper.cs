@@ -1,14 +1,12 @@
 ﻿#nullable enable
 using CommunityToolkit.Mvvm.ComponentModel;
-using Models.Contracts;
 using Models.Contracts.Storage;
-using Models.General;
 using Models.ModelHelpers;
 using Models.Storage.Abstractions;
+using Models.Storage.Additional;
 using Models.Storage.Windows;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Models.Storage.Drives
@@ -52,6 +50,7 @@ namespace Models.Storage.Drives
         }
 
         public IStorage<DirectoryItemWrapper>? Parent => rootDirectory.Parent;
+        public StorageContentType ContentType => StorageContentType.Files;
 
         /// <summary>
         /// Returns items inside <see cref="rootDirectory"/>
@@ -68,9 +67,10 @@ namespace Models.Storage.Drives
         {
             return [rootDirectory];
         }
-        public async Task SearchAsync(IEnqueuingCollection<DirectoryItemWrapper> destination, SearchOptionsModel options, CancellationToken token)
+
+        public async Task SearchAsync(SearchOptions searchOptions)
         {
-            await rootDirectory.SearchAsync(destination, options, token);
+            await rootDirectory.SearchAsync(searchOptions);
         }
     }
 }

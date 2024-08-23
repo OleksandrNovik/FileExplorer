@@ -8,9 +8,9 @@ namespace Models.General
     /// <summary>
     /// Model that stores all necessary data to initiate catalog search
     /// </summary>
-    public sealed class SearchOptionsModel : ObservableObject
+    public sealed class SearchFilter : ObservableObject
     {
-        public static SearchOptionsModel Default => new()
+        public static SearchFilter Default => new()
         {
             IsNestedSearch = true,
             AccessDateRange = DateRange.Any,
@@ -46,7 +46,7 @@ namespace Models.General
         public string? SearchName { get; set; }
 
         /// <summary>
-        /// Contains original search query that was written in search field 
+        /// ContainsPattern original search query that was written in search field 
         /// </summary>
         public string OriginalSearchQuery { get; set; }
     }

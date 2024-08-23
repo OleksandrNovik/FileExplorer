@@ -225,8 +225,6 @@
 
         </Grid>
 
-        <userControls:CommandedInfoBar Grid.Row="1" />
-
         <StackPanel Grid.Row="2" 
             Padding="15  5 15 0"
             Grid.Column="0" 

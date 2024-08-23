@@ -16,7 +16,7 @@ namespace FileExplorer.ViewModels.Search
     {
         public SearchOptionsViewModel()
         {
-            Options = SearchOptionsModel.Default;
+            Options = SearchFilter.Default;
 
             IsNestedSearch = Options.IsNestedSearch;
 
@@ -86,7 +86,7 @@ namespace FileExplorer.ViewModels.Search
 
         [ObservableProperty]
         private string searchQuery;
-        public SearchOptionsModel Options { get; }
+        public SearchFilter Options { get; }
 
         [ObservableProperty]
         private bool isNestedSearch;

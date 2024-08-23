@@ -159,6 +159,7 @@
 
                 <Grid Column="2">
                     <Frame  x:Name="NavigationFrame" />
+                    <userControls:CommandedInfoBar />
                 </Grid>
 
             </Grid>

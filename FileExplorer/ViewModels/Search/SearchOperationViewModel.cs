@@ -2,14 +2,13 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.UI.Xaml.Controls;
-using Models.Contracts;
 using Models.Contracts.Storage;
 using Models.General;
 using Models.Messages;
+using Models.Storage.Additional;
 using Models.Storage.Windows;
 using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,64 +16,44 @@ namespace FileExplorer.ViewModels.Search
 {
     public sealed class SearchOperationViewModel : ObservableRecipient
     {
-        private IStorage<DirectoryItemWrapper> searchCatalog;
-
-        private IEnqueuingCollection<DirectoryItemWrapper> destination;
-
-        private CachedSearchResult<DirectoryItemWrapper>? cachedSearch;
-
+        private SearchOptions currentSearchOptions;
+        public CachedSearchResult<DirectoryItemWrapper> CachedSearch { get; private set; }
         private CancellationTokenSource searchCancellation;
 
-        public void InitializeSearchData(IStorage<DirectoryItemWrapper> searchCatalog, IEnqueuingCollection<DirectoryItemWrapper> destination, CachedSearchResult<DirectoryItemWrapper>? cachedSearch = null)
+        public void InitializeSearchData(IStorage<DirectoryItemWrapper> searchCatalog, SearchOptions searchOptions)
         {
-            this.searchCatalog = searchCatalog;
-            this.destination = destination;
-            this.cachedSearch = cachedSearch;
+            currentSearchOptions = searchOptions;
+            CachedSearch = new(searchCatalog, searchOptions.Destination);
+            Messenger.Send(new StorageNavigatedMessage(CachedSearch));
         }
-
         public SearchOperationViewModel()
         {
-            Messenger.Register<SearchOperationViewModel, SearchOperationRequiredMessage>(this, OnSearchMessage);
-
             Messenger.Register<SearchOperationViewModel, StopSearchMessage>(this, (_, _) =>
             {
                 CancelSearchIfNeeded();
             });
         }
 
-        private async void OnSearchMessage(SearchOperationViewModel _, SearchOperationRequiredMessage message)
-        {
-            Debug.WriteLine("Search started");
-
-            cachedSearch = new CachedSearchResult<DirectoryItemWrapper>(searchCatalog, destination, message.Options);
-
-            Messenger.Send(new StorageNavigatedMessage(cachedSearch));
-
-            await SearchAsync();
-        }
-
-        private async Task SearchAsync()
+        public async Task SearchAsync()
         {
             CancelSearchIfNeeded();
-            searchCancellation = new CancellationTokenSource();
-            Debug.Assert(cachedSearch is not null);
 
-            //If this search has already completed just get the result collection form it by navigating to the search result
-            if (cachedSearch.HasCompleted)
-            {
-                Messenger.Send(new NavigateToSearchResult<DirectoryItemWrapper>(cachedSearch));
-                return;
-            }
+            // Initializing cancellation token 
+            searchCancellation = new CancellationTokenSource();
+            currentSearchOptions.Token = searchCancellation.Token;
+
+            // Creating cached search result and setting it as currently viewed storage 
+            Messenger.Send(new StorageNavigatedMessage(CachedSearch));
 
             try
             {
-                destination.Clear();
+                CachedSearch.SearchOptions = currentSearchOptions.Filter;
 
-                await cachedSearch.RootCatalog.SearchAsync(destination, cachedSearch.SearchOptions,
-                    searchCancellation.Token);
+                await CachedSearch.SearchAsync(currentSearchOptions);
 
                 Messenger.Send(new ShowInfoBarMessage(InfoBarSeverity.Success, "Search is completed!"));
-                cachedSearch.HasCompleted = true;
+
+                CachedSearch.HasCompleted = true;
             }
             catch (OperationCanceledException)
             {
@@ -82,10 +61,9 @@ namespace FileExplorer.ViewModels.Search
             }
             finally
             {
-                // When search is over or interrupted we can save found items into another collection
-                cachedSearch.SearchResultItems = destination.ToArray();
                 Messenger.Send(new StopSearchMessage());
             }
+
         }
         public void CancelSearchIfNeeded()
         {
@@ -93,11 +71,6 @@ namespace FileExplorer.ViewModels.Search
             {
                 searchCancellation.Cancel();
             }
-        }
-
-        public void UnregisterAll()
-        {
-            Messenger.UnregisterAll(this);
         }
     }
 }

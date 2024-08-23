@@ -5,7 +5,6 @@ using CommunityToolkit.Mvvm.Messaging;
 using FileExplorer.Core.Contracts.Factories;
 using FileExplorer.ViewModels.Abstractions;
 using FileExplorer.ViewModels.General;
-using FileExplorer.ViewModels.Search;
 using Microsoft.UI.Xaml.Controls;
 using Models;
 using Models.Contracts.Storage;
@@ -26,7 +25,6 @@ namespace FileExplorer.ViewModels
 {
     public sealed partial class DirectoryPageViewModel : StorageViewModel
     {
-        public SearchOperationViewModel SearchOperations { get; } = new();
         public FileOperationsViewModel FileOperations { get; } = new();
 
         [ObservableProperty]
@@ -40,35 +38,12 @@ namespace FileExplorer.ViewModels
             SelectedItems = [];
             SelectedItems.CollectionChanged += NotifyCommandsCanExecute;
 
-            //Messenger.Register<DirectoryPageViewModel, NavigationRequiredMessage>(this, OnNavigationRequired);
             Messenger.Register<DirectoryPageViewModel, FileOpenRequiredMessage>(this, OnFileOpenRequired);
-
-            Messenger.Register<DirectoryPageViewModel, NavigateToSearchResult<DirectoryItemWrapper>>(this, OnSearchResultNavigation);
-        }
-
-        private async void OnSearchResultNavigation(DirectoryPageViewModel _, NavigateToSearchResult<DirectoryItemWrapper> message)
-        {
-            DirectoryItems.Clear();
-            await DirectoryItems.EnqueueEnumerationAsync(message.SearchResult.SearchResultItems, CancellationToken.None);
-
-            SearchOperations.InitializeSearchData(Storage, DirectoryItems, message.SearchResult);
         }
 
         private async void OnFileOpenRequired(DirectoryPageViewModel _, FileOpenRequiredMessage message)
         {
             await message.OpenFile.LaunchAsync();
-        }
-
-
-        /// <summary>
-        /// Handles navigation messages from <see cref="DirectoriesNavigationViewModel"/>
-        /// and decides how to execute new navigation command
-        /// </summary>
-        /// <param name="_"> Message receiver (this) </param>
-        /// <param name="massage"> Navigation message that contains new path </param>
-        private async void OnNavigationRequired(DirectoryPageViewModel _, NavigationRequiredMessage massage)
-        {
-            await MoveToDirectoryAsync(massage.NavigatedStorage);
         }
 
         /// <summary>
@@ -91,7 +66,7 @@ namespace FileExplorer.ViewModels
         /// </summary>
         private async Task InitializeDirectoryAsync()
         {
-            DirectoryItems = [];
+            DirectoryItems = new ConcurrentWrappersCollection();
             var directoryContent = Storage.EnumerateItems()
                 .Where(i => (i.Attributes & FileAttributes.System) == 0);
 
@@ -101,18 +76,13 @@ namespace FileExplorer.ViewModels
         }
 
         /// <summary>
-        /// Changes current directory and initializes its items
+        /// Changes current storage and initializes its items
         /// </summary>
-        /// <param name="directory"> Given directory that is opened </param>
-        private async Task MoveToDirectoryAsync(IStorage<DirectoryItemWrapper> directory)
+        /// <param name="storage"> Given storage that is opened </param>
+        private async Task MoveToDirectoryAsync(IStorage<DirectoryItemWrapper> storage)
         {
-            Messenger.Send(new StopSearchMessage());
-            Messenger.Send(new TabStorageChangedMessage(directory));
-
-            Storage = directory;
+            Storage = storage;
             await InitializeDirectoryAsync();
-
-            SearchOperations.InitializeSearchData(Storage, DirectoryItems);
         }
 
         #region Open logic
@@ -309,7 +279,20 @@ namespace FileExplorer.ViewModels
         public override async void OnNavigatedTo(object parameter)
         {
             base.OnNavigatedTo(parameter);
-            await MoveToDirectoryAsync(Storage);
+
+            if (Storage is not null)
+            {
+                await MoveToDirectoryAsync(Storage);
+            }
+            else if (parameter is SearchStorageTransferObject transferredSearchData)
+            {
+                NavigateStorage(transferredSearchData.Storage);
+                DirectoryItems = transferredSearchData.Source;
+            }
+            else
+            {
+                throw new ArgumentException("Invalid parameter", nameof(parameter));
+            }
         }
 
         [RelayCommand]
@@ -317,12 +300,6 @@ namespace FileExplorer.ViewModels
         {
             //TODO: Fix this later
             await MoveToDirectoryAsync(Storage);
-        }
-
-        public override void OnNavigatedFrom()
-        {
-            Messenger.UnregisterAll(this);
-            SearchOperations.UnregisterAll();
         }
 
         public override IList<MenuFlyoutItemBase> BuildContextMenu(object? parameter = null)
@@ -357,11 +334,6 @@ namespace FileExplorer.ViewModels
 
             return menuFactory.Create(menu
                 .WithDetails(FileOperations.ShowDetailsCommand, parameter));
-        }
-
-        public override void HandleSearchMessage(ObservableRecipient recipient, SearchOperationRequiredMessage message)
-        {
-            throw new NotImplementedException();
         }
     }
 }

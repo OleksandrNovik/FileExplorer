@@ -5,6 +5,7 @@ using FileExplorer.Core.Contracts.DirectoriesNavigation;
 using FileExplorer.Core.Contracts.Factories;
 using FileExplorer.UI.Helpers;
 using Microsoft.UI.Xaml.Controls;
+using Models.Contracts.Storage;
 using Models.Storage.Windows;
 using Models.TabRelated;
 using System.Collections;
@@ -14,7 +15,7 @@ namespace FileExplorer.UI.Behaviors.Navigation
     /// <summary>
     /// Behavior that used to initiate navigation in left pane of main window
     /// </summary>
-    public class NavigationBehavior : BaseNavigationBehavior<string>
+    public class NavigationBehavior : BaseNavigationBehavior<StorageContentType>
     {
         public IRelayCommand? ItemInvokedCommand { get; set; }
 
@@ -48,7 +49,7 @@ namespace FileExplorer.UI.Behaviors.Navigation
                     ItemInvokedCommand.Execute(selectedStorage);
                 }
 
-                navigationService.NavigateTo(key, selectedStorage);
+                navigationService.NavigateTo(selectedStorage.ContentType, selectedStorage);
             }
         }
 

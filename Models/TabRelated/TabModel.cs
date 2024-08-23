@@ -22,7 +22,7 @@ namespace Models.TabRelated
         private IStorage<DirectoryItemWrapper> openedStorage;
 
         /// <summary>
-        /// Directory (or something that stores items) that is opened in the tab
+        /// Storage (or something that stores items) that is opened in the tab
         /// </summary>
         public IStorage<DirectoryItemWrapper> OpenedStorage
         {

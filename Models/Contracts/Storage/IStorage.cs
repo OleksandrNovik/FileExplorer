@@ -3,6 +3,11 @@ using System.Collections.Generic;
 
 namespace Models.Contracts.Storage
 {
+    public enum StorageContentType
+    {
+        Drives, Files
+    }
+
     /// <summary>
     /// Interface that represents basic information for a storage
     /// </summary>
@@ -23,6 +28,11 @@ namespace Models.Contracts.Storage
         /// Parent storage
         /// </summary>
         public IStorage<TElement>? Parent { get; }
+
+        /// <summary>
+        /// Content type is used to identify what kind of page is suitable to show storage
+        /// </summary>
+        public StorageContentType ContentType { get; }
 
 
         /// <summary>

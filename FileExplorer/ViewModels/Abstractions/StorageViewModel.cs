@@ -6,7 +6,6 @@ using FileExplorer.ViewModels.General;
 using Models.Contracts.Storage;
 using Models.Messages;
 using Models.Storage.Windows;
-using System;
 
 namespace FileExplorer.ViewModels.Abstractions
 {
@@ -24,20 +23,37 @@ namespace FileExplorer.ViewModels.Abstractions
             Messenger.Register<StorageViewModel, SearchOperationRequiredMessage>(this, HandleSearchMessage);
         }
 
+        /// <summary>
+        /// Gets <see cref="Storage"/> from navigation parameter if possible
+        /// </summary>
+        /// <param name="parameter"> Navigation parameter that is provided by navigation service </param>
         public virtual void OnNavigatedTo(object parameter)
         {
             if (parameter is IStorage<DirectoryItemWrapper> storage)
             {
-                Storage = storage;
-                Messenger.Send(new TabStorageChangedMessage(storage));
+                Messenger.Send(new StopSearchMessage());
+                NavigateStorage(storage);
             }
         }
 
-        public abstract void OnNavigatedFrom();
+        /// <summary>
+        /// Navigates storage item and sends message for tab to changed tab's storage item
+        /// </summary>
+        /// <param name="storage"> Storage that is navigated </param>
+        protected void NavigateStorage(IStorage<DirectoryItemWrapper> storage)
+        {
+            Storage = storage;
+            Messenger.Send(new TabStorageChangedMessage(storage));
+        }
+
+        public virtual void OnNavigatedFrom()
+        {
+            Messenger.UnregisterAll(this);
+        }
 
         public virtual void HandleSearchMessage(ObservableRecipient recipient, SearchOperationRequiredMessage message)
         {
-            throw new NotImplementedException();
+            Messenger.Send(new SearchStorageMessage(Storage, message.Options));
         }
     }
 }

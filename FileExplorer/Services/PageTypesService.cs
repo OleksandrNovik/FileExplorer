@@ -1,18 +1,16 @@
 ﻿#nullable enable
 using FileExplorer.Core.Contracts;
 using FileExplorer.Views;
+using Models.Contracts.Storage;
 using System;
 
 namespace FileExplorer.Services
 {
     public sealed class PageTypesService : IPageTypesService
     {
-        public Type GetPage(string? path)
+        public Type GetPage(StorageContentType key)
         {
-            // Empty string means no parameter, so default page should be shown (my pc)
-            var pageType = string.IsNullOrEmpty(path) ? typeof(HomePage) : typeof(DirectoryPage);
-
-            return pageType;
+            return key == StorageContentType.Drives ? typeof(HomePage) : typeof(DirectoryPage);
         }
     }
 }

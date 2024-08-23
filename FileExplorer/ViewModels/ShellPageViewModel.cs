@@ -6,12 +6,14 @@ using FileExplorer.Core.Contracts;
 using FileExplorer.Core.Contracts.DirectoriesNavigation;
 using FileExplorer.Core.Contracts.Factories;
 using FileExplorer.ViewModels.General;
+using FileExplorer.ViewModels.Search;
 using Microsoft.UI.Xaml.Controls;
 using Models;
 using Models.Contracts.Storage;
 using Models.Messages;
 using Models.ModelHelpers;
 using Models.Navigation;
+using Models.Storage.Additional;
 using Models.Storage.Windows;
 using Models.TabRelated;
 using System.Collections.Generic;
@@ -23,6 +25,7 @@ namespace FileExplorer.ViewModels
     {
         public NavigationPaneViewModel NavigationPaneViewModel { get; } = new();
         public FileOperationsViewModel FileOperationsViewModel { get; } = new();
+        public SearchOperationViewModel SearchOperationViewModel { get; } = new();
         public ITabService TabService { get; }
         public INavigationService NavigationService { get; }
 
@@ -38,7 +41,7 @@ namespace FileExplorer.ViewModels
 
             Messenger.Register<ShellPageViewModel, TabStorageChangedMessage>(this, (_, message) =>
             {
-                TabService.SelectedTab.OpenedStorage = message.Directory;
+                TabService.SelectedTab.OpenedStorage = message.Storage;
             });
 
             Messenger.Register<ShellPageViewModel, OpenTabMessage>(this, (_, message) =>
@@ -48,8 +51,27 @@ namespace FileExplorer.ViewModels
 
             Messenger.Register<ShellPageViewModel, NavigationRequiredMessage>(this, (_, message) =>
             {
-                NavigationService.NavigateTo(message.NavigatedStorage.Path, message.NavigatedStorage);
+                NavigationService.NavigateTo(message.NavigatedStorage.ContentType, message.NavigatedStorage);
             });
+
+            Messenger.Register<ShellPageViewModel, SearchStorageMessage>(this, SearchStorage);
+        }
+
+        private async void SearchStorage(ShellPageViewModel recipient, SearchStorageMessage message)
+        {
+            // Initializing search data before initiating search
+            var destination = new ConcurrentWrappersCollection();
+            var searchOptions = SearchOptions.CreateDefault(message.Options, destination);
+            SearchOperationViewModel.InitializeSearchData(message.Storage, searchOptions);
+
+            //Mark cached search result as opened 
+            TabService.SelectedTab.OpenedStorage = SearchOperationViewModel.CachedSearch;
+            // Create navigation parameter that contains destination collection and navigated storage item
+            var navParameter = new SearchStorageTransferObject(SearchOperationViewModel.CachedSearch, destination);
+
+            NavigationService.NavigateTo(SearchOperationViewModel.CachedSearch.ContentType, navParameter);
+
+            await SearchOperationViewModel.SearchAsync();
         }
 
         [RelayCommand]
@@ -66,7 +88,7 @@ namespace FileExplorer.ViewModels
         private void NavigateToTab(TabModel item)
         {
             TabService.SelectedTab = item;
-            NavigationService.NavigateTo(item.OpenedStorage.Path, item.OpenedStorage);
+            NavigationService.NavigateTo(item.OpenedStorage.ContentType, item.OpenedStorage);
             NavigationService.NotifyTabOpened(item);
 
             Messenger.Send(new TabOpenedMessage(item.OpenedStorage, item.TabHistory));

@@ -7,7 +7,7 @@ namespace FileExplorer.UI.Behaviors.Navigation
 {
     /// <summary>
     /// Base navigation behaviour for <see cref="NavigationView"/>
-    /// Contains all logic needed to perform navigation using navigation service when navigation view items are invoked
+    /// ContainsPattern all logic needed to perform navigation using navigation service when navigation view items are invoked
     /// </summary>
     /// <typeparam name="TNavigationParam"> Navigation parameter type </typeparam>
     public abstract class BaseNavigationBehavior<TNavigationParam> : Behavior<NavigationView>

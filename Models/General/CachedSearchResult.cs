@@ -2,8 +2,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Models.Contracts;
 using Models.Contracts.Storage;
+using Models.Storage.Additional;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Models.General;
@@ -18,7 +18,7 @@ public sealed class CachedSearchResult<TElement> : ObservableObject, IStorage<TE
     /// <summary>
     /// Configurations of search
     /// </summary>
-    public SearchOptionsModel SearchOptions { get; set; }
+    public SearchFilter SearchOptions { get; set; }
 
     /// <summary>
     /// Collection of items that were found during the search
@@ -30,10 +30,9 @@ public sealed class CachedSearchResult<TElement> : ObservableObject, IStorage<TE
     /// </summary>
     public bool HasCompleted { get; set; }
 
-    public CachedSearchResult(IStorage<TElement> searchCatalog, IEnqueuingCollection<TElement> destination, SearchOptionsModel options)
+    public CachedSearchResult(IStorage<TElement> searchCatalog, IEnqueuingCollection<TElement> destination)
     {
         RootCatalog = searchCatalog;
-        SearchOptions = options;
         SearchResultItems = destination;
     }
 
@@ -54,6 +53,8 @@ public sealed class CachedSearchResult<TElement> : ObservableObject, IStorage<TE
     /// </summary>
     public IStorage<TElement>? Parent => RootCatalog.Parent;
 
+    public StorageContentType ContentType => StorageContentType.Files;
+
 
     /// <summary>
     /// Enumerates found items in cached search result
@@ -65,9 +66,9 @@ public sealed class CachedSearchResult<TElement> : ObservableObject, IStorage<TE
     /// </summary>
     public IEnumerable<IStorage<TElement>> EnumerateSubDirectories() => [];
 
-    public async Task SearchAsync(IEnqueuingCollection<TElement> destination, SearchOptionsModel options, CancellationToken token)
+    public async Task SearchAsync(SearchOptions searchOptions)
     {
-        await RootCatalog.SearchAsync(destination, options, token);
+        await RootCatalog.SearchAsync(searchOptions);
     }
 
     #endregion

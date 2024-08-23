@@ -17,7 +17,7 @@ namespace FileExplorer.ViewModels.Informational
         /// <summary>
         /// Timer that counts down 2 second to auto-close info bar
         /// </summary>
-        private readonly DispatcherTimer timer;
+        private DispatcherTimer timer;
 
         /// <summary>
         /// Is info bar opened
@@ -47,7 +47,7 @@ namespace FileExplorer.ViewModels.Informational
         {
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromSeconds(2.2);
-            timer.Tick += CloseAfterTime; ;
+            timer.Tick += CloseAfterTime;
             isOpen = false;
 
             Messenger.Register<InfoBarViewModel, ShowInfoBarMessage>(this,

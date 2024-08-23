@@ -1,13 +1,11 @@
 ﻿using Helpers.General;
-using Models.Contracts;
 using Models.Contracts.Storage;
-using Models.General;
+using Models.Storage.Additional;
 using Models.Storage.Windows;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Models.Storage.Drives
@@ -17,6 +15,7 @@ namespace Models.Storage.Drives
         public string Name => "Home";
         public string Path => string.Empty;
         public IStorage<DirectoryItemWrapper> Parent => null;
+        public StorageContentType ContentType => StorageContentType.Drives;
 
         public ObservableDrivesCollection()
         {
@@ -27,6 +26,7 @@ namespace Models.Storage.Drives
 
             Items.AddRange(availableDrives);
         }
+
 
         public IEnumerable<DirectoryItemWrapper> EnumerateItems()
         {
@@ -41,17 +41,16 @@ namespace Models.Storage.Drives
 
         public IEnumerable<IStorage<DirectoryItemWrapper>> EnumerateSubDirectories() => this;
 
-        public async Task SearchAsync(IEnqueuingCollection<DirectoryItemWrapper> destination, SearchOptionsModel options, CancellationToken token)
+        public async Task SearchAsync(SearchOptions searchOptions)
         {
-            await Parallel.ForEachAsync(this, new ParallelOptions
-            {
-                CancellationToken = token,
-                MaxDegreeOfParallelism = 1
+            searchOptions.MaxDirectoriesPerThread = 10;
 
-            }, async (drive, cancellationToken) =>
+            var drivesSearch = this.Select(async drive =>
             {
-                await drive.SearchAsync(destination, options, cancellationToken);
+                await drive.SearchAsync(searchOptions);
             });
+
+            await Task.WhenAll(drivesSearch);
         }
     }
 }

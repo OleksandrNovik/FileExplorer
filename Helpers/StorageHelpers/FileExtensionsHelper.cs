@@ -7,7 +7,7 @@ namespace Helpers.StorageHelpers
     {
         public static bool HasExtension(string path, params string[] extensions)
         {
-            return extensions.Any(extension => path.EndsWith(extension, StringComparison.OrdinalIgnoreCase));
+            return extensions.ToHashSet(StringComparer.OrdinalIgnoreCase).Contains(path);
         }
 
         public static bool IsImage(string path)

@@ -1,7 +1,6 @@
 ﻿using Models.Contracts;
-using Models.General;
+using Models.Storage.Additional;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Models.ModelHelpers
@@ -13,25 +12,41 @@ namespace Models.ModelHelpers
         /// </summary>
         /// <typeparam name="TElement"> Type of element of destination collection <see cref="IEnqueuingCollection{T}"/> </typeparam>
         /// <param name="items"> Catalogs that are searched </param>
-        /// <param name="destination"> Destination collection for catalogs to fill with found values </param>
-        /// <param name="options"> Search options </param>
-        /// <param name="token"> Cancellation token  </param>
+        /// <param name="searchOptions"> Provided options for this search </param>
         public static async Task SearchCatalogsAsync<TElement>(
             this IEnumerable<ISearchCatalog<TElement>> items,
-            IEnqueuingCollection<TElement> destination,
-            SearchOptionsModel options,
-            CancellationToken token)
+            SearchOptions searchOptions)
         {
-            var parallelOption = new ParallelOptions
+            await Task.Run(async () =>
             {
-                MaxDegreeOfParallelism = 1,
-                CancellationToken = token
-            };
-            await Parallel.ForEachAsync(items, parallelOption,
-                async (subdirectory, ct) =>
-                {
-                    await subdirectory.SearchAsync(destination, options, ct);
-                });
+                await items.SearchEachCatalogAsync(searchOptions);
+
+            }, searchOptions.Token);
+        }
+
+        private static async Task SearchEachCatalogAsync<TElement>(
+            this IEnumerable<ISearchCatalog<TElement>> items,
+            SearchOptions searchOptions)
+        {
+            foreach (var subdirectory in items)
+            {
+                await subdirectory.SearchAsync(searchOptions);
+            }
+        }
+
+
+        public static async Task OptimizedSearchAsync<TElement>(
+            this ICollection<ISearchCatalog<TElement>> items,
+            SearchOptions searchOptions)
+        {
+            if (items.Count > searchOptions.MaxDirectoriesPerThread)
+            {
+                await items.SearchCatalogsAsync(searchOptions);
+            }
+            else
+            {
+                await items.SearchEachCatalogAsync(searchOptions);
+            }
         }
     }
 }

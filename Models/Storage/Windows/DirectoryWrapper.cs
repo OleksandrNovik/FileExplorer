@@ -1,13 +1,13 @@
 ﻿#nullable enable
-using Models.Contracts;
+using Helpers.General;
 using Models.Contracts.Storage;
 using Models.General;
 using Models.ModelHelpers;
+using Models.Storage.Additional;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Windows.Storage;
 using IOPath = System.IO.Path;
@@ -24,28 +24,36 @@ namespace Models.Storage.Windows
 
         #region ISearchCatalog logic
 
-        public async Task SearchAsync(IEnqueuingCollection<DirectoryItemWrapper> destination, SearchOptionsModel options, CancellationToken token)
+        public async Task SearchAsync(SearchOptions searchOptions)
         {
-            await ShallowSearchAsync(destination, options, token);
+            await ShallowSearchAsync(searchOptions);
 
-            if (options.IsNestedSearch)
+            if (searchOptions.Filter.IsNestedSearch)
             {
-                await EnumerateSubDirectories().SearchCatalogsAsync(destination, options, token);
+                var subDirectories = EnumerateSubDirectories();
+
+                if (searchOptions.OptimizationsEnabled)
+                {
+                    await subDirectories.ToArray().OptimizedSearchAsync(searchOptions);
+                }
+                else
+                {
+                    await subDirectories.SearchCatalogsAsync(searchOptions);
+                }
             }
         }
+
 
         /// <summary>
         /// Initiates shallow search (only-top level of current directory)
         /// </summary>
-        /// <param name="destination"> Destination collection to add items into </param>
-        /// <param name="options"> Search options for a current search </param>
-        /// <param name="token"> Token for canceling operation </param>
-        public async Task ShallowSearchAsync(IEnqueuingCollection<DirectoryItemWrapper> destination, SearchOptionsModel options, CancellationToken token)
+        /// <param name="searchOptions"> Provided options for this search </param>
+        public async Task ShallowSearchAsync(SearchOptions searchOptions)
         {
-            await destination.EnqueueEnumerationAsync(SearchDirectory(options), token);
+            await searchOptions.Destination.EnqueueEnumerationAsync(SearchDirectory(searchOptions.Filter), searchOptions.Token);
         }
 
-        private IEnumerable<DirectoryItemWrapper> SearchDirectory(SearchOptionsModel options)
+        private IEnumerable<DirectoryItemWrapper> SearchDirectory(SearchFilter options)
         {
             var enumeration = new EnumerationOptions
             {
@@ -63,7 +71,7 @@ namespace Models.Storage.Windows
             if (options.SearchName is not null)
             {
                 found = found.Where(item =>
-                    item.Name.Contains(options.SearchName, StringComparison.OrdinalIgnoreCase));
+                    item.Name.ContainsPattern(options.SearchName));
             }
 
             return found;
@@ -72,6 +80,7 @@ namespace Models.Storage.Windows
         #endregion
 
         public IStorage<DirectoryItemWrapper>? Parent => GetParentDirectory();
+        public StorageContentType ContentType => StorageContentType.Files;
 
         public IEnumerable<DirectoryItemWrapper> EnumerateItems()
         {

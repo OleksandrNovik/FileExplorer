@@ -10,7 +10,7 @@
     xmlns:behaviors="using:FileExplorer.UI.Behaviors"
     mc:Ignorable="d">
 
-    <InfoBar Margin="0 0 4 4"
+    <InfoBar Margin="0 0 12 12"
              VerticalAlignment="Bottom" HorizontalAlignment="Right"
              IsOpen="{x:Bind ViewModel.IsOpen, Mode=OneWay}" 
              Severity="{x:Bind ViewModel.Severity, Mode=OneWay}"
