@@ -1,11 +1,11 @@
-﻿using FileExplorer.Contracts;
+﻿using Models.Contracts;
+using Models.Enums;
 using System;
 
 namespace Models.Ranges
 {
-    public sealed class DateRange : IRange<DateTime>, IEquatable<DateRange>
+    public sealed class DateRange : IRange<DateTime>
     {
-        public static DateRange Any => new(DateTime.MinValue, DateTime.MaxValue);
         public static DateRange TodayRange => new(DateTime.Today, DateTime.Today.AddDays(1).AddSeconds(-1));
         public static DateRange YesterdayRange => new(DateTime.Today.AddDays(-1), DateTime.Today.AddSeconds(-1));
         public static DateRange ThisWeekRange
@@ -46,12 +46,23 @@ namespace Models.Ranges
 
         public DateTime Start { get; }
         public DateTime End { get; }
-
         public DateRange(DateTime start, DateTime end)
         {
             Start = start;
             End = end;
         }
+
+        public bool Satisfies(DateTime value, ExcludingOptions options)
+        {
+            return options switch
+            {
+                ExcludingOptions.Less => value <= Start,
+                ExcludingOptions.More => value > End,
+                ExcludingOptions.Within => value >= Start && value <= End,
+                _ => throw new ArgumentException("Invalid excluding options", nameof(options))
+            };
+        }
+
 
         public DateRange AddDays(int days)
         {
@@ -66,31 +77,6 @@ namespace Models.Ranges
         public DateRange AddYears(int years)
         {
             return new DateRange(Start.AddYears(years), End.AddYears(years));
-        }
-
-        /// <summary>
-        /// Decides if provided date is within range
-        /// </summary>
-        public bool Includes(DateTime value)
-        {
-            return value <= End && value >= Start;
-        }
-
-        public bool Equals(DateRange other)
-        {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return Start.Equals(other.Start) && End.Equals(other.End);
-        }
-
-        public override bool Equals(object obj)
-        {
-            return ReferenceEquals(this, obj) || obj is DateRange other && Equals(other);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Start, End);
         }
     }
 }

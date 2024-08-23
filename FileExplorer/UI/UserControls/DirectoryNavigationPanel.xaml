@@ -16,6 +16,10 @@
     <UserControl.Resources>
         <MenuFlyout x:Key="SearchOptions" Placement="BottomEdgeAlignedRight">
 
+            <MenuFlyoutItem Text="Reset search options" Command="{x:Bind ViewModel.SearchOperator.ResetOptionsCommand}"/>
+
+            <MenuFlyoutSeparator />
+
             <ToggleMenuFlyoutItem Text="All nested folders" IsChecked="{x:Bind ViewModel.SearchOperator.IsNestedSearch, Mode=TwoWay}">
                 <ToggleMenuFlyoutItem.Icon>
                     <FontIcon FontSize="14" Glyph="&#xED25;" />
@@ -49,9 +53,9 @@
                     <FontIcon FontSize="14" Glyph="&#xE97C;" />
                 </MenuFlyoutSubItem.Icon>
 
-                <MenuFlyoutSubItem.Items>
-                    <MenuFlyoutItem Text="Sizes"  />
-                </MenuFlyoutSubItem.Items>
+                <interactivity:Interaction.Behaviors>
+                    <behaviors:InitializeWithItemsBehavior MenuSubItems="{x:Bind ViewModel.SearchOperator.SizeSearchOptions}" />
+                </interactivity:Interaction.Behaviors>
             </MenuFlyoutSubItem>
 
         </MenuFlyout>

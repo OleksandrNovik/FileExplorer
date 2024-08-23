@@ -29,7 +29,7 @@
 
             <StackPanel Grid.Row="2" Orientation="Horizontal">
                 <TextBlock Text="{x:Bind Drive.DriveSpace.FreeSpace, Mode=OneWay}" />
-                <TextBlock Text="free out of" Margin="5 0" />
+                <TextBlock Text="free of" Margin="5 0" />
                 <TextBlock Text="{x:Bind Drive.DriveSpace.TotalSpace, Mode=OneWay}" />
             </StackPanel>
         </Grid>

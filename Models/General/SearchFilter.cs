@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using CommunityToolkit.Mvvm.ComponentModel;
 using Models.Ranges;
+using Models.Storage.Additional;
 using System;
 
 namespace Models.General
@@ -13,11 +14,12 @@ namespace Models.General
         public static SearchFilter Default => new()
         {
             IsNestedSearch = true,
-            AccessDateRange = DateRange.Any,
+            AccessDateChecker = RangeChecker<DateTime>.CreateForAnyValue(),
             ExtensionFilter = _ => true,
             SearchPattern = "*",
             SearchName = null,
-            OriginalSearchQuery = ""
+            OriginalSearchQuery = "",
+            SizeChecker = RangeChecker<ByteSize>.CreateForAnyValue()
         };
 
         /// <summary>
@@ -28,7 +30,9 @@ namespace Models.General
         /// <summary>
         /// Range that LastAccessDate of file needs to be in to satisfy search request 
         /// </summary>
-        public DateRange AccessDateRange { get; set; }
+        public RangeChecker<DateTime> AccessDateChecker { get; set; }
+
+        public RangeChecker<ByteSize> SizeChecker { get; set; }
 
         /// <summary>
         /// Function that filters out any files that does not have searched extension

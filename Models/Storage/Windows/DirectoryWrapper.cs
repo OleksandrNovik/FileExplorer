@@ -64,7 +64,7 @@ namespace Models.Storage.Windows
 
             var found = EnumerateItems(enumeration, options.SearchPattern)
                 // Any item that is used at provided date range
-                .Where(item => options.AccessDateRange.Includes(item.LastAccess))
+                .Where(item => options.AccessDateChecker.Satisfies(item.LastAccess))
                 // Any file types that satisfy filter
                 .Where(item => options.ExtensionFilter.Invoke(item.Name));
 

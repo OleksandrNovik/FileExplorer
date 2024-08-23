@@ -3,9 +3,11 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Models;
+using Models.Enums;
 using Models.General;
 using Models.Messages;
 using Models.Ranges;
+using Models.Storage.Additional;
 using System;
 using System.Collections.Generic;
 using PathHelper = Helpers.StorageHelpers.PathHelper;
@@ -31,62 +33,100 @@ namespace FileExplorer.ViewModels.Search
             new MenuFlyoutItemViewModel("Any")
             {
                 Command = SetDateOptionCommand,
-                CommandParameter = DateRange.Any
+                CommandParameter = RangeChecker<DateTime>.CreateForAnyValue()
             },
             new MenuFlyoutItemViewModel("Today")
             {
                 Command = SetDateOptionCommand,
-                CommandParameter = DateRange.TodayRange
+                CommandParameter = new RangeChecker<DateTime>(DateRange.TodayRange, ExcludingOptions.Within)
             },
             new MenuFlyoutItemViewModel("Yesterday")
             {
                 Command = SetDateOptionCommand,
-                CommandParameter = DateRange.YesterdayRange
+                CommandParameter = new RangeChecker<DateTime>(DateRange.YesterdayRange, ExcludingOptions.Within)
             },
             new MenuFlyoutItemViewModel("This week")
             {
                 Command = SetDateOptionCommand,
-                CommandParameter = DateRange.ThisWeekRange
+                CommandParameter = new RangeChecker<DateTime>(DateRange.ThisWeekRange, ExcludingOptions.Within)
             },
             new MenuFlyoutItemViewModel("Last week")
             {
                 Command = SetDateOptionCommand,
-                CommandParameter = DateRange.LastWeekRange
+                CommandParameter = new RangeChecker<DateTime>(DateRange.LastWeekRange, ExcludingOptions.Within)
             },
             new MenuFlyoutItemViewModel("This month")
             {
                 Command = SetDateOptionCommand,
-                CommandParameter = DateRange.ThisMonthRange
+                CommandParameter = new RangeChecker<DateTime>(DateRange.ThisMonthRange, ExcludingOptions.Within)
             },
             new MenuFlyoutItemViewModel("Last month")
             {
                 Command = SetDateOptionCommand,
-                CommandParameter = DateRange.LastMonthRange,
+                CommandParameter = new RangeChecker<DateTime>(DateRange.LastMonthRange, ExcludingOptions.Within),
             },
             new MenuFlyoutItemViewModel("This year")
             {
                 Command = SetDateOptionCommand,
-                CommandParameter = DateRange.ThisYearRange,
+                CommandParameter = new RangeChecker<DateTime>(DateRange.ThisYearRange, ExcludingOptions.Within),
             },
             new MenuFlyoutItemViewModel("Last year")
             {
                 Command = SetDateOptionCommand,
-                CommandParameter = DateRange.LastYearRange,
+                CommandParameter = new RangeChecker<DateTime>(DateRange.LastYearRange, ExcludingOptions.Within),
             },
         };
         public IEnumerable<MenuFlyoutItemViewModel> SizeSearchOptions => new List<MenuFlyoutItemViewModel>
         {
-            new MenuFlyoutItemViewModel("11111")
+            new MenuFlyoutItemViewModel("Any")
             {
-                Command = SetDateOptionCommand,
-                CommandParameter = DateRange.LastYearRange,
+                Command = SetSizeOptionCommand,
+                CommandParameter = RangeChecker<ByteSize>.CreateForAnyValue()
+            },
+            new MenuFlyoutItemViewModel("Empty ",
+                new RangeChecker<ByteSize>(ByteSizeRange.Empty, ExcludingOptions.Less))
+            {
+                Command = SetSizeOptionCommand,
+            },
+            new MenuFlyoutItemViewModel("Tiny ",
+                new RangeChecker<ByteSize>(ByteSizeRange.Tiny, ExcludingOptions.Within))
+            {
+                Command = SetSizeOptionCommand,
             },
 
+            new MenuFlyoutItemViewModel("Small ",
+                new RangeChecker<ByteSize>(ByteSizeRange.Small, ExcludingOptions.Within))
+            {
+                Command = SetSizeOptionCommand,
+            },
+
+            new MenuFlyoutItemViewModel("Medium ",
+                new RangeChecker<ByteSize>(ByteSizeRange.Medium, ExcludingOptions.Within))
+            {
+                Command = SetSizeOptionCommand,
+            },
+
+            new MenuFlyoutItemViewModel("Large ",
+                new RangeChecker<ByteSize>(ByteSizeRange.Large, ExcludingOptions.Within))
+            {
+                Command = SetSizeOptionCommand,
+            },
+
+            new MenuFlyoutItemViewModel("Huge ",
+                new RangeChecker<ByteSize>(ByteSizeRange.Huge, ExcludingOptions.Within))
+            {
+                Command = SetSizeOptionCommand,
+            },
+            new MenuFlyoutItemViewModel("Giant ",
+                new RangeChecker<ByteSize>(ByteSizeRange.Giant, ExcludingOptions.More))
+            {
+                Command = SetSizeOptionCommand,
+            },
         };
 
         [ObservableProperty]
         private string searchQuery;
-        public SearchFilter Options { get; }
+        public SearchFilter Options { get; private set; }
 
         [ObservableProperty]
         private bool isNestedSearch;
@@ -95,9 +135,16 @@ namespace FileExplorer.ViewModels.Search
         private bool isSearchRunning;
 
         [RelayCommand]
-        private void SetDateOption(DateRange range)
+        private void SetDateOption(RangeChecker<DateTime> checker)
         {
-            Options.AccessDateRange = range;
+            Options.AccessDateChecker = checker;
+            StopSearch();
+        }
+
+        [RelayCommand]
+        private void SetSizeOption(RangeChecker<ByteSize> checker)
+        {
+            Options.SizeChecker = checker;
             StopSearch();
         }
 
@@ -105,6 +152,14 @@ namespace FileExplorer.ViewModels.Search
         private void SetTypeOption(Predicate<string> extensionFilter)
         {
             Options.ExtensionFilter = extensionFilter;
+            StopSearch();
+        }
+
+        [RelayCommand]
+        private void ResetOptions()
+        {
+            Options = SearchFilter.Default;
+            IsNestedSearch = Options.IsNestedSearch;
             StopSearch();
         }
 

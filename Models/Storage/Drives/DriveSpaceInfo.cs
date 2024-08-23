@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Models.Storage.Additional;
 using System;
 using System.IO;
 
@@ -12,17 +13,17 @@ namespace Models.Storage.Drives
         /// <summary>
         /// Space that is available for user
         /// </summary>
-        public long SpaceAvailableForUser { get; }
+        public ByteSize SpaceAvailableForUser { get; }
 
         /// <summary>
         /// Total free space on drive (available for all users)
         /// </summary>
-        public long FreeSpace { get; }
+        public ByteSize FreeSpace { get; }
 
         /// <summary>
         /// Size of the drive
         /// </summary>
-        public long TotalSpace { get; }
+        public ByteSize TotalSpace { get; }
 
         /// <summary>
         /// Gets percentage of available space for a drive
@@ -34,11 +35,11 @@ namespace Models.Storage.Drives
             if (!drive.IsReady)
                 throw new ArgumentException($"{drive.Name} is not ready for use.", nameof(drive));
 
-            SpaceAvailableForUser = drive.AvailableFreeSpace;
-            FreeSpace = drive.TotalFreeSpace;
-            TotalSpace = drive.TotalSize;
+            SpaceAvailableForUser = new ByteSize(drive.AvailableFreeSpace);
+            FreeSpace = new ByteSize(drive.TotalFreeSpace);
+            TotalSpace = new ByteSize(drive.TotalSize);
 
-            AvailablePercentage = (int)((TotalSpace - FreeSpace) * 100 / TotalSpace);
+            AvailablePercentage = (int)((TotalSpace.InBytes - FreeSpace.InBytes) * 100 / TotalSpace.InBytes);
         }
 
 

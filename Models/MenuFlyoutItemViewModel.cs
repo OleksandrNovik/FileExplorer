@@ -12,9 +12,16 @@ namespace Models
         public List<MenuFlyoutItemViewModel>? Items { get; set; }
         public string? IconGlyph { get; set; }
 
+        public MenuFlyoutItemViewModel(string message, object commandParameter)
+        {
+            Text = $"{message}{commandParameter}";
+            CommandParameter = commandParameter;
+        }
+
         public MenuFlyoutItemViewModel(string text)
         {
             Text = text;
         }
+
     }
 }
