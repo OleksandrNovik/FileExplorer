@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using Models.Storage.Additional;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -13,9 +14,12 @@ namespace Models.Storage.Windows
         private StorageFile? asStorageFile;
         public FileWrapper() { }
 
-        public FileWrapper(FileInfo info) : base(info) { }
+        public FileWrapper(FileInfo info) : base(info)
+        {
+            Size = new ByteSize(info.Length);
+        }
 
-        public FileWrapper(string path) : base(new FileInfo(path)) { }
+        public FileWrapper(string path) : this(new FileInfo(path)) { }
 
         public async Task LaunchAsync()
         {

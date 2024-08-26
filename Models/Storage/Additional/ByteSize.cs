@@ -61,17 +61,17 @@ namespace Models.Storage.Additional
 
         public static bool operator <(ByteSize a, ByteSize b)
         {
-            return a.CompareTo(b) < 0;
+            return a is not null && a.CompareTo(b) < 0;
         }
 
         public static bool operator >(ByteSize a, ByteSize b)
         {
-            return a.CompareTo(b) > 0;
+            return a is not null && a.CompareTo(b) > 0;
         }
 
         public static bool operator ==(ByteSize a, ByteSize b)
         {
-            return a.CompareTo(b) == 0;
+            return a is not null && a.CompareTo(b) == 0;
         }
 
         public static bool operator !=(ByteSize a, ByteSize b)

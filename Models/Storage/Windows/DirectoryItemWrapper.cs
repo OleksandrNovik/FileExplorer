@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using Microsoft.UI.Xaml.Media.Imaging;
 using Models.Storage.Abstractions;
+using Models.Storage.Additional;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -16,6 +17,7 @@ namespace Models.Storage.Windows
         public FileAttributes Attributes => info.Attributes;
 
         public DateTime LastAccess => info.LastAccessTime;
+        public ByteSize? Size { get; protected set; }
 
         /// <summary>
         /// Empty constructor to create empty wrapper
@@ -33,7 +35,7 @@ namespace Models.Storage.Windows
         }
 
         /// <summary>
-        /// When physical item is changed sets new <see cref="Path"/> and <see cref="StorageWrappers.DirectoryItemWrapper.Name"/> for this wrapper
+        /// When physical item is changed sets new Path and <see cref="StorageWrappers.DirectoryItemWrapper.Name"/> for this wrapper
         /// </summary>
         protected void InitializeData()
         {

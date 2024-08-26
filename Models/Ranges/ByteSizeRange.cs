@@ -51,13 +51,13 @@ namespace Models.Ranges
             Start = start;
             End = end;
         }
-        public bool Satisfies(ByteSize value, ExcludingOptions options)
+        public bool Satisfies(ByteSize? value, ExcludingOptions options)
         {
             return options switch
             {
                 ExcludingOptions.Less => value <= Start,
                 ExcludingOptions.More => value > End,
-                ExcludingOptions.Within => End is not null && value >= Start && value <= End,
+                ExcludingOptions.Within => value >= Start && value <= End,
                 _ => throw new ArgumentException("Invalid excluding options", nameof(options))
             };
         }

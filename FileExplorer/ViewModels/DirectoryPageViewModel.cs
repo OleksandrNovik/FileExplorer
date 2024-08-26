@@ -15,11 +15,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using DirectoryItemWrapper = Models.Storage.Windows.DirectoryItemWrapper;
-using FileAttributes = System.IO.FileAttributes;
 
 namespace FileExplorer.ViewModels
 {
@@ -66,11 +64,9 @@ namespace FileExplorer.ViewModels
         /// </summary>
         private async Task InitializeDirectoryAsync()
         {
-            DirectoryItems = new ConcurrentWrappersCollection();
-            var directoryContent = Storage.EnumerateItems()
-                .Where(i => (i.Attributes & FileAttributes.System) == 0);
+            DirectoryItems = new ConcurrentWrappersCollection(Storage.EnumerateItems());
 
-            await DirectoryItems.EnqueueEnumerationAsync(directoryContent, CancellationToken.None);
+            await DirectoryItems.UpdateIconsAsync(90, CancellationToken.None);
 
             SelectedItems.Clear();
         }

@@ -1,4 +1,5 @@
-﻿using Models.Contracts;
+﻿#nullable enable
+using Models.Contracts;
 using Models.Enums;
 using System;
 
@@ -8,7 +9,7 @@ namespace Models.Ranges
     {
         private readonly IRange<T> range;
         private readonly ExcludingOptions options;
-        private Predicate<T> predicate;
+        private Predicate<T?> predicate;
 
         /// <summary>
         /// Creates checker that accepts any value provided for checking 
@@ -30,7 +31,7 @@ namespace Models.Ranges
             predicate = value => range.Satisfies(value, options);
         }
 
-        public bool Satisfies(T value)
+        public bool Satisfies(T? value)
         {
             return predicate(value);
         }

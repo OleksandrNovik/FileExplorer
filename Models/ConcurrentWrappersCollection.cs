@@ -13,6 +13,10 @@ namespace Models
     /// </summary>
     public class ConcurrentWrappersCollection : ObservableCollection<DirectoryItemWrapper>, IEnqueuingCollection<DirectoryItemWrapper>
     {
+        public ConcurrentWrappersCollection() { }
+
+        public ConcurrentWrappersCollection(IEnumerable<DirectoryItemWrapper> enumerable) : base(enumerable) { }
+
         /// <summary>
         /// Enqueue adding enumeration of <see cref="DirectoryItemWrapper"/> in main thread
         /// Also updates icons of added items
@@ -31,6 +35,17 @@ namespace Models
                     await item.UpdateThumbnailAsync(90);
                 });
             }
+        }
+
+        public async Task UpdateIconsAsync(int size, CancellationToken token)
+        {
+            await Parallel.ForEachAsync(Items, token, async (item, ct) =>
+            {
+                await ThreadingHelper.EnqueueAsync(async () =>
+                {
+                    await item.UpdateThumbnailAsync(size);
+                });
+            });
         }
     }
 }

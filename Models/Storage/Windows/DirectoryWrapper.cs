@@ -44,6 +44,11 @@ namespace Models.Storage.Windows
         }
 
 
+        public async Task<DirectoryItemWrapper[]> GetItemsAsync()
+        {
+            return await Task.Run(() => EnumerateItems().ToArray());
+        }
+
         /// <summary>
         /// Initiates shallow search (only-top level of current directory)
         /// </summary>
@@ -63,6 +68,8 @@ namespace Models.Storage.Windows
             };
 
             var found = EnumerateItems(enumeration, options.SearchPattern)
+                // Any item that has size in range
+                .Where(item => options.SizeChecker.Satisfies(item.Size))
                 // Any item that is used at provided date range
                 .Where(item => options.AccessDateChecker.Satisfies(item.LastAccess))
                 // Any file types that satisfy filter
