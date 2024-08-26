@@ -3,9 +3,12 @@ using FileExplorer.Core.Contracts.Factories;
 using FileExplorer.ViewModels.Abstractions;
 using Helpers.General;
 using Microsoft.UI.Xaml.Controls;
+using Models.ModelHelpers;
 using Models.Storage.Drives;
+using Models.Storage.Windows;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace FileExplorer.ViewModels
@@ -13,9 +16,11 @@ namespace FileExplorer.ViewModels
     public sealed partial class HomePageViewModel : StorageViewModel
     {
         public ObservableDrivesCollection Drives { get; private set; }
+        public List<DirectoryWrapper> Libraries { get; }
 
         public HomePageViewModel(IMenuFlyoutFactory factory) : base(factory)
         {
+            Libraries = KnownFoldersHelper.Libraries.ToList();
         }
 
         [RelayCommand]
@@ -26,6 +31,14 @@ namespace FileExplorer.ViewModels
                 await ThreadingHelper.EnqueueAsync(async () =>
                 {
                     await drive.UpdateThumbnailAsync(40);
+                });
+            }
+
+            foreach (var library in Libraries)
+            {
+                await ThreadingHelper.EnqueueAsync(async () =>
+                {
+                    await library.UpdateThumbnailAsync(80);
                 });
             }
         }

@@ -22,7 +22,7 @@ namespace Models.ModelHelpers
         {
             string label = string.IsNullOrEmpty(drive.VolumeLabel) ? TypeToLabelMap[drive.DriveType] : drive.VolumeLabel;
 
-            return label + $"({drive.Name.TrimEnd('\\')})";
+            return label + $" ({drive.Name.TrimEnd('\\')})";
         }
     }
 }

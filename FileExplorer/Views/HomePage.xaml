@@ -10,6 +10,7 @@
     xmlns:userControls="using:FileExplorer.UI.UserControls"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:general="using:FileExplorer.UI.Behaviors.General"
+    xmlns:windows="using:Models.Storage.Windows"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -17,15 +18,70 @@
         <DataTemplate x:DataType="drives:DriveWrapper" x:Key="DrivesTemplate">
             <userControls:DriveInformationItem Drive="{x:Bind}" />
         </DataTemplate>
+
+        <DataTemplate x:DataType="windows:DirectoryWrapper" x:Key="LibrariesTemplate">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Image Source="{x:Bind Thumbnail.Source}" Height="80" />
+                <TextBlock Grid.Row="1" Text="{x:Bind Name}" HorizontalAlignment="Stretch" />
+            </Grid>
+        </DataTemplate>
     </Page.Resources>
 
     <Grid>
-        <GridView ItemsSource="{x:Bind ViewModel.Drives}" 
-                  SelectionMode="Single"
-                  ItemTemplate="{StaticResource DrivesTemplate}">
-            <interactivity:Interaction.Behaviors>
-                <general:LoadingCommandBehavior Command="{x:Bind ViewModel.InitializeCommand}" />
-            </interactivity:Interaction.Behaviors>
-        </GridView>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Expander HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch" Header="Libraries">
+            <Expander.Resources>
+                <SolidColorBrush x:Key="customExpanderHeaderBackgroundColor" Color="Transparent"/>
+                <StaticResource x:Key="ExpanderHeaderBackground" ResourceKey="customExpanderHeaderBackgroundColor" />
+            </Expander.Resources>
+
+            <GridView ItemsSource="{x:Bind ViewModel.Libraries}"
+                                       SelectionMode="Single"
+                                       ItemTemplate="{StaticResource LibrariesTemplate}"
+                                       HorizontalContentAlignment="Stretch"
+                                       HorizontalAlignment="Stretch" />
+
+            <!--<ItemsRepeater ItemsSource="{x:Bind ViewModel.Libraries}"
+                           ItemTemplate="{StaticResource LibrariesTemplate}">
+                <ItemsRepeater.Layout>
+                    <UniformGridLayout Orientation="Horizontal" ItemsJustification="SpaceAround"  />
+                </ItemsRepeater.Layout>
+            </ItemsRepeater>-->
+        </Expander>
+
+        <Expander Grid.Row="1" HorizontalContentAlignment="Left" HorizontalAlignment="Stretch" Header="Drives">
+            <Expander.Resources>
+                <SolidColorBrush x:Key="customExpanderHeaderBackgroundColor" Color="Transparent"/>
+                <StaticResource x:Key="ExpanderHeaderBackground" ResourceKey="customExpanderHeaderBackgroundColor" />
+            </Expander.Resources>
+
+            <GridView ItemsSource="{x:Bind ViewModel.Drives}" 
+                      SelectionMode="Single"
+                      ItemTemplate="{StaticResource DrivesTemplate}"
+                      />
+
+        </Expander>
+
+        <Expander Grid.Row="2" HorizontalContentAlignment="Left" HorizontalAlignment="Stretch" Header="Recent">
+            <Expander.Resources>
+                <SolidColorBrush x:Key="customExpanderHeaderBackgroundColor" Color="Transparent"/>
+                <StaticResource x:Key="ExpanderHeaderBackground" ResourceKey="customExpanderHeaderBackgroundColor" />
+            </Expander.Resources>
+
+        </Expander>
+
+        <interactivity:Interaction.Behaviors>
+            <general:LoadingCommandBehavior Command="{x:Bind ViewModel.InitializeCommand}" />
+        </interactivity:Interaction.Behaviors>
     </Grid>
 </Page>

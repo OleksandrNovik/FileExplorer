@@ -1,6 +1,6 @@
-﻿using CommunityToolkit.WinUI.UI.Controls;
-using Microsoft.UI.Input;
+﻿using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Input;
+using GridSplitter = CommunityToolkit.WinUI.UI.Controls.GridSplitter;
 
 namespace FileExplorer.UI
 {

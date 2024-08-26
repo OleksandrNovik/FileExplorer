@@ -43,12 +43,6 @@ namespace Models.Storage.Windows
             }
         }
 
-
-        public async Task<DirectoryItemWrapper[]> GetItemsAsync()
-        {
-            return await Task.Run(() => EnumerateItems().ToArray());
-        }
-
         /// <summary>
         /// Initiates shallow search (only-top level of current directory)
         /// </summary>

@@ -26,7 +26,7 @@
         </Style>
         <DataTemplate x:Key="GridItemTemplate" x:DataType="windows:DirectoryItemWrapper">
             <Grid  Padding="10  20 10 10" 
-                   ToolTipService.ToolTip="{x:Bind Path}"
+                   ToolTipService.ToolTip="{x:Bind Size}"
                    ToolTipService.Placement="Bottom">
 
                 <Grid.RowDefinitions>

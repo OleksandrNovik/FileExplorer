@@ -6,51 +6,52 @@
     xmlns:local="using:FileExplorer.Views.Settings.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:controls1="using:CommunityToolkit.WinUI.Controls"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
         <ScrollViewer>
             <StackPanel>
-                <controls:SettingsCard
+                <controls1:SettingsCard
                     Header="Show hidden items"
                     Description="Show hidden files and folders">
-                    <controls:SettingsCard.HeaderIcon>
+                    <controls1:SettingsCard.HeaderIcon>
                         <FontIcon FontSize="14" Glyph="&#xE7B3;" />
-                    </controls:SettingsCard.HeaderIcon>
+                    </controls1:SettingsCard.HeaderIcon>
 
-                    <controls:SettingsCard.Content>
+                    <controls1:SettingsCard.Content>
                         <ToggleSwitch IsOn="{x:Bind ViewModel.PageSettings.ShowHiddenFiles}" />
-                    </controls:SettingsCard.Content>
+                    </controls1:SettingsCard.Content>
 
-                </controls:SettingsCard>
+                </controls1:SettingsCard>
 
-                <controls:SettingsCard
+                <controls1:SettingsCard
                     Header="Hide system files"
                     Description="Hides protected system files (Recommended setting)">
-                    <controls:SettingsCard.HeaderIcon>
+                    <controls1:SettingsCard.HeaderIcon>
                         <FontIcon FontSize="14" Glyph="&#xECE4;" />
-                    </controls:SettingsCard.HeaderIcon>
+                    </controls1:SettingsCard.HeaderIcon>
 
-                    <controls:SettingsCard.Content>
+                    <controls1:SettingsCard.Content>
                         <ToggleSwitch IsOn="{x:Bind ViewModel.PageSettings.HideSystemFiles}" />
-                    </controls:SettingsCard.Content>
+                    </controls1:SettingsCard.Content>
 
-                </controls:SettingsCard>
+                </controls1:SettingsCard>
 
-                <controls:SettingsCard
+                <controls1:SettingsCard
                     Header="Show extensions"
                     Description="Shows extensions for known file types">
-                    <controls:SettingsCard.HeaderIcon>
+                    <controls1:SettingsCard.HeaderIcon>
                         <FontIcon FontSize="14" Glyph="&#xE9F9;" />
-                    </controls:SettingsCard.HeaderIcon>
+                    </controls1:SettingsCard.HeaderIcon>
 
-                    <controls:SettingsCard.Content>
+                    <controls1:SettingsCard.Content>
                         <ToggleSwitch IsOn="{x:Bind ViewModel.PageSettings.ShowFileExtensions}" />
-                    </controls:SettingsCard.Content>
+                    </controls1:SettingsCard.Content>
 
-                </controls:SettingsCard>
+                </controls1:SettingsCard>
             </StackPanel>
         </ScrollViewer>
     </Grid>

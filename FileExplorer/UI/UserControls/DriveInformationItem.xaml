@@ -8,29 +8,32 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Width="300"> 
+    <Grid Width="300" Padding="10 12"> 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="2.5*" />
+            <ColumnDefinition Width="3.7*" />
         </Grid.ColumnDefinitions>
 
-        <Image Source="{x:Bind Drive.Thumbnail.Source, Mode=OneWay}" Height="40" />
+        <Image 
+            Source="{x:Bind Drive.Thumbnail.Source, Mode=OneWay}"
+            VerticalAlignment="Center" HorizontalAlignment="Center"
+               Height="40" />
 
         <Grid Column="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="1.4*" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <TextBlock Text="{x:Bind Drive.FriendlyName, Mode=OneWay}" />
+            <TextBlock Text="{x:Bind Drive.FriendlyName, Mode=OneWay}" Style="{StaticResource BodyTextBlockStyle}" FontSize="16" />
 
             <ProgressBar Grid.Row="1" Value="{x:Bind Drive.DriveSpace.AvailablePercentage, Mode=OneWay}" Height="20" />
 
             <StackPanel Grid.Row="2" Orientation="Horizontal">
-                <TextBlock Text="{x:Bind Drive.DriveSpace.FreeSpace, Mode=OneWay}" />
-                <TextBlock Text="free of" Margin="5 0" />
-                <TextBlock Text="{x:Bind Drive.DriveSpace.TotalSpace, Mode=OneWay}" />
+                <TextBlock Text="{x:Bind Drive.DriveSpace.FreeSpace, Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" />
+                <TextBlock Text="free of" Margin="5 0" Style="{StaticResource CaptionTextBlockStyle}" />
+                <TextBlock Text="{x:Bind Drive.DriveSpace.TotalSpace, Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" />
             </StackPanel>
         </Grid>
     </Grid>
