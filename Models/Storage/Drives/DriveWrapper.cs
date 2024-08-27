@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using CommunityToolkit.Mvvm.ComponentModel;
 using Models.Contracts.Storage;
+using Models.Enums;
 using Models.ModelHelpers;
 using Models.Storage.Abstractions;
 using Models.Storage.Additional;
@@ -43,7 +44,7 @@ namespace Models.Storage.Drives
             Thumbnail.ItemPath = rootDirectory.Path;
         }
 
-        public void Rename()
+        public override void Rename()
         {
             driveInfo.VolumeLabel = Name;
             FriendlyName = driveInfo.GetFriendlyName();

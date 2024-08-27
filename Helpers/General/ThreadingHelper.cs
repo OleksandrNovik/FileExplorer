@@ -7,8 +7,12 @@ namespace Helpers.General
 {
     public static class ThreadingHelper
     {
-        private static readonly DispatcherQueue dispatcher = DispatcherQueue.GetForCurrentThread();
+        private static DispatcherQueue dispatcher;
 
+        public static void InitializeForMainThread()
+        {
+            dispatcher = DispatcherQueue.GetForCurrentThread();
+        }
         /// <summary>
         /// Runs asynchronous call on UI thread
         /// </summary>

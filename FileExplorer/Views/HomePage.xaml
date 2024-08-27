@@ -11,6 +11,7 @@
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:general="using:FileExplorer.UI.Behaviors.General"
     xmlns:windows="using:Models.Storage.Windows"
+    xmlns:collections="using:FileExplorer.UI.Behaviors.Collections"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -67,8 +68,12 @@
 
             <GridView ItemsSource="{x:Bind ViewModel.Drives}" 
                       SelectionMode="Single"
-                      ItemTemplate="{StaticResource DrivesTemplate}"
-                      />
+                      ItemTemplate="{StaticResource DrivesTemplate}">
+
+                <!--<interactivity:Interaction.Behaviors>
+                    <collections:DirectoryItemDoubleClickBehavior Command="{x:Bind ViewModel}" />
+                </interactivity:Interaction.Behaviors>-->
+            </GridView>
 
         </Expander>
 

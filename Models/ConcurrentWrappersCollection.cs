@@ -1,5 +1,6 @@
 ﻿using Helpers.General;
 using Models.Contracts;
+using Models.Contracts.Storage;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading;
@@ -11,19 +12,19 @@ namespace Models
     /// <summary>
     /// Wrapper on <see cref="ObservableCollection{T}"/> to add <see cref="DirectoryItemWrapper"/> asynchronously
     /// </summary>
-    public class ConcurrentWrappersCollection : ObservableCollection<DirectoryItemWrapper>, IEnqueuingCollection<DirectoryItemWrapper>
+    public class ConcurrentWrappersCollection : ObservableCollection<IDirectoryItem>, IEnqueuingCollection<IDirectoryItem>
     {
         public ConcurrentWrappersCollection() { }
 
-        public ConcurrentWrappersCollection(IEnumerable<DirectoryItemWrapper> enumerable) : base(enumerable) { }
+        public ConcurrentWrappersCollection(IEnumerable<IDirectoryItem> enumerable) : base(enumerable) { }
 
         /// <summary>
-        /// Enqueue adding enumeration of <see cref="DirectoryItemWrapper"/> in main thread
+        /// Enqueue adding enumeration of <see cref="IDirectoryItem"/> in main thread
         /// Also updates icons of added items
         /// </summary>
         /// <param name="items"> Items to add to the directory content collection </param>
         /// <param name="token"> Token to cancel operation if needed </param>
-        public async Task EnqueueEnumerationAsync(IEnumerable<DirectoryItemWrapper> items, CancellationToken token)
+        public async Task EnqueueEnumerationAsync(IEnumerable<IDirectoryItem> items, CancellationToken token)
         {
             foreach (var item in items)
             {

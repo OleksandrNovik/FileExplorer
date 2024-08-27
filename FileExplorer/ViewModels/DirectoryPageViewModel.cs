@@ -23,18 +23,16 @@ namespace FileExplorer.ViewModels
 {
     public sealed partial class DirectoryPageViewModel : StorageViewModel
     {
-        public FileOperationsViewModel FileOperations { get; } = new();
+        public FileOperationsViewModel FileOperations { get; }
+        public ObservableCollection<IDirectoryItem> SelectedItems => FileOperations.OperatedItems;
 
         [ObservableProperty]
         private ConcurrentWrappersCollection directoryItems;
 
-        [ObservableProperty]
-        private ObservableCollection<DirectoryItemWrapper> selectedItems;
-
-        public DirectoryPageViewModel(IMenuFlyoutFactory factory) : base(factory)
+        public DirectoryPageViewModel(FileOperationsViewModel fileOperations, IMenuFlyoutFactory factory) : base(factory)
         {
-            SelectedItems = [];
-            SelectedItems.CollectionChanged += NotifyCommandsCanExecute;
+            FileOperations = fileOperations;
+            FileOperations.OperatedItems.CollectionChanged += NotifyCommandsCanExecute;
 
             Messenger.Register<DirectoryPageViewModel, FileOpenRequiredMessage>(this, OnFileOpenRequired);
         }
@@ -195,7 +193,7 @@ namespace FileExplorer.ViewModels
         /// <param name="item"> Wrapper item to delete </param>
         /// <param name="isPermanent"> Is item being deleted permanently or not </param>
         /// <returns> true if item is successfully deleted, otherwise - false </returns>
-        private async Task TryDeleteItem(DirectoryItemWrapper item, bool isPermanent = false)
+        private async Task TryDeleteItem(IDirectoryItem item, bool isPermanent = false)
         {
             await FileOperations.EndRenamingIfNeeded(item);
 
@@ -267,9 +265,9 @@ namespace FileExplorer.ViewModels
         #endregion
 
         [RelayCommand(CanExecute = nameof(HasSelectedItems))]
-        private async Task ShowDetailsOfSelectedItem()
+        private void ShowDetailsOfSelectedItem()
         {
-            await FileOperations.ShowDetails(SelectedItems[0]);
+            //await FileOperations.ShowDetails(FileOperations.OperatedItems[0]);
         }
 
         public override async void OnNavigatedTo(object parameter)

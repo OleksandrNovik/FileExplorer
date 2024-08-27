@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.Xaml.Interactivity;
 using System.Collections;
 
-namespace FileExplorer.UI.Behaviors
+namespace FileExplorer.UI.Behaviors.Collections
 {
     /// <summary>
     /// Behaviour to bind list property to a multiple selection items from <see cref="GridView"/>

@@ -30,6 +30,8 @@ namespace Models.Storage.Abstractions
         /// </summary>
         public string Path { get; protected set; }
 
+        public abstract void Rename();
+
         /// <summary>
         /// Saves old name into backup and starts renaming item if it was not already renamed
         /// </summary>
@@ -43,7 +45,7 @@ namespace Models.Storage.Abstractions
         }
 
         /// <summary>
-        /// Cancels renaming by restoring old name (this method is usefull when new name is invalid) 
+        /// Cancels renaming by restoring old name (this method is useful when new name is invalid) 
         /// </summary>
         public void CancelEdit()
         {

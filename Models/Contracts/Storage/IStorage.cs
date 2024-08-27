@@ -1,12 +1,9 @@
 ﻿#nullable enable
+using Models.Enums;
 using System.Collections.Generic;
 
 namespace Models.Contracts.Storage
 {
-    public enum StorageContentType
-    {
-        Drives, Files
-    }
 
     /// <summary>
     /// Interface that represents basic information for a storage

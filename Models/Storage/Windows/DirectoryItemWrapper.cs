@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using Microsoft.UI.Xaml.Media.Imaging;
+using Models.Contracts.Storage;
 using Models.Storage.Abstractions;
 using Models.Storage.Additional;
 using System;
@@ -11,11 +12,10 @@ using IOPath = System.IO.Path;
 
 namespace Models.Storage.Windows
 {
-    public abstract class DirectoryItemWrapper : InteractiveStorageItem
+    public abstract class DirectoryItemWrapper : InteractiveStorageItem, IDirectoryItem
     {
         protected FileSystemInfo info;
         public FileAttributes Attributes => info.Attributes;
-
         public DateTime LastAccess => info.LastAccessTime;
         public ByteSize? Size { get; protected set; }
 
@@ -44,24 +44,27 @@ namespace Models.Storage.Windows
             Thumbnail.ItemPath = Path;
         }
 
-        /// <summary>
-        /// Copy item from current directory to a destination directory
-        /// </summary>
-        /// <param name="destination"> Path to the destination directory </param>
+        /// <inheritdoc />
         public abstract void Copy(string destination);
 
-        public virtual void Rename()
+        /// <inheritdoc />
+        public override void Rename()
         {
-            var elementsDirectory = GetParentDirectory();
-            ArgumentNullException.ThrowIfNull(elementsDirectory);
-            Move(elementsDirectory.Path);
+            RenamePhysical();
             EndEdit();
         }
 
         /// <summary>
-        /// Moves item from current directory to destination
+        /// Renames physical item that this wrapper is representing
         /// </summary>
-        /// <param name="destination"> Path of a destination directory </param>
+        protected void RenamePhysical()
+        {
+            var elementsDirectory = GetParentDirectory();
+            ArgumentNullException.ThrowIfNull(elementsDirectory);
+            Move(elementsDirectory.Path);
+        }
+
+        /// <inheritdoc />
         public abstract void Move(string destination);
 
         /// <summary>
@@ -148,12 +151,7 @@ namespace Models.Storage.Windows
 
         public override async Task UpdateThumbnailAsync(int size)
         {
-            if (HasExtensionChanged)
-            {
-                await base.UpdateThumbnailAsync(size);
-            }
+            await base.UpdateThumbnailAsync(size);
         }
-
-        public bool HasExtensionChanged => IOPath.GetExtension(backupName) != IOPath.GetExtension((string?)Name);
     }
 }

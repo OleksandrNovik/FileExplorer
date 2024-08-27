@@ -16,6 +16,7 @@
     xmlns:contextMenu="using:FileExplorer.UI.Behaviors.ContextMenu"
     xmlns:userControls="using:FileExplorer.UI.UserControls"
     xmlns:windows="using:Models.Storage.Windows"
+    xmlns:collections="using:FileExplorer.UI.Behaviors.Collections"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -73,11 +74,6 @@
                         </interactivity:Interaction.Behaviors>
                     </TextBox>
                 </Grid>
-
-                <interactivity:Interaction.Behaviors>
-                    <generalBehaviors:DoubleClickBehavior Command="{StaticResource OpenCommand}" CommandParameter="{x:Bind}"  />
-                </interactivity:Interaction.Behaviors>
-
             </Grid>
         </DataTemplate>
     </Page.Resources>
@@ -214,7 +210,9 @@
 
                 <interactivity:Interaction.Behaviors>
 
-                    <behaviors:MultiSelectionBehavior SelectedItems="{x:Bind ViewModel.SelectedItems, Mode=OneWay}" />
+                    <collections:MultiSelectionBehavior SelectedItems="{x:Bind ViewModel.SelectedItems, Mode=OneWay}" />
+
+                    <collections:DirectoryItemDoubleClickBehavior Command="{x:Bind ViewModel.FileOperations.OpenCommand}" />
 
                     <contextMenu:GridViewContextDialogBehavior />
 

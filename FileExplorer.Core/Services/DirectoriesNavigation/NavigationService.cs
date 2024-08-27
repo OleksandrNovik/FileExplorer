@@ -2,7 +2,7 @@
 using FileExplorer.Core.Contracts;
 using FileExplorer.Core.Contracts.DirectoriesNavigation;
 using FileExplorer.Core.Services.General;
-using Models.Contracts.Storage;
+using Models.Enums;
 using Models.TabRelated;
 using System;
 

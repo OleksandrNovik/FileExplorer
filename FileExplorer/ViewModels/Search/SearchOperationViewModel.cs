@@ -47,7 +47,7 @@ namespace FileExplorer.ViewModels.Search
 
             try
             {
-                CachedSearch.SearchOptions = currentSearchOptions.Filter;
+                CachedSearch.Filter = currentSearchOptions.Filter;
 
                 await CachedSearch.SearchAsync(currentSearchOptions);
 

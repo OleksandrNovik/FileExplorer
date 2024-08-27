@@ -5,7 +5,7 @@ using FileExplorer.Core.Contracts.DirectoriesNavigation;
 using FileExplorer.Core.Contracts.Factories;
 using FileExplorer.UI.Helpers;
 using Microsoft.UI.Xaml.Controls;
-using Models.Contracts.Storage;
+using Models.Enums;
 using Models.Storage.Windows;
 using Models.TabRelated;
 using System.Collections;

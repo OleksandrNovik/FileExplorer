@@ -46,13 +46,13 @@ namespace FileExplorer.ViewModels.General
         [RelayCommand]
         public async Task InitializeAsync()
         {
-            foreach (var navigationItem in NavigationItems)
+            await Parallel.ForEachAsync(NavigationItems, async (navItem, token) =>
             {
                 await ThreadingHelper.EnqueueAsync(async () =>
                 {
-                    await navigationItem.UpdateThumbnailAsync(15);
+                    await navItem.UpdateThumbnailAsync(15);
                 });
-            }
+            });
         }
 
     }

@@ -9,10 +9,12 @@ using FileExplorer.Core.Services.Factories;
 using FileExplorer.Core.Services.Settings;
 using FileExplorer.Services;
 using FileExplorer.ViewModels;
+using FileExplorer.ViewModels.General;
 using FileExplorer.ViewModels.Informational;
 using FileExplorer.ViewModels.Settings;
 using FileExplorer.Views;
 using Helpers.Application;
+using Helpers.General;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.UI.Xaml;
@@ -43,6 +45,8 @@ namespace FileExplorer
         /// </summary>
         public App()
         {
+            ThreadingHelper.InitializeForMainThread();
+
             this.Host = Hosting.CreateDefaultBuilder()
                 .UseContentRoot(AppContext.BaseDirectory)
                 .ConfigureServices((context, services) =>
@@ -83,6 +87,9 @@ namespace FileExplorer
                     // Informational
                     services.AddTransient<DirectoryItemInfoViewModel>();
                     services.AddTransient<InfoBarViewModel>();
+
+                    //File operations
+                    services.AddSingleton<FileOperationsViewModel>();
 
                 })
                 .Build();

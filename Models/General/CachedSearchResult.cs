@@ -1,14 +1,18 @@
 ﻿#nullable enable
-using CommunityToolkit.Mvvm.ComponentModel;
 using Models.Contracts;
 using Models.Contracts.Storage;
+using Models.Enums;
 using Models.Storage.Additional;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Models.General;
 
-public sealed class CachedSearchResult<TElement> : ObservableObject, IStorage<TElement>
+/// <summary>
+/// Class that represents search result and contains all necessary information about search result itself (including found items)
+/// </summary>
+/// <typeparam name="TElement"> Type of searched element </typeparam>
+public sealed class CachedSearchResult<TElement> : IStorage<TElement>
 {
     /// <summary>
     /// Cached search result from root catalog 
@@ -18,7 +22,7 @@ public sealed class CachedSearchResult<TElement> : ObservableObject, IStorage<TE
     /// <summary>
     /// Configurations of search
     /// </summary>
-    public SearchFilter SearchOptions { get; set; }
+    public SearchFilter Filter { get; set; }
 
     /// <summary>
     /// Collection of items that were found during the search
@@ -26,7 +30,7 @@ public sealed class CachedSearchResult<TElement> : ObservableObject, IStorage<TE
     public ICollection<TElement> SearchResultItems { get; set; }
 
     /// <summary>
-    /// Is search fully completed (no folders to look)
+    /// Is search fully completed
     /// </summary>
     public bool HasCompleted { get; set; }
 
@@ -39,7 +43,7 @@ public sealed class CachedSearchResult<TElement> : ObservableObject, IStorage<TE
     #region Implementation to be a storage
 
     /// <summary>
-    /// Search result always returns name to its  <see cref="RootCatalog"/>
+    /// Search result always returns name to its <see cref="RootCatalog"/>
     /// </summary>
     public string Name => RootCatalog.Name;
 
@@ -53,6 +57,7 @@ public sealed class CachedSearchResult<TElement> : ObservableObject, IStorage<TE
     /// </summary>
     public IStorage<TElement>? Parent => RootCatalog.Parent;
 
+    /// <inheritdoc />
     public StorageContentType ContentType => StorageContentType.Files;
 
 

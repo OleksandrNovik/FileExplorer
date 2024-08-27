@@ -26,21 +26,21 @@ namespace FileExplorer.ViewModels
         [RelayCommand]
         private async Task InitializeAsync()
         {
-            foreach (var drive in Drives)
+            await Parallel.ForEachAsync(Drives, async (drive, token) =>
             {
                 await ThreadingHelper.EnqueueAsync(async () =>
                 {
                     await drive.UpdateThumbnailAsync(40);
                 });
-            }
+            });
 
-            foreach (var library in Libraries)
+            await Parallel.ForEachAsync(Libraries, async (library, token) =>
             {
                 await ThreadingHelper.EnqueueAsync(async () =>
                 {
                     await library.UpdateThumbnailAsync(80);
                 });
-            }
+            });
         }
 
         public override void OnNavigatedTo(object parameter)

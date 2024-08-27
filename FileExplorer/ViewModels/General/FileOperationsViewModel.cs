@@ -5,28 +5,73 @@ using Models.Contracts.Storage;
 using Models.Messages;
 using Models.Storage.Windows;
 using System;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace FileExplorer.ViewModels.General
 {
     public sealed partial class FileOperationsViewModel : ObservableRecipient
     {
-        [RelayCommand]
-        public async Task Open(DirectoryItemWrapper wrapper)
+        private IDirectory directory;
+
+        [ObservableProperty]
+        private bool canCreateItems;
+
+        public ObservableCollection<IDirectoryItem> OperatedItems { get; } = new();
+
+        public FileOperationsViewModel()
         {
-            switch (wrapper)
+            Messenger.Register<FileOperationsViewModel, TabStorageChangedMessage>(this, (_, message) =>
             {
-                case FileWrapper fileWrapper:
-                    await fileWrapper.LaunchAsync();
+                if (message.Storage is IDirectory dir)
+                {
+                    directory = dir;
+                    CanCreateItems = true;
+                }
+                else
+                {
+                    CanCreateItems = false;
+                }
+            });
+        }
+
+        /// <summary>
+        /// Creates file in <see cref="directory"/>
+        /// </summary>
+        [RelayCommand]
+        private async Task CreateFile()
+        {
+            Debug.Assert(CanCreateItems);
+            await directory.CreateAsync(false);
+        }
+
+        /// <summary>
+        /// Creates folder in <see cref="directory"/>
+        /// </summary>
+        [RelayCommand]
+        private async Task CreateDirectory()
+        {
+            Debug.Assert(CanCreateItems);
+            await directory.CreateAsync(true);
+        }
+
+        [RelayCommand]
+        public async Task Open(IDirectoryItem item)
+        {
+            switch (item)
+            {
+                case ILaunchable launchable:
+                    await launchable.LaunchAsync();
                     break;
-                case DirectoryWrapper directoryWrapper:
+                case IStorage<DirectoryItemWrapper> storage:
                     // Send message for directory page (new directory should be opened)
-                    Messenger.Send(new NavigationRequiredMessage(directoryWrapper));
+                    Messenger.Send(new NavigationRequiredMessage(storage));
                     // Send message to navigation view model to notify that new directory is opened
-                    Messenger.Send(new StorageNavigatedMessage(directoryWrapper));
+                    Messenger.Send(new StorageNavigatedMessage(storage));
                     break;
                 default:
-                    throw new ArgumentException("Cannot open provided item. It is not a directory or file.", nameof(wrapper));
+                    throw new ArgumentException("Cannot open provided item. It is not a directory or file.", nameof(item));
             }
         }
 
@@ -37,9 +82,9 @@ namespace FileExplorer.ViewModels.General
         }
 
         /// <summary>
-        /// Begins renaming provided item
+        /// Begins renaming provided object
         /// </summary>
-        /// <param name="item"> Item that is renamed </param>
+        /// <param name="item"> Object that is renamed </param>
         [RelayCommand]
         public void BeginRenamingItem(IRenameableObject item) => item.BeginEdit();
 
@@ -47,7 +92,7 @@ namespace FileExplorer.ViewModels.General
         /// Ends renaming item if it is actually possible
         /// </summary>
         /// <param name="item"> Item that has to be given new name </param>
-        public async Task EndRenamingItem(DirectoryItemWrapper item)
+        public async Task EndRenamingItem(IRenameableObject item)
         {
             if (string.IsNullOrWhiteSpace(item.Name))
             {
@@ -56,12 +101,6 @@ namespace FileExplorer.ViewModels.General
                 return;
             }
             item.Rename();
-
-            // If item's extension changed we need to update icon
-            if (item.HasExtensionChanged)
-            {
-                await item.UpdateThumbnailAsync(90);
-            }
         }
 
 
@@ -71,7 +110,7 @@ namespace FileExplorer.ViewModels.General
         /// </summary>
         /// <param name="item"> Item that we are checking for renaming </param>
         [RelayCommand]
-        public async Task EndRenamingIfNeeded(DirectoryItemWrapper item)
+        public async Task EndRenamingIfNeeded(IDirectoryItem item)
         {
             if (item.IsRenamed)
             {
@@ -82,8 +121,6 @@ namespace FileExplorer.ViewModels.General
         [RelayCommand]
         public async Task ShowDetails(DirectoryItemWrapper item)
         {
-            await item.UpdateThumbnailAsync(90);
-
             var details = item.GetBasicInfo();
 
             if (item is FileWrapper file)

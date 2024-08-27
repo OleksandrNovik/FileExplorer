@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using Models.Contracts.Storage;
 using Models.Storage.Additional;
 using System;
 using System.IO;
@@ -9,7 +10,7 @@ using IOPath = System.IO.Path;
 
 namespace Models.Storage.Windows
 {
-    public sealed class FileWrapper : DirectoryItemWrapper
+    public sealed class FileWrapper : DirectoryItemWrapper, ILaunchable
     {
         private StorageFile? asStorageFile;
         public FileWrapper() { }
@@ -115,5 +116,19 @@ namespace Models.Storage.Windows
 
             return asStorageFile;
         }
+
+        public override void Rename()
+        {
+            RenamePhysical();
+
+            // Update thumbnail when file changed it's extension
+            if (HasExtensionChanged)
+            {
+                Thumbnail.Update(Thumbnail.Size);
+            }
+
+            EndEdit();
+        }
+        private bool HasExtensionChanged => IOPath.GetExtension(backupName) != IOPath.GetExtension(Name);
     }
 }

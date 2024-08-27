@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using Helpers.General;
 using Models.Contracts.Storage;
+using Models.Enums;
 using Models.General;
 using Models.ModelHelpers;
 using Models.Storage.Additional;
@@ -15,7 +16,7 @@ using SearchOption = System.IO.SearchOption;
 
 namespace Models.Storage.Windows
 {
-    public sealed class DirectoryWrapper : DirectoryItemWrapper, IStorage<DirectoryItemWrapper>
+    public sealed class DirectoryWrapper : DirectoryItemWrapper, IDirectory, IStorage<DirectoryItemWrapper>
     {
         private StorageFolder? asStorageFolder;
         public DirectoryWrapper() { }
@@ -80,6 +81,8 @@ namespace Models.Storage.Windows
 
         #endregion
 
+        #region IStorage logic
+
         public IStorage<DirectoryItemWrapper>? Parent => GetParentDirectory();
         public StorageContentType ContentType => StorageContentType.Files;
 
@@ -87,7 +90,6 @@ namespace Models.Storage.Windows
         {
             return EnumerateWrappers(Directory.EnumerateFileSystemEntries(Path));
         }
-
         public IEnumerable<IStorage<DirectoryItemWrapper>> EnumerateSubDirectories()
         {
             try
@@ -99,6 +101,24 @@ namespace Models.Storage.Windows
                 return [];
             }
         }
+
+        #endregion
+
+        #region IStorageElementCreator logic
+
+        /// <inheritdoc />
+        public async Task<IDirectoryItem> CreateAsync(bool isDirectory)
+        {
+            DirectoryItemWrapper element = isDirectory ? new DirectoryWrapper() : new FileWrapper();
+
+            element.CreatePhysical(Path);
+
+            await element.UpdateThumbnailAsync(Thumbnail.Size);
+
+            return element;
+        }
+
+        #endregion
 
         public IEnumerable<DirectoryItemWrapper> EnumerateItems(string pattern = "*", SearchOption option = SearchOption.TopDirectoryOnly)
         {
@@ -181,5 +201,6 @@ namespace Models.Storage.Windows
 
             return asStorageFolder;
         }
+
     }
 }
