@@ -73,7 +73,7 @@ namespace FileExplorer.ViewModels
         /// Changes current storage and initializes its items
         /// </summary>
         /// <param name="storage"> Given storage that is opened </param>
-        private async Task MoveToDirectoryAsync(IStorage<DirectoryItemWrapper> storage)
+        private async Task MoveToDirectoryAsync(IStorage<IDirectoryItem> storage)
         {
             Storage = storage;
             await InitializeDirectoryAsync();

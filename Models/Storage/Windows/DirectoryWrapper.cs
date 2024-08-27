@@ -12,11 +12,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Windows.Storage;
 using IOPath = System.IO.Path;
-using SearchOption = System.IO.SearchOption;
 
 namespace Models.Storage.Windows
 {
-    public sealed class DirectoryWrapper : DirectoryItemWrapper, IDirectory, IStorage<DirectoryItemWrapper>
+    public sealed class DirectoryWrapper : DirectoryItemWrapper, IDirectory
     {
         private StorageFolder? asStorageFolder;
         public DirectoryWrapper() { }
@@ -53,7 +52,7 @@ namespace Models.Storage.Windows
             await searchOptions.Destination.EnqueueEnumerationAsync(SearchDirectory(searchOptions.Filter), searchOptions.Token);
         }
 
-        private IEnumerable<DirectoryItemWrapper> SearchDirectory(SearchFilter options)
+        private IEnumerable<IDirectoryItem> SearchDirectory(SearchFilter options)
         {
             var enumeration = new EnumerationOptions
             {
@@ -83,14 +82,14 @@ namespace Models.Storage.Windows
 
         #region IStorage logic
 
-        public IStorage<DirectoryItemWrapper>? Parent => GetParentDirectory();
+        public IStorage<IDirectoryItem>? Parent => GetParentDirectory();
         public StorageContentType ContentType => StorageContentType.Files;
 
-        public IEnumerable<DirectoryItemWrapper> EnumerateItems()
+        public IEnumerable<IDirectoryItem> EnumerateItems()
         {
             return EnumerateWrappers(Directory.EnumerateFileSystemEntries(Path));
         }
-        public IEnumerable<IStorage<DirectoryItemWrapper>> EnumerateSubDirectories()
+        public IEnumerable<IStorage<IDirectoryItem>> EnumerateSubDirectories()
         {
             try
             {
@@ -120,12 +119,7 @@ namespace Models.Storage.Windows
 
         #endregion
 
-        public IEnumerable<DirectoryItemWrapper> EnumerateItems(string pattern = "*", SearchOption option = SearchOption.TopDirectoryOnly)
-        {
-            return EnumerateWrappers(Directory.EnumerateFileSystemEntries(Path, pattern, option));
-        }
-
-        public IEnumerable<DirectoryItemWrapper> EnumerateItems(EnumerationOptions enumeration, string pattern = "*")
+        private IEnumerable<DirectoryItemWrapper> EnumerateItems(EnumerationOptions enumeration, string pattern = "*")
         {
             return EnumerateWrappers(Directory.EnumerateFileSystemEntries(Path, pattern, enumeration));
         }

@@ -64,7 +64,7 @@ namespace FileExplorer.ViewModels.General
                 case ILaunchable launchable:
                     await launchable.LaunchAsync();
                     break;
-                case IStorage<DirectoryItemWrapper> storage:
+                case IStorage<IDirectoryItem> storage:
                     // Send message for directory page (new directory should be opened)
                     Messenger.Send(new NavigationRequiredMessage(storage));
                     // Send message to navigation view model to notify that new directory is opened

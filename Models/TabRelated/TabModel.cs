@@ -1,7 +1,6 @@
 ﻿#nullable enable
 using CommunityToolkit.Mvvm.ComponentModel;
 using Models.Contracts.Storage;
-using Models.Storage.Windows;
 
 namespace Models.TabRelated
 {
@@ -19,12 +18,12 @@ namespace Models.TabRelated
         [ObservableProperty]
         private string title;
 
-        private IStorage<DirectoryItemWrapper> openedStorage;
+        private IStorage<IDirectoryItem> openedStorage;
 
         /// <summary>
         /// Storage (or something that stores items) that is opened in the tab
         /// </summary>
-        public IStorage<DirectoryItemWrapper> OpenedStorage
+        public IStorage<IDirectoryItem> OpenedStorage
         {
             get => openedStorage;
             set
@@ -42,7 +41,7 @@ namespace Models.TabRelated
         /// </summary>
         public TabNavigationHistoryModel TabHistory { get; }
 
-        public TabModel(IStorage<DirectoryItemWrapper> opened)
+        public TabModel(IStorage<IDirectoryItem> opened)
         {
             TabHistory = new TabNavigationHistoryModel();
             OpenedStorage = opened;

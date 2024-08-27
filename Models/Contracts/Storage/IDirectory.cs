@@ -5,7 +5,7 @@ namespace Models.Contracts.Storage
     /// <summary>
     /// Interface that contains methods for each directory to implement 
     /// </summary>
-    public interface IDirectory
+    public interface IDirectory : IStorage<IDirectoryItem>
     {
 
         /// <summary>

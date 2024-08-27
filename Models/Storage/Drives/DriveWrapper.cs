@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Models.Storage.Drives
 {
-    public sealed partial class DriveWrapper : InteractiveStorageItem, IStorage<DirectoryItemWrapper>
+    public sealed partial class DriveWrapper : InteractiveStorageItem, IStorage<IDirectoryItem>
     {
         /// <summary>
         /// Rive info that wrapper is containing
@@ -50,13 +50,13 @@ namespace Models.Storage.Drives
             FriendlyName = driveInfo.GetFriendlyName();
         }
 
-        public IStorage<DirectoryItemWrapper>? Parent => rootDirectory.Parent;
+        public IStorage<IDirectoryItem>? Parent => rootDirectory.Parent;
         public StorageContentType ContentType => StorageContentType.Files;
 
         /// <summary>
         /// Returns items inside <see cref="rootDirectory"/>
         /// </summary>
-        public IEnumerable<DirectoryItemWrapper> EnumerateItems()
+        public IEnumerable<IDirectoryItem> EnumerateItems()
         {
             return rootDirectory.EnumerateItems();
         }
@@ -64,7 +64,7 @@ namespace Models.Storage.Drives
         /// <summary>
         /// Returns <see cref="rootDirectory"/> of drive
         /// </summary>
-        public IEnumerable<IStorage<DirectoryItemWrapper>> EnumerateSubDirectories()
+        public IEnumerable<IStorage<IDirectoryItem>> EnumerateSubDirectories()
         {
             return [rootDirectory];
         }

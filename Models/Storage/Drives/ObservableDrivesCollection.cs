@@ -2,7 +2,6 @@
 using Models.Contracts.Storage;
 using Models.Enums;
 using Models.Storage.Additional;
-using Models.Storage.Windows;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -11,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace Models.Storage.Drives
 {
-    public class ObservableDrivesCollection : ObservableCollection<DriveWrapper>, IStorage<DirectoryItemWrapper>
+    public class ObservableDrivesCollection : ObservableCollection<DriveWrapper>, IStorage<IDirectoryItem>
     {
         public string Name => "Home";
         public string Path => string.Empty;
-        public IStorage<DirectoryItemWrapper> Parent => null;
+        public IStorage<IDirectoryItem> Parent => null;
         public StorageContentType ContentType => StorageContentType.Drives;
 
         public ObservableDrivesCollection()
@@ -29,7 +28,7 @@ namespace Models.Storage.Drives
         }
 
 
-        public IEnumerable<DirectoryItemWrapper> EnumerateItems()
+        public IEnumerable<IDirectoryItem> EnumerateItems()
         {
             foreach (var drive in this)
             {
@@ -40,7 +39,7 @@ namespace Models.Storage.Drives
             }
         }
 
-        public IEnumerable<IStorage<DirectoryItemWrapper>> EnumerateSubDirectories() => this;
+        public IEnumerable<IStorage<IDirectoryItem>> EnumerateSubDirectories() => this;
 
         public async Task SearchAsync(SearchOptions searchOptions)
         {

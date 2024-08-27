@@ -7,12 +7,12 @@ using System.IO;
 
 namespace FileExplorer.Core.Services.Factories
 {
-    public sealed class StorageFactory : IStorageFactory<DirectoryItemWrapper>
+    public sealed class StorageFactory : IStorageFactory<IDirectoryItem>
     {
         /// <inheritdoc />
-        public IStorage<DirectoryItemWrapper> CreateFromKey(string key)
+        public IStorage<IDirectoryItem> CreateFromKey(string key)
         {
-            IStorage<DirectoryItemWrapper> storage;
+            IStorage<IDirectoryItem> storage;
 
             if (string.IsNullOrEmpty(key))
             {

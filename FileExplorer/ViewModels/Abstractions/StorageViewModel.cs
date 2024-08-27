@@ -5,7 +5,6 @@ using FileExplorer.Core.Contracts.Factories;
 using FileExplorer.ViewModels.General;
 using Models.Contracts.Storage;
 using Models.Messages;
-using Models.Storage.Windows;
 
 namespace FileExplorer.ViewModels.Abstractions
 {
@@ -17,7 +16,7 @@ namespace FileExplorer.ViewModels.Abstractions
         /// <summary>
         /// Storage that is opened in storage page
         /// </summary>
-        public IStorage<DirectoryItemWrapper> Storage { get; set; }
+        public IStorage<IDirectoryItem> Storage { get; set; }
         protected StorageViewModel(IMenuFlyoutFactory factory) : base(factory)
         {
             Messenger.Register<StorageViewModel, SearchOperationRequiredMessage>(this, HandleSearchMessage);
@@ -29,7 +28,7 @@ namespace FileExplorer.ViewModels.Abstractions
         /// <param name="parameter"> Navigation parameter that is provided by navigation service </param>
         public virtual void OnNavigatedTo(object parameter)
         {
-            if (parameter is IStorage<DirectoryItemWrapper> storage)
+            if (parameter is IStorage<IDirectoryItem> storage)
             {
                 Messenger.Send(new StopSearchMessage());
                 NavigateStorage(storage);
@@ -40,7 +39,7 @@ namespace FileExplorer.ViewModels.Abstractions
         /// Navigates storage item and sends message for tab to changed tab's storage item
         /// </summary>
         /// <param name="storage"> Storage that is navigated </param>
-        protected void NavigateStorage(IStorage<DirectoryItemWrapper> storage)
+        protected void NavigateStorage(IStorage<IDirectoryItem> storage)
         {
             Storage = storage;
             Messenger.Send(new TabStorageChangedMessage(storage));

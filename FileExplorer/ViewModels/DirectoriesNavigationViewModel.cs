@@ -27,7 +27,7 @@ namespace FileExplorer.ViewModels
         /// <summary>
         /// Storage or search result that is currently opened 
         /// </summary>
-        private IStorage<DirectoryItemWrapper> CurrentDirectory => navigation.CurrentDirectory;
+        private IStorage<IDirectoryItem> CurrentDirectory => navigation.CurrentDirectory;
 
         /// <summary>
         /// View model that works with search options and search query, this view model sends message to start the search when user needs to
@@ -78,7 +78,7 @@ namespace FileExplorer.ViewModels
         /// Is called when new tab is opened, so directory in that tab should be initialized
         /// </summary>
         /// <param name="directory"> Storage that is held in tab </param>
-        private void InitializeDirectory(IStorage<DirectoryItemWrapper> directory)
+        private void InitializeDirectory(IStorage<IDirectoryItem> directory)
         {
             navigation.CurrentDirectory = directory;
 
@@ -216,7 +216,7 @@ namespace FileExplorer.ViewModels
         /// Sends message to all listeners that navigation is required to a certain path
         /// </summary>
         /// <param name="item"> Folder that is being navigated </param>
-        private void SendNavigationMessage(IStorage<DirectoryItemWrapper> item)
+        private void SendNavigationMessage(IStorage<IDirectoryItem> item)
         {
             Messenger.Send(new NavigationRequiredMessage(item));
             CurrentRoute = CurrentDirectory.Path;

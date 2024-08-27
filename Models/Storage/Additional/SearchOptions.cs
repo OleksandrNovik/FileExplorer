@@ -1,6 +1,6 @@
 ﻿using Models.Contracts;
+using Models.Contracts.Storage;
 using Models.General;
-using Models.Storage.Windows;
 using System.Threading;
 
 namespace Models.Storage.Additional
@@ -15,7 +15,7 @@ namespace Models.Storage.Additional
         /// <summary>
         /// Destination collection
         /// </summary>
-        public IEnqueuingCollection<DirectoryItemWrapper> Destination { get; }
+        public IEnqueuingCollection<IDirectoryItem> Destination { get; }
 
         /// <summary>
         /// Cancellation token if needed
@@ -45,13 +45,13 @@ namespace Models.Storage.Additional
                 }
             }
         }
-        public SearchOptions(SearchFilter filter, IEnqueuingCollection<DirectoryItemWrapper> destination)
+        public SearchOptions(SearchFilter filter, IEnqueuingCollection<IDirectoryItem> destination)
         {
             Filter = filter;
             Destination = destination;
         }
 
-        public static SearchOptions CreateDefault(SearchFilter filter, IEnqueuingCollection<DirectoryItemWrapper> destination)
+        public static SearchOptions CreateDefault(SearchFilter filter, IEnqueuingCollection<IDirectoryItem> destination)
         {
             return new SearchOptions(filter, destination)
             {

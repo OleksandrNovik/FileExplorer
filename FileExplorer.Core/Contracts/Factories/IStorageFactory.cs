@@ -6,7 +6,7 @@ namespace FileExplorer.Core.Contracts.Factories
     /// Factory to create <see cref="IStorage{TElement}"/> items 
     /// </summary>
     /// <typeparam name="TElement"> Type of element in storage </typeparam>
-    public interface IStorageFactory<TElement>
+    public interface IStorageFactory<TElement> where TElement : IDirectoryItem
     {
 
         /// <summary>

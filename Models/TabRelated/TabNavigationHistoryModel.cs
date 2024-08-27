@@ -1,5 +1,4 @@
 ﻿using Models.Contracts.Storage;
-using Models.Storage.Windows;
 using System.Collections.Generic;
 
 namespace Models.TabRelated
@@ -12,12 +11,12 @@ namespace Models.TabRelated
         /// <summary>
         /// Directories that can be navigated forward into
         /// </summary>
-        public Stack<IStorage<DirectoryItemWrapper>> ForwardStack { get; } = new();
+        public Stack<IStorage<IDirectoryItem>> ForwardStack { get; } = new();
 
         /// <summary>
         /// Directories that can be navigated back into
         /// </summary>
-        public Stack<IStorage<DirectoryItemWrapper>> BackStack { get; } = new();
+        public Stack<IStorage<IDirectoryItem>> BackStack { get; } = new();
 
         /// <summary>
         /// Is there any directory that can be navigated back

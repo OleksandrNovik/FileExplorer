@@ -6,7 +6,6 @@ using Models.Contracts.Storage;
 using Models.General;
 using Models.Messages;
 using Models.Storage.Additional;
-using Models.Storage.Windows;
 using System;
 using System.Diagnostics;
 using System.Threading;
@@ -17,10 +16,10 @@ namespace FileExplorer.ViewModels.Search
     public sealed class SearchOperationViewModel : ObservableRecipient
     {
         private SearchOptions currentSearchOptions;
-        public CachedSearchResult<DirectoryItemWrapper> CachedSearch { get; private set; }
+        public CachedSearchResult<IDirectoryItem> CachedSearch { get; private set; }
         private CancellationTokenSource searchCancellation;
 
-        public void InitializeSearchData(IStorage<DirectoryItemWrapper> searchCatalog, SearchOptions searchOptions)
+        public void InitializeSearchData(IStorage<IDirectoryItem> searchCatalog, SearchOptions searchOptions)
         {
             currentSearchOptions = searchOptions;
             CachedSearch = new(searchCatalog, searchOptions.Destination);
