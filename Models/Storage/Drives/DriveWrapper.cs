@@ -29,13 +29,11 @@ namespace Models.Storage.Drives
         /// </summary>
         public DriveSpaceInfo DriveSpace { get; }
 
+        /// <summary>
+        /// Friendly name for disk (it is generated based on volume label or uses default name)
+        /// </summary>
         [ObservableProperty]
         private string friendlyName;
-
-        /// <summary>
-        /// Special implementation for IStorage to return friendly name of this drive
-        /// </summary>
-        string IStorage<IDirectoryItem>.Name => FriendlyName;
 
         public DriveWrapper(DriveInfo drive)
         {
@@ -55,7 +53,15 @@ namespace Models.Storage.Drives
             FriendlyName = driveInfo.GetFriendlyName();
         }
 
+        /// <summary>
+        /// Special implementation for IStorage to return friendly name of this drive
+        /// </summary>
+        string IStorage<IDirectoryItem>.Name => FriendlyName;
+
+        /// <inheritdoc />
         public IStorage<IDirectoryItem>? Parent => rootDirectory.Parent;
+
+        /// <inheritdoc />
         public StorageContentType ContentType => StorageContentType.Files;
 
         /// <summary>

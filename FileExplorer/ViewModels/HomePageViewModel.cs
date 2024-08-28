@@ -2,7 +2,6 @@
 using FileExplorer.Core.Contracts.Factories;
 using FileExplorer.ViewModels.Abstractions;
 using FileExplorer.ViewModels.General;
-using Helpers.General;
 using Microsoft.UI.Xaml.Controls;
 using Models.ModelHelpers;
 using Models.Storage.Drives;
@@ -10,7 +9,6 @@ using Models.Storage.Windows;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace FileExplorer.ViewModels
 {
@@ -25,23 +23,21 @@ namespace FileExplorer.ViewModels
         }
 
         [RelayCommand]
-        private async Task InitializeAsync()
+        private void InitializeLibrariesThumbnails()
         {
-            await Parallel.ForEachAsync(Drives, async (drive, token) =>
+            foreach (var library in Libraries)
             {
-                await ThreadingHelper.EnqueueAsync(async () =>
-                {
-                    await drive.UpdateThumbnailAsync(40);
-                });
-            });
+                library.UpdateThumbnail(80);
+            }
+        }
 
-            await Parallel.ForEachAsync(Libraries, async (library, token) =>
+        [RelayCommand]
+        private void InitializeDrivesThumbnails()
+        {
+            foreach (var drive in Drives)
             {
-                await ThreadingHelper.EnqueueAsync(async () =>
-                {
-                    await library.UpdateThumbnailAsync(80);
-                });
-            });
+                drive.UpdateThumbnail(80);
+            }
         }
 
         public override void OnNavigatedTo(object parameter)
