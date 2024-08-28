@@ -10,7 +10,16 @@ namespace FileExplorer.UI.Behaviors.BaseBehaviors
     public class BaseCommandBehavior<T> : BaseCanExecuteBehavior<T>
         where T : DependencyObject
     {
-        public IRelayCommand Command { get; set; }
+        public static DependencyProperty CommandProperty =
+            DependencyProperty.Register(nameof(Command), typeof(IRelayCommand),
+                typeof(BaseCommandBehavior<T>), new PropertyMetadata(null));
+
+        public IRelayCommand Command
+        {
+            get => GetValue(CommandProperty) as IRelayCommand;
+            set => SetValue(CommandProperty, value);
+        }
+
         public object CommandParameter { get; set; } = null;
     }
 }

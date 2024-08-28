@@ -18,6 +18,11 @@ namespace Models.ModelHelpers
 
         }.ToFrozenDictionary();
 
+        public static string GetStringType(DriveType type)
+        {
+            return TypeToLabelMap[type];
+        }
+
         public static string GetFriendlyName(this DriveInfo drive)
         {
             string label = string.IsNullOrEmpty(drive.VolumeLabel) ? TypeToLabelMap[drive.DriveType] : drive.VolumeLabel;

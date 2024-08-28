@@ -13,17 +13,26 @@ using System.Threading.Tasks;
 
 namespace FileExplorer.ViewModels.Search
 {
+    /// <summary>
+    /// View model that executes search operations
+    /// </summary>
     public sealed class SearchOperationViewModel : ObservableRecipient
     {
+        /// <summary>
+        /// Search options for current search operation
+        /// </summary>
         private SearchOptions currentSearchOptions;
+
+        /// <summary>
+        /// Cached search result, which contains all information about search (found items, root directory etc.)
+        /// </summary>
         public CachedSearchResult<IDirectoryItem> CachedSearch { get; private set; }
+
+        /// <summary>
+        /// Cancellation token to cancel search operation
+        /// </summary>
         private CancellationTokenSource searchCancellation;
 
-        public void InitializeSearchData(IStorage<IDirectoryItem> searchCatalog, SearchOptions searchOptions)
-        {
-            currentSearchOptions = searchOptions;
-            CachedSearch = new(searchCatalog, searchOptions.Destination);
-        }
         public SearchOperationViewModel()
         {
             Messenger.Register<SearchOperationViewModel, StopSearchMessage>(this, (_, _) =>
@@ -32,6 +41,20 @@ namespace FileExplorer.ViewModels.Search
             });
         }
 
+        /// <summary>
+        /// Sets up information for an incoming search 
+        /// </summary>
+        /// <param name="searchCatalog"> Where we are searching items </param>
+        /// <param name="searchOptions"> Data needed to execute search </param>
+        public void InitializeSearchData(IStorage<IDirectoryItem> searchCatalog, SearchOptions searchOptions)
+        {
+            currentSearchOptions = searchOptions;
+            CachedSearch = new(searchCatalog, searchOptions.Destination);
+        }
+
+        /// <summary>
+        /// Searches provided in <see cref="InitializeSearchData"/> method catalog with selected options
+        /// </summary>
         public async Task SearchAsync()
         {
             CancelSearchIfNeeded();
@@ -63,6 +86,10 @@ namespace FileExplorer.ViewModels.Search
             }
 
         }
+
+        /// <summary>
+        /// Cancels search if it was not already cancelled 
+        /// </summary>
         public void CancelSearchIfNeeded()
         {
             if (searchCancellation is not null)

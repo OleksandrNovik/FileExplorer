@@ -8,7 +8,7 @@ namespace Models.Storage.Abstractions
 {
     public abstract class BaseThumbnailProvider : ObservableObject, IThumbnailProvider
     {
-        public IThumbnail Thumbnail { get; protected set; } = new Thumbnail();
+        public IThumbnail Thumbnail { get; } = new Thumbnail();
 
         public virtual async Task UpdateThumbnailAsync(int size)
         {

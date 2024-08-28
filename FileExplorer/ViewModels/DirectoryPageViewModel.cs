@@ -20,7 +20,7 @@ namespace FileExplorer.ViewModels
 {
     public sealed partial class DirectoryPageViewModel : StorageViewModel
     {
-        public ObservableCollection<IDirectoryItem> SelectedItems => FileOperations.OperatedItems;
+        public ObservableCollection<IDirectoryItem> SelectedItems => FileOperations.SelectedItems;
 
         [ObservableProperty]
         private ConcurrentWrappersCollection directoryItems;
@@ -79,11 +79,20 @@ namespace FileExplorer.ViewModels
         /// </summary>
         /// <param name="item"> Item that has to be given new name </param>
         [RelayCommand]
-        private async Task EndRenamingItem(IDirectoryItem item)
+        private async Task EndRenamingItem(IRenameableObject item)
         {
-            await FileOperations.EndRenamingItem(item);
+            await FileOperations.EndRenamingItemCommand.ExecuteAsync(item);
 
             //TODO: New Sorting of items is required
+        }
+
+        [RelayCommand]
+        private async Task EndRenamingIfNeeded(IRenameableObject item)
+        {
+            if (item.IsRenamed)
+            {
+                await EndRenamingItem(item);
+            }
         }
 
         #endregion
@@ -121,7 +130,7 @@ namespace FileExplorer.ViewModels
         [RelayCommand]
         private void ShowDetailsOfSelectedItem()
         {
-            //await FileOperations.ShowDetails(FileOperations.OperatedItems[0]);
+            //await FileOperations.ShowDetails(FileOperations.SelectedItems[0]);
         }
 
         public override async void OnNavigatedTo(object parameter)

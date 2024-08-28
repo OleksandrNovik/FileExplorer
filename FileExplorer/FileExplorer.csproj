@@ -41,6 +41,7 @@
     <None Remove="UI\UserControls\DirectoryItemInfoPane.xaml" />
     <None Remove="UI\UserControls\DirectoryNavigationPanel.xaml" />
     <None Remove="UI\UserControls\DriveInformationItem.xaml" />
+    <None Remove="UI\UserControls\DynamicItemVIew.xaml" />
     <None Remove="UI\UserControls\FileOperationsToolbar.xaml" />
     <None Remove="UI\UserControls\SearchControl.xaml" />
     <None Remove="Views\DirectoryPage.xaml" />
@@ -128,6 +129,9 @@
     <None Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Page Update="UI\UserControls\DynamicItemView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="UI\UserControls\SearchControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

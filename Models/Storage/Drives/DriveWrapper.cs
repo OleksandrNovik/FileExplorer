@@ -5,6 +5,7 @@ using Models.Enums;
 using Models.ModelHelpers;
 using Models.Storage.Abstractions;
 using Models.Storage.Additional;
+using Models.Storage.Additional.Properties;
 using Models.Storage.Windows;
 using System.Collections.Generic;
 using System.IO;
@@ -51,6 +52,16 @@ namespace Models.Storage.Drives
         {
             driveInfo.VolumeLabel = Name;
             FriendlyName = driveInfo.GetFriendlyName();
+        }
+
+        public override IBasicStorageItemProperties GetBasicProperties()
+        {
+            return new DriveBasicProperties(FriendlyName, Path)
+            {
+                DriveFormat = driveInfo.DriveFormat,
+                DriveType = DriveHelper.GetStringType(driveInfo.DriveType),
+                SpaceInfo = DriveSpace
+            };
         }
 
         /// <summary>

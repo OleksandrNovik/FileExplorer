@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using FileExplorer.Core.Contracts;
 using FileExplorer.Core.Contracts.Factories;
 using FileExplorer.ViewModels.General;
+using FileExplorer.ViewModels.Search;
 using Models.Contracts.Storage;
 using Models.Messages;
 
@@ -13,6 +14,9 @@ namespace FileExplorer.ViewModels.Abstractions
     /// </summary>
     public abstract class StorageViewModel : ContextMenuCreatorViewModel, INavigationAware, ISearchingViewModel
     {
+        /// <summary>
+        /// View model that contains file operation logic
+        /// </summary>
         public FileOperationsViewModel FileOperations { get; }
 
         /// <summary>
@@ -48,11 +52,17 @@ namespace FileExplorer.ViewModels.Abstractions
             Messenger.Send(new TabStorageChangedMessage(storage));
         }
 
+        /// <summary>
+        /// By default, when storage view model is navigated from it unregisters from all messages
+        /// </summary>
         public virtual void OnNavigatedFrom()
         {
             Messenger.UnregisterAll(this);
         }
 
+        /// <summary> 
+        /// Sends message for a <see cref="SearchOperationViewModel"/> to start new search. Search will be started in <see cref="Storage"/>
+        /// </summary>
         public virtual void HandleSearchMessage(ObservableRecipient recipient, SearchOperationRequiredMessage message)
         {
             Messenger.Send(new SearchStorageMessage(Storage, message.Options));

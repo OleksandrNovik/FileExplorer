@@ -1,9 +1,10 @@
 ﻿#nullable enable
+using System.ComponentModel;
 using System.Threading.Tasks;
 
 namespace Models.Contracts.Storage
 {
-    public interface IDirectoryItem : IRenameableObject, IThumbnailProvider
+    public interface IDirectoryItem : IRenameableObject, IThumbnailProvider, INotifyPropertyChanged
     {
         /// <summary>
         /// Copy item from current directory to a destination directory

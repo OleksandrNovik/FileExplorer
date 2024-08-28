@@ -32,6 +32,8 @@ namespace Models.Storage.Abstractions
 
         public abstract void Rename();
 
+        public abstract IBasicStorageItemProperties GetBasicProperties();
+
         /// <summary>
         /// Saves old name into backup and starts renaming item if it was not already renamed
         /// </summary>

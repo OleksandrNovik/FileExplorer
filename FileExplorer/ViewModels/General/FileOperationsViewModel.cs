@@ -15,18 +15,30 @@ using System.Threading.Tasks;
 
 namespace FileExplorer.ViewModels.General
 {
+    /// <summary>
+    /// View model that contains logic to operate files and other storage items
+    /// </summary>
     public sealed partial class FileOperationsViewModel : ObservableRecipient
     {
+        /// <summary>
+        /// Field that contains directory to create items in (if it is allowed on the page)
+        /// </summary>
         private IDirectory directory;
 
+        /// <summary>
+        /// Field that marks if there can be executed create/delete operations on the page
+        /// </summary>
         [ObservableProperty]
         private bool canAlterDirectory;
 
-        public ObservableCollection<IDirectoryItem> OperatedItems { get; } = new();
+        /// <summary>
+        /// Contains selected items to operate them using toolbar
+        /// </summary>
+        public ObservableCollection<IDirectoryItem> SelectedItems { get; } = new();
 
         public FileOperationsViewModel()
         {
-            OperatedItems.CollectionChanged += NotifyCanExecute;
+            SelectedItems.CollectionChanged += NotifyCanExecute;
 
             Messenger.Register<FileOperationsViewModel, TabStorageChangedMessage>(this, (_, message) =>
             {
@@ -59,7 +71,7 @@ namespace FileExplorer.ViewModels.General
             NotifyCanChangeDirectory();
         }
 
-        private bool HasOperatedItems() => OperatedItems.Count > 0;
+        private bool HasOperatedItems() => SelectedItems.Count > 0;
 
         private bool CanChangeDirectory() => CanAlterDirectory && HasOperatedItems();
 
@@ -119,7 +131,7 @@ namespace FileExplorer.ViewModels.General
         #region Rename
 
         [RelayCommand(CanExecute = nameof(HasOperatedItems))]
-        private void BeginRenamingSelectedItem() => BeginRenamingItem(OperatedItems[0]);
+        private void BeginRenamingSelectedItem() => BeginRenamingItem(SelectedItems[0]);
 
         /// <summary>
         /// Begins renaming provided object
@@ -132,7 +144,8 @@ namespace FileExplorer.ViewModels.General
         /// Ends renaming item if it is actually possible
         /// </summary>
         /// <param name="item"> Item that has to be given new name </param>
-        public async Task EndRenamingItem(IRenameableObject item)
+        [RelayCommand]
+        private async Task EndRenamingItem(IRenameableObject item)
         {
             if (string.IsNullOrWhiteSpace(item.Name))
             {
@@ -149,7 +162,7 @@ namespace FileExplorer.ViewModels.General
         /// </summary>
         /// <param name="item"> Item that we are checking for renaming </param>
         [RelayCommand]
-        public async Task EndRenamingIfNeeded(IDirectoryItem item)
+        public async Task EndRenamingIfNeeded(IRenameableObject item)
         {
             if (item.IsRenamed)
             {
@@ -159,7 +172,6 @@ namespace FileExplorer.ViewModels.General
 
         #endregion
 
-
         #region Delete
 
         /// <summary>
@@ -168,9 +180,9 @@ namespace FileExplorer.ViewModels.General
         [RelayCommand(CanExecute = nameof(CanChangeDirectory))]
         private async Task RecycleSelectedItems()
         {
-            while (OperatedItems.Count > 0)
+            while (SelectedItems.Count > 0)
             {
-                await TryDeleteItem(OperatedItems[0]);
+                await TryDeleteItem(SelectedItems[0]);
             }
         }
 
@@ -180,15 +192,15 @@ namespace FileExplorer.ViewModels.General
         [RelayCommand(CanExecute = nameof(CanChangeDirectory))]
         public async Task DeleteSelectedItems()
         {
-            var content = $"Do you really want to delete {(OperatedItems.Count > 1 ? "selected items" : $"\"{OperatedItems[0].Path}\""
+            var content = $"Do you really want to delete {(SelectedItems.Count > 1 ? "selected items" : $"\"{SelectedItems[0].Path}\""
                 )} permanently?";
             var result = await App.MainWindow.ShowYesNoDialog(content, "Deleting items");
 
             if (result == ContentDialogResult.Secondary) return;
 
-            while (OperatedItems.Count > 0)
+            while (SelectedItems.Count > 0)
             {
-                await TryDeleteItem(OperatedItems[0], true);
+                await TryDeleteItem(SelectedItems[0], true);
             }
         }
 
@@ -222,7 +234,7 @@ namespace FileExplorer.ViewModels.General
             }
             finally
             {
-                OperatedItems.Remove(item);
+                SelectedItems.Remove(item);
             }
 
             //TODO: Send message with deleted items
@@ -244,19 +256,19 @@ namespace FileExplorer.ViewModels.General
         }
 
         [RelayCommand]
-        private void Pin(DirectoryWrapper directory)
+        private void Pin(IDirectory directory)
         {
 
         }
 
         [RelayCommand]
-        private void Unpin(DirectoryWrapper directory)
+        private void Unpin(IDirectory directory)
         {
 
         }
 
         [RelayCommand]
-        private void Copy(DirectoryItemWrapper item)
+        private void Copy(IDirectoryItem item)
         {
 
         }

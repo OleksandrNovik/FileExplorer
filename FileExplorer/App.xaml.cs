@@ -89,7 +89,7 @@ namespace FileExplorer
                     services.AddTransient<InfoBarViewModel>();
 
                     //File operations
-                    services.AddSingleton<FileOperationsViewModel>();
+                    services.AddTransient(_ => GetStaticResource<FileOperationsViewModel>("FileOperations"));
 
                 })
                 .Build();
@@ -125,6 +125,16 @@ namespace FileExplorer
             }
 
             return service;
+        }
+
+        public static T GetStaticResource<T>(object key)
+        {
+            if (App.Current.Resources.TryGetValue(key, out object value) && value is T resource)
+            {
+                return resource;
+            }
+
+            throw new ArgumentException($"No resource with type {typeof(T)} that has provided key", nameof(key));
         }
     }
 }

@@ -41,7 +41,12 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <Expander HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch" Header="Libraries" IsExpanded="True">
+            <Expander 
+                HorizontalContentAlignment="Stretch" 
+                HorizontalAlignment="Stretch" 
+                Header="Libraries" 
+                IsExpanded="True">
+
                 <Expander.Resources>
                     <SolidColorBrush x:Key="customExpanderHeaderBackgroundColor" Color="Transparent"/>
                     <StaticResource x:Key="ExpanderHeaderBackground" ResourceKey="customExpanderHeaderBackgroundColor" />
@@ -68,7 +73,12 @@
                 </interactivity:Interaction.Behaviors>
             </Expander>
 
-            <Expander Grid.Row="1" HorizontalContentAlignment="Left" HorizontalAlignment="Stretch" Header="Drives" IsExpanded="True">
+            <Expander Grid.Row="1" 
+                      HorizontalContentAlignment="Left" 
+                      HorizontalAlignment="Stretch" 
+                      Header="Drives" 
+                      IsExpanded="True">
+
                 <Expander.Resources>
                     <SolidColorBrush x:Key="customExpanderHeaderBackgroundColor" Color="Transparent"/>
                     <StaticResource x:Key="ExpanderHeaderBackground" ResourceKey="customExpanderHeaderBackgroundColor" />
@@ -88,7 +98,12 @@
                 </interactivity:Interaction.Behaviors>
             </Expander>
 
-            <Expander Grid.Row="2" HorizontalContentAlignment="Left" HorizontalAlignment="Stretch" Header="Recent">
+            <Expander Grid.Row="2" 
+                      HorizontalContentAlignment="Left" 
+                      HorizontalAlignment="Stretch" 
+                      Header="Recent"
+                      IsExpanded="True">
+
                 <Expander.Resources>
                     <SolidColorBrush x:Key="customExpanderHeaderBackgroundColor" Color="Transparent"/>
                     <StaticResource x:Key="ExpanderHeaderBackground" ResourceKey="customExpanderHeaderBackgroundColor" />

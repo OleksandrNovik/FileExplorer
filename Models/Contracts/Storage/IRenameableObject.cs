@@ -5,19 +5,9 @@ namespace Models.Contracts.Storage
     /// <summary>
     /// Contract for any directory item that contains logic to rename and locate item
     /// </summary>
-    public interface IRenameableObject : IEditableObject
+    public interface IRenameableObject : IBasicStorageItemProperties, IEditableObject
     {
-        /// <summary>
-        /// Name of directory item
-        /// </summary>
-        public string Name { get; set; }
-
-        /// <summary>
-        /// Path to a directory item
-        /// </summary>
-        public string Path { get; }
-
-        public bool IsRenamed { get; }
+        public bool IsRenamed { get; set; }
 
         /// <summary>
         /// Renames item using <see cref="Name"/> property

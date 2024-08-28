@@ -1,8 +1,8 @@
 ﻿#nullable enable
-using Microsoft.UI.Xaml.Media.Imaging;
 using Models.Contracts.Storage;
 using Models.Storage.Abstractions;
 using Models.Storage.Additional;
+using Models.Storage.Additional.Properties;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -96,18 +96,6 @@ namespace Models.Storage.Windows
         /// <returns> this if item is <see cref="DirectoryWrapper"/> otherwise parent directory </returns>
         public abstract DirectoryWrapper GetCurrentDirectory();
 
-        public DirectoryItemAdditionalInfo GetBasicInfo()
-        {
-            return new DirectoryItemAdditionalInfo
-            {
-                ModifiedDate = info.LastWriteTime,
-                CreationTime = info.CreationTime,
-                FullPath = Path,
-                Name = Name,
-                Thumbnail = new BitmapImage()
-            };
-        }
-
         /// <summary>
         /// Gets parent directory for an item
         /// </summary>
@@ -149,9 +137,14 @@ namespace Models.Storage.Windows
             return newName;
         }
 
-        public override async Task UpdateThumbnailAsync(int size)
+        public override IBasicStorageItemProperties GetBasicProperties()
         {
-            await base.UpdateThumbnailAsync(size);
+            return new DirectoryItemBasicProperties(Name, Path)
+            {
+                CreationTime = info.CreationTime,
+                ModifiedDate = info.LastWriteTime,
+                Size = Size,
+            };
         }
     }
 }

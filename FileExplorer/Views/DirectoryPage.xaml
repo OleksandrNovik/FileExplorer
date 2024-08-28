@@ -15,15 +15,14 @@
     xmlns:generalBehaviors="using:FileExplorer.UI.Behaviors.General"
     xmlns:contextMenu="using:FileExplorer.UI.Behaviors.ContextMenu"
     xmlns:userControls="using:FileExplorer.UI.UserControls"
-    xmlns:windows="using:Models.Storage.Windows"
     xmlns:collections="using:FileExplorer.UI.Behaviors.Collections"
+    xmlns:storage="using:Models.Contracts.Storage"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Page.Resources>
-        <DataTemplate x:Key="GridItemTemplate" x:DataType="windows:DirectoryItemWrapper">
+        <DataTemplate x:Key="GridItemTemplate" x:DataType="storage:IDirectoryItem">
             <Grid  Padding="10  20 10 10" 
-                   ToolTipService.ToolTip="{x:Bind Size}"
                    ToolTipService.Placement="Bottom">
 
                 <Grid.RowDefinitions>
@@ -47,6 +46,7 @@
                               Padding="0 5 0 0"
                               Visibility="{x:Bind IsRenamed, Mode=OneWay,
                                 Converter = {StaticResource BoolToVisibilityConverter}}">
+       
 
                         <interactivity:Interaction.Behaviors>
                             <interactivity:BehaviorCollection>
@@ -56,13 +56,13 @@
                                     />
 
                                 <generalBehaviors:LostFocusBehavior 
-                                    Command="{StaticResource EndRenamingIfLostFocusCommand}"
+                                    Command="{Binding Path=EndRenamingIfNeededCommand, Source={StaticResource FileOperations}}"
                                     CommandParameter="{x:Bind}"
                                     />
 
                                 <toolkitBehaviors:KeyDownTriggerBehavior Key="Enter">
                                     <core:InvokeCommandAction 
-                                        Command="{StaticResource EndRenamingCommand}" 
+                                        Command="{Binding Path=EndRenamingItemCommand, Source={StaticResource FileOperations}}"
                                         CommandParameter="{x:Bind}" />
                                 </toolkitBehaviors:KeyDownTriggerBehavior>
 
