@@ -21,7 +21,7 @@
         </DataTemplate>
 
         <DataTemplate x:DataType="windows:DirectoryWrapper" x:Key="LibrariesTemplate">
-            <Grid>
+            <Grid Padding="0 5">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />

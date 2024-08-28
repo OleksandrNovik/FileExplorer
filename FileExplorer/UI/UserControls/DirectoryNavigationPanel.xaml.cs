@@ -10,10 +10,10 @@ namespace FileExplorer.UI.UserControls
 {
     public sealed partial class DirectoryNavigationPanel : UserControl
     {
-        public DirectoriesNavigationViewModel ViewModel { get; }
+        public TabNavigationViewModel ViewModel { get; }
         public DirectoryNavigationPanel()
         {
-            this.ViewModel = App.GetService<DirectoriesNavigationViewModel>();
+            this.ViewModel = App.GetService<TabNavigationViewModel>();
             this.InitializeComponent();
         }
 

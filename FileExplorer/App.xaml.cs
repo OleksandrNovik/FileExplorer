@@ -74,7 +74,7 @@ namespace FileExplorer
                     services.AddTransient<IStorageFactory<IDirectoryItem>, StorageFactory>();
 
                     services.AddTransient<HomePageViewModel>();
-                    services.AddTransient<DirectoriesNavigationViewModel>();
+                    services.AddTransient<TabNavigationViewModel>();
 
                     //Settings
                     services.AddTransient<SettingsViewModel>();

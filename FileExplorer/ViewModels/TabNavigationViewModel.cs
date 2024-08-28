@@ -12,7 +12,7 @@ using System.IO;
 
 namespace FileExplorer.ViewModels
 {
-    public partial class DirectoriesNavigationViewModel : ObservableRecipient
+    public partial class TabNavigationViewModel : ObservableRecipient
     {
         /// <summary>
         /// Stores and updates navigation history for a tab (that is currently opened)
@@ -52,35 +52,36 @@ namespace FileExplorer.ViewModels
         [ObservableProperty]
         private ObservableCollection<string> routeItems;
 
-        public DirectoriesNavigationViewModel(IHistoryNavigationService navigation, IDirectoryRouteService router, SearchOptionsViewModel searchOperator)
+        public TabNavigationViewModel(IHistoryNavigationService navigation, IDirectoryRouteService router, SearchOptionsViewModel searchOperator)
         {
             this.navigation = navigation;
             this.router = router;
             SearchOperator = searchOperator;
 
             // Handler that is called when new tab is opened. New directory from that tab is initialized
-            Messenger.Register<DirectoriesNavigationViewModel, TabOpenedMessage>(this, (_, message) =>
+            Messenger.Register<TabNavigationViewModel, TabOpenedMessage>(this, (_, message) =>
             {
-                InitializeDirectory(message.TabStorage);
+                SetViewedStorage(message.TabStorage);
                 this.navigation.History = message.TabNavigationHistory;
                 NotifyCanExecute();
             });
 
             // Handler that is called when user is navigation inside current tab
-            Messenger.Register<DirectoriesNavigationViewModel, StorageNavigatedMessage>(this, (_, message) =>
+            Messenger.Register<TabNavigationViewModel, StorageNavigatedMessage>(this, (_, message) =>
             {
                 this.navigation.OpenDirectory(message.NavigatedStorage);
+                SetViewedStorage(message.NavigatedStorage);
                 NotifyCanExecute();
             });
         }
 
         /// <summary>
-        /// Is called when new tab is opened, so directory in that tab should be initialized
+        /// Initializes route and route items when new storage is navigated
         /// </summary>
-        /// <param name="directory"> Storage that is held in tab </param>
-        private void InitializeDirectory(IStorage<IDirectoryItem> directory)
+        /// <param name="storage"> Storage that is navigated </param>
+        private void SetViewedStorage(IStorage<IDirectoryItem> storage)
         {
-            navigation.CurrentDirectory = directory;
+            navigation.CurrentDirectory = storage;
 
             CurrentRoute = CurrentDirectory.Path;
 
