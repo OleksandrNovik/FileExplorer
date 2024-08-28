@@ -1,12 +1,16 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.UI.Xaml.Controls;
 using Models.Contracts.Storage;
 using Models.Messages;
+using Models.Storage.Abstractions;
 using Models.Storage.Windows;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace FileExplorer.ViewModels.General
@@ -16,25 +20,50 @@ namespace FileExplorer.ViewModels.General
         private IDirectory directory;
 
         [ObservableProperty]
-        private bool canCreateItems;
+        private bool canAlterDirectory;
 
         public ObservableCollection<IDirectoryItem> OperatedItems { get; } = new();
 
         public FileOperationsViewModel()
         {
+            OperatedItems.CollectionChanged += NotifyCanExecute;
+
             Messenger.Register<FileOperationsViewModel, TabStorageChangedMessage>(this, (_, message) =>
             {
                 if (message.Storage is IDirectory dir)
                 {
                     directory = dir;
-                    CanCreateItems = true;
+                    CanAlterDirectory = true;
                 }
                 else
                 {
-                    CanCreateItems = false;
+                    CanAlterDirectory = false;
                 }
             });
         }
+
+        private void NotifyCanExecute(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            BeginRenamingSelectedItemCommand.NotifyCanExecuteChanged();
+            NotifyCanChangeDirectory();
+        }
+
+        private void NotifyCanChangeDirectory()
+        {
+            RecycleSelectedItemsCommand.NotifyCanExecuteChanged();
+            DeleteSelectedItemsCommand.NotifyCanExecuteChanged();
+        }
+
+        partial void OnCanAlterDirectoryChanged(bool value)
+        {
+            NotifyCanChangeDirectory();
+        }
+
+        private bool HasOperatedItems() => OperatedItems.Count > 0;
+
+        private bool CanChangeDirectory() => CanAlterDirectory && HasOperatedItems();
+
+        #region Create
 
         /// <summary>
         /// Creates file in <see cref="directory"/>
@@ -42,7 +71,7 @@ namespace FileExplorer.ViewModels.General
         [RelayCommand]
         private async Task CreateFile()
         {
-            Debug.Assert(CanCreateItems);
+            Debug.Assert(CanAlterDirectory);
             await directory.CreateAsync(false);
         }
 
@@ -52,12 +81,16 @@ namespace FileExplorer.ViewModels.General
         [RelayCommand]
         private async Task CreateDirectory()
         {
-            Debug.Assert(CanCreateItems);
+            Debug.Assert(CanAlterDirectory);
             await directory.CreateAsync(true);
         }
 
+        #endregion
+
+        #region Open
+
         [RelayCommand]
-        public async Task Open(IDirectoryItem item)
+        public async Task Open(InteractiveStorageItem item)
         {
             switch (item)
             {
@@ -76,10 +109,17 @@ namespace FileExplorer.ViewModels.General
         }
 
         [RelayCommand]
-        public void OpenInNewTab(DirectoryWrapper directory)
+        public void OpenInNewTab(IDirectory directory)
         {
             Messenger.Send(new OpenTabMessage(directory));
         }
+
+        #endregion
+
+        #region Rename
+
+        [RelayCommand(CanExecute = nameof(HasOperatedItems))]
+        private void BeginRenamingSelectedItem() => BeginRenamingItem(OperatedItems[0]);
 
         /// <summary>
         /// Begins renaming provided object
@@ -103,7 +143,6 @@ namespace FileExplorer.ViewModels.General
             item.Rename();
         }
 
-
         /// <summary>
         /// Ends renaming item when it is renamed.
         /// This method is called before any operation with item to be sure it's not renamed while executing operation
@@ -117,6 +156,79 @@ namespace FileExplorer.ViewModels.General
                 await EndRenamingItem(item);
             }
         }
+
+        #endregion
+
+
+        #region Delete
+
+        /// <summary>
+        /// Moves selected items to a recycle bin
+        /// </summary>
+        [RelayCommand(CanExecute = nameof(CanChangeDirectory))]
+        private async Task RecycleSelectedItems()
+        {
+            while (OperatedItems.Count > 0)
+            {
+                await TryDeleteItem(OperatedItems[0]);
+            }
+        }
+
+        /// <summary>
+        /// Permanently deletes selected items
+        /// </summary>
+        [RelayCommand(CanExecute = nameof(CanChangeDirectory))]
+        public async Task DeleteSelectedItems()
+        {
+            var content = $"Do you really want to delete {(OperatedItems.Count > 1 ? "selected items" : $"\"{OperatedItems[0].Path}\""
+                )} permanently?";
+            var result = await App.MainWindow.ShowYesNoDialog(content, "Deleting items");
+
+            if (result == ContentDialogResult.Secondary) return;
+
+            while (OperatedItems.Count > 0)
+            {
+                await TryDeleteItem(OperatedItems[0], true);
+            }
+        }
+
+        /// <summary>
+        /// Fully deletes item (if it is possible)
+        /// </summary>
+        /// <param name="item"> Wrapper item to delete </param>
+        /// <param name="isPermanent"> Is item being deleted permanently or not </param>
+        /// <returns> true if item is successfully deleted, otherwise - false </returns>
+        private async Task TryDeleteItem(IDirectoryItem item, bool isPermanent = false)
+        {
+            var removed = new List<IDirectoryItem>();
+            await EndRenamingIfNeeded(item);
+
+            try
+            {
+                if (isPermanent)
+                {
+                    item.Delete();
+                }
+                else
+                {
+                    await item.RecycleAsync();
+                }
+
+                removed.Add(item);
+            }
+            catch (IOException e)
+            {
+                await App.MainWindow.ShowMessageDialogAsync(e.Message, "File operation canceled");
+            }
+            finally
+            {
+                OperatedItems.Remove(item);
+            }
+
+            //TODO: Send message with deleted items
+        }
+
+        #endregion
 
         [RelayCommand]
         public async Task ShowDetails(DirectoryItemWrapper item)

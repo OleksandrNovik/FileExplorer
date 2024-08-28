@@ -50,7 +50,11 @@
                                        SelectionMode="Single"
                                        ItemTemplate="{StaticResource LibrariesTemplate}"
                                        HorizontalContentAlignment="Stretch"
-                                       HorizontalAlignment="Stretch" />
+                                       HorizontalAlignment="Stretch">
+                <interactivity:Interaction.Behaviors>
+                    <collections:DirectoryItemDoubleClickBehavior Command="{x:Bind ViewModel.FileOperations.OpenCommand}" />
+                </interactivity:Interaction.Behaviors>
+            </GridView>
 
             <!--<ItemsRepeater ItemsSource="{x:Bind ViewModel.Libraries}"
                            ItemTemplate="{StaticResource LibrariesTemplate}">
@@ -70,9 +74,9 @@
                       SelectionMode="Single"
                       ItemTemplate="{StaticResource DrivesTemplate}">
 
-                <!--<interactivity:Interaction.Behaviors>
-                    <collections:DirectoryItemDoubleClickBehavior Command="{x:Bind ViewModel}" />
-                </interactivity:Interaction.Behaviors>-->
+                <interactivity:Interaction.Behaviors>
+                    <collections:DirectoryItemDoubleClickBehavior Command="{x:Bind ViewModel.FileOperations.OpenCommand}" />
+                </interactivity:Interaction.Behaviors>
             </GridView>
 
         </Expander>

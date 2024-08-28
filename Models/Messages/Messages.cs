@@ -2,7 +2,6 @@
 using Microsoft.UI.Xaml.Controls;
 using Models.Contracts.Storage;
 using Models.General;
-using Models.Storage.Windows;
 using Models.TabRelated;
 
 namespace Models.Messages
@@ -24,8 +23,8 @@ namespace Models.Messages
     /// <summary>
     /// Message for DirectoryPageViewModel to open file path for which has been written in the route
     /// </summary>
-    /// <param name="OpenFile"> File that has to be opened </param>
-    public record FileOpenRequiredMessage(FileWrapper OpenFile);
+    /// <param name="ItemToLaunch"> File that has to be opened </param>
+    public record LaunchRequiredMessage(ILaunchable ItemToLaunch);
 
     /// <summary>
     /// Message for DirectoryPageViewModel to navigate into provided directory with provided navigation history

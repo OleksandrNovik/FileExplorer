@@ -189,7 +189,7 @@ namespace FileExplorer.ViewModels
 
             if (navigationItem is FileWrapper file)
             {
-                Messenger.Send(new FileOpenRequiredMessage(file));
+                Messenger.Send(new LaunchRequiredMessage(file));
             }
 
             navigation.GoForward(currentDirectory);

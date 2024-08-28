@@ -32,13 +32,18 @@ namespace Models.Storage.Drives
         [ObservableProperty]
         private string friendlyName;
 
+        /// <summary>
+        /// Special implementation for IStorage to return friendly name of this drive
+        /// </summary>
+        string IStorage<IDirectoryItem>.Name => FriendlyName;
+
         public DriveWrapper(DriveInfo drive)
         {
             driveInfo = drive;
             rootDirectory = new DirectoryWrapper(driveInfo.RootDirectory);
             DriveSpace = new DriveSpaceInfo(drive);
 
-            name = driveInfo.VolumeLabel;
+            name = drive.VolumeLabel;
             Path = rootDirectory.Path;
             friendlyName = driveInfo.GetFriendlyName();
             Thumbnail.ItemPath = rootDirectory.Path;

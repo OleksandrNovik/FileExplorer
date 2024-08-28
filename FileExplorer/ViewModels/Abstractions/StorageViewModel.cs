@@ -13,12 +13,15 @@ namespace FileExplorer.ViewModels.Abstractions
     /// </summary>
     public abstract class StorageViewModel : ContextMenuCreatorViewModel, INavigationAware, ISearchingViewModel
     {
+        public FileOperationsViewModel FileOperations { get; }
+
         /// <summary>
         /// Storage that is opened in storage page
         /// </summary>
         public IStorage<IDirectoryItem> Storage { get; set; }
-        protected StorageViewModel(IMenuFlyoutFactory factory) : base(factory)
+        protected StorageViewModel(FileOperationsViewModel fileOperations, IMenuFlyoutFactory factory) : base(factory)
         {
+            FileOperations = fileOperations;
             Messenger.Register<StorageViewModel, SearchOperationRequiredMessage>(this, HandleSearchMessage);
         }
 

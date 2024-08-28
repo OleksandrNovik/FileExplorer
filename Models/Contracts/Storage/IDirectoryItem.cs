@@ -1,12 +1,10 @@
-﻿using System;
+﻿#nullable enable
 using System.Threading.Tasks;
 
 namespace Models.Contracts.Storage
 {
     public interface IDirectoryItem : IRenameableObject, IThumbnailProvider
     {
-        public DateTime LastAccess { get; }
-
         /// <summary>
         /// Copy item from current directory to a destination directory
         /// </summary>
@@ -19,7 +17,14 @@ namespace Models.Contracts.Storage
         /// <param name="destination"> Path of a destination directory </param>
         public void Move(string destination);
 
+        /// <summary>
+        /// Moves item to a recycle bin
+        /// </summary>
         public Task RecycleAsync();
+
+        /// <summary>
+        /// Deletes item permanently
+        /// </summary>
         public void Delete();
     }
 }

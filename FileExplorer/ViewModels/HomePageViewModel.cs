@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using FileExplorer.Core.Contracts.Factories;
 using FileExplorer.ViewModels.Abstractions;
+using FileExplorer.ViewModels.General;
 using Helpers.General;
 using Microsoft.UI.Xaml.Controls;
 using Models.ModelHelpers;
@@ -18,7 +19,7 @@ namespace FileExplorer.ViewModels
         public ObservableDrivesCollection Drives { get; private set; }
         public List<DirectoryWrapper> Libraries { get; }
 
-        public HomePageViewModel(IMenuFlyoutFactory factory) : base(factory)
+        public HomePageViewModel(FileOperationsViewModel fileOperations, IMenuFlyoutFactory factory) : base(fileOperations, factory)
         {
             Libraries = KnownFoldersHelper.Libraries.ToList();
         }

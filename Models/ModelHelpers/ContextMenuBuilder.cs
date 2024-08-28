@@ -61,8 +61,8 @@ namespace Models.ModelHelpers
                 IconGlyph = "\uE710",
                 Items =
                 [
-                    new MenuFlyoutItemViewModel("File").WithCommand(command, true),
-                    new MenuFlyoutItemViewModel("Folder").WithCommand(command, false)
+                    new MenuFlyoutItemViewModel("File").WithCommand(command, false),
+                    new MenuFlyoutItemViewModel("Folder").WithCommand(command, true)
                 ]
             };
 

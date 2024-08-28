@@ -21,10 +21,6 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Page.Resources>
-        <Style x:Key="MenuButton" TargetType="Button">
-            <Setter Property="Padding" Value="10 8"  />
-            <Setter Property="Margin" Value="0 0 10 0" />
-        </Style>
         <DataTemplate x:Key="GridItemTemplate" x:DataType="windows:DirectoryItemWrapper">
             <Grid  Padding="10  20 10 10" 
                    ToolTipService.ToolTip="{x:Bind Size}"
@@ -78,116 +74,14 @@
         </DataTemplate>
     </Page.Resources>
 
-    <Grid Padding="20 20 5 5" KeyboardAcceleratorPlacementMode="Hidden">
+    <Grid Padding="15 10" KeyboardAcceleratorPlacementMode="Hidden">
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="55" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Grid Margin="0 0 0 10">
-
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="300" />
-            </Grid.ColumnDefinitions>
-
-            <StackPanel Orientation="Horizontal">
-                <DropDownButton 
-                     Style="{StaticResource MenuButton}" 
-                     ToolTipService.ToolTip="New File"
-                     ToolTipService.Placement="Bottom">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Margin="0 0 7 0 " VerticalAlignment="Center">New</TextBlock>
-                        <FontIcon FontSize="12" Glyph="&#xE710;" />
-                    </StackPanel>
-                    <DropDownButton.Flyout>
-                        <MenuFlyout Placement="Bottom">
-                            <MenuFlyoutItem 
-                         Command="{x:Bind ViewModel.CreateFileCommand}"
-                             Text="File" />
-                            <MenuFlyoutItem 
-                         Command="{x:Bind ViewModel.CreateDirectoryCommand}"
-                             Text="Folder"/>
-                        </MenuFlyout>
-                    </DropDownButton.Flyout>
-                </DropDownButton>
-
-                <CommandBar OverflowButtonVisibility="Collapsed" >
-                    <AppBarButton IsCompact="True"
-                              ToolTipService.ToolTip="Copy"
-                              ToolTipService.Placement="Bottom" MaxWidth="55">
-                        <AppBarButton.Icon>
-                            <FontIcon FontSize="20" Glyph="&#xE8C8;" />
-                        </AppBarButton.Icon>
-                    </AppBarButton>
-                    <AppBarButton IsCompact="True"
-                              ToolTipService.ToolTip="Cut"
-                              ToolTipService.Placement="Bottom" MaxWidth="55">
-                        <AppBarButton.Icon>
-                            <FontIcon FontSize="20" Glyph="&#xE8C6;" />
-                        </AppBarButton.Icon>
-                    </AppBarButton>
-                    <AppBarButton IsCompact="True"
-                              ToolTipService.ToolTip="Paste"
-                              ToolTipService.Placement="Bottom" MaxWidth="55">
-                        <AppBarButton.Icon>
-                            <FontIcon FontSize="20" Glyph="&#xE77F;" />
-                        </AppBarButton.Icon>
-                    </AppBarButton>
-                    <AppBarButton IsCompact="True"
-                              Command="{x:Bind ViewModel.BeginRenamingSelectedItemCommand}"
-                              ToolTipService.ToolTip="Rename"
-                              ToolTipService.Placement="Bottom" MaxWidth="55">
-                        <AppBarButton.Icon>
-                            <FontIcon FontSize="20" Glyph="&#xE8AC;" />
-                        </AppBarButton.Icon>
-                    </AppBarButton>
-                    <AppBarButton IsCompact="True" 
-                              Command="{x:Bind ViewModel.RecycleSelectedItemsCommand}"
-                              ToolTipService.ToolTip="Delete"
-                              ToolTipService.Placement="Bottom" MaxWidth="55">
-                        <AppBarButton.Icon>
-                            <FontIcon FontSize="20" Glyph="&#xE74D;" />
-                        </AppBarButton.Icon>
-                    </AppBarButton>
-                </CommandBar>
-            </StackPanel>
-            <StackPanel Grid.Column="1" Orientation="Horizontal">
-                <DropDownButton 
-                     Style="{StaticResource MenuButton}"
-                     ToolTipService.ToolTip="Change View Of Items"
-                     ToolTipService.Placement="Bottom">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Margin="0 0 7 0 " VerticalAlignment="Center">View</TextBlock>
-                        <FontIcon FontSize="12" Glyph="&#xF246;"  />
-                    </StackPanel>
-                </DropDownButton>
-                <DropDownButton 
-             Style="{StaticResource MenuButton}"
-             ToolTipService.ToolTip="Sort elements"
-             ToolTipService.Placement="Bottom">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Margin="0 0 7 0 " VerticalAlignment="Center">Sort</TextBlock>
-                        <FontIcon FontSize="12" Glyph="&#xE8CB;"  />
-                    </StackPanel>
-                </DropDownButton>
-                <Button 
-             Style="{StaticResource MenuButton}" 
-             Command="{x:Bind ViewModel.ShowDetailsOfSelectedItemCommand}"
-             ToolTipService.ToolTip="File Details"
-             ToolTipService.Placement="Bottom">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Margin="0 0 7 0 " VerticalAlignment="Center">Details</TextBlock>
-                        <FontIcon FontSize="14" Glyph="&#xE946;" />
-                    </StackPanel>
-                </Button>
-            </StackPanel>
-
-        </Grid>
-
-        <Grid Row="1">
+        <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"  />
                 <ColumnDefinition Width="Auto" />
@@ -223,7 +117,7 @@
 
         </Grid>
 
-        <StackPanel Grid.Row="2" 
+        <StackPanel Grid.Row="1" 
             Padding="15  5 15 0"
             Grid.Column="0" 
             HorizontalAlignment="Stretch" 
@@ -242,18 +136,18 @@
         <interactivity:Interaction.Behaviors>
             <!--TODO: HotKey2 Del - Delete item-->
             <toolkitBehaviors:KeyDownTriggerBehavior Key="Delete">
-                <core:InvokeCommandAction Command="{x:Bind ViewModel.RecycleSelectedItemsCommand}" />
+                <core:InvokeCommandAction Command="{x:Bind ViewModel.FileOperations.RecycleSelectedItemsCommand}" />
             </toolkitBehaviors:KeyDownTriggerBehavior>
         </interactivity:Interaction.Behaviors>
         <Grid.KeyboardAccelerators>
             <!--TODO: HotKey1 Ctrl+R - Rename-->
             <ui:CommandKeyboardAccelerator 
                 Modifiers="Control" Key="R"
-                Command="{x:Bind ViewModel.BeginRenamingSelectedItemCommand}"
+                Command="{x:Bind ViewModel.FileOperations.BeginRenamingSelectedItemCommand}"
             />
             <ui:CommandKeyboardAccelerator 
                 Modifiers="Shift" Key="Delete"
-                Command="{x:Bind ViewModel.DeleteSelectedItemsCommand}"
+                Command="{x:Bind ViewModel.FileOperations.DeleteSelectedItemsCommand}"
             />
             <!--TODO: HotKey3 Ctrl+A - SelectAll-->
             <KeyboardAccelerator Modifiers="Control" Key="A" Invoked="SelectAllItems" />
