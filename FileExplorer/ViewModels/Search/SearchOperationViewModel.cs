@@ -23,7 +23,6 @@ namespace FileExplorer.ViewModels.Search
         {
             currentSearchOptions = searchOptions;
             CachedSearch = new(searchCatalog, searchOptions.Destination);
-            Messenger.Send(new StorageNavigatedMessage(CachedSearch));
         }
         public SearchOperationViewModel()
         {

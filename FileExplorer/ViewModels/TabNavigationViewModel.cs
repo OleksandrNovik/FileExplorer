@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using FileExplorer.Core.Contracts;
-using FileExplorer.ViewModels.Search;
 using Models.Contracts.Storage;
 using Models.Messages;
 using Models.Storage.Windows;
@@ -12,6 +11,9 @@ using System.IO;
 
 namespace FileExplorer.ViewModels
 {
+    /// <summary>
+    /// View model that is responsible for navigation operations in tab (changing opened directory)
+    /// </summary>
     public partial class TabNavigationViewModel : ObservableRecipient
     {
         /// <summary>
@@ -28,11 +30,6 @@ namespace FileExplorer.ViewModels
         /// Storage or search result that is currently opened 
         /// </summary>
         private IStorage<IDirectoryItem> CurrentDirectory => navigation.CurrentDirectory;
-
-        /// <summary>
-        /// View model that works with search options and search query, this view model sends message to start the search when user needs to
-        /// </summary>
-        public SearchOptionsViewModel SearchOperator { get; }
 
         /// <summary>
         /// Decides if user is currently writing route into the text box or using route breadcrumb bar
@@ -52,11 +49,10 @@ namespace FileExplorer.ViewModels
         [ObservableProperty]
         private ObservableCollection<string> routeItems;
 
-        public TabNavigationViewModel(IHistoryNavigationService navigation, IDirectoryRouteService router, SearchOptionsViewModel searchOperator)
+        public TabNavigationViewModel(IHistoryNavigationService navigation, IDirectoryRouteService router)
         {
             this.navigation = navigation;
             this.router = router;
-            SearchOperator = searchOperator;
 
             // Handler that is called when new tab is opened. New directory from that tab is initialized
             Messenger.Register<TabNavigationViewModel, TabOpenedMessage>(this, (_, message) =>
