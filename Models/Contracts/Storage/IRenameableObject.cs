@@ -10,6 +10,11 @@ namespace Models.Contracts.Storage
         public bool IsRenamed { get; set; }
 
         /// <summary>
+        /// Property that shows if we can rename item, or it is read only
+        /// </summary>
+        public bool CanRename { get; }
+
+        /// <summary>
         /// Renames item using <see cref="Name"/> property
         /// </summary>
         public void Rename();

@@ -31,6 +31,8 @@ namespace Models.Storage.Windows
         protected DirectoryItemWrapper(FileSystemInfo info)
         {
             this.info = info;
+            // if file or folder declared as read only we cannot rename them
+            CanRename = (info.Attributes & FileAttributes.ReadOnly) == 0;
             InitializeData();
         }
 

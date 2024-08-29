@@ -5,7 +5,6 @@ using Microsoft.UI.Xaml.Controls;
 using Models.Contracts.Storage;
 using Models.Messages;
 using Models.Storage.Abstractions;
-using Models.Storage.Windows;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -243,16 +242,16 @@ namespace FileExplorer.ViewModels.General
         #endregion
 
         [RelayCommand]
-        public async Task ShowDetails(DirectoryItemWrapper item)
+        public void ShowDetails(InteractiveStorageItem item)
         {
-            var details = item.GetBasicInfo();
+            //var details = item.GetBasicInfo();
 
-            if (item is FileWrapper file)
-            {
-                details.TitleInfo = await file.GetFileTypeAsync();
-            }
+            //if (item is FileWrapper file)
+            //{
+            //    details.TitleInfo = await file.GetFileTypeAsync();
+            //}
 
-            Messenger.Send(new ShowDetailsMessage(details));
+            //Messenger.Send(new ShowDetailsMessage(details));
         }
 
         [RelayCommand]

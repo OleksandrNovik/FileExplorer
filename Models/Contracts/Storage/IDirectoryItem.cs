@@ -1,11 +1,15 @@
 ﻿#nullable enable
+using Models.Storage.Additional;
+using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
 
 namespace Models.Contracts.Storage
 {
-    public interface IDirectoryItem : IRenameableObject, IThumbnailProvider, INotifyPropertyChanged
+    public interface IDirectoryItem : IRenameableObject, INotifyPropertyChanged
     {
+        public DateTime LastAccess { get; }
+        public ByteSize? Size { get; }
         /// <summary>
         /// Copy item from current directory to a destination directory
         /// </summary>

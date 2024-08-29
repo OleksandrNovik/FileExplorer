@@ -46,8 +46,6 @@ namespace Models.Messages
     /// </summary>
     public record StopSearchMessage;
 
-    public record ShowDetailsMessage(DirectoryItemAdditionalInfo Details);
-
     /// <summary>
     /// Message that notifies InfoBar view model to show InfoBar with provided content
     /// </summary>

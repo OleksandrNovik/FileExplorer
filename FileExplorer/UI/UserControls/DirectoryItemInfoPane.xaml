@@ -20,7 +20,7 @@
             </Style>
         </Grid.Resources>
 
-        <ScrollViewer>
+        <!--<ScrollViewer>
             <StackPanel Padding="10 5">
 
                 <Image Source="{x:Bind ViewModel.Info.Thumbnail, Mode=OneWay}" Height="100" Style="{StaticResource PanelItem}" />
@@ -50,7 +50,7 @@
                 </StackPanel>
 
             </StackPanel>
-        </ScrollViewer>
+        </ScrollViewer>-->
 
 
         <AppBarButton Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Top" IsCompact="True"

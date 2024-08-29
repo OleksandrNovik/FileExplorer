@@ -21,6 +21,7 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Page.Resources>
+
         <DataTemplate x:Key="GridItemTemplate" x:DataType="storage:IDirectoryItem">
             <Grid  Padding="10  20 10 10" 
                    ToolTipService.Placement="Bottom">
@@ -70,8 +71,50 @@
                         </interactivity:Interaction.Behaviors>
                     </TextBox>
                 </Grid>
+
+                <interactivity:Interaction.Behaviors>
+                    <generalBehaviors:DoubleClickBehavior Command="{Binding Path=OpenCommand, Source={StaticResource FileOperations}}" 
+                                                          CommandParameter="{x:Bind}"  />
+                </interactivity:Interaction.Behaviors>
             </Grid>
         </DataTemplate>
+
+        <DataTemplate x:DataType="storage:IDirectoryItem" x:Key="TableThumbnailAndNameCellTemplate">
+            <Grid Padding="10 10 0 10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition Width="10" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Image Source="{x:Bind Thumbnail.Source, Mode=OneWay}" />
+                <TextBlock Grid.Column="2" Text="{x:Bind Name, Mode=OneWay}" VerticalAlignment="Center" />
+
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:DataType="storage:IDirectoryItem" x:Key="TableThumbnailAndNameEditingCellTemplate">
+            <Grid Padding="10 10 0 10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition Width="10" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Image Source="{x:Bind Thumbnail.Source, Mode=OneWay}" />
+
+                <TextBlock Grid.Column="2" Text="{x:Bind Name, Mode=OneWay}" 
+                           VerticalAlignment="Center"
+                           Visibility="{x:Bind IsRenamed, Converter={StaticResource BoolToVisibilityConverter}, 
+                                        ConverterParameter=True}" />
+
+                <TextBox Grid.Column="2" Text="{x:Bind Name, Mode=TwoWay}"
+                         Visibility="{x:Bind IsRenamed, Converter={StaticResource BoolToVisibilityConverter}}"
+                         VerticalAlignment="Center" />
+
+            </Grid>
+        </DataTemplate>
+
     </Page.Resources>
 
     <Grid Padding="15 10" KeyboardAcceleratorPlacementMode="Hidden">
@@ -86,7 +129,7 @@
                 <ColumnDefinition Width="*"  />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <controls:AdaptiveGridView x:Name="DirectoryItemsGrid"
+            <!--<controls:AdaptiveGridView x:Name="DirectoryItemsGrid"
                                        StretchContentForSingleRow="False"
                                        DesiredWidth="180"
                                        ItemHeight="160"
@@ -106,12 +149,46 @@
 
                     <collections:MultiSelectionBehavior SelectedItems="{x:Bind ViewModel.SelectedItems, Mode=OneWay}" />
 
-                    <collections:DirectoryItemDoubleClickBehavior Command="{x:Bind ViewModel.FileOperations.OpenCommand}" />
-
                     <contextMenu:GridViewContextDialogBehavior />
 
                 </interactivity:Interaction.Behaviors>
-            </controls:AdaptiveGridView>
+            </controls:AdaptiveGridView>-->
+
+            <controls:DataGrid 
+                AutoGenerateColumns="False"
+                CanUserResizeColumns="True"
+                CanUserReorderColumns="False"
+                CanUserSortColumns="True"
+                SelectionMode="Extended"
+                ItemsSource="{x:Bind ViewModel.DirectoryItems, Mode=OneWay}">
+
+                <controls:DataGrid.Resources>
+                    <Brush x:Key="TransparentColor">Transparent</Brush>
+                    <StaticResource x:Key="DataGridColumnHeaderBackgroundColor" ResourceKey="TransparentColor"/>
+                </controls:DataGrid.Resources>
+
+                <controls:DataGrid.Columns>
+                    <controls:DataGridTemplateColumn Header="Name"
+                                                     CellTemplate="{StaticResource TableThumbnailAndNameCellTemplate}"
+                                                     CellEditingTemplate="{StaticResource TableThumbnailAndNameEditingCellTemplate}" />
+
+                    <controls:DataGridTextColumn 
+                        Header="Change date" 
+                        Binding="{Binding Path=LastAccess, Mode=OneWay}"
+                        IsReadOnly="True" />
+                    <controls:DataGridTextColumn 
+                        Header="Type" 
+                        Binding="{Binding Path=LastAccess, Mode=OneWay}"
+                        IsReadOnly="True" />
+                    <controls:DataGridTextColumn
+                        Header="Size" 
+                        Width="*"
+                        Binding="{Binding Path=Size, Mode=OneWay}"
+                        IsReadOnly="True" />
+
+                </controls:DataGrid.Columns>
+
+            </controls:DataGrid>
 
             <userControls:DirectoryItemInfoPane Grid.Column="1" />
 
@@ -150,7 +227,7 @@
                 Command="{x:Bind ViewModel.FileOperations.DeleteSelectedItemsCommand}"
             />
             <!--TODO: HotKey3 Ctrl+A - SelectAll-->
-            <KeyboardAccelerator Modifiers="Control" Key="A" Invoked="SelectAllItems" />
+            <!--<KeyboardAccelerator Modifiers="Control" Key="A" Invoked="SelectAllItems" />-->
         </Grid.KeyboardAccelerators>
     </Grid>
 </Page>

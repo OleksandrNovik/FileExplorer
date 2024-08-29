@@ -6,9 +6,38 @@
     xmlns:local="using:FileExplorer.UI.UserControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:contentSelectors="using:FileExplorer.UI.ContentSelectors"
     mc:Ignorable="d">
 
+    <UserControl.Resources>
+
+        <DataTemplate x:Key="GridTemplate" x:DataType="local:DynamicItemView">
+            <controls:AdaptiveGridView ItemsSource="{x:Bind ItemsSource}" 
+                                       SelectionMode="Multiple"
+                                       ItemTemplate="{x:Bind GridTemplate}" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="TableTemplate" x:DataType="local:DynamicItemView">
+            <controls:DataGrid 
+                AutoGenerateColumns="True" 
+                CanUserResizeColumns="True"
+                CanUserReorderColumns="False"
+                CanUserSortColumns="True"
+                ItemsSource="{x:Bind ItemsSource}" />
+        </DataTemplate>
+
+        <contentSelectors:DynamicCollectionTemplateSelector 
+            x:Key="DynamicCollectionSelector"
+            GridTemplate="{StaticResource GridTemplate}"
+            TableTemplate="{StaticResource TableTemplate}"
+            />
+
+    </UserControl.Resources>
+
+
     <Grid>
-        <TextBlock Text="DynamicView" />
+        <ContentControl ContentTemplateSelector="{StaticResource DynamicCollectionSelector}" />
+
     </Grid>
 </UserControl>

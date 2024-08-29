@@ -30,6 +30,8 @@ namespace Models.Storage.Abstractions
         /// </summary>
         public string Path { get; protected set; }
 
+        /// <inheritdoc />
+        public bool CanRename { get; protected set; }
         public abstract void Rename();
 
         public abstract IBasicStorageItemProperties GetBasicProperties();
@@ -39,7 +41,7 @@ namespace Models.Storage.Abstractions
         /// </summary>
         public void BeginEdit()
         {
-            if (!IsRenamed)
+            if (!IsRenamed && CanRename)
             {
                 backupName = Name;
                 IsRenamed = true;
