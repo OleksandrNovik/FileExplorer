@@ -17,6 +17,8 @@
     xmlns:userControls="using:FileExplorer.UI.UserControls"
     xmlns:collections="using:FileExplorer.UI.Behaviors.Collections"
     xmlns:storage="using:Models.Contracts.Storage"
+    xmlns:primitives="using:CommunityToolkit.WinUI.UI.Controls.Primitives"
+    xmlns:dataGridBehaviors="using:FileExplorer.UI.Behaviors.DataGrid"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -36,6 +38,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="30" />
                     </Grid.RowDefinitions>
+
                     <TextBlock Text="{x:Bind Name, Mode=OneWay}" 
                                VerticalAlignment="Center"
                                Visibility="{x:Bind IsRenamed, Mode=OneWay, 
@@ -79,22 +82,8 @@
             </Grid>
         </DataTemplate>
 
-        <DataTemplate x:DataType="storage:IDirectoryItem" x:Key="TableThumbnailAndNameCellTemplate">
-            <Grid Padding="10 10 0 10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="20" />
-                    <ColumnDefinition Width="10" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-
-                <Image Source="{x:Bind Thumbnail.Source, Mode=OneWay}" />
-                <TextBlock Grid.Column="2" Text="{x:Bind Name, Mode=OneWay}" VerticalAlignment="Center" />
-
-            </Grid>
-        </DataTemplate>
-
         <DataTemplate x:DataType="storage:IDirectoryItem" x:Key="TableThumbnailAndNameEditingCellTemplate">
-            <Grid Padding="10 10 0 10">
+            <Grid Padding="10">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="20" />
                     <ColumnDefinition Width="10" />
@@ -103,15 +92,41 @@
 
                 <Image Source="{x:Bind Thumbnail.Source, Mode=OneWay}" />
 
-                <TextBlock Grid.Column="2" Text="{x:Bind Name, Mode=OneWay}" 
-                           VerticalAlignment="Center"
-                           Visibility="{x:Bind IsRenamed, Converter={StaticResource BoolToVisibilityConverter}, 
-                                        ConverterParameter=True}" />
+                <userControls:EditableText Grid.Column="2" VerticalAlignment="Center"
+                                          Text="{x:Bind Name, Mode=TwoWay}"
+                                          IsEdited="{x:Bind IsRenamed, Mode=OneWay}">
 
-                <TextBox Grid.Column="2" Text="{x:Bind Name, Mode=TwoWay}"
-                         Visibility="{x:Bind IsRenamed, Converter={StaticResource BoolToVisibilityConverter}}"
-                         VerticalAlignment="Center" />
+                    <userControls:EditableText.TextBoxBehaviors>
 
+                        <interactivity:BehaviorCollection>
+
+                            <behaviors:FocusOnConditionBehavior
+                                Condition="{x:Bind IsRenamed, Mode=TwoWay}" />
+
+                            <generalBehaviors:LostFocusBehavior 
+                                Command="{Binding Path=EndRenamingIfNeededCommand, 
+                                            Source={StaticResource FileOperations}}"
+                                CommandParameter="{x:Bind}" />
+
+                            <toolkitBehaviors:KeyDownTriggerBehavior Key="Enter">
+                                <core:InvokeCommandAction 
+                                    Command="{Binding Path=EndRenamingItemCommand, 
+                                            Source={StaticResource FileOperations}}"
+                                    CommandParameter="{x:Bind}" />
+                            </toolkitBehaviors:KeyDownTriggerBehavior>
+
+                            <toolkitBehaviors:KeyDownTriggerBehavior Key="Escape">
+                                <core:InvokeCommandAction 
+                                    Command="{Binding Path=EndRenamingItemCommand, 
+                                            Source={StaticResource FileOperations}}"
+                                    CommandParameter="{x:Bind}" />
+                            </toolkitBehaviors:KeyDownTriggerBehavior>
+
+                        </interactivity:BehaviorCollection>
+
+                    </userControls:EditableText.TextBoxBehaviors>
+
+                </userControls:EditableText>
             </Grid>
         </DataTemplate>
 
@@ -158,7 +173,8 @@
                 AutoGenerateColumns="False"
                 CanUserResizeColumns="True"
                 CanUserReorderColumns="False"
-                CanUserSortColumns="True"
+                CanUserSortColumns="True" 
+                IsReadOnly="True"
                 SelectionMode="Extended"
                 ItemsSource="{x:Bind ViewModel.DirectoryItems, Mode=OneWay}">
 
@@ -168,25 +184,34 @@
                 </controls:DataGrid.Resources>
 
                 <controls:DataGrid.Columns>
-                    <controls:DataGridTemplateColumn Header="Name"
-                                                     CellTemplate="{StaticResource TableThumbnailAndNameCellTemplate}"
-                                                     CellEditingTemplate="{StaticResource TableThumbnailAndNameEditingCellTemplate}" />
+
+                    <controls:DataGridTemplateColumn Header="Name" CellTemplate="{StaticResource TableThumbnailAndNameEditingCellTemplate}" />
 
                     <controls:DataGridTextColumn 
                         Header="Change date" 
-                        Binding="{Binding Path=LastAccess, Mode=OneWay}"
-                        IsReadOnly="True" />
+                        Binding="{Binding Path=LastAccess, Mode=OneWay}"  />
+
                     <controls:DataGridTextColumn 
                         Header="Type" 
-                        Binding="{Binding Path=LastAccess, Mode=OneWay}"
-                        IsReadOnly="True" />
+                        Binding="{Binding Path=LastAccess, Mode=OneWay}"  />
+
                     <controls:DataGridTextColumn
-                        Header="Size" 
-                        Width="*"
-                        Binding="{Binding Path=Size, Mode=OneWay}"
-                        IsReadOnly="True" />
+                        Header="Size" Width="*"
+                        Binding="{Binding Path=Size, Mode=OneWay}"  />
 
                 </controls:DataGrid.Columns>
+
+                <interactivity:Interaction.Behaviors>
+                   <interactivity:BehaviorCollection>
+
+                       <collections:DirectoryItemDoubleClickBehavior 
+                           Command="{Binding Path=OpenCommand, Source={StaticResource FileOperations}}" />
+
+                        <dataGridBehaviors:MultipleSelectionDataGridBehavior 
+                            SelectedItems="{x:Bind ViewModel.SelectedItems}" />
+
+                   </interactivity:BehaviorCollection>
+                </interactivity:Interaction.Behaviors>
 
             </controls:DataGrid>
 

@@ -6,6 +6,7 @@ namespace FileExplorer.UI.Behaviors
 {
     public class FocusOnConditionBehavior : Behavior<TextBox>
     {
+
         public bool Condition
         {
             get => (bool)GetValue(ConditionProperty);

@@ -17,10 +17,5 @@ namespace FileExplorer.Views
             this.ViewModel = App.GetService<DirectoryPageViewModel>();
             this.InitializeComponent();
         }
-
-        //private void SelectAllItems(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
-        //{
-        //    DirectoryItemsGrid.SelectAll();
-        //}
     }
 }

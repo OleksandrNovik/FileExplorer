@@ -6,7 +6,7 @@ namespace FileExplorer.UI.Behaviors.General
     /// <summary>
     /// General behavior that runs a command when <see cref="UIElement"/> is double-clicked
     /// </summary>
-    public sealed class DoubleClickBehavior : BaseCommandBehavior<UIElement>
+    public sealed class DoubleClickBehavior : BaseCommandBehavior<FrameworkElement>
     {
         protected override void OnAttached()
         {

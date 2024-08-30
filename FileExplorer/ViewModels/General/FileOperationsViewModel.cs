@@ -137,7 +137,13 @@ namespace FileExplorer.ViewModels.General
         /// </summary>
         /// <param name="item"> Object that is renamed </param>
         [RelayCommand]
-        public void BeginRenamingItem(IRenameableObject item) => item.BeginEdit();
+        public void BeginRenamingItem(IRenameableObject item)
+        {
+            item.BeginEdit();
+
+            if (!item.CanRename)
+                Messenger.Send(new ShowInfoBarMessage(InfoBarSeverity.Informational, "This item cannot be renamed"));
+        }
 
         /// <summary>
         /// Ends renaming item if it is actually possible
