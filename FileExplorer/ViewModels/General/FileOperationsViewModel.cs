@@ -277,5 +277,11 @@ namespace FileExplorer.ViewModels.General
         {
 
         }
+
+        [RelayCommand]
+        private void SetViewOption(int chosenOption)
+        {
+            Messenger.Send(new ViewOptionsChangedMessage((ViewOptions)chosenOption));
+        }
     }
 }

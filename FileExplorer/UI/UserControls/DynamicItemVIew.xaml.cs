@@ -1,7 +1,6 @@
-using Microsoft.UI.Xaml;
+using FileExplorer.ViewModels.General;
 using Microsoft.UI.Xaml.Controls;
-using Models.Storage.Abstractions;
-using System.Collections.ObjectModel;
+using Models;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -10,12 +9,16 @@ namespace FileExplorer.UI.UserControls
 {
     public sealed partial class DynamicItemView : UserControl
     {
-        public ObservableCollection<InteractiveStorageItem> ItemsSource { get; set; }
-        public DataTemplate GridTemplate { get; set; }
-
+        public ConcurrentWrappersCollection ItemsSource { get; set; }
+        public ViewOptionsViewModel ViewModel { get; }
         public DynamicItemView()
         {
+            DataContext = this;
+            ViewModel = App.GetService<ViewOptionsViewModel>();
+            Unloaded += ViewModel.OnControlUnloaded;
+
             this.InitializeComponent();
         }
+
     }
 }

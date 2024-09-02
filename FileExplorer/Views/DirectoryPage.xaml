@@ -17,118 +17,11 @@
     xmlns:userControls="using:FileExplorer.UI.UserControls"
     xmlns:collections="using:FileExplorer.UI.Behaviors.Collections"
     xmlns:storage="using:Models.Contracts.Storage"
-    xmlns:primitives="using:CommunityToolkit.WinUI.UI.Controls.Primitives"
     xmlns:dataGridBehaviors="using:FileExplorer.UI.Behaviors.DataGrid"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Page.Resources>
-
-        <DataTemplate x:Key="GridItemTemplate" x:DataType="storage:IDirectoryItem">
-            <Grid  Padding="10  20 10 10" 
-                   ToolTipService.Placement="Bottom">
-
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-
-                <Image Source="{x:Bind Thumbnail.Source, Mode=OneWay}" />
-                <Grid Row="1">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="30" />
-                    </Grid.RowDefinitions>
-
-                    <TextBlock Text="{x:Bind Name, Mode=OneWay}" 
-                               VerticalAlignment="Center"
-                               Visibility="{x:Bind IsRenamed, Mode=OneWay, 
-                                        Converter = {StaticResource BoolToVisibilityConverter}, 
-                                        ConverterParameter=True}" />
-
-                    <TextBox  Text="{x:Bind Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                              TextWrapping="Wrap"
-                              Padding="0 5 0 0"
-                              Visibility="{x:Bind IsRenamed, Mode=OneWay,
-                                Converter = {StaticResource BoolToVisibilityConverter}}">
-       
-
-                        <interactivity:Interaction.Behaviors>
-                            <interactivity:BehaviorCollection>
-
-                                <behaviors:FocusOnConditionBehavior
-                                    Condition="{x:Bind IsRenamed, Mode=TwoWay}"
-                                    />
-
-                                <generalBehaviors:LostFocusBehavior 
-                                    Command="{Binding Path=EndRenamingIfNeededCommand, Source={StaticResource FileOperations}}"
-                                    CommandParameter="{x:Bind}"
-                                    />
-
-                                <toolkitBehaviors:KeyDownTriggerBehavior Key="Enter">
-                                    <core:InvokeCommandAction 
-                                        Command="{Binding Path=EndRenamingItemCommand, Source={StaticResource FileOperations}}"
-                                        CommandParameter="{x:Bind}" />
-                                </toolkitBehaviors:KeyDownTriggerBehavior>
-
-                            </interactivity:BehaviorCollection>
-                        </interactivity:Interaction.Behaviors>
-                    </TextBox>
-                </Grid>
-
-                <interactivity:Interaction.Behaviors>
-                    <generalBehaviors:DoubleClickBehavior Command="{Binding Path=OpenCommand, Source={StaticResource FileOperations}}" 
-                                                          CommandParameter="{x:Bind}"  />
-                </interactivity:Interaction.Behaviors>
-            </Grid>
-        </DataTemplate>
-
-        <DataTemplate x:DataType="storage:IDirectoryItem" x:Key="TableThumbnailAndNameEditingCellTemplate">
-            <Grid Padding="10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="20" />
-                    <ColumnDefinition Width="10" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-
-                <Image Source="{x:Bind Thumbnail.Source, Mode=OneWay}" />
-
-                <userControls:EditableText Grid.Column="2" VerticalAlignment="Center"
-                                          Text="{x:Bind Name, Mode=TwoWay}"
-                                          IsEdited="{x:Bind IsRenamed, Mode=OneWay}">
-
-                    <userControls:EditableText.TextBoxBehaviors>
-
-                        <interactivity:BehaviorCollection>
-
-                            <behaviors:FocusOnConditionBehavior
-                                Condition="{x:Bind IsRenamed, Mode=TwoWay}" />
-
-                            <generalBehaviors:LostFocusBehavior 
-                                Command="{Binding Path=EndRenamingIfNeededCommand, 
-                                            Source={StaticResource FileOperations}}"
-                                CommandParameter="{x:Bind}" />
-
-                            <toolkitBehaviors:KeyDownTriggerBehavior Key="Enter">
-                                <core:InvokeCommandAction 
-                                    Command="{Binding Path=EndRenamingItemCommand, 
-                                            Source={StaticResource FileOperations}}"
-                                    CommandParameter="{x:Bind}" />
-                            </toolkitBehaviors:KeyDownTriggerBehavior>
-
-                            <toolkitBehaviors:KeyDownTriggerBehavior Key="Escape">
-                                <core:InvokeCommandAction 
-                                    Command="{Binding Path=EndRenamingItemCommand, 
-                                            Source={StaticResource FileOperations}}"
-                                    CommandParameter="{x:Bind}" />
-                            </toolkitBehaviors:KeyDownTriggerBehavior>
-
-                        </interactivity:BehaviorCollection>
-
-                    </userControls:EditableText.TextBoxBehaviors>
-
-                </userControls:EditableText>
-            </Grid>
-        </DataTemplate>
 
     </Page.Resources>
 
@@ -144,76 +37,8 @@
                 <ColumnDefinition Width="*"  />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <!--<controls:AdaptiveGridView x:Name="DirectoryItemsGrid"
-                                       StretchContentForSingleRow="False"
-                                       DesiredWidth="180"
-                                       ItemHeight="160"
-                                       ItemsSource="{x:Bind ViewModel.DirectoryItems, Mode=OneWay}" 
-                                       ItemTemplate="{StaticResource GridItemTemplate}"
-                                       SelectionMode="Extended">
 
-                <controls:AdaptiveGridView.ContextFlyout>
-                    <ui:BuildingMenuFlyout>
-                        <interactivity:Interaction.Behaviors>
-                            <contextMenu:MenuFlyoutBuildingBehavior Builder="{x:Bind ViewModel}" />
-                        </interactivity:Interaction.Behaviors>
-                    </ui:BuildingMenuFlyout>
-                </controls:AdaptiveGridView.ContextFlyout>
-
-                <interactivity:Interaction.Behaviors>
-
-                    <collections:MultiSelectionBehavior SelectedItems="{x:Bind ViewModel.SelectedItems, Mode=OneWay}" />
-
-                    <contextMenu:GridViewContextDialogBehavior />
-
-                </interactivity:Interaction.Behaviors>
-            </controls:AdaptiveGridView>-->
-
-            <controls:DataGrid 
-                AutoGenerateColumns="False"
-                CanUserResizeColumns="True"
-                CanUserReorderColumns="False"
-                CanUserSortColumns="True" 
-                IsReadOnly="True"
-                SelectionMode="Extended"
-                ItemsSource="{x:Bind ViewModel.DirectoryItems, Mode=OneWay}">
-
-                <controls:DataGrid.Resources>
-                    <Brush x:Key="TransparentColor">Transparent</Brush>
-                    <StaticResource x:Key="DataGridColumnHeaderBackgroundColor" ResourceKey="TransparentColor"/>
-                </controls:DataGrid.Resources>
-
-                <controls:DataGrid.Columns>
-
-                    <controls:DataGridTemplateColumn Header="Name" CellTemplate="{StaticResource TableThumbnailAndNameEditingCellTemplate}" />
-
-                    <controls:DataGridTextColumn 
-                        Header="Change date" 
-                        Binding="{Binding Path=LastAccess, Mode=OneWay}"  />
-
-                    <controls:DataGridTextColumn 
-                        Header="Type" 
-                        Binding="{Binding Path=LastAccess, Mode=OneWay}"  />
-
-                    <controls:DataGridTextColumn
-                        Header="Size" Width="*"
-                        Binding="{Binding Path=Size, Mode=OneWay}"  />
-
-                </controls:DataGrid.Columns>
-
-                <interactivity:Interaction.Behaviors>
-                   <interactivity:BehaviorCollection>
-
-                       <collections:DirectoryItemDoubleClickBehavior 
-                           Command="{Binding Path=OpenCommand, Source={StaticResource FileOperations}}" />
-
-                        <dataGridBehaviors:MultipleSelectionDataGridBehavior 
-                            SelectedItems="{x:Bind ViewModel.SelectedItems}" />
-
-                   </interactivity:BehaviorCollection>
-                </interactivity:Interaction.Behaviors>
-
-            </controls:DataGrid>
+            <userControls:DynamicItemView ItemsSource="{x:Bind ViewModel.DirectoryItems}" />
 
             <userControls:DirectoryItemInfoPane Grid.Column="1" />
 

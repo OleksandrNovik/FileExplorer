@@ -12,6 +12,7 @@
     xmlns:general="using:FileExplorer.UI.Behaviors.General"
     xmlns:windows="using:Models.Storage.Windows"
     xmlns:collections="using:FileExplorer.UI.Behaviors.Collections"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -21,7 +22,7 @@
         </DataTemplate>
 
         <DataTemplate x:DataType="windows:DirectoryWrapper" x:Key="LibrariesTemplate">
-            <Grid Padding="0 5">
+            <Grid Padding="7">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
@@ -52,15 +53,17 @@
                     <StaticResource x:Key="ExpanderHeaderBackground" ResourceKey="customExpanderHeaderBackgroundColor" />
                 </Expander.Resources>
 
-                <GridView ItemsSource="{x:Bind ViewModel.Libraries}"
-                                      SelectionMode="Single"
-                                      ItemTemplate="{StaticResource LibrariesTemplate}"
-                                      HorizontalContentAlignment="Stretch"
-                                      HorizontalAlignment="Stretch">
+                <controls:AdaptiveGridView StretchContentForSingleRow="True"
+                                           OneRowModeEnabled="True"
+                                           DesiredWidth="40"
+                                           ItemHeight="130"
+                                           ItemsSource="{x:Bind ViewModel.Libraries}"
+                                           SelectionMode="Single"
+                                           ItemTemplate="{StaticResource LibrariesTemplate}">
                     <interactivity:Interaction.Behaviors>
                         <collections:DirectoryItemDoubleClickBehavior Command="{x:Bind ViewModel.FileOperations.OpenCommand}" />
                     </interactivity:Interaction.Behaviors>
-                </GridView>
+                </controls:AdaptiveGridView>
 
                 <!--<ItemsRepeater ItemsSource="{x:Bind ViewModel.Libraries}"
                           ItemTemplate="{StaticResource LibrariesTemplate}">

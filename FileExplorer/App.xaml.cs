@@ -91,6 +91,9 @@ namespace FileExplorer
                     //File operations
                     services.AddTransient(_ => GetStaticResource<FileOperationsViewModel>("FileOperations"));
 
+                    //ViewOptions
+                    services.AddTransient<ViewOptionsViewModel>();
+
                 })
                 .Build();
 

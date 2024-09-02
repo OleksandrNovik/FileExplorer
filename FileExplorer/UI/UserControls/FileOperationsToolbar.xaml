@@ -6,6 +6,7 @@
     xmlns:local="using:FileExplorer.UI.UserControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:messages="using:Models.Messages"
     mc:Ignorable="d">
 
     <UserControl.Resources>
@@ -94,6 +95,25 @@
                     <TextBlock Margin="0 0 7 0 " VerticalAlignment="Center">View</TextBlock>
                     <FontIcon FontSize="12" Glyph="&#xF246;"  />
                 </StackPanel>
+
+                <DropDownButton.Flyout>
+                    <MenuFlyout Placement="Bottom">
+                        <MenuFlyoutItem 
+                            Command="{x:Bind ViewModel.SetViewOptionCommand}"
+                            Text="Grid">
+                            <MenuFlyoutItem.CommandParameter>
+                                <messages:ViewOptions>GridView</messages:ViewOptions>
+                            </MenuFlyoutItem.CommandParameter>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutItem 
+                            Command="{x:Bind ViewModel.SetViewOptionCommand}"
+                            Text="Table">
+                            <MenuFlyoutItem.CommandParameter>
+                                <messages:ViewOptions>TableView</messages:ViewOptions>
+                            </MenuFlyoutItem.CommandParameter>
+                        </MenuFlyoutItem>
+                    </MenuFlyout>
+                </DropDownButton.Flyout>
             </DropDownButton>
             <DropDownButton 
                  Style="{StaticResource MenuButton}"

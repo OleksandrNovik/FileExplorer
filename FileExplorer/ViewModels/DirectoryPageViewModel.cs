@@ -23,10 +23,14 @@ namespace FileExplorer.ViewModels
         public ObservableCollection<IDirectoryItem> SelectedItems => FileOperations.SelectedItems;
 
         [ObservableProperty]
+        private ViewOptions view;
+
+        [ObservableProperty]
         private ConcurrentWrappersCollection directoryItems;
 
         public DirectoryPageViewModel(FileOperationsViewModel fileOperations, IMenuFlyoutFactory factory) : base(fileOperations, factory)
         {
+            view = ViewOptions.GridView;
             Messenger.Register<DirectoryPageViewModel, LaunchRequiredMessage>(this, OnFileOpenRequired);
         }
 

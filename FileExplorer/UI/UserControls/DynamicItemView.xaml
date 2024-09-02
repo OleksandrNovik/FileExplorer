@@ -8,23 +8,203 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     xmlns:contentSelectors="using:FileExplorer.UI.ContentSelectors"
+    xmlns:storage="using:Models.Contracts.Storage"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:behaviors="using:FileExplorer.UI.Behaviors"
+    xmlns:general="using:FileExplorer.UI.Behaviors.General"
+    xmlns:communityToolkitBehaviors="using:CommunityToolkit.WinUI.UI.Behaviors"
+    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:contextMenuBehaviors="using:FileExplorer.UI.Behaviors.ContextMenu"
+    xmlns:collectionBehaviors="using:FileExplorer.UI.Behaviors.Collections"
+    xmlns:ui="using:FileExplorer.UI"
+    xmlns:dataGridBehaviors="using:FileExplorer.UI.Behaviors.DataGrid"
     mc:Ignorable="d">
 
     <UserControl.Resources>
 
+        <DataTemplate x:Key="ItemsGridTemplate" x:DataType="storage:IDirectoryItem">
+            <Grid  Padding="10  20 10 10" 
+                   ToolTipService.Placement="Bottom">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Image Source="{x:Bind Thumbnail.Source, Mode=OneWay}" />
+                <Grid Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30" />
+                    </Grid.RowDefinitions>
+
+                    <local:EditableText VerticalAlignment="Center"
+                                               Text="{x:Bind Name, Mode=TwoWay}"
+                                               IsEdited="{x:Bind IsRenamed, Mode=OneWay}">
+
+                        <local:EditableText.TextBoxBehaviors>
+                            <interactivity:BehaviorCollection>
+
+                                <behaviors:FocusOnConditionBehavior
+                                    Condition="{x:Bind IsRenamed, Mode=TwoWay}" />
+
+                                <general:LostFocusBehavior 
+                                    Command="{Binding Path=EndRenamingIfNeededCommand, 
+                                        Source={StaticResource FileOperations}}"
+                                    CommandParameter="{x:Bind}" />
+
+                                <communityToolkitBehaviors:KeyDownTriggerBehavior Key="Enter">
+                                    <core:InvokeCommandAction 
+                                        Command="{Binding Path=EndRenamingItemCommand, 
+                                            Source={StaticResource FileOperations}}"
+                                        CommandParameter="{x:Bind}" />
+                                </communityToolkitBehaviors:KeyDownTriggerBehavior>
+
+                                <communityToolkitBehaviors:KeyDownTriggerBehavior Key="Escape">
+                                    <core:InvokeCommandAction 
+                                        Command="{Binding Path=EndRenamingItemCommand, 
+                                            Source={StaticResource FileOperations}}"
+                                        CommandParameter="{x:Bind}" />
+                                </communityToolkitBehaviors:KeyDownTriggerBehavior>
+
+                            </interactivity:BehaviorCollection>
+                        </local:EditableText.TextBoxBehaviors>
+
+                    </local:EditableText>
+                </Grid>
+
+                <interactivity:Interaction.Behaviors>
+                    <general:DoubleClickBehavior Command="{Binding Path=OpenCommand, Source={StaticResource FileOperations}}" 
+                                                          CommandParameter="{x:Bind}"  />
+                </interactivity:Interaction.Behaviors>
+            </Grid>
+        </DataTemplate>
+
+
+        <DataTemplate x:DataType="storage:IDirectoryItem" x:Key="TableThumbnailAndNameEditingCellTemplate">
+            <Grid Padding="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition Width="10" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Image Source="{x:Bind Thumbnail.Source, Mode=OneWay}" />
+
+                <local:EditableText Grid.Column="2" VerticalAlignment="Center"
+                                          Text="{x:Bind Name, Mode=TwoWay}"
+                                          IsEdited="{x:Bind IsRenamed, Mode=OneWay}">
+
+                    <local:EditableText.TextBoxBehaviors>
+                        <interactivity:BehaviorCollection>
+
+                            <behaviors:FocusOnConditionBehavior
+                                Condition="{x:Bind IsRenamed, Mode=TwoWay}" />
+
+                            <general:LostFocusBehavior 
+                                Command="{Binding Path=EndRenamingIfNeededCommand, 
+                                            Source={StaticResource FileOperations}}"
+                                CommandParameter="{x:Bind}" />
+
+                            <communityToolkitBehaviors:KeyDownTriggerBehavior Key="Enter">
+                                <core:InvokeCommandAction 
+                                    Command="{Binding Path=EndRenamingItemCommand, 
+                                            Source={StaticResource FileOperations}}"
+                                    CommandParameter="{x:Bind}" />
+                            </communityToolkitBehaviors:KeyDownTriggerBehavior>
+
+                            <communityToolkitBehaviors:KeyDownTriggerBehavior Key="Escape">
+                                <core:InvokeCommandAction 
+                                    Command="{Binding Path=EndRenamingItemCommand, 
+                                            Source={StaticResource FileOperations}}"
+                                    CommandParameter="{x:Bind}" />
+                            </communityToolkitBehaviors:KeyDownTriggerBehavior>
+
+                        </interactivity:BehaviorCollection>
+                    </local:EditableText.TextBoxBehaviors>
+
+                </local:EditableText>
+            </Grid>
+        </DataTemplate>
+
+
         <DataTemplate x:Key="GridTemplate" x:DataType="local:DynamicItemView">
-            <controls:AdaptiveGridView ItemsSource="{x:Bind ItemsSource}" 
-                                       SelectionMode="Multiple"
-                                       ItemTemplate="{x:Bind GridTemplate}" />
+
+            <Grid Background="Red">
+                <controls:AdaptiveGridView x:Name="DirectoryItemsGrid"
+                                           StretchContentForSingleRow="True"
+                                           DesiredWidth="180"
+                                           ItemHeight="160"
+                                           ItemsSource="{x:Bind ItemsSource, Mode=OneWay}" 
+                                           ItemTemplate="{StaticResource ItemsGridTemplate}"
+                                           SelectionMode="Extended">
+
+                    <!--<controls:AdaptiveGridView.ContextFlyout>
+                        <ui:BuildingMenuFlyout>
+                            <interactivity:Interaction.Behaviors>
+                                <contextMenu:MenuFlyoutBuildingBehavior Builder="{x:Bind ViewModel}" />
+                            </interactivity:Interaction.Behaviors>
+                        </ui:BuildingMenuFlyout>
+                    </controls:AdaptiveGridView.ContextFlyout>-->
+
+                    <interactivity:Interaction.Behaviors>
+
+                        <!--<collections:MultiSelectionBehavior SelectedItems="{x:Bind ViewModel.SelectedItems, Mode=OneWay}" />-->
+
+                        <contextMenuBehaviors:GridViewContextDialogBehavior />
+
+                    </interactivity:Interaction.Behaviors>
+                </controls:AdaptiveGridView>
+            </Grid>
         </DataTemplate>
 
         <DataTemplate x:Key="TableTemplate" x:DataType="local:DynamicItemView">
+
             <controls:DataGrid 
-                AutoGenerateColumns="True" 
+                AutoGenerateColumns="False"
                 CanUserResizeColumns="True"
                 CanUserReorderColumns="False"
-                CanUserSortColumns="True"
-                ItemsSource="{x:Bind ItemsSource}" />
+                CanUserSortColumns="True" 
+                IsReadOnly="True"
+                SelectionMode="Extended" HorizontalAlignment="Stretch"
+                ItemsSource="{x:Bind ItemsSource, Mode=OneWay}">
+
+                <controls:DataGrid.Resources>
+                    <Brush x:Key="TransparentColor">Transparent</Brush>
+                    <StaticResource x:Key="DataGridColumnHeaderBackgroundColor" ResourceKey="TransparentColor"/>
+                </controls:DataGrid.Resources>
+
+                <controls:DataGrid.Columns>
+
+                    <controls:DataGridTemplateColumn Header="Name" CellTemplate="{StaticResource TableThumbnailAndNameEditingCellTemplate}" />
+
+                    <controls:DataGridTextColumn 
+                        Header="Change date" 
+                        Binding="{Binding Path=LastAccess, Mode=OneWay}"  />
+
+                    <controls:DataGridTextColumn 
+                        Header="Type" 
+                        Binding="{Binding Path=LastAccess, Mode=OneWay}"  />
+
+                    <controls:DataGridTextColumn
+                        Header="Size" Width="*"
+                        Binding="{Binding Path=Size, Mode=OneWay}"  />
+
+                </controls:DataGrid.Columns>
+
+                <interactivity:Interaction.Behaviors>
+                    <interactivity:BehaviorCollection>
+
+                        <collectionBehaviors:DirectoryItemDoubleClickBehavior 
+                           Command="{Binding Path=OpenCommand, Source={StaticResource FileOperations}}" />
+
+                        <!--<dataGrid:MultipleSelectionDataGridBehavior 
+                            SelectedItems="{x:Bind ViewModel.SelectedItems}" />-->
+
+                    </interactivity:BehaviorCollection>
+                </interactivity:Interaction.Behaviors>
+
+            </controls:DataGrid>
+
         </DataTemplate>
 
         <contentSelectors:DynamicCollectionTemplateSelector 
@@ -37,7 +217,14 @@
 
 
     <Grid>
-        <ContentControl ContentTemplateSelector="{StaticResource DynamicCollectionSelector}" />
+
+        <ContentControl HorizontalContentAlignment="Stretch">
+
+            <interactivity:Interaction.Behaviors>
+                <behaviors:ViewOptionsChangedBehavior ViewOptions="{x:Bind ViewModel.ViewOptions, Mode=OneWay}"
+                                                      TemplateSelector="{StaticResource DynamicCollectionSelector}"/>
+            </interactivity:Interaction.Behaviors>
+        </ContentControl>
 
     </Grid>
 </UserControl>
