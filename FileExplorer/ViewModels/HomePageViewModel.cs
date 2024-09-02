@@ -3,12 +3,15 @@ using FileExplorer.Core.Contracts.Factories;
 using FileExplorer.ViewModels.Abstractions;
 using FileExplorer.ViewModels.General;
 using Microsoft.UI.Xaml.Controls;
+using Models;
 using Models.ModelHelpers;
 using Models.Storage.Drives;
 using Models.Storage.Windows;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace FileExplorer.ViewModels
 {
@@ -16,6 +19,7 @@ namespace FileExplorer.ViewModels
     {
         public ObservableDrivesCollection Drives { get; private set; }
         public List<DirectoryWrapper> Libraries { get; }
+        public ConcurrentWrappersCollection RecentItems { get; set; }
 
         public HomePageViewModel(FileOperationsViewModel fileOperations, IMenuFlyoutFactory factory) : base(fileOperations, factory)
         {
@@ -38,6 +42,14 @@ namespace FileExplorer.ViewModels
             {
                 drive.UpdateThumbnail(80);
             }
+        }
+
+        [RelayCommand]
+        private async Task InitializeRecentItems()
+        {
+            RecentItems = [.. KnownFoldersHelper.RecentDirectory.EnumerateItems().Take(20)];
+            OnPropertyChanged(nameof(RecentItems));
+            await RecentItems.UpdateIconsAsync(90, CancellationToken.None);
         }
 
         public override void OnNavigatedTo(object parameter)

@@ -1,7 +1,6 @@
 ﻿#nullable enable
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
 using FileExplorer.Core.Contracts.Factories;
 using FileExplorer.ViewModels.Abstractions;
 using FileExplorer.ViewModels.General;
@@ -23,20 +22,10 @@ namespace FileExplorer.ViewModels
         public ObservableCollection<IDirectoryItem> SelectedItems => FileOperations.SelectedItems;
 
         [ObservableProperty]
-        private ViewOptions view;
-
-        [ObservableProperty]
         private ConcurrentWrappersCollection directoryItems;
 
         public DirectoryPageViewModel(FileOperationsViewModel fileOperations, IMenuFlyoutFactory factory) : base(fileOperations, factory)
         {
-            view = ViewOptions.GridView;
-            Messenger.Register<DirectoryPageViewModel, LaunchRequiredMessage>(this, OnFileOpenRequired);
-        }
-
-        private async void OnFileOpenRequired(DirectoryPageViewModel _, LaunchRequiredMessage message)
-        {
-            await message.ItemToLaunch.LaunchAsync();
         }
 
         /// <summary>

@@ -104,12 +104,12 @@ namespace FileExplorer.ViewModels.General
         #region Open
 
         [RelayCommand]
-        public async Task Open(InteractiveStorageItem item)
+        public void Open(InteractiveStorageItem item)
         {
             switch (item)
             {
                 case ILaunchable launchable:
-                    await launchable.LaunchAsync();
+                    launchable.Launch();
                     break;
                 case IStorage<IDirectoryItem> storage:
                     // Send message for directory page (new directory should be opened)

@@ -13,6 +13,7 @@
     xmlns:windows="using:Models.Storage.Windows"
     xmlns:collections="using:FileExplorer.UI.Behaviors.Collections"
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:behaviors="using:FileExplorer.UI.Behaviors"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -65,13 +66,7 @@
                     </interactivity:Interaction.Behaviors>
                 </controls:AdaptiveGridView>
 
-                <!--<ItemsRepeater ItemsSource="{x:Bind ViewModel.Libraries}"
-                          ItemTemplate="{StaticResource LibrariesTemplate}">
-                       <ItemsRepeater.Layout>
-                           <UniformGridLayout Orientation="Horizontal" ItemsJustification="SpaceAround"  />
-                       </ItemsRepeater.Layout>
-                   </ItemsRepeater>-->
-                    <interactivity:Interaction.Behaviors>
+                <interactivity:Interaction.Behaviors>
                     <general:LoadingCommandBehavior Command="{x:Bind ViewModel.InitializeLibrariesThumbnailsCommand}" />
                 </interactivity:Interaction.Behaviors>
             </Expander>
@@ -102,26 +97,23 @@
             </Expander>
 
             <Expander Grid.Row="2" 
-                      HorizontalContentAlignment="Left" 
+                      HorizontalContentAlignment="Stretch" 
                       HorizontalAlignment="Stretch" 
                       Header="Recent"
-                      IsExpanded="True">
+                      IsExpanded="False">
 
                 <Expander.Resources>
                     <SolidColorBrush x:Key="customExpanderHeaderBackgroundColor" Color="Transparent"/>
                     <StaticResource x:Key="ExpanderHeaderBackground" ResourceKey="customExpanderHeaderBackgroundColor" />
                 </Expander.Resources>
 
-                <StackPanel Orientation="Vertical">
-                    <TextBlock Text="Text" />
-                    <TextBlock Text="Text" />
-                    <TextBlock Text="Text" />
-                    <TextBlock Text="Text" />
-                    <TextBlock Text="Text" />
-                    <TextBlock Text="Text" />
-                    <TextBlock Text="Text" />
-                    <TextBlock Text="Text" />
-                </StackPanel>
+                <userControls:DynamicItemView ItemsSource="{x:Bind ViewModel.RecentItems, Mode=OneWay}"
+                                              ViewOptions="{x:Bind ViewModel.FileOperations.ViewOptions.ViewOptions,
+                                                             Mode=OneWay}"/>
+
+                <interactivity:Interaction.Behaviors>
+                    <behaviors:InitializeOnExpandingBehavior Command="{x:Bind ViewModel.InitializeRecentItemsCommand}" />
+                </interactivity:Interaction.Behaviors>
             </Expander>
         </Grid>
     </ScrollViewer>

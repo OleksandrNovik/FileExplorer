@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace Models.Contracts.Storage
+﻿namespace Models.Contracts.Storage
 {
     /// <summary>
     /// Contract that allows to launch directory item
@@ -10,6 +8,6 @@ namespace Models.Contracts.Storage
         /// <summary>
         /// Launches item in default application
         /// </summary>
-        public Task LaunchAsync();
+        public void Launch();
     }
 }

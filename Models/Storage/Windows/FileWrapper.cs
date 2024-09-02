@@ -2,10 +2,10 @@
 using Models.Contracts.Storage;
 using Models.Storage.Additional;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Windows.Storage;
-using Windows.System;
 using IOPath = System.IO.Path;
 
 namespace Models.Storage.Windows
@@ -22,10 +22,13 @@ namespace Models.Storage.Windows
 
         public FileWrapper(string path) : this(new FileInfo(path)) { }
 
-        public async Task LaunchAsync()
+        public void Launch()
         {
-            var storageFile = await AsStorageFileAsync();
-            await Launcher.LaunchFileAsync(storageFile);
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = Path,
+                UseShellExecute = true
+            });
         }
 
         /// <inheritdoc />

@@ -184,9 +184,9 @@ namespace FileExplorer.ViewModels
             var navigationItem = router.UseNavigationRoute(CurrentRoute);
             var currentDirectory = navigationItem.GetCurrentDirectory();
 
-            if (navigationItem is FileWrapper file)
+            if (navigationItem is ILaunchable launchable)
             {
-                Messenger.Send(new LaunchRequiredMessage(file));
+                launchable.Launch();
             }
 
             navigation.GoForward(currentDirectory);
