@@ -47,7 +47,7 @@ namespace FileExplorer.ViewModels
         {
             DirectoryItems = new ConcurrentWrappersCollection(Storage.EnumerateItems());
 
-            await DirectoryItems.UpdateIconsAsync(25, CancellationToken.None);
+            await DirectoryItems.UpdateIconsAsync(90, CancellationToken.None);
 
             SelectedItems.Clear();
         }

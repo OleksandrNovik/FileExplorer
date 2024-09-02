@@ -30,6 +30,8 @@ namespace FileExplorer.ViewModels.General
         [ObservableProperty]
         private bool canAlterDirectory;
 
+        public ViewOptionsViewModel ViewOptions { get; }
+
         /// <summary>
         /// Contains selected items to operate them using toolbar
         /// </summary>
@@ -38,6 +40,7 @@ namespace FileExplorer.ViewModels.General
         public FileOperationsViewModel()
         {
             SelectedItems.CollectionChanged += NotifyCanExecute;
+            ViewOptions = App.GetService<ViewOptionsViewModel>();
 
             Messenger.Register<FileOperationsViewModel, TabStorageChangedMessage>(this, (_, message) =>
             {
@@ -276,12 +279,6 @@ namespace FileExplorer.ViewModels.General
         private void Copy(IDirectoryItem item)
         {
 
-        }
-
-        [RelayCommand]
-        private void SetViewOption(int chosenOption)
-        {
-            Messenger.Send(new ViewOptionsChangedMessage((ViewOptions)chosenOption));
         }
     }
 }

@@ -20,7 +20,7 @@ namespace FileExplorer.UI.Behaviors
 
         private static void OnViewOptionsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is ViewOptionsChangedBehavior behavior)
+            if (d is ViewOptionsChangedBehavior { AssociatedObject: not null } behavior)
             {
                 behavior.AssociatedObject.ContentTemplate = behavior.TemplateSelector.SelectTemplate(e.NewValue);
             }

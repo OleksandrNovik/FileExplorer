@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Input;
 using Models.Messages;
 
 namespace FileExplorer.ViewModels.General
@@ -12,16 +12,13 @@ namespace FileExplorer.ViewModels.General
         public ViewOptionsViewModel()
         {
             viewOptions = ViewOptions.GridView;
-
-            Messenger.Register<ViewOptionsViewModel, ViewOptionsChangedMessage>(this, (_, message) =>
-            {
-                ViewOptions = message.ViewOptions;
-            });
         }
 
-        public void OnControlUnloaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        [RelayCommand]
+        private void SetViewOptions(int selectedOption)
         {
-            Messenger.UnregisterAll(this);
+            ViewOptions = (ViewOptions)selectedOption;
         }
+
     }
 }

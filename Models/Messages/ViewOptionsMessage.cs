@@ -18,5 +18,4 @@ namespace Models.Messages
         TableView
     }
 
-    public record ViewOptionsChangedMessage(ViewOptions ViewOptions);
 }

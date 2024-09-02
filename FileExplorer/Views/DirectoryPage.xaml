@@ -38,7 +38,9 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <userControls:DynamicItemView ItemsSource="{x:Bind ViewModel.DirectoryItems}" />
+            <userControls:DynamicItemView ItemsSource="{x:Bind ViewModel.DirectoryItems}" 
+                                          ViewOptions="{x:Bind ViewModel.FileOperations.ViewOptions.ViewOptions, 
+                                                                Mode=OneWay}" />
 
             <userControls:DirectoryItemInfoPane Grid.Column="1" />
 

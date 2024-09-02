@@ -129,14 +129,14 @@
 
         <DataTemplate x:Key="GridTemplate" x:DataType="local:DynamicItemView">
 
-            <Grid Background="Red">
-                <controls:AdaptiveGridView x:Name="DirectoryItemsGrid"
-                                           StretchContentForSingleRow="True"
-                                           DesiredWidth="180"
-                                           ItemHeight="160"
-                                           ItemsSource="{x:Bind ItemsSource, Mode=OneWay}" 
-                                           ItemTemplate="{StaticResource ItemsGridTemplate}"
-                                           SelectionMode="Extended">
+            <Grid>
+                <ui:FlexGridView x:Name="DirectoryItemsGrid"
+                                       StretchContentForSingleRow="True"
+                                       DesiredWidth="180"
+                                       ItemHeight="160"
+                                       ItemsSource="{x:Bind ItemsSource, Mode=OneWay}" 
+                                       ItemTemplate="{StaticResource ItemsGridTemplate}"
+                                       SelectionMode="Extended">
 
                     <!--<controls:AdaptiveGridView.ContextFlyout>
                         <ui:BuildingMenuFlyout>
@@ -153,7 +153,7 @@
                         <contextMenuBehaviors:GridViewContextDialogBehavior />
 
                     </interactivity:Interaction.Behaviors>
-                </controls:AdaptiveGridView>
+                </ui:FlexGridView>
             </Grid>
         </DataTemplate>
 
@@ -221,7 +221,7 @@
         <ContentControl HorizontalContentAlignment="Stretch">
 
             <interactivity:Interaction.Behaviors>
-                <behaviors:ViewOptionsChangedBehavior ViewOptions="{x:Bind ViewModel.ViewOptions, Mode=OneWay}"
+                <behaviors:ViewOptionsChangedBehavior ViewOptions="{x:Bind ViewOptions, Mode=OneWay}"
                                                       TemplateSelector="{StaticResource DynamicCollectionSelector}"/>
             </interactivity:Interaction.Behaviors>
         </ContentControl>

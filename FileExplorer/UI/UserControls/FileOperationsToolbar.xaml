@@ -99,14 +99,14 @@
                 <DropDownButton.Flyout>
                     <MenuFlyout Placement="Bottom">
                         <MenuFlyoutItem 
-                            Command="{x:Bind ViewModel.SetViewOptionCommand}"
+                            Command="{x:Bind ViewModel.ViewOptions.SetViewOptionsCommand}"
                             Text="Grid">
                             <MenuFlyoutItem.CommandParameter>
                                 <messages:ViewOptions>GridView</messages:ViewOptions>
                             </MenuFlyoutItem.CommandParameter>
                         </MenuFlyoutItem>
                         <MenuFlyoutItem 
-                            Command="{x:Bind ViewModel.SetViewOptionCommand}"
+                            Command="{x:Bind ViewModel.ViewOptions.SetViewOptionsCommand}"
                             Text="Table">
                             <MenuFlyoutItem.CommandParameter>
                                 <messages:ViewOptions>TableView</messages:ViewOptions>
