@@ -1,6 +1,8 @@
 ﻿#nullable enable
 using Helpers.Imaging;
+using System;
 using System.Drawing;
+using System.IO;
 using Vanara.PInvoke;
 using Vanara.Windows.Shell;
 
@@ -8,6 +10,34 @@ namespace Helpers.Win32Helpers
 {
     public static class Win32Helper
     {
+        public sealed class LinkTargetData
+        {
+            public FileSystemInfo? FileInfo { get; internal set; }
+        }
+        public static LinkTargetData GetLinkItem(string path)
+        {
+            // TODO: Link can have run as admin and other properties too
+            using var link = new ShellLink(path, LinkResolution.NoUIWithMsgPump, default, TimeSpan.FromMilliseconds(100));
+            var linkItemData = new LinkTargetData();
+
+            try
+            {
+                var targetPath = Environment.ExpandEnvironmentVariables(link.TargetPath) ?? "";
+
+                if (Path.Exists(targetPath))
+                {
+                    linkItemData.FileInfo = link.Target.IsFolder ?
+                        new DirectoryInfo(targetPath) :
+                        new FileInfo(targetPath);
+                }
+            }
+            catch
+            {
+            }
+
+            return linkItemData;
+        }
+
         /// <summary>
         /// Gets bytes for a thumbnail image using windows api if it is possible
         /// </summary>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 
 namespace Helpers.StorageHelpers
@@ -7,7 +8,8 @@ namespace Helpers.StorageHelpers
     {
         public static bool HasExtension(string path, params string[] extensions)
         {
-            return extensions.ToHashSet(StringComparer.OrdinalIgnoreCase).Contains(path);
+            var hashSet = extensions.ToHashSet(StringComparer.OrdinalIgnoreCase);
+            return hashSet.Contains(Path.GetExtension(path));
         }
 
         public static bool IsImage(string path)

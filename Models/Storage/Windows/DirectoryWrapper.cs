@@ -1,5 +1,7 @@
 ﻿#nullable enable
 using Helpers.General;
+using Helpers.StorageHelpers;
+using Helpers.Win32Helpers;
 using Models.Contracts.Storage;
 using Models.Enums;
 using Models.General;
@@ -17,7 +19,49 @@ namespace Models.Storage.Windows
 {
     public sealed class DirectoryWrapper : DirectoryItemWrapper, IDirectory
     {
+        private sealed class DirectoryItemFactory
+        {
+            private DirectoryItemWrapper CreateFromShortCut(string shortcutPath)
+            {
+                return null;
+            }
+            public DirectoryItemWrapper? CreateFromPath(string path)
+            {
+                DirectoryItemWrapper? wrapper = null;
+
+                if (IOPath.HasExtension(path))
+                {
+                    // File is shortcut
+                    if (FileExtensionsHelper.IsShortcut(path))
+                    {
+                        var link = Win32Helper.GetLinkItem(path);
+
+                        if (link.FileInfo is DirectoryInfo dir)
+                        {
+                            wrapper = new DirectoryWrapper(dir);
+                        }
+                        else if (link.FileInfo is FileInfo file)
+                        {
+                            wrapper = new FileWrapper(file);
+                        }
+                    }
+                    else
+                    {
+                        wrapper = new FileWrapper(path);
+                    }
+                }
+                else
+                {
+                    wrapper = new DirectoryWrapper(path);
+                }
+
+                return wrapper;
+            }
+        }
+
         private StorageFolder? asStorageFolder;
+
+        private readonly DirectoryItemFactory itemFactory = new();
         public DirectoryWrapper() { }
         public DirectoryWrapper(DirectoryInfo info) : base(info) { }
         public DirectoryWrapper(string path) : base(new DirectoryInfo(path)) { }
@@ -132,6 +176,13 @@ namespace Models.Storage.Windows
                     yield return new FileWrapper(path);
                 else
                     yield return new DirectoryWrapper(path);
+
+                //var item = itemFactory.CreateFromPath(path);
+
+                //if (item is null)
+                //    continue;
+
+                //yield return item;
             }
         }
 

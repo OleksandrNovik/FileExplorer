@@ -47,7 +47,7 @@ namespace FileExplorer.ViewModels
         [RelayCommand]
         private async Task InitializeRecentItems()
         {
-            RecentItems = [.. KnownFoldersHelper.RecentDirectory.EnumerateItems().Take(20)];
+            RecentItems = [.. KnownFoldersHelper.TopRecentItems.Take(20)];
             OnPropertyChanged(nameof(RecentItems));
             await RecentItems.UpdateIconsAsync(90, CancellationToken.None);
         }

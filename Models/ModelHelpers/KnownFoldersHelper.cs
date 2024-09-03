@@ -1,15 +1,19 @@
 ﻿using Models.Contracts.Storage;
 using Models.Storage.Windows;
 using System.Collections.Generic;
+using System.Linq;
 using Windows.Storage;
 
 namespace Models.ModelHelpers
 {
     public static class KnownFoldersHelper
     {
+        private static readonly IDirectory RecentDirectory;
         public static IReadOnlyList<DirectoryWrapper> Libraries { get; }
 
-        public static IDirectory RecentDirectory { get; }
+        public static IReadOnlyCollection<IDirectoryItem> TopRecentItems =>
+            RecentDirectory.EnumerateItems()
+                .OrderByDescending(item => item.LastAccess).ToArray();
 
         static KnownFoldersHelper()
         {
