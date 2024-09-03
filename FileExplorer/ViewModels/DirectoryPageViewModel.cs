@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FileExplorer.Core.Contracts.Factories;
+using FileExplorer.Core.Contracts.Settings;
 using FileExplorer.ViewModels.Abstractions;
 using FileExplorer.ViewModels.General;
 using Microsoft.UI.Xaml.Controls;
@@ -12,6 +13,7 @@ using Models.ModelHelpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,13 +21,19 @@ namespace FileExplorer.ViewModels
 {
     public sealed partial class DirectoryPageViewModel : StorageViewModel
     {
+        /// <summary>
+        /// Service that gets all necessarily properties from local settings
+        /// </summary>
+        private readonly ILocalSettingsService localSettings;
+
         public ObservableCollection<IDirectoryItem> SelectedItems => FileOperations.SelectedItems;
 
         [ObservableProperty]
         private ConcurrentWrappersCollection directoryItems;
 
-        public DirectoryPageViewModel(FileOperationsViewModel fileOperations, IMenuFlyoutFactory factory) : base(fileOperations, factory)
+        public DirectoryPageViewModel(FileOperationsViewModel fileOperations, IMenuFlyoutFactory factory, ILocalSettingsService settingsService) : base(fileOperations, factory)
         {
+            localSettings = settingsService;
         }
 
         /// <summary>
@@ -34,7 +42,22 @@ namespace FileExplorer.ViewModels
         /// </summary>
         private async Task InitializeDirectoryAsync()
         {
-            DirectoryItems = new ConcurrentWrappersCollection(Storage.EnumerateItems());
+            var explorerSettings = localSettings.GetExplorerSettings();
+
+            // Checking what files are not allowed to be shown
+            FileAttributes rejectedAttributes = 0;
+
+            if (explorerSettings.HideSystemFiles)
+            {
+                rejectedAttributes |= FileAttributes.System;
+            }
+
+            if (!explorerSettings.ShowHiddenFiles)
+            {
+                rejectedAttributes |= FileAttributes.Hidden;
+            }
+
+            DirectoryItems = new ConcurrentWrappersCollection(Storage.EnumerateItems(rejectedAttributes));
 
             await DirectoryItems.UpdateIconsAsync(90, CancellationToken.None);
 
@@ -45,7 +68,7 @@ namespace FileExplorer.ViewModels
         /// Changes current storage and initializes its items
         /// </summary>
         /// <param name="storage"> Given storage that is opened </param>
-        private async Task MoveToDirectoryAsync(IStorage<IDirectoryItem> storage)
+        private async Task MoveToDirectoryAsync(IStorage storage)
         {
             Storage = storage;
             await InitializeDirectoryAsync();

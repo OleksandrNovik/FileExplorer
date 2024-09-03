@@ -22,7 +22,7 @@ namespace FileExplorer.ViewModels.Abstractions
         /// <summary>
         /// Storage that is opened in storage page
         /// </summary>
-        public IStorage<IDirectoryItem> Storage { get; set; }
+        public IStorage Storage { get; set; }
         protected StorageViewModel(FileOperationsViewModel fileOperations, IMenuFlyoutFactory factory) : base(factory)
         {
             FileOperations = fileOperations;
@@ -35,7 +35,7 @@ namespace FileExplorer.ViewModels.Abstractions
         /// <param name="parameter"> Navigation parameter that is provided by navigation service </param>
         public virtual void OnNavigatedTo(object parameter)
         {
-            if (parameter is IStorage<IDirectoryItem> storage)
+            if (parameter is IStorage storage)
             {
                 Messenger.Send(new StopSearchMessage());
                 NavigateStorage(storage);
@@ -46,7 +46,7 @@ namespace FileExplorer.ViewModels.Abstractions
         /// Navigates storage item and sends message for tab to changed tab's storage item
         /// </summary>
         /// <param name="storage"> Storage that is navigated </param>
-        protected void NavigateStorage(IStorage<IDirectoryItem> storage)
+        protected void NavigateStorage(IStorage storage)
         {
             Storage = storage;
             Messenger.Send(new TabStorageChangedMessage(storage));

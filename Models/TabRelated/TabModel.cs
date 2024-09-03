@@ -18,12 +18,12 @@ namespace Models.TabRelated
         [ObservableProperty]
         private string title;
 
-        private IStorage<IDirectoryItem> openedStorage;
+        private IStorage openedStorage;
 
         /// <summary>
         /// Storage (or something that stores items) that is opened in the tab
         /// </summary>
-        public IStorage<IDirectoryItem> OpenedStorage
+        public IStorage OpenedStorage
         {
             get => openedStorage;
             set
@@ -41,7 +41,7 @@ namespace Models.TabRelated
         /// </summary>
         public TabNavigationHistoryModel TabHistory { get; }
 
-        public TabModel(IStorage<IDirectoryItem> opened)
+        public TabModel(IStorage opened)
         {
             TabHistory = new TabNavigationHistoryModel();
             OpenedStorage = opened;

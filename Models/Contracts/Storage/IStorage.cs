@@ -1,15 +1,15 @@
 ﻿#nullable enable
 using Models.Enums;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Models.Contracts.Storage
 {
 
     /// <summary>
-    /// Interface that represents basic information for a storage
+    /// Interface created to represent storage of <see cref="IDirectoryItem"/>
     /// </summary>
-    /// <typeparam name="TElement"> Type of element that is stored </typeparam>
-    public interface IStorage<TElement> : ISearchCatalog<TElement>
+    public interface IStorage : ISearchCatalog<IDirectoryItem>
     {
         /// <summary>
         /// Name of the catalog
@@ -24,7 +24,7 @@ namespace Models.Contracts.Storage
         /// <summary>
         /// Parent storage
         /// </summary>
-        public IStorage<TElement>? Parent { get; }
+        public IStorage? Parent { get; }
 
         /// <summary>
         /// Content type is used to identify what kind of page is suitable to show storage
@@ -35,12 +35,12 @@ namespace Models.Contracts.Storage
         /// <summary>
         /// Enumerates all items in the storage 
         /// </summary>
-        public IEnumerable<TElement> EnumerateItems();
+        /// <param name="rejectedAttributes"> Attributes that should be skipped (by default none files are skipped) </param>
+        public IEnumerable<IDirectoryItem> EnumerateItems(FileAttributes rejectedAttributes = 0);
 
         /// <summary>
         /// Enumerates sub-storages of storage
         /// </summary>
-        public IEnumerable<IStorage<TElement>> EnumerateSubDirectories();
-
+        public IEnumerable<IStorage> EnumerateSubDirectories();
     }
 }

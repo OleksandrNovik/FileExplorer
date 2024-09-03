@@ -11,12 +11,12 @@ namespace Models.TabRelated
         /// <summary>
         /// Directories that can be navigated forward into
         /// </summary>
-        public Stack<IStorage<IDirectoryItem>> ForwardStack { get; } = new();
+        public Stack<IStorage> ForwardStack { get; } = new();
 
         /// <summary>
         /// Directories that can be navigated back into
         /// </summary>
-        public Stack<IStorage<IDirectoryItem>> BackStack { get; } = new();
+        public Stack<IStorage> BackStack { get; } = new();
 
         /// <summary>
         /// Is there any directory that can be navigated back

@@ -26,7 +26,7 @@ namespace FileExplorer.ViewModels.Search
         /// <summary>
         /// Cached search result, which contains all information about search (found items, root directory etc.)
         /// </summary>
-        public CachedSearchResult<IDirectoryItem> CachedSearch { get; private set; }
+        public CachedSearchResult CachedSearch { get; private set; }
 
         /// <summary>
         /// Cancellation token to cancel search operation
@@ -46,7 +46,7 @@ namespace FileExplorer.ViewModels.Search
         /// </summary>
         /// <param name="searchCatalog"> Where we are searching items </param>
         /// <param name="searchOptions"> Data needed to execute search </param>
-        public void InitializeSearchData(IStorage<IDirectoryItem> searchCatalog, SearchOptions searchOptions)
+        public void InitializeSearchData(IStorage searchCatalog, SearchOptions searchOptions)
         {
             currentSearchOptions = searchOptions;
             CachedSearch = new(searchCatalog, searchOptions.Destination);

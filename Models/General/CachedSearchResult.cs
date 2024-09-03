@@ -1,9 +1,11 @@
 ﻿#nullable enable
+using Helpers.StorageHelpers;
 using Models.Contracts;
 using Models.Contracts.Storage;
 using Models.Enums;
 using Models.Storage.Additional;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace Models.General;
@@ -11,13 +13,12 @@ namespace Models.General;
 /// <summary>
 /// Class that represents search result and contains all necessary information about search result itself (including found items)
 /// </summary>
-/// <typeparam name="TElement"> Type of searched element </typeparam>
-public sealed class CachedSearchResult<TElement> : IStorage<TElement>
+public sealed class CachedSearchResult : IStorage
 {
     /// <summary>
     /// Cached search result from root catalog 
     /// </summary>
-    public IStorage<TElement> RootCatalog { get; set; }
+    public IStorage RootCatalog { get; set; }
 
     /// <summary>
     /// Configurations of search
@@ -27,14 +28,14 @@ public sealed class CachedSearchResult<TElement> : IStorage<TElement>
     /// <summary>
     /// Collection of items that were found during the search
     /// </summary>
-    public ICollection<TElement> SearchResultItems { get; set; }
+    public ICollection<IDirectoryItem> SearchResultItems { get; set; }
 
     /// <summary>
     /// Is search fully completed
     /// </summary>
     public bool HasCompleted { get; set; }
 
-    public CachedSearchResult(IStorage<TElement> searchCatalog, IEnqueuingCollection<TElement> destination)
+    public CachedSearchResult(IStorage searchCatalog, IEnqueuingCollection<IDirectoryItem> destination)
     {
         RootCatalog = searchCatalog;
         SearchResultItems = destination;
@@ -55,21 +56,29 @@ public sealed class CachedSearchResult<TElement> : IStorage<TElement>
     /// <summary>
     /// Search result returns parent of <see cref="RootCatalog"/>
     /// </summary>
-    public IStorage<TElement>? Parent => RootCatalog.Parent;
+    public IStorage? Parent => RootCatalog.Parent;
 
     /// <inheritdoc />
     public StorageContentType ContentType => StorageContentType.Files;
 
-
     /// <summary>
     /// Enumerates found items in cached search result
     /// </summary>
-    public IEnumerable<TElement> EnumerateItems() => SearchResultItems;
+    public IEnumerable<IDirectoryItem> EnumerateItems(FileAttributes rejectedAttributes = 0)
+    {
+        foreach (var item in SearchResultItems)
+        {
+            if (item.HasAttributes(rejectedAttributes))
+                continue;
+
+            yield return item;
+        }
+    }
 
     /// <summary>
     /// Returns empty enumeration, because search cannot have subdirectories
     /// </summary>
-    public IEnumerable<IStorage<TElement>> EnumerateSubDirectories() => [];
+    public IEnumerable<IStorage> EnumerateSubDirectories() => [];
 
     public async Task SearchAsync(SearchOptions searchOptions)
     {

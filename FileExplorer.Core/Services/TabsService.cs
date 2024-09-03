@@ -11,7 +11,7 @@ namespace FileExplorer.Core.Services
         public ObservableCollection<TabModel> Tabs { get; } = new();
         public TabModel SelectedTab { get; set; }
 
-        public void CreateNewTab(IStorage<IDirectoryItem>? directory)
+        public void CreateNewTab(IStorage? directory)
         {
             Tabs.Add(new TabModel(directory));
         }

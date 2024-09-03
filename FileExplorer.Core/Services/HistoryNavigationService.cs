@@ -7,24 +7,24 @@ namespace FileExplorer.Core.Services
     public class HistoryNavigationService : IHistoryNavigationService
     {
         public TabNavigationHistoryModel History { get; set; }
-        public IStorage<IDirectoryItem> CurrentDirectory { get; set; }
+        public IStorage CurrentDirectory { get; set; }
 
         public bool CanGoForward => History is { CanGoForward: true };
         public bool CanGoBack => History is { CanGoBack: true };
 
-        public void GoForward(IStorage<IDirectoryItem> location)
+        public void GoForward(IStorage location)
         {
             CurrentDirectory = location;
         }
 
-        public void OpenDirectory(IStorage<IDirectoryItem> location)
+        public void OpenDirectory(IStorage location)
         {
             History.ForwardStack.Clear();
             History.BackStack.Push(CurrentDirectory);
             CurrentDirectory = location;
         }
 
-        public void GoBack(IStorage<IDirectoryItem> location)
+        public void GoBack(IStorage location)
         {
             History.BackStack.Push(CurrentDirectory);
             CurrentDirectory = location;

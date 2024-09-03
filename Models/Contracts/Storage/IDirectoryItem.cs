@@ -2,14 +2,17 @@
 using Models.Storage.Additional;
 using System;
 using System.ComponentModel;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace Models.Contracts.Storage
 {
     public interface IDirectoryItem : IRenameableObject, INotifyPropertyChanged
     {
+        public FileAttributes Attributes { get; }
         public DateTime LastAccess { get; }
         public ByteSize? Size { get; }
+
         /// <summary>
         /// Copy item from current directory to a destination directory
         /// </summary>

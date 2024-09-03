@@ -13,6 +13,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Storage;
+using FileAttributes = System.IO.FileAttributes;
 using IOPath = System.IO.Path;
 
 namespace Models.Storage.Windows
@@ -126,14 +127,14 @@ namespace Models.Storage.Windows
 
         #region IStorage logic
 
-        public IStorage<IDirectoryItem>? Parent => GetParentDirectory();
+        public IStorage? Parent => GetParentDirectory();
         public StorageContentType ContentType => StorageContentType.Files;
 
-        public IEnumerable<IDirectoryItem> EnumerateItems()
+        public IEnumerable<IDirectoryItem> EnumerateItems(FileAttributes rejectedAttributes = 0)
         {
-            return EnumerateWrappers(Directory.EnumerateFileSystemEntries(Path));
+            return EnumerateWrappers(Directory.EnumerateFileSystemEntries(Path), rejectedAttributes);
         }
-        public IEnumerable<IStorage<IDirectoryItem>> EnumerateSubDirectories()
+        public IEnumerable<IStorage> EnumerateSubDirectories()
         {
             try
             {
@@ -147,7 +148,7 @@ namespace Models.Storage.Windows
 
         #endregion
 
-        #region IStorageElementCreator logic
+        #region IDirectory logic
 
         /// <inheritdoc />
         public async Task<IDirectoryItem> CreateAsync(bool isDirectory)
@@ -168,14 +169,22 @@ namespace Models.Storage.Windows
             return EnumerateWrappers(Directory.EnumerateFileSystemEntries(Path, pattern, enumeration));
         }
 
-        private IEnumerable<DirectoryItemWrapper> EnumerateWrappers(IEnumerable<string> paths)
+        private IEnumerable<DirectoryItemWrapper> EnumerateWrappers(IEnumerable<string> paths, FileAttributes skipped = 0)
         {
             foreach (var path in paths)
             {
+                DirectoryItemWrapper wrapper;
+
                 if (File.Exists(path))
-                    yield return new FileWrapper(path);
+                    wrapper = new FileWrapper(path);
                 else
-                    yield return new DirectoryWrapper(path);
+                    wrapper = new DirectoryWrapper(path);
+
+                // Item has attributes that should be skipped
+                if (wrapper.HasAttributes(skipped))
+                    continue;
+
+                yield return wrapper;
 
                 //var item = itemFactory.CreateFromPath(path);
 

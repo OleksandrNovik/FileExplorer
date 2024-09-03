@@ -17,6 +17,9 @@ namespace FileExplorer.Views.Settings
             ViewModel.NavigationService.Frame = CurrentSettingsPage;
         }
 
+        /// <summary>
+        /// When close button is pressed we save last opened options and close dialog
+        /// </summary>
         private void OnCloseButtonClick(object sender, RoutedEventArgs e)
         {
             ViewModel.NavigationService.NavigateFromCurrent();

@@ -10,15 +10,15 @@ namespace Models.Messages
     /// Message for StorageViewModel to navigate into a directory
     /// </summary>
     /// <param name="NavigatedStorage"></param>
-    public record NavigationRequiredMessage(IStorage<IDirectoryItem> NavigatedStorage);
+    public record NavigationRequiredMessage(IStorage NavigatedStorage);
 
-    public record StorageNavigatedMessage(IStorage<IDirectoryItem> NavigatedStorage);
+    public record StorageNavigatedMessage(IStorage NavigatedStorage);
 
     /// <summary>
     /// Message that notify listeners that current tab's directory has changed
     /// </summary>
     /// <param name="Storage"></param>
-    public record TabStorageChangedMessage(IStorage<IDirectoryItem> Storage);
+    public record TabStorageChangedMessage(IStorage Storage);
 
     /// <summary>
     /// Message for DirectoryPageViewModel to open file path for which has been written in the route
@@ -31,13 +31,13 @@ namespace Models.Messages
     /// </summary>
     /// <param name="TabStorage"> Storage that current tab is holding </param>
     /// <param name="TabNavigationHistory"> Current tab's history </param>
-    public record TabOpenedMessage(IStorage<IDirectoryItem> TabStorage, TabNavigationHistoryModel TabNavigationHistory);
+    public record TabOpenedMessage(IStorage TabStorage, TabNavigationHistoryModel TabNavigationHistory);
 
     /// <summary>
     /// Message for ShellPageViewModel to open storage in a new tab
     /// </summary>
     /// <param name="TabStorage"> Storage that has to be opened in new tab </param>
-    public record OpenTabMessage(IStorage<IDirectoryItem> TabStorage);
+    public record OpenTabMessage(IStorage TabStorage);
 
     public record SearchOperationRequiredMessage(SearchFilter Options);
 
@@ -55,9 +55,9 @@ namespace Models.Messages
     public record ShowInfoBarMessage(InfoBarSeverity Severity, string Title, string? Message = null);
 
     /// <summary>
-    /// Message to begin search in provided <see cref="IStorage{TElement}"/> item 
+    /// Message to begin search in provided <see cref="IStorage"/> item 
     /// </summary>
     /// <param name="Storage"> Storage that's being searched </param>
     /// <param name="Options"> Search options </param>
-    public record SearchStorageMessage(IStorage<IDirectoryItem> Storage, SearchFilter Options);
+    public record SearchStorageMessage(IStorage Storage, SearchFilter Options);
 }

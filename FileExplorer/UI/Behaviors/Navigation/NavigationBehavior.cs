@@ -5,7 +5,6 @@ using FileExplorer.Core.Contracts.DirectoriesNavigation;
 using FileExplorer.Core.Contracts.Factories;
 using FileExplorer.UI.Helpers;
 using Microsoft.UI.Xaml.Controls;
-using Models.Contracts.Storage;
 using Models.Enums;
 using Models.TabRelated;
 using System.Collections;
@@ -19,7 +18,7 @@ namespace FileExplorer.UI.Behaviors.Navigation
     {
         public IRelayCommand? ItemInvokedCommand { get; set; }
 
-        private readonly IStorageFactory<IDirectoryItem> factory;
+        private readonly IStorageFactory factory;
         public NavigationBehavior() : base(
             App.GetService<INavigationService>(),
             App.GetService<IPageTypesService>())
@@ -29,7 +28,7 @@ namespace FileExplorer.UI.Behaviors.Navigation
                 eventProvider.TabOpened += OnTabOpened;
             }
 
-            factory = App.GetService<IStorageFactory<IDirectoryItem>>();
+            factory = App.GetService<IStorageFactory>();
         }
 
         /// <summary>

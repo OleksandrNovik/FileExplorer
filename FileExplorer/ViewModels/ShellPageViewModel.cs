@@ -75,12 +75,12 @@ namespace FileExplorer.ViewModels
         }
 
         [RelayCommand]
-        private void OpenNewTab(IStorage<IDirectoryItem> storage)
+        private void OpenNewTab(IStorage storage)
         {
             NewTab(storage);
         }
 
-        private void NewTab(IStorage<IDirectoryItem> storage)
+        private void NewTab(IStorage storage)
         {
             TabService.CreateNewTab(storage);
         }
@@ -107,7 +107,7 @@ namespace FileExplorer.ViewModels
         }
 
         [RelayCommand]
-        private void SelectMenuItem(IStorage<IDirectoryItem> selectedStorage)
+        private void SelectMenuItem(IStorage selectedStorage)
         {
             Messenger.Send(new StorageNavigatedMessage(selectedStorage));
         }

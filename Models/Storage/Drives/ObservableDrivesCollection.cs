@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace Models.Storage.Drives
 {
-    public class ObservableDrivesCollection : ObservableCollection<DriveWrapper>, IStorage<IDirectoryItem>
+    public class ObservableDrivesCollection : ObservableCollection<DriveWrapper>, IStorage
     {
         public string Name => "Home";
         public string Path => string.Empty;
-        public IStorage<IDirectoryItem> Parent => null;
+        public IStorage Parent => null;
         public StorageContentType ContentType => StorageContentType.Drives;
 
         public ObservableDrivesCollection()
@@ -28,18 +28,18 @@ namespace Models.Storage.Drives
         }
 
 
-        public IEnumerable<IDirectoryItem> EnumerateItems()
+        public IEnumerable<IDirectoryItem> EnumerateItems(FileAttributes rejectedAttributes = 0)
         {
             foreach (var drive in this)
             {
-                foreach (var item in drive.EnumerateItems())
+                foreach (var item in drive.EnumerateItems(rejectedAttributes))
                 {
                     yield return item;
                 }
             }
         }
 
-        public IEnumerable<IStorage<IDirectoryItem>> EnumerateSubDirectories() => this;
+        public IEnumerable<IStorage> EnumerateSubDirectories() => this;
 
         public async Task SearchAsync(SearchOptions searchOptions)
         {

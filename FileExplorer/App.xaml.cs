@@ -6,6 +6,7 @@ using FileExplorer.Core.Contracts.Settings;
 using FileExplorer.Core.Services;
 using FileExplorer.Core.Services.DirectoriesNavigation;
 using FileExplorer.Core.Services.Factories;
+using FileExplorer.Core.Services.General;
 using FileExplorer.Core.Services.Settings;
 using FileExplorer.Services;
 using FileExplorer.ViewModels;
@@ -18,7 +19,6 @@ using Helpers.General;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.UI.Xaml;
-using Models.Contracts.Storage;
 using System;
 using Hosting = Microsoft.Extensions.Hosting.Host;
 using SearchOptionsViewModel = FileExplorer.ViewModels.Search.SearchOptionsViewModel;
@@ -71,7 +71,7 @@ namespace FileExplorer
 
                     // Factories
                     services.AddTransient<IMenuFlyoutFactory, MenuFlyoutFactory>();
-                    services.AddTransient<IStorageFactory<IDirectoryItem>, StorageFactory>();
+                    services.AddTransient<IStorageFactory, StorageFactory>();
 
                     services.AddTransient<HomePageViewModel>();
                     services.AddTransient<TabNavigationViewModel>();
@@ -80,6 +80,7 @@ namespace FileExplorer
                     services.AddTransient<SettingsViewModel>();
                     services.AddTransient<SettingsPreferencesViewModel>();
                     services.AddTransient<SettingsExplorerViewModel>();
+                    services.AddTransient<ILocalSettingsService, LocalSettingsService>();
 
                     // Search
                     services.AddTransient<SearchOptionsViewModel>();
@@ -93,6 +94,9 @@ namespace FileExplorer
 
                     //ViewOptions
                     services.AddTransient<ViewOptionsViewModel>();
+
+                    //GeneralServices
+                    services.AddTransient<IStringParser, StringParser>();
 
                 })
                 .Build();

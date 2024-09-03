@@ -3,17 +3,16 @@
 namespace FileExplorer.Core.Contracts.Factories
 {
     /// <summary>
-    /// Factory to create <see cref="IStorage{TElement}"/> items 
+    /// Factory to create <see cref="IStorage"/> items 
     /// </summary>
-    /// <typeparam name="TElement"> Type of element in storage </typeparam>
-    public interface IStorageFactory<TElement> where TElement : IDirectoryItem
+    public interface IStorageFactory
     {
 
         /// <summary>
-        /// Creates <see cref="IStorage{TElement}"/> item from provided key
+        /// Creates <see cref="IStorage"/> item from provided key
         /// </summary>
         /// <param name="key"> Key that identifies storage </param>
         /// <returns> Resulting storage </returns>
-        public IStorage<TElement> CreateFromKey(string key);
+        public IStorage CreateFromKey(string key);
     }
 }

@@ -29,7 +29,7 @@ namespace FileExplorer.ViewModels
         /// <summary>
         /// Storage or search result that is currently opened 
         /// </summary>
-        private IStorage<IDirectoryItem> CurrentDirectory => navigation.CurrentDirectory;
+        private IStorage CurrentDirectory => navigation.CurrentDirectory;
 
         /// <summary>
         /// Decides if user is currently writing route into the text box or using route breadcrumb bar
@@ -75,7 +75,7 @@ namespace FileExplorer.ViewModels
         /// Initializes route and route items when new storage is navigated
         /// </summary>
         /// <param name="storage"> Storage that is navigated </param>
-        private void SetViewedStorage(IStorage<IDirectoryItem> storage)
+        private void SetViewedStorage(IStorage storage)
         {
             navigation.CurrentDirectory = storage;
 
@@ -213,7 +213,7 @@ namespace FileExplorer.ViewModels
         /// Sends message to all listeners that navigation is required to a certain path
         /// </summary>
         /// <param name="item"> Folder that is being navigated </param>
-        private void SendNavigationMessage(IStorage<IDirectoryItem> item)
+        private void SendNavigationMessage(IStorage item)
         {
             Messenger.Send(new NavigationRequiredMessage(item));
             CurrentRoute = CurrentDirectory.Path;

@@ -9,6 +9,6 @@ namespace FileExplorer.Core.Contracts
     {
         public ObservableCollection<TabModel> Tabs { get; }
         public TabModel SelectedTab { get; set; }
-        public void CreateNewTab(IStorage<IDirectoryItem>? directory);
+        public void CreateNewTab(IStorage? directory);
     }
 }
