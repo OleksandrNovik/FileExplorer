@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Helpers.Application;
+using Helpers.General;
 using Models.Contracts;
-using System;
 
 namespace Models.Settings
 {
@@ -9,6 +10,15 @@ namespace Models.Settings
     /// </summary>
     public sealed partial class SettingsExplorerModel : ObservableObject, ISettingsModel
     {
+        public static SettingsExplorerModel Default = new()
+        {
+            ShowHiddenFiles = false,
+            HideSystemFiles = true,
+            ShowFileExtensions = false,
+        };
+
+        private SettingsExplorerModel() { }
+
         [ObservableProperty]
         private bool showFileExtensions;
 
@@ -23,18 +33,24 @@ namespace Models.Settings
         /// </summary>
         public static SettingsExplorerModel FromSettings()
         {
+            var showHidden = LocalSettings.ReadSetting(LocalSettings.Keys.ShowHiddenFiles);
+            var hideSystem = LocalSettings.ReadSetting(LocalSettings.Keys.HideSystemFiles);
+            var showExtensions = LocalSettings.ReadSetting(LocalSettings.Keys.ShowFileExtensions);
+
             return new SettingsExplorerModel
             {
-                ShowHiddenFiles = false,
-                HideSystemFiles = false,
-                showFileExtensions = false,
+                ShowHiddenFiles = showHidden.ParseBool(Default.ShowHiddenFiles),
+                HideSystemFiles = hideSystem.ParseBool(Default.HideSystemFiles),
+                ShowFileExtensions = showExtensions.ParseBool(Default.ShowFileExtensions),
             };
         }
 
         /// <inheritdoc />
         public void SaveSettings()
         {
-            throw new NotImplementedException();
+            LocalSettings.WriteSetting(LocalSettings.Keys.ShowHiddenFiles, ShowHiddenFiles.ToString());
+            LocalSettings.WriteSetting(LocalSettings.Keys.HideSystemFiles, HideSystemFiles.ToString());
+            LocalSettings.WriteSetting(LocalSettings.Keys.ShowFileExtensions, ShowFileExtensions.ToString());
         }
     }
 }

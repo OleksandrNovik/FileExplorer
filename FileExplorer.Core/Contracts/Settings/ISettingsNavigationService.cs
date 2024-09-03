@@ -6,5 +6,11 @@ namespace FileExplorer.Core.Contracts.Settings
     /// <summary>
     /// Special interface for navigation service in settings window
     /// </summary>
-    public interface ISettingsNavigationService : IBasicNavigationService<string>;
+    public interface ISettingsNavigationService : IBasicNavigationService<string>
+    {
+        /// <summary>
+        /// Navigates from current page
+        /// </summary>
+        public void NavigateFromCurrent();
+    }
 }

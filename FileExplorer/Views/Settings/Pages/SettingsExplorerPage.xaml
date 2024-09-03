@@ -22,7 +22,7 @@
                     </controls1:SettingsCard.HeaderIcon>
 
                     <controls1:SettingsCard.Content>
-                        <ToggleSwitch IsOn="{x:Bind ViewModel.PageSettings.ShowHiddenFiles}" />
+                        <ToggleSwitch IsOn="{x:Bind ViewModel.PageSettings.ShowHiddenFiles, Mode=TwoWay}" />
                     </controls1:SettingsCard.Content>
 
                 </controls1:SettingsCard>
@@ -35,7 +35,7 @@
                     </controls1:SettingsCard.HeaderIcon>
 
                     <controls1:SettingsCard.Content>
-                        <ToggleSwitch IsOn="{x:Bind ViewModel.PageSettings.HideSystemFiles}" />
+                        <ToggleSwitch IsOn="{x:Bind ViewModel.PageSettings.HideSystemFiles, Mode=TwoWay}" />
                     </controls1:SettingsCard.Content>
 
                 </controls1:SettingsCard>
@@ -48,7 +48,7 @@
                     </controls1:SettingsCard.HeaderIcon>
 
                     <controls1:SettingsCard.Content>
-                        <ToggleSwitch IsOn="{x:Bind ViewModel.PageSettings.ShowFileExtensions}" />
+                        <ToggleSwitch IsOn="{x:Bind ViewModel.PageSettings.ShowFileExtensions, Mode=TwoWay}" />
                     </controls1:SettingsCard.Content>
 
                 </controls1:SettingsCard>

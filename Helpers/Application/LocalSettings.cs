@@ -8,6 +8,18 @@ namespace Helpers.Application
 {
     public static class LocalSettings
     {
+        public static class Keys
+        {
+            public const string Theme = "Theme";
+            public const string ShowConfirmationMessage = "ShowConfirmationMessage";
+            public const string OpenFolderInNewTab = "OpenFolderInNewTab";
+            public const string Language = "Language";
+
+            public const string ShowHiddenFiles = "ShowHiddenFiles";
+            public const string HideSystemFiles = "HideSystemFiles";
+            public const string ShowFileExtensions = "ShowFileExtensions";
+        }
+
         //private static FrozenDictionary<string, DateTimeFormatter> dateFormatterFromDateOption =
         //    new Dictionary<string, DateTimeFormatter>
         //    {

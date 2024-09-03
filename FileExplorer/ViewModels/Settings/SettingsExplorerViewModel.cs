@@ -17,7 +17,7 @@ namespace FileExplorer.ViewModels.Settings
 
         public void OnNavigatedFrom()
         {
-            //PageSettings.SaveSettings();
+            PageSettings.SaveSettings();
         }
     }
 }

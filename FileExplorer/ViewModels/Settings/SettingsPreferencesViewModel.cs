@@ -19,7 +19,7 @@ namespace FileExplorer.ViewModels.Settings
         {
             Themes = new ObservableCollection<string>(LocalSettings.Themes);
             DateFormats = new ObservableCollection<string>(LocalSettings.DateFormats);
-            Languages = ["English"];
+            Languages = ["English", "Other"];
 
             //TODO: Get theme from settings
             PageSettings = SettingsPreferencesModel.FromSettings();
@@ -30,7 +30,7 @@ namespace FileExplorer.ViewModels.Settings
 
         public void OnNavigatedFrom()
         {
-            //PageSettings.SaveSettings();
+            PageSettings.SaveSettings();
         }
     }
 }

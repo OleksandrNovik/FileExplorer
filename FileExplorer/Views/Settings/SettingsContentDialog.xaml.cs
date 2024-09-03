@@ -19,6 +19,7 @@ namespace FileExplorer.Views.Settings
 
         private void OnCloseButtonClick(object sender, RoutedEventArgs e)
         {
+            ViewModel.NavigationService.NavigateFromCurrent();
             Hide();
         }
     }

@@ -77,10 +77,16 @@ public abstract class BaseNavigationService
 
         if (navigated)
         {
-            if (previousViewModel is INavigationAware navigationAware)
-            {
-                navigationAware.OnNavigatedFrom();
-            }
+            NavigateFrom(previousViewModel);
+        }
+
+    }
+
+    protected void NavigateFrom(object navAwareObject)
+    {
+        if (navAwareObject is INavigationAware navigationAware)
+        {
+            navigationAware.OnNavigatedFrom();
         }
     }
 }
