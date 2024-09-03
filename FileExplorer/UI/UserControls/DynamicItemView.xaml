@@ -18,9 +18,12 @@
     xmlns:collectionBehaviors="using:FileExplorer.UI.Behaviors.Collections"
     xmlns:ui="using:FileExplorer.UI"
     xmlns:dataGridBehaviors="using:FileExplorer.UI.Behaviors.DataGrid"
+    xmlns:converters="using:FileExplorer.UI.Converters"
     mc:Ignorable="d">
 
     <UserControl.Resources>
+
+        <converters:HiddenAttributeToOpacityConverter x:Key="HiddenToOpacityConverter" />
 
         <DataTemplate x:Key="ItemsGridTemplate" x:DataType="storage:IDirectoryItem">
             <Grid  Padding="10  20 10 10" 
@@ -31,7 +34,9 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <Image Source="{x:Bind Thumbnail.Source, Mode=OneWay}" />
+                <Image Source="{x:Bind Thumbnail.Source, Mode=OneWay}"
+                       Opacity="{x:Bind Attributes, Converter={StaticResource HiddenToOpacityConverter}}"/>
+
                 <Grid Row="1">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="30" />
@@ -88,7 +93,8 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <Image Source="{x:Bind Thumbnail.Source, Mode=OneWay}" />
+                <Image Source="{x:Bind Thumbnail.Source, Mode=OneWay}"
+                       Opacity="{x:Bind Attributes, Converter={StaticResource HiddenToOpacityConverter}}"/>
 
                 <local:EditableText Grid.Column="2" VerticalAlignment="Center"
                                           Text="{x:Bind Name, Mode=TwoWay}"

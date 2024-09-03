@@ -6,24 +6,13 @@
     xmlns:local="using:FileExplorer.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
-    xmlns:behaviors="using:FileExplorer.UI.Behaviors"
     xmlns:toolkitBehaviors="using:CommunityToolkit.WinUI.UI.Behaviors"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:ui="using:FileExplorer.UI"
-    xmlns:generalBehaviors="using:FileExplorer.UI.Behaviors.General"
-    xmlns:contextMenu="using:FileExplorer.UI.Behaviors.ContextMenu"
     xmlns:userControls="using:FileExplorer.UI.UserControls"
-    xmlns:collections="using:FileExplorer.UI.Behaviors.Collections"
-    xmlns:storage="using:Models.Contracts.Storage"
-    xmlns:dataGridBehaviors="using:FileExplorer.UI.Behaviors.DataGrid"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
-    <Page.Resources>
-
-    </Page.Resources>
 
     <Grid Padding="15 10" KeyboardAcceleratorPlacementMode="Hidden">
 
