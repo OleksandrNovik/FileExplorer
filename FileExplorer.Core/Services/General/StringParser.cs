@@ -6,23 +6,27 @@ namespace FileExplorer.Core.Services.General
     public sealed class StringParser : IStringParser
     {
         /// <inheritdoc />
-        public TEnum ParseEnum<TEnum>(string str, TEnum fallbackValue)
+        public TEnum? ParseEnum<TEnum>(string str)
             where TEnum : struct, Enum
         {
-            if (!Enum.TryParse<TEnum>(str, out var value))
+            TEnum? value = null;
+
+            if (Enum.TryParse<TEnum>(str, out var result))
             {
-                value = fallbackValue;
+                value = result;
             }
 
             return value;
         }
 
         /// <inheritdoc />
-        public bool ParseBool(string str, bool fallbackValue)
+        public bool? ParseBool(string str)
         {
-            if (!bool.TryParse(str, out var value))
+            bool? value = null;
+
+            if (bool.TryParse(str, out var result))
             {
-                value = fallbackValue;
+                value = result;
             }
 
             return value;

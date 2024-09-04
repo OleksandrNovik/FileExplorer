@@ -1,23 +1,46 @@
 ﻿#nullable enable
 using Models.Settings;
+using System;
 
 namespace FileExplorer.Core.Contracts.Settings
 {
     public interface ILocalSettingsService
     {
         /// <summary>
-        /// Writes provided value to a specific local setting's key
+        /// Writes provided value to a specific local settings key
+        /// </summary>
+        /// <param name="key"> Key for a resource </param>
+        /// <param name="value"> Value of resource </param>
+        public void WriteSetting<T>(string key, T value) where T : struct;
+
+        /// <summary>
+        /// Writes string value to a specific local settings key
         /// </summary>
         /// <param name="key"> Key for a resource </param>
         /// <param name="value"> Value of resource </param>
         public void WriteSetting(string key, string value);
 
         /// <summary>
-        /// Reads value from local settings by using provided key
+        /// Reads string value from local settings
         /// </summary>
-        /// <param name="key"> Key for local setting's resource </param>
-        /// <returns> Found resource by provided key </returns>
-        public string? ReadSetting(string key);
+        /// <param name="key"> Key for a resource </param>
+        /// <returns> Null is there is not resize for provided key </returns>
+        public string? ReadString(string key);
+
+        /// <summary>
+        /// Reads bool value from local settings
+        /// </summary>
+        /// <param name="key"> Key for a resource </param>
+        /// <returns> Null is there is not resize for provided key </returns>
+        public bool? ReadBool(string key);
+
+        /// <summary>
+        /// Reads enum value from local settings
+        /// </summary>
+        /// <typeparam name="TEnum"> Type of enum to read </typeparam>
+        /// <param name="key"> Key for a resource </param>
+        /// <returns> Null is there is not resize for provided key </returns>
+        public TEnum? ReadEnum<TEnum>(string key) where TEnum : struct, Enum;
 
         /// <summary>
         /// Gets explorer options from local settings
@@ -42,6 +65,5 @@ namespace FileExplorer.Core.Contracts.Settings
         /// </summary>
         /// <param name="preferences"> Preferences that are saved to settings </param>
         public void SaveUserPreferences(SettingsPreferencesModel preferences);
-
     }
 }

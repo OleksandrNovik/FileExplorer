@@ -12,18 +12,16 @@ namespace FileExplorer.Core.Contracts.General
         /// </summary>
         /// <typeparam name="TEnum"> Type of enum to parse </typeparam>
         /// <param name="str"> String value that is parsed </param>
-        /// <param name="fallbackValue"> Fall back value that will be returned if parse is not successful </param>
-        /// <returns> Resulting enum value </returns>
-        public TEnum ParseEnum<TEnum>(string str, TEnum fallbackValue)
+        /// <returns> Null if provided string cannot be parsed to bool otherwise resulting enum value </returns>
+        public TEnum? ParseEnum<TEnum>(string str)
             where TEnum : struct, Enum;
 
 
         /// <summary>
-        /// Parses string to bool value
+        /// Parses bool value from provided string
         /// </summary>
-        /// <param name="str"> String value that is parsed </param>
-        /// <param name="fallbackValue"> Fall back value that will be returned if parse is not successful </param>
-        /// <returns> Resulting bool value </returns>
-        public bool ParseBool(string str, bool fallbackValue);
+        /// <param name="str"> String to parse </param>
+        /// <returns> Null if provided string cannot be parsed to bool otherwise resulting bool value </returns>
+        public bool? ParseBool(string str);
     }
 }

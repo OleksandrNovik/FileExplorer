@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using FileExplorer.Core.Contracts.Settings;
+using Helpers.Application;
 using Microsoft.UI.Xaml.Controls;
 using Models.Contracts.Storage;
 using Models.Messages;
@@ -19,6 +21,7 @@ namespace FileExplorer.ViewModels.General
     /// </summary>
     public sealed partial class FileOperationsViewModel : ObservableRecipient
     {
+        private readonly ILocalSettingsService localSettings;
         /// <summary>
         /// Field that contains directory to create items in (if it is allowed on the page)
         /// </summary>
@@ -37,8 +40,9 @@ namespace FileExplorer.ViewModels.General
         /// </summary>
         public ObservableCollection<IDirectoryItem> SelectedItems { get; } = new();
 
-        public FileOperationsViewModel()
+        public FileOperationsViewModel(ILocalSettingsService settingsService)
         {
+            localSettings = settingsService;
             SelectedItems.CollectionChanged += NotifyCanExecute;
             ViewOptions = App.GetService<ViewOptionsViewModel>();
 
@@ -123,9 +127,9 @@ namespace FileExplorer.ViewModels.General
         }
 
         [RelayCommand]
-        public void OpenInNewTab(IDirectory directory)
+        public void OpenInNewTab(IStorage storage)
         {
-            Messenger.Send(new OpenTabMessage(directory));
+            Messenger.Send(new OpenTabMessage(storage));
         }
 
         #endregion
@@ -200,11 +204,17 @@ namespace FileExplorer.ViewModels.General
         [RelayCommand(CanExecute = nameof(CanChangeDirectory))]
         public async Task DeleteSelectedItems()
         {
-            var content = $"Do you really want to delete {(SelectedItems.Count > 1 ? "selected items" : $"\"{SelectedItems[0].Path}\""
-                )} permanently?";
-            var result = await App.MainWindow.ShowYesNoDialog(content, "Deleting items");
+            var confirmUser = localSettings.ReadBool(LocalSettings.Keys.ShowConfirmationMessage);
 
-            if (result == ContentDialogResult.Secondary) return;
+            if (confirmUser is true)
+            {
+                var content =
+                    $"Do you really want to delete {(SelectedItems.Count > 1 ? "selected items" : $"\"{SelectedItems[0].Path}\""
+                        )} permanently?";
+                var result = await App.MainWindow.ShowYesNoDialog(content, "Deleting items");
+
+                if (result == ContentDialogResult.Secondary) return;
+            }
 
             while (SelectedItems.Count > 0)
             {

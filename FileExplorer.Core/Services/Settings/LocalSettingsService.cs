@@ -4,6 +4,8 @@ using FileExplorer.Core.Contracts.Settings;
 using Helpers.Application;
 using Microsoft.UI.Xaml;
 using Models.Settings;
+using System;
+using System.Diagnostics;
 
 namespace FileExplorer.Core.Services.Settings
 {
@@ -17,34 +19,57 @@ namespace FileExplorer.Core.Services.Settings
         }
 
         /// <inheritdoc />
-        public void WriteSetting(string key, string value) => LocalSettings.WriteSetting(key, value);
+        public void WriteSetting<T>(string key, T value)
+            where T : struct
+        {
+            var strValue = value.ToString();
+            Debug.Assert(strValue is not null);
+            LocalSettings.WriteSetting(key, strValue);
+        }
 
         /// <inheritdoc />
-        public string? ReadSetting(string key) => LocalSettings.ReadSetting(key);
+        public void WriteSetting(string key, string value)
+        {
+            LocalSettings.WriteSetting(key, value);
+        }
+
+        /// <inheritdoc />
+        public string? ReadString(string key)
+        {
+            return LocalSettings.ReadSetting(key);
+        }
+
+        /// <inheritdoc />
+        public bool? ReadBool(string key)
+        {
+            return parser.ParseBool(ReadString(key));
+        }
+
+        /// <inheritdoc />
+        public TEnum? ReadEnum<TEnum>(string key) where TEnum : struct, Enum
+        {
+            return parser.ParseEnum<TEnum>(key);
+        }
 
         /// <inheritdoc />
         public SettingsExplorerModel GetExplorerSettings()
         {
             var defaultSettings = SettingsExplorerModel.Default;
 
-            var showHidden = ReadSetting(LocalSettings.Keys.ShowHiddenFiles);
-            var hideSystem = ReadSetting(LocalSettings.Keys.HideSystemFiles);
-            var showExtensions = ReadSetting(LocalSettings.Keys.ShowFileExtensions);
-
             return new SettingsExplorerModel
             {
-                ShowHiddenFiles = parser.ParseBool(showHidden, defaultSettings.ShowHiddenFiles),
-                HideSystemFiles = parser.ParseBool(hideSystem, defaultSettings.HideSystemFiles),
-                ShowFileExtensions = parser.ParseBool(showExtensions, defaultSettings.ShowFileExtensions),
+                ShowHiddenFiles = ReadBool(LocalSettings.Keys.ShowHiddenFiles) ?? defaultSettings.ShowHiddenFiles,
+                HideSystemFiles = ReadBool(LocalSettings.Keys.HideSystemFiles) ?? defaultSettings.HideSystemFiles,
+                ShowFileExtensions = ReadBool(LocalSettings.Keys.ShowFileExtensions) ?? defaultSettings.ShowFileExtensions,
             };
         }
 
         /// <inheritdoc />
         public void SaveExplorerSettings(SettingsExplorerModel settings)
         {
-            WriteSetting(LocalSettings.Keys.ShowHiddenFiles, settings.ShowHiddenFiles.ToString());
-            WriteSetting(LocalSettings.Keys.HideSystemFiles, settings.HideSystemFiles.ToString());
-            WriteSetting(LocalSettings.Keys.ShowFileExtensions, settings.ShowFileExtensions.ToString());
+            WriteSetting(LocalSettings.Keys.ShowHiddenFiles, settings.ShowHiddenFiles);
+            WriteSetting(LocalSettings.Keys.HideSystemFiles, settings.HideSystemFiles);
+            WriteSetting(LocalSettings.Keys.ShowFileExtensions, settings.ShowFileExtensions);
         }
 
         /// <inheritdoc />
@@ -52,26 +77,21 @@ namespace FileExplorer.Core.Services.Settings
         {
             var defaultPreferences = SettingsPreferencesModel.Default;
 
-            var theme = ReadSetting(LocalSettings.Keys.Theme);
-            var showConfirmation = ReadSetting(LocalSettings.Keys.ShowConfirmationMessage);
-            var newTabFolder = ReadSetting(LocalSettings.Keys.OpenFolderInNewTab);
-            var language = ReadSetting(LocalSettings.Keys.Language) ?? defaultPreferences.Language;
-
             return new SettingsPreferencesModel
             {
-                Theme = parser.ParseEnum<ElementTheme>(theme, defaultPreferences.Theme),
-                ShowConfirmationMessage = parser.ParseBool(showConfirmation, defaultPreferences.ShowConfirmationMessage),
-                OpenFolderInNewTab = parser.ParseBool(newTabFolder, defaultPreferences.OpenFolderInNewTab),
-                Language = language,
+                Theme = ReadEnum<ElementTheme>(LocalSettings.Keys.Theme) ?? defaultPreferences.Theme,
+                ShowConfirmationMessage = ReadBool(LocalSettings.Keys.ShowConfirmationMessage) ?? defaultPreferences.ShowConfirmationMessage,
+                OpenFolderInNewTab = ReadBool(LocalSettings.Keys.OpenFolderInNewTab) ?? defaultPreferences.OpenFolderInNewTab,
+                Language = ReadString(LocalSettings.Keys.Language) ?? defaultPreferences.Language,
             };
         }
 
         /// <inheritdoc />
         public void SaveUserPreferences(SettingsPreferencesModel preferences)
         {
-            WriteSetting(LocalSettings.Keys.Theme, preferences.Theme.ToString());
-            WriteSetting(LocalSettings.Keys.ShowConfirmationMessage, preferences.ShowConfirmationMessage.ToString());
-            WriteSetting(LocalSettings.Keys.OpenFolderInNewTab, preferences.OpenFolderInNewTab.ToString());
+            WriteSetting(LocalSettings.Keys.Theme, preferences.Theme);
+            WriteSetting(LocalSettings.Keys.ShowConfirmationMessage, preferences.ShowConfirmationMessage);
+            WriteSetting(LocalSettings.Keys.OpenFolderInNewTab, preferences.OpenFolderInNewTab);
             WriteSetting(LocalSettings.Keys.Language, preferences.Language);
         }
     }
