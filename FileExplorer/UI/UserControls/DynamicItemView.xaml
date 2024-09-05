@@ -19,6 +19,7 @@
     xmlns:ui="using:FileExplorer.UI"
     xmlns:dataGridBehaviors="using:FileExplorer.UI.Behaviors.DataGrid"
     xmlns:converters="using:FileExplorer.UI.Converters"
+    xmlns:converters1="using:CommunityToolkit.WinUI.UI.Converters"
     mc:Ignorable="d">
 
     <UserControl.Resources>
@@ -154,7 +155,7 @@
 
                     <interactivity:Interaction.Behaviors>
 
-                        <!--<collections:MultiSelectionBehavior SelectedItems="{x:Bind ViewModel.SelectedItems, Mode=OneWay}" />-->
+                        <collectionBehaviors:MultiSelectionBehavior SelectedItems="{x:Bind FileOperations.SelectedItems, Mode=OneWay}" />
 
                         <contextMenuBehaviors:GridViewContextDialogBehavior />
 
@@ -219,18 +220,27 @@
             TableTemplate="{StaticResource TableTemplate}"
             />
 
+        <converters1:DoubleToVisibilityConverter x:Key="NumberToVisibilityConverter" GreaterThan="0" />
+
     </UserControl.Resources>
 
 
     <Grid>
 
-        <ContentControl HorizontalContentAlignment="Stretch">
+        <ContentControl HorizontalContentAlignment="Stretch" Visibility="{x:Bind ItemsSource.Count, Mode=OneWay, 
+                                    Converter={StaticResource NumberToVisibilityConverter}}">
 
             <interactivity:Interaction.Behaviors>
                 <behaviors:ViewOptionsChangedBehavior ViewOptions="{x:Bind ViewOptions, Mode=OneWay}"
                                                       TemplateSelector="{StaticResource DynamicCollectionSelector}"/>
             </interactivity:Interaction.Behaviors>
         </ContentControl>
+
+        <TextBlock Text="Folder is empty"
+                   Margin="0 15 0 0"
+                   HorizontalAlignment="Center"
+                   Visibility="{x:Bind ItemsSource.Count, Mode=OneWay, 
+                        Converter={StaticResource NumberToVisibilityConverter}, ConverterParameter=True}" />
 
     </Grid>
 </UserControl>

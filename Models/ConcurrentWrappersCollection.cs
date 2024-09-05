@@ -40,13 +40,13 @@ namespace Models
 
         public async Task UpdateIconsAsync(int size, CancellationToken token)
         {
-            await Parallel.ForEachAsync(Items, token, async (item, ct) =>
+            foreach (var item in Items)
             {
                 await ThreadingHelper.EnqueueAsync(async () =>
                 {
                     await item.UpdateThumbnailAsync(size);
                 });
-            });
+            }
         }
     }
 }

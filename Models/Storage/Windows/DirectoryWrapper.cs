@@ -75,16 +75,7 @@ namespace Models.Storage.Windows
 
             if (searchOptions.Filter.IsNestedSearch)
             {
-                var subDirectories = EnumerateSubDirectories();
-
-                if (searchOptions.OptimizationsEnabled)
-                {
-                    await subDirectories.ToArray().OptimizedSearchAsync(searchOptions);
-                }
-                else
-                {
-                    await subDirectories.SearchCatalogsAsync(searchOptions);
-                }
+                await EnumerateSubDirectories().SearchCatalogsAsync(searchOptions);
             }
         }
 

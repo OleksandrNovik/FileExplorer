@@ -27,24 +27,6 @@ namespace Models.Storage.Additional
         /// </summary>
         public bool OptimizationsEnabled { get; set; }
 
-        private int maxDirectoriesPerThread;
-
-        /// <summary>
-        /// If number of directories for search is greater new thread will be created to search
-        /// </summary>
-        public int MaxDirectoriesPerThread
-        {
-            get => maxDirectoriesPerThread;
-            set
-            {
-                maxDirectoriesPerThread = value;
-
-                if (maxDirectoriesPerThread > 0)
-                {
-                    OptimizationsEnabled = true;
-                }
-            }
-        }
         public SearchOptions(SearchFilter filter, IEnqueuingCollection<IDirectoryItem> destination)
         {
             Filter = filter;

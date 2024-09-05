@@ -1,10 +1,12 @@
 ﻿#nullable enable
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using FileExplorer.Core.Contracts.Factories;
 using FileExplorer.Core.Contracts.Settings;
 using FileExplorer.ViewModels.Abstractions;
 using FileExplorer.ViewModels.General;
+using Helpers.General;
 using Microsoft.UI.Xaml.Controls;
 using Models;
 using Models.Contracts.Storage;
@@ -34,6 +36,12 @@ namespace FileExplorer.ViewModels
         public DirectoryPageViewModel(FileOperationsViewModel fileOperations, IMenuFlyoutFactory factory, ILocalSettingsService settingsService) : base(fileOperations, factory)
         {
             localSettings = settingsService;
+
+            Messenger.Register<DirectoryPageViewModel, DirectoryItemsChangedMessage>(this, (_, message) =>
+            {
+                DirectoryItems.AddRange(message.Added);
+                DirectoryItems.RemoveRange(message.Removed);
+            });
         }
 
         /// <summary>

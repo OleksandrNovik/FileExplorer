@@ -17,11 +17,18 @@ namespace Models.ModelHelpers
             this IEnumerable<ISearchCatalog<TElement>> items,
             SearchOptions searchOptions)
         {
-            await Task.Run(async () =>
+            if (searchOptions.OptimizationsEnabled)
             {
                 await items.SearchEachCatalogAsync(searchOptions);
+            }
+            else
+            {
+                await Task.Run(async () =>
+                {
+                    await items.SearchEachCatalogAsync(searchOptions);
 
-            }, searchOptions.Token);
+                }, searchOptions.Token);
+            }
         }
 
         private static async Task SearchEachCatalogAsync<TElement>(
@@ -34,19 +41,5 @@ namespace Models.ModelHelpers
             }
         }
 
-
-        public static async Task OptimizedSearchAsync<TElement>(
-            this ICollection<ISearchCatalog<TElement>> items,
-            SearchOptions searchOptions)
-        {
-            if (items.Count > searchOptions.MaxDirectoriesPerThread)
-            {
-                await items.SearchCatalogsAsync(searchOptions);
-            }
-            else
-            {
-                await items.SearchEachCatalogAsync(searchOptions);
-            }
-        }
     }
 }

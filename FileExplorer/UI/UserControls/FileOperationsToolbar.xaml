@@ -70,16 +70,18 @@
                     </AppBarButton.Icon>
                 </AppBarButton>
                 <AppBarButton IsCompact="True"
-                      Command="{x:Bind ViewModel.BeginRenamingSelectedItemCommand}"
-                      ToolTipService.ToolTip="Rename"
-                      ToolTipService.Placement="Bottom" MaxWidth="55">
+                              Command="{x:Bind ViewModel.BeginRenamingSelectedItemCommand}"
+                              ToolTipService.ToolTip="Rename"
+                              ToolTipService.Placement="Bottom" MaxWidth="55">
                     <AppBarButton.Icon>
                         <FontIcon FontSize="20" Glyph="&#xE8AC;" />
                     </AppBarButton.Icon>
                 </AppBarButton>
+
                 <AppBarButton IsCompact="True" 
-                      ToolTipService.ToolTip="Delete"
-                      ToolTipService.Placement="Bottom" MaxWidth="55">
+                              Command="{x:Bind ViewModel.RecycleSelectedItemsCommand}"
+                              ToolTipService.ToolTip="Delete"
+                              ToolTipService.Placement="Bottom" MaxWidth="55">
                     <AppBarButton.Icon>
                         <FontIcon FontSize="20" Glyph="&#xE74D;" />
                     </AppBarButton.Icon>

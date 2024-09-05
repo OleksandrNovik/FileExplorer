@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Models.Storage.Drives
 {
-    public sealed partial class DriveWrapper : InteractiveStorageItem, IStorage
+    public sealed partial class DriveWrapper : InteractiveStorageItem, IDirectory
     {
         /// <summary>
         /// Rive info that wrapper is containing
@@ -90,6 +90,11 @@ namespace Models.Storage.Drives
         public IEnumerable<IStorage> EnumerateSubDirectories()
         {
             return [rootDirectory];
+        }
+
+        public async Task<IDirectoryItem> CreateAsync(bool isDirectory)
+        {
+            return await rootDirectory.CreateAsync(isDirectory);
         }
 
         public async Task SearchAsync(SearchOptions searchOptions)

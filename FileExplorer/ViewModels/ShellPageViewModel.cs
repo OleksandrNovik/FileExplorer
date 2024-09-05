@@ -24,7 +24,7 @@ namespace FileExplorer.ViewModels
     public sealed partial class ShellPageViewModel : ContextMenuCreatorViewModel
     {
         public NavigationPaneViewModel NavigationPaneViewModel { get; } = new();
-        public FileOperationsViewModel FileOperationsViewModel { get; } = new();
+        public FileOperationsViewModel FileOperationsViewModel { get; }
         public SearchOperationViewModel SearchOperationViewModel { get; } = new();
         public ITabService TabService { get; }
         public INavigationService NavigationService { get; }
@@ -32,12 +32,13 @@ namespace FileExplorer.ViewModels
         [ObservableProperty]
         private ObservableCollection<TabModel> tabs;
 
-        public ShellPageViewModel(IMenuFlyoutFactory factory, ITabService tabService, INavigationService navigationService)
+        public ShellPageViewModel(IMenuFlyoutFactory factory, ITabService tabService, INavigationService navigationService, FileOperationsViewModel fileOperations)
             : base(factory)
         {
             TabService = tabService;
             NavigationService = navigationService;
             tabs = TabService.Tabs;
+            FileOperationsViewModel = fileOperations;
 
             Messenger.Register<ShellPageViewModel, TabStorageChangedMessage>(this, (_, message) =>
             {

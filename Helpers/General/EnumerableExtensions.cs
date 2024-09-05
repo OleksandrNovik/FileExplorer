@@ -34,22 +34,11 @@ namespace Helpers.General
             }
         }
 
-        public static void AppendFront<T>(this IList<T> target, IList<T>? source)
+        public static void AppendFront<T>(this IList<T> target, IList<T> source)
         {
-            if (source is not null && source.Count > 0)
+            for (int i = 0; i < source.Count; i++)
             {
-                for (int i = 0; i < source.Count; i++)
-                {
-                    target.Insert(i, source[i]);
-                }
-            }
-        }
-
-        public static void RemoveCollection<T>(this IList<T> target, ICollection<T>? source)
-        {
-            if (source is not null && source.Count > 0)
-            {
-                target.RemoveRange(source);
+                target.Insert(i, source[i]);
             }
         }
 
@@ -63,6 +52,14 @@ namespace Helpers.General
             foreach (var item in source)
             {
                 target.Remove(item);
+            }
+        }
+
+        public static void PushRange<T>(this Stack<T> stack, IList<T> source)
+        {
+            for (int i = source.Count - 1; i >= 0; i--)
+            {
+                stack.Push(source[i]);
             }
         }
     }

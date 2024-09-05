@@ -40,9 +40,9 @@ namespace FileExplorer.ViewModels.General
         /// </summary>
         public ObservableCollection<IDirectoryItem> SelectedItems { get; } = new();
 
-        public FileOperationsViewModel(ILocalSettingsService settingsService)
+        public FileOperationsViewModel()
         {
-            localSettings = settingsService;
+            localSettings = App.GetService<ILocalSettingsService>();
             SelectedItems.CollectionChanged += NotifyCanExecute;
             ViewOptions = App.GetService<ViewOptionsViewModel>();
 
@@ -87,20 +87,25 @@ namespace FileExplorer.ViewModels.General
         /// Creates file in <see cref="directory"/>
         /// </summary>
         [RelayCommand]
-        private async Task CreateFile()
-        {
-            Debug.Assert(CanAlterDirectory);
-            await directory.CreateAsync(false);
-        }
+        private async Task CreateFile() => await CreateItemAsync(false);
 
         /// <summary>
         /// Creates folder in <see cref="directory"/>
         /// </summary>
         [RelayCommand]
-        private async Task CreateDirectory()
+        private async Task CreateDirectory() => await CreateItemAsync(true);
+
+        /// <summary>
+        /// Adding new item to physical directory and sending message to update directory on UI layer
+        /// </summary>
+        /// <param name="isDirectory"> Is added item a directory </param>
+        private async Task CreateItemAsync(bool isDirectory)
         {
             Debug.Assert(CanAlterDirectory);
-            await directory.CreateAsync(true);
+
+            var added = await directory.CreateAsync(isDirectory);
+
+            Messenger.Send(new DirectoryItemsChangedMessage([added], []));
         }
 
         #endregion
@@ -192,10 +197,7 @@ namespace FileExplorer.ViewModels.General
         [RelayCommand(CanExecute = nameof(CanChangeDirectory))]
         private async Task RecycleSelectedItems()
         {
-            while (SelectedItems.Count > 0)
-            {
-                await TryDeleteItem(SelectedItems[0]);
-            }
+            await RemoveRange(false);
         }
 
         /// <summary>
@@ -216,10 +218,21 @@ namespace FileExplorer.ViewModels.General
                 if (result == ContentDialogResult.Secondary) return;
             }
 
+            await RemoveRange(true);
+        }
+
+        private async Task RemoveRange(bool isPermanent)
+        {
+            var removed = new List<IDirectoryItem>();
+
             while (SelectedItems.Count > 0)
             {
-                await TryDeleteItem(SelectedItems[0], true);
+                var item = await TryDeleteItem(SelectedItems[0], isPermanent);
+
+                removed.Add(item);
             }
+
+            Messenger.Send(new DirectoryItemsChangedMessage([], removed));
         }
 
         /// <summary>
@@ -228,9 +241,8 @@ namespace FileExplorer.ViewModels.General
         /// <param name="item"> Wrapper item to delete </param>
         /// <param name="isPermanent"> Is item being deleted permanently or not </param>
         /// <returns> true if item is successfully deleted, otherwise - false </returns>
-        private async Task TryDeleteItem(IDirectoryItem item, bool isPermanent = false)
+        private async Task<IDirectoryItem?> TryDeleteItem(IDirectoryItem item, bool isPermanent)
         {
-            var removed = new List<IDirectoryItem>();
             await EndRenamingIfNeeded(item);
 
             try
@@ -244,18 +256,18 @@ namespace FileExplorer.ViewModels.General
                     await item.RecycleAsync();
                 }
 
-                removed.Add(item);
+                return item;
             }
             catch (IOException e)
             {
                 await App.MainWindow.ShowMessageDialogAsync(e.Message, "File operation canceled");
+
+                return default;
             }
             finally
             {
                 SelectedItems.Remove(item);
             }
-
-            //TODO: Send message with deleted items
         }
 
         #endregion

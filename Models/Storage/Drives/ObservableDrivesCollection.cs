@@ -1,9 +1,11 @@
 ﻿using Helpers.General;
 using Models.Contracts.Storage;
 using Models.Enums;
+using Models.General;
 using Models.Storage.Additional;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -43,14 +45,25 @@ namespace Models.Storage.Drives
 
         public async Task SearchAsync(SearchOptions searchOptions)
         {
-            searchOptions.MaxDirectoriesPerThread = 10;
+            //var drivesSearch = this.Select(async drive =>
+            //{
+            //    await drive.SearchAsync(searchOptions);
+            //});
 
-            var drivesSearch = this.Select(async drive =>
+            //await Task.WhenAll(drivesSearch);
+
+            using var enumerator = new DrivesCollectionEnumerator(this);
+
+            while (enumerator.MoveNext())
             {
-                await drive.SearchAsync(searchOptions);
-            });
+                Debug.Assert(enumerator.Current is not null);
 
-            await Task.WhenAll(drivesSearch);
+                await Task.Run(async () =>
+                {
+                    await enumerator.Current.SearchAsync(searchOptions);
+                });
+
+            }
         }
     }
 }
