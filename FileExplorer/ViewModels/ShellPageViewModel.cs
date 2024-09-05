@@ -62,7 +62,8 @@ namespace FileExplorer.ViewModels
         {
             // Initializing search data before initiating search
             var destination = new ConcurrentWrappersCollection();
-            var searchOptions = SearchOptions.CreateDefault(message.Options, destination);
+            //var searchOptions = SearchOptions.CreateDefault(message.Options, destination);
+            var searchOptions = new SearchOptions(message.Options, destination);
             SearchOperationViewModel.InitializeSearchData(message.Storage, searchOptions);
 
             //Mark cached search result as opened 

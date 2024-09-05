@@ -85,33 +85,36 @@ namespace Models.Storage.Windows
         /// <param name="searchOptions"> Provided options for this search </param>
         public async Task ShallowSearchAsync(SearchOptions searchOptions)
         {
-            await searchOptions.Destination.EnqueueEnumerationAsync(SearchDirectory(searchOptions.Filter), searchOptions.Token);
+            await searchOptions.Destination.EnqueueEnumerationAsync(await SearchDirectory(searchOptions.Filter), searchOptions.Token);
         }
 
-        private IEnumerable<IDirectoryItem> SearchDirectory(SearchFilter options)
+        private async Task<IDirectoryItem[]> SearchDirectory(SearchFilter options)
         {
-            var enumeration = new EnumerationOptions
+            return await Task.Run(() =>
             {
-                IgnoreInaccessible = true,
-                RecurseSubdirectories = false,
-                MatchCasing = MatchCasing.CaseInsensitive,
-            };
+                var enumeration = new EnumerationOptions
+                {
+                    IgnoreInaccessible = true,
+                    RecurseSubdirectories = false,
+                    MatchCasing = MatchCasing.CaseInsensitive,
+                };
 
-            var found = EnumerateItems(enumeration, options.SearchPattern)
-                // Any item that has size in range
-                .Where(item => options.SizeChecker.Satisfies(item.Size))
-                // Any item that is used at provided date range
-                .Where(item => options.AccessDateChecker.Satisfies(item.LastAccess))
-                // Any file types that satisfy filter
-                .Where(item => options.ExtensionFilter.Invoke(item.Name));
+                var found = EnumerateItems(enumeration, options.SearchPattern)
+                    // Any item that has size in range
+                    .Where(item => options.SizeChecker.Satisfies(item.Size))
+                    // Any item that is used at provided date range
+                    .Where(item => options.AccessDateChecker.Satisfies(item.LastAccess))
+                    // Any file types that satisfy filter
+                    .Where(item => options.ExtensionFilter.Invoke(item.Name));
 
-            if (options.SearchName is not null)
-            {
-                found = found.Where(item =>
-                    item.Name.ContainsPattern(options.SearchName));
-            }
+                if (options.SearchName is not null)
+                {
+                    found = found.Where(item =>
+                        item.Name.ContainsPattern(options.SearchName));
+                }
 
-            return found;
+                return found.ToArray();
+            });
         }
 
         #endregion

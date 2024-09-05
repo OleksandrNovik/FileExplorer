@@ -22,10 +22,6 @@ namespace Models.Storage.Additional
         /// </summary>
         public CancellationToken Token { get; set; }
 
-        /// <summary>
-        /// Is optimizations enabled for a search
-        /// </summary>
-        public bool OptimizationsEnabled { get; set; }
 
         public SearchOptions(SearchFilter filter, IEnqueuingCollection<IDirectoryItem> destination)
         {
@@ -33,12 +29,12 @@ namespace Models.Storage.Additional
             Destination = destination;
         }
 
-        public static SearchOptions CreateDefault(SearchFilter filter, IEnqueuingCollection<IDirectoryItem> destination)
-        {
-            return new SearchOptions(filter, destination)
-            {
-                OptimizationsEnabled = false
-            };
-        }
+        //public static SearchOptions CreateDefault(SearchFilter filter, IEnqueuingCollection<IDirectoryItem> destination)
+        //{
+        //    return new SearchOptions(filter, destination)
+        //    {
+        //        OptimizationsEnabled = false
+        //    };
+        //}
     }
 }

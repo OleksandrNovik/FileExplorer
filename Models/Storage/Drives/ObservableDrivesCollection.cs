@@ -45,14 +45,7 @@ namespace Models.Storage.Drives
 
         public async Task SearchAsync(SearchOptions searchOptions)
         {
-            //var drivesSearch = this.Select(async drive =>
-            //{
-            //    await drive.SearchAsync(searchOptions);
-            //});
-
-            //await Task.WhenAll(drivesSearch);
-
-            using var enumerator = new DrivesCollectionEnumerator(this);
+            using var enumerator = new StorageCollectionEnumerator(this);
 
             while (enumerator.MoveNext())
             {

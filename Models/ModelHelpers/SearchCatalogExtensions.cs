@@ -17,18 +17,11 @@ namespace Models.ModelHelpers
             this IEnumerable<ISearchCatalog<TElement>> items,
             SearchOptions searchOptions)
         {
-            if (searchOptions.OptimizationsEnabled)
+            await Task.Run(async () =>
             {
                 await items.SearchEachCatalogAsync(searchOptions);
-            }
-            else
-            {
-                await Task.Run(async () =>
-                {
-                    await items.SearchEachCatalogAsync(searchOptions);
 
-                }, searchOptions.Token);
-            }
+            }, searchOptions.Token);
         }
 
         private static async Task SearchEachCatalogAsync<TElement>(
