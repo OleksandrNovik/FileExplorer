@@ -155,7 +155,7 @@
 
                     <interactivity:Interaction.Behaviors>
 
-                        <collectionBehaviors:MultiSelectionBehavior SelectedItems="{x:Bind FileOperations.SelectedItems, Mode=OneWay}" />
+                        <collectionBehaviors:MultiSelectionBehavior SelectedItems="{x:Bind FileOperations.SelectedItems}" />
 
                         <contextMenuBehaviors:GridViewContextDialogBehavior />
 
@@ -166,7 +166,7 @@
 
         <DataTemplate x:Key="TableTemplate" x:DataType="local:DynamicItemView">
 
-            <controls:DataGrid 
+            <controls:DataGrid
                 AutoGenerateColumns="False"
                 CanUserResizeColumns="True"
                 CanUserReorderColumns="False"
@@ -202,10 +202,10 @@
                     <interactivity:BehaviorCollection>
 
                         <collectionBehaviors:DirectoryItemDoubleClickBehavior 
-                           Command="{Binding Path=OpenCommand, Source={StaticResource FileOperations}}" />
+                           Command="{x:Bind FileOperations.OpenCommand}" />
 
-                        <!--<dataGrid:MultipleSelectionDataGridBehavior 
-                            SelectedItems="{x:Bind ViewModel.SelectedItems}" />-->
+                        <dataGridBehaviors:MultipleSelectionDataGridBehavior 
+                            SelectedItems="{x:Bind FileOperations.SelectedItems}" />
 
                     </interactivity:BehaviorCollection>
                 </interactivity:Interaction.Behaviors>

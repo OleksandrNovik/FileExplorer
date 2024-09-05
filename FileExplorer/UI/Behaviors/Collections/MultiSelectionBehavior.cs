@@ -1,41 +1,32 @@
-﻿using Helpers.General;
+﻿using FileExplorer.UI.Behaviors.BaseBehaviors;
+using Helpers.General;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.Xaml.Interactivity;
 using System.Collections;
+using System.Linq;
 
 namespace FileExplorer.UI.Behaviors.Collections
 {
     /// <summary>
-    /// Behaviour to bind list property to a multiple selection items from <see cref="GridView"/>
+    /// Behavior to bind list property to a multiple selection items from <see cref="GridView"/>
     /// </summary>
-    public class MultiSelectionBehavior : Behavior<GridView>
+    public sealed class MultiSelectionBehavior : MultipleSelectionBase<GridView>
     {
-        /// <summary>
-        /// Selected items property that used to bind list item from ViewModel
-        /// </summary>
-        public IList SelectedItems { get; set; }
-
         protected override void OnAttached()
         {
             base.OnAttached();
             AssociatedObject.SelectionChanged += OnSelectionChanged;
         }
-
         protected override void OnDetaching()
         {
             base.OnDetaching();
             AssociatedObject.SelectionChanged -= OnSelectionChanged;
         }
 
-        /// <summary>
-        /// Method that takes care of removing and adding new selected items from <see cref="GridView"/>
-        /// </summary>
-        /// <param name="sender"> Selection event sender (GridView) </param>
-        /// <param name="e"> Event argument that stores all information about selection </param>
-        private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        protected override void SelectItemInCollection(IList items)
         {
-            SelectedItems.RemoveRange(e.RemovedItems);
-            SelectedItems.AddRange(e.AddedItems);
+            AssociatedObject.SelectedItems.AddRange(items.OfType<object>());
+
+            bindingSelectedItems = false;
         }
     }
 }
