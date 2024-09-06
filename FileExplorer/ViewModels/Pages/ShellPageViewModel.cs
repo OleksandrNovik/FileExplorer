@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using FileExplorer.Core.Contracts;
 using FileExplorer.Core.Contracts.DirectoriesNavigation;
 using FileExplorer.Core.Contracts.Factories;
+using FileExplorer.ViewModels.Abstractions;
 using FileExplorer.ViewModels.General;
 using FileExplorer.ViewModels.Search;
 using Microsoft.UI.Xaml.Controls;
@@ -18,8 +19,9 @@ using Models.Storage.Windows;
 using Models.TabRelated;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using NavigationPaneViewModel = FileExplorer.ViewModels.Controls.NavigationPaneViewModel;
 
-namespace FileExplorer.ViewModels
+namespace FileExplorer.ViewModels.Pages
 {
     public sealed partial class ShellPageViewModel : ContextMenuCreatorViewModel
     {

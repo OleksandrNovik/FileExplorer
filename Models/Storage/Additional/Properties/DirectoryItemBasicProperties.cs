@@ -25,5 +25,7 @@ namespace Models.Storage.Additional.Properties
         /// Size of directory item
         /// </summary>
         public ByteSize? Size { get; set; }
+
+        public bool HasSize => Size is not null;
     }
 }

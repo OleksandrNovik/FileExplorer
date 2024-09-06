@@ -9,7 +9,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.IO;
 
-namespace FileExplorer.ViewModels
+namespace FileExplorer.ViewModels.Controls
 {
     /// <summary>
     /// View model that is responsible for navigation operations in tab (changing opened directory)

@@ -1,7 +1,7 @@
 ﻿#nullable enable
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace FileExplorer.ViewModels.General
+namespace FileExplorer.ViewModels.Abstractions
 {
     /// <summary>
     /// Base code for a view model that needs to perform navigation

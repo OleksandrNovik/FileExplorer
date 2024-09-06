@@ -5,8 +5,7 @@ using System.Collections;
 
 namespace FileExplorer.UI.Behaviors.DataGrid
 {
-    public sealed class
-        MultipleSelectionDataGridBehavior : MultipleSelectionBase<CommunityToolkit.WinUI.UI.Controls.DataGrid>
+    public sealed class MultipleSelectionDataGridBehavior : MultipleSelectionBase<CommunityToolkit.WinUI.UI.Controls.DataGrid>
     {
         protected override void OnAttached()
         {

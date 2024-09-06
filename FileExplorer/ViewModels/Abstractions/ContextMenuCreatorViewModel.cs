@@ -4,7 +4,7 @@ using FileExplorer.Core.Contracts.Factories;
 using Microsoft.UI.Xaml.Controls;
 using System.Collections.Generic;
 
-namespace FileExplorer.ViewModels.General
+namespace FileExplorer.ViewModels.Abstractions
 {
     public abstract class ContextMenuCreatorViewModel : ObservableRecipient, IMenuFlyoutBuilder
     {

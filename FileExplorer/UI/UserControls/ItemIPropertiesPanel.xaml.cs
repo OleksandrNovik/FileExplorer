@@ -6,12 +6,12 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace FileExplorer.UI.UserControls
 {
-    public sealed partial class DirectoryItemInfoPane : UserControl
+    public sealed partial class ItemPropertiesPanel : UserControl
     {
-        public DirectoryItemInfoViewModel ViewModel { get; }
-        public DirectoryItemInfoPane()
+        public ItemPropertiesPanelViewModel ViewModel { get; }
+        public ItemPropertiesPanel()
         {
-            ViewModel = App.GetService<DirectoryItemInfoViewModel>();
+            ViewModel = App.GetService<ItemPropertiesPanelViewModel>();
             this.InitializeComponent();
         }
     }

@@ -167,7 +167,19 @@
                     <Grid Margin="0 10 0 0"  Padding="15 5">
                         <userControls:FileOperationsToolbar />
                     </Grid>
-                    <Frame Grid.Row="1"  x:Name="NavigationFrame" />
+
+                    <Grid Row="1">
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <Frame  x:Name="NavigationFrame" />
+                        <userControls:ItemPropertiesPanel Grid.Column="1"  />
+                    </Grid>
+
+
                     <userControls:CommandedInfoBar Grid.Row="1" />
                 </Grid>
 

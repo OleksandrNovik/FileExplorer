@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Models.General
+namespace Models.Storage.Enumerators
 {
     /// <summary>
     /// Enumerates storage and its sub storages

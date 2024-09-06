@@ -2,6 +2,7 @@
 using Microsoft.UI.Xaml.Controls;
 using Models.Contracts.Storage;
 using Models.General;
+using Models.Storage.Abstractions;
 using Models.TabRelated;
 using System.Collections.Generic;
 
@@ -20,12 +21,6 @@ namespace Models.Messages
     /// </summary>
     /// <param name="Storage"></param>
     public record TabStorageChangedMessage(IStorage Storage);
-
-    /// <summary>
-    /// Message for DirectoryPageViewModel to open file path for which has been written in the route
-    /// </summary>
-    /// <param name="ItemToLaunch"> File that has to be opened </param>
-    public record LaunchRequiredMessage(ILaunchable ItemToLaunch);
 
     /// <summary>
     /// Message for DirectoryPageViewModel to navigate into provided directory with provided navigation history
@@ -63,4 +58,6 @@ namespace Models.Messages
     public record SearchStorageMessage(IStorage Storage, SearchFilter Options);
 
     public record DirectoryItemsChangedMessage(ICollection<IDirectoryItem> Added, ICollection<IDirectoryItem> Removed);
+
+    public record ShowPropertiesMessage(BasicStorageItemProperties Properties);
 }

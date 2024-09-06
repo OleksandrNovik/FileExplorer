@@ -20,6 +20,7 @@
     xmlns:dataGridBehaviors="using:FileExplorer.UI.Behaviors.DataGrid"
     xmlns:converters="using:FileExplorer.UI.Converters"
     xmlns:converters1="using:CommunityToolkit.WinUI.UI.Converters"
+    xmlns:template="using:FileExplorer.UI.Behaviors.Template"
     mc:Ignorable="d">
 
     <UserControl.Resources>
@@ -141,7 +142,7 @@
                                        StretchContentForSingleRow="True"
                                        DesiredWidth="180"
                                        ItemHeight="160"
-                                       ItemsSource="{x:Bind ItemsSource, Mode=OneWay}" 
+                                       ItemsSource="{x:Bind Collections.Items, Mode=OneWay}" 
                                        ItemTemplate="{StaticResource ItemsGridTemplate}"
                                        SelectionMode="Extended">
 
@@ -155,7 +156,7 @@
 
                     <interactivity:Interaction.Behaviors>
 
-                        <collectionBehaviors:MultiSelectionBehavior SelectedItems="{x:Bind FileOperations.SelectedItems}" />
+                        <collectionBehaviors:MultiSelectionBehavior SelectedItems="{x:Bind Collections.SelectedItems}" />
 
                         <contextMenuBehaviors:GridViewContextDialogBehavior />
 
@@ -173,7 +174,7 @@
                 CanUserSortColumns="True" 
                 IsReadOnly="True"
                 SelectionMode="Extended" HorizontalAlignment="Stretch"
-                ItemsSource="{x:Bind ItemsSource, Mode=OneWay}">
+                ItemsSource="{x:Bind Collections.Items, Mode=OneWay}">
 
                 <controls:DataGrid.Resources>
                     <Brush x:Key="TransparentColor">Transparent</Brush>
@@ -205,7 +206,7 @@
                            Command="{x:Bind FileOperations.OpenCommand}" />
 
                         <dataGridBehaviors:MultipleSelectionDataGridBehavior 
-                            SelectedItems="{x:Bind FileOperations.SelectedItems}" />
+                            SelectedItems="{x:Bind Collections.SelectedItems}" />
 
                     </interactivity:BehaviorCollection>
                 </interactivity:Interaction.Behaviors>
@@ -227,11 +228,11 @@
 
     <Grid>
 
-        <ContentControl HorizontalContentAlignment="Stretch" Visibility="{x:Bind ItemsSource.Count, Mode=OneWay, 
+        <ContentControl HorizontalContentAlignment="Stretch" Visibility="{x:Bind Collections.Items.Count, Mode=OneWay, 
                                     Converter={StaticResource NumberToVisibilityConverter}}">
 
             <interactivity:Interaction.Behaviors>
-                <behaviors:ViewOptionsChangedBehavior ViewOptions="{x:Bind ViewOptions, Mode=OneWay}"
+                <template:ViewOptionsChangedBehavior ViewOptions="{x:Bind ViewOptions, Mode=OneWay}"
                                                       TemplateSelector="{StaticResource DynamicCollectionSelector}"/>
             </interactivity:Interaction.Behaviors>
         </ContentControl>
@@ -239,7 +240,7 @@
         <TextBlock Text="Folder is empty"
                    Margin="0 15 0 0"
                    HorizontalAlignment="Center"
-                   Visibility="{x:Bind ItemsSource.Count, Mode=OneWay, 
+                   Visibility="{x:Bind Collections.Items.Count, Mode=OneWay, 
                         Converter={StaticResource NumberToVisibilityConverter}, ConverterParameter=True}" />
 
     </Grid>

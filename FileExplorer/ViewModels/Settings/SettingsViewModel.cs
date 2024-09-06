@@ -1,6 +1,6 @@
 ﻿#nullable enable
 using FileExplorer.Core.Contracts.Settings;
-using FileExplorer.ViewModels.General;
+using BaseNavigationViewModel = FileExplorer.ViewModels.Abstractions.BaseNavigationViewModel;
 
 namespace FileExplorer.ViewModels.Settings
 {

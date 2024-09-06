@@ -38,11 +38,11 @@
     <None Remove="Images\Wide310x150Logo.scale-200.png" />
     <None Remove="Package.appxmanifest" />
     <None Remove="UI\UserControls\CommandedInfoBar.xaml" />
-    <None Remove="UI\UserControls\DirectoryItemInfoPane.xaml" />
     <None Remove="UI\UserControls\DirectoryNavigationPanel.xaml" />
     <None Remove="UI\UserControls\DriveInformationItem.xaml" />
     <None Remove="UI\UserControls\DynamicItemVIew.xaml" />
     <None Remove="UI\UserControls\FileOperationsToolbar.xaml" />
+    <None Remove="UI\UserControls\ItemIPropertiesPanel.xaml" />
     <None Remove="UI\UserControls\SearchControl.xaml" />
     <None Remove="Views\DirectoryPage.xaml" />
     <None Remove="Views\HomePage.xaml" />
@@ -144,7 +144,7 @@
     <Page Update="UI\UserControls\CommandedInfoBar.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Update="UI\UserControls\DirectoryItemInfoPane.xaml">
+    <Page Update="UI\UserControls\ItemIPropertiesPanel.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Views\Settings\Pages\SettingsAboutPage.xaml">

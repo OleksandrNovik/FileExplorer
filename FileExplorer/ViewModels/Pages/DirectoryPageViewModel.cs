@@ -1,5 +1,4 @@
 ﻿#nullable enable
-using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using FileExplorer.Core.Contracts.Factories;
@@ -10,16 +9,16 @@ using Helpers.General;
 using Microsoft.UI.Xaml.Controls;
 using Models;
 using Models.Contracts.Storage;
+using Models.General;
 using Models.Messages;
 using Models.ModelHelpers;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace FileExplorer.ViewModels
+namespace FileExplorer.ViewModels.Pages
 {
     public sealed partial class DirectoryPageViewModel : StorageViewModel
     {
@@ -28,19 +27,22 @@ namespace FileExplorer.ViewModels
         /// </summary>
         private readonly ILocalSettingsService localSettings;
 
-        public ObservableCollection<IDirectoryItem> SelectedItems => FileOperations.SelectedItems;
-
-        [ObservableProperty]
-        private ConcurrentWrappersCollection directoryItems;
+        /// <summary>
+        /// Contains directory items and selected items on the page
+        /// </summary>
+        public StoragePageCollections Collections { get; set; } = new();
 
         public DirectoryPageViewModel(FileOperationsViewModel fileOperations, IMenuFlyoutFactory factory, ILocalSettingsService settingsService) : base(fileOperations, factory)
         {
             localSettings = settingsService;
 
+            //TODO: Integrate collection better
+            Collections.SelectedItems = fileOperations.SelectedItems;
+
             Messenger.Register<DirectoryPageViewModel, DirectoryItemsChangedMessage>(this, (_, message) =>
             {
-                DirectoryItems.AddRange(message.Added);
-                DirectoryItems.RemoveRange(message.Removed);
+                Collections.Items.AddRange(message.Added);
+                Collections.Items.RemoveRange(message.Removed);
             });
         }
 
@@ -65,11 +67,11 @@ namespace FileExplorer.ViewModels
                 rejectedAttributes |= FileAttributes.Hidden;
             }
 
-            DirectoryItems = new ConcurrentWrappersCollection(Storage.EnumerateItems(rejectedAttributes));
+            Collections.Items = new ConcurrentWrappersCollection(Storage.EnumerateItems(rejectedAttributes));
 
-            await DirectoryItems.UpdateIconsAsync(90, CancellationToken.None);
+            await Collections.Items.UpdateIconsAsync(90, CancellationToken.None);
 
-            SelectedItems.Clear();
+            Collections.SelectedItems.Clear();
         }
 
         /// <summary>
@@ -168,7 +170,7 @@ namespace FileExplorer.ViewModels
             else if (parameter is SearchStorageTransferObject transferredSearchData)
             {
                 NavigateStorage(transferredSearchData.Storage);
-                DirectoryItems = transferredSearchData.Source;
+                Collections.Items = transferredSearchData.Source;
             }
             else
             {

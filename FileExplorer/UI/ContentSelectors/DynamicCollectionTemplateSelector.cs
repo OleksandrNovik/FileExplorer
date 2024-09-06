@@ -1,5 +1,4 @@
-﻿using CommunityToolkit.WinUI.UI.Converters;
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Models.Messages;
 using System;
@@ -12,11 +11,6 @@ namespace FileExplorer.UI.ContentSelectors
         public DataTemplate TableTemplate { get; set; }
         protected override DataTemplate SelectTemplateCore(object item)
         {
-            DoubleToVisibilityConverter converter = new DoubleToVisibilityConverter
-            {
-                GreaterThan = 0
-            };
-
             if (item is ViewOptions viewOptions)
             {
                 return viewOptions switch

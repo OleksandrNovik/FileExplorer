@@ -9,7 +9,6 @@ using FileExplorer.Core.Services.Factories;
 using FileExplorer.Core.Services.General;
 using FileExplorer.Core.Services.Settings;
 using FileExplorer.Services;
-using FileExplorer.ViewModels;
 using FileExplorer.ViewModels.General;
 using FileExplorer.ViewModels.Informational;
 using FileExplorer.ViewModels.Settings;
@@ -20,9 +19,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.UI.Xaml;
 using System;
+using DirectoryPageViewModel = FileExplorer.ViewModels.Pages.DirectoryPageViewModel;
+using HomePageViewModel = FileExplorer.ViewModels.Pages.HomePageViewModel;
 using Hosting = Microsoft.Extensions.Hosting.Host;
 using SearchOptionsViewModel = FileExplorer.ViewModels.Search.SearchOptionsViewModel;
 using SettingsViewModel = FileExplorer.ViewModels.Settings.SettingsViewModel;
+using ShellPageViewModel = FileExplorer.ViewModels.Pages.ShellPageViewModel;
+using TabNavigationViewModel = FileExplorer.ViewModels.Controls.TabNavigationViewModel;
 
 
 // To learn more about WinUI, the WinUI project structure,
@@ -86,7 +89,7 @@ namespace FileExplorer
                     services.AddTransient<SearchOptionsViewModel>();
 
                     // Informational
-                    services.AddTransient<DirectoryItemInfoViewModel>();
+                    services.AddTransient<ItemPropertiesPanelViewModel>();
                     services.AddTransient<InfoBarViewModel>();
 
                     //File operations

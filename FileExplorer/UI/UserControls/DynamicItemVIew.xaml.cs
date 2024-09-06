@@ -2,6 +2,7 @@ using FileExplorer.ViewModels.General;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Models;
+using Models.General;
 using Models.Messages;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -24,6 +25,7 @@ namespace FileExplorer.UI.UserControls
 
         public FileOperationsViewModel FileOperations { get; }
         public ConcurrentWrappersCollection ItemsSource { get; set; }
+        public StoragePageCollections Collections { get; set; }
         public DynamicItemView()
         {
             FileOperations = App.GetService<FileOperationsViewModel>();
