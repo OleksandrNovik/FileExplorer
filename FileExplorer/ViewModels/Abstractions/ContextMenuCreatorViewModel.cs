@@ -9,7 +9,7 @@ namespace FileExplorer.ViewModels.Abstractions
     public abstract class ContextMenuCreatorViewModel : ObservableRecipient, IMenuFlyoutBuilder
     {
         /// <summary>
-        /// Factory to create right-click menu flyout for any item in directory or for a directory itself
+        /// Factory to create right-click menu flyout for any item in Directory or for a Directory itself
         /// </summary>
         protected readonly IMenuFlyoutFactory menuFactory;
 

@@ -1,7 +1,6 @@
 ﻿#nullable enable
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace Models.ModelHelpers
 {
@@ -111,25 +110,32 @@ namespace Models.ModelHelpers
         /// Adds cut & rename menu item to an existing menu
         /// </summary>
         /// <param name="menu"> Provided menu </param>
-        /// <param name="commands"> Commands that cut, rename item  </param>
+        /// <param name="command"> Command to rename item </param>
         /// <param name="commandParameter"> Parameter to te command </param>
-        public static List<MenuFlyoutItemViewModel> WithFileOperations(this List<MenuFlyoutItemViewModel> menu,
-            IReadOnlyList<IRelayCommand> commands, object? commandParameter = null)
+        public static List<MenuFlyoutItemViewModel> WithRename(this List<MenuFlyoutItemViewModel> menu,
+            IRelayCommand command, object? commandParameter = null)
         {
-            Debug.Assert(commands.Count > 1);
-
-            menu.FromCommandData(new CommandData("Cut", "\uE8C6", commands[0], commandParameter))
-                .FromCommandData(new CommandData("Rename", "\uE8AC", commands[1], commandParameter));
-
-            return menu;
+            return menu.FromCommandData(new CommandData("Rename", "\uE8AC", command, commandParameter));
         }
 
+
+        /// <summary>
+        /// Adds cut & rename menu item to an existing menu
+        /// </summary>
+        /// <param name="menu"> Provided menu </param>
+        /// <param name="command"> Command to cut item or items </param>
+        /// <param name="commandParameter"> Parameter to te command </param>
+        public static List<MenuFlyoutItemViewModel> WithCut(this List<MenuFlyoutItemViewModel> menu,
+            IRelayCommand command, object? commandParameter = null)
+        {
+            return menu.FromCommandData(new CommandData("Cut", "\uE8C6", command, commandParameter));
+        }
 
         /// <summary>
         /// Adds copy menu item to an existing menu
         /// </summary>
         /// <param name="menu"> Provided menu </param>
-        /// <param name="command"> Command to copy item </param>
+        /// <param name="command"> Command to copy item or items </param>
         /// <param name="commandParameter"> Parameter to te command </param>
         public static List<MenuFlyoutItemViewModel> WithCopy(this List<MenuFlyoutItemViewModel> menu,
             IRelayCommand command, object? commandParameter = null)
@@ -141,7 +147,7 @@ namespace Models.ModelHelpers
         /// Adds delete menu item to an existing menu
         /// </summary>
         /// <param name="menu"> Provided menu </param>
-        /// <param name="command"> Command to delete item </param>
+        /// <param name="command"> Command to delete item or items  </param>
         /// <param name="commandParameter"> Parameter to te command </param>
         public static List<MenuFlyoutItemViewModel> WithDelete(this List<MenuFlyoutItemViewModel> menu,
             IRelayCommand command, object? commandParameter = null)

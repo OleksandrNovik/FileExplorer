@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="FileExplorer.UI.UserControls.ViewOptionsSelector"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:FileExplorer.UI.UserControls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:messages="using:Models.Messages"
+    mc:Ignorable="d">
+
+    <DropDownButton 
+        Style="{StaticResource MenuButton}"
+        ToolTipService.ToolTip="Change View Of Items"
+        ToolTipService.Placement="Bottom">
+
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Margin="0 0 7 0 " VerticalAlignment="Center">View</TextBlock>
+            <FontIcon FontSize="12" Glyph="&#xF246;"  />
+        </StackPanel>
+
+        <DropDownButton.Flyout>
+            <MenuFlyout Placement="Bottom">
+                <MenuFlyoutItem 
+                    Command="{x:Bind ViewModel.SetViewOptionsCommand}"
+                    Text="Grid">
+                    <MenuFlyoutItem.CommandParameter>
+                        <messages:ViewOptions>GridView</messages:ViewOptions>
+                    </MenuFlyoutItem.CommandParameter>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem 
+                    Command="{x:Bind ViewModel.SetViewOptionsCommand}"
+                    Text="Table">
+                    <MenuFlyoutItem.CommandParameter>
+                        <messages:ViewOptions>TableView</messages:ViewOptions>
+                    </MenuFlyoutItem.CommandParameter>
+                </MenuFlyoutItem>
+            </MenuFlyout>
+        </DropDownButton.Flyout>
+    </DropDownButton>
+</UserControl>

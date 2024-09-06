@@ -7,7 +7,7 @@ using System;
 namespace FileExplorer.Services
 {
     /// <summary>
-    /// Service that determines page types in application's directory pages navigation
+    /// Service that determines page types in application's Directory pages navigation
     /// </summary>
     public sealed class PageTypesService : IPageTypesService
     {

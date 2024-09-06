@@ -107,9 +107,9 @@
                     <StaticResource x:Key="ExpanderHeaderBackground" ResourceKey="customExpanderHeaderBackgroundColor" />
                 </Expander.Resources>
 
-                <userControls:DynamicItemView ItemsSource="{x:Bind ViewModel.RecentItems, Mode=OneWay}"
-                                              ViewOptions="{x:Bind ViewModel.FileOperations.ViewOptions.ViewOptions,
-                                                             Mode=OneWay}"/>
+                <userControls:DynamicItemView   ViewOptions="{Binding Path=Value, Source={StaticResource ViewOptions}, Mode=OneWay}"
+                                                ItemsSource="{x:Bind ViewModel.RecentItems}"
+                                                SelectedItems="{x:Bind ViewModel.SelectedItems}"/>
 
                 <interactivity:Interaction.Behaviors>
                     <behaviors:InitializeOnExpandingBehavior Command="{x:Bind ViewModel.InitializeRecentItemsCommand}" />

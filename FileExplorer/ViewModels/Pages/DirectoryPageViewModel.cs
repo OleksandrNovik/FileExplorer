@@ -1,53 +1,51 @@
 ﻿#nullable enable
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
 using FileExplorer.Core.Contracts.Factories;
 using FileExplorer.Core.Contracts.Settings;
 using FileExplorer.ViewModels.Abstractions;
 using FileExplorer.ViewModels.General;
-using Helpers.General;
+using Helpers.Application;
 using Microsoft.UI.Xaml.Controls;
 using Models;
 using Models.Contracts.Storage;
-using Models.General;
 using Models.Messages;
 using Models.ModelHelpers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace FileExplorer.ViewModels.Pages
 {
-    public sealed partial class DirectoryPageViewModel : StorageViewModel
+    public sealed partial class DirectoryPageViewModel : BaseSelectionViewModel
     {
+        private IDirectory? currentDirectory;
+
         /// <summary>
         /// Service that gets all necessarily properties from local settings
         /// </summary>
         private readonly ILocalSettingsService localSettings;
+        public ConcurrentWrappersCollection DirectoryItems { get; private set; }
+        public bool CanCreateItems => currentDirectory is not null;
 
-        /// <summary>
-        /// Contains directory items and selected items on the page
-        /// </summary>
-        public StoragePageCollections Collections { get; set; } = new();
-
-        public DirectoryPageViewModel(FileOperationsViewModel fileOperations, IMenuFlyoutFactory factory, ILocalSettingsService settingsService) : base(fileOperations, factory)
+        public DirectoryPageViewModel(FileOperationsViewModel fileOperations, IMenuFlyoutFactory factory, ILocalSettingsService settingsService)
+            : base(fileOperations, factory)
         {
             localSettings = settingsService;
+        }
 
-            //TODO: Integrate collection better
-            Collections.SelectedItems = fileOperations.SelectedItems;
+        protected override void OnSelectedItemsChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            base.OnSelectedItemsChanged(sender, e);
 
-            Messenger.Register<DirectoryPageViewModel, DirectoryItemsChangedMessage>(this, (_, message) =>
-            {
-                Collections.Items.AddRange(message.Added);
-                Collections.Items.RemoveRange(message.Removed);
-            });
+            DeleteOperationCommand.NotifyCanExecuteChanged();
+            RecycleOperationCommand.NotifyCanExecuteChanged();
         }
 
         /// <summary>
-        /// Method that should be called every time we navigate to a new directory
+        /// Method that should be called every time we navigate to a new Directory
         /// It initializes collections of data in view model
         /// </summary>
         private async Task InitializeDirectoryAsync()
@@ -67,11 +65,12 @@ namespace FileExplorer.ViewModels.Pages
                 rejectedAttributes |= FileAttributes.Hidden;
             }
 
-            Collections.Items = new ConcurrentWrappersCollection(Storage.EnumerateItems(rejectedAttributes));
+            DirectoryItems = new ConcurrentWrappersCollection(Storage.EnumerateItems(rejectedAttributes));
 
-            await Collections.Items.UpdateIconsAsync(90, CancellationToken.None);
+            //TODO change number to a constant
+            await DirectoryItems.UpdateIconsAsync(90, CancellationToken.None);
 
-            Collections.SelectedItems.Clear();
+            SelectedItems.Clear();
         }
 
         /// <summary>
@@ -84,79 +83,82 @@ namespace FileExplorer.ViewModels.Pages
             await InitializeDirectoryAsync();
         }
 
-        /// <summary>
-        /// Creates new item in current directory
-        /// </summary>
-        /// <param name="isDirectory"> True - if directory should be created, False - if file is being created </param>
         [RelayCommand]
-        private async Task CreateItem(bool isDirectory)
+        private async Task CreateFile()
         {
-            var creationCommand = isDirectory
-                ? FileOperations.CreateDirectoryCommand
-                : FileOperations.CreateFileCommand;
-
-            await creationCommand.ExecuteAsync(null);
-        }
-
-        #region Renaming logic
-
-        /// <summary>
-        /// Ends renaming item if it is actually possible
-        /// </summary>
-        /// <param name="item"> Item that has to be given new name </param>
-        [RelayCommand]
-        private async Task EndRenamingItem(IRenameableObject item)
-        {
-            await FileOperations.EndRenamingItemCommand.ExecuteAsync(item);
-
-            //TODO: New Sorting of items is required
+            var created = await CreateItemAsync(false);
+            DirectoryItems.Insert(0, created);
+            FileOperations.BeginRenamingItem(created);
         }
 
         [RelayCommand]
-        private async Task EndRenamingIfNeeded(IRenameableObject item)
+        private async Task CreateDirectory()
         {
-            if (item.IsRenamed)
+            var created = await CreateItemAsync(true);
+            DirectoryItems.Insert(0, created);
+            FileOperations.BeginRenamingItem(created);
+        }
+
+        /// <summary>
+        /// Adding new item to physical Directory and sending message to update Directory on UI layer
+        /// </summary>
+        /// <param name="isDirectory"> Is added item a Directory </param>
+        [RelayCommand]
+        public async Task<IDirectoryItem> CreateItemAsync(bool isDirectory)
+        {
+            Debug.Assert(currentDirectory is not null);
+
+            return await currentDirectory.CreateAsync(isDirectory);
+        }
+
+        /// <summary>
+        /// Moves selected items to a recycle bin
+        /// </summary>
+        [RelayCommand(CanExecute = nameof(HasSelectedItems))]
+        private async Task RecycleOperationAsync()
+        {
+            await DeleteSelectedAsync(false);
+        }
+
+        /// <summary>
+        /// Permanently deletes selected items
+        /// </summary>
+        [RelayCommand(CanExecute = nameof(HasSelectedItems))]
+        private async Task DeleteOperationAsync()
+        {
+            var confirmUser = localSettings.ReadBool(LocalSettings.Keys.ShowConfirmationMessage);
+
+            if (confirmUser is true)
             {
-                await EndRenamingItem(item);
+                var content =
+                    $"Do you really want to delete {(SelectedItems.Count > 1 ? "selected items" : $"\"{SelectedItems[0].Path}\""
+                        )} permanently?";
+                var result = await App.MainWindow.ShowYesNoDialog(content, "Deleting items");
+
+                if (result == ContentDialogResult.Secondary) return;
             }
+
+            await DeleteSelectedAsync(true);
         }
 
-        #endregion
-        #region Copy+Paste logic
-
-        //private void MoveToClipboard(IEnumerable<DirectoryItemModel> items, DataPackageOperation operation)
-        //{
-        //    manager.CopyToClipboard(items, operation);
-        //    HasCopiedFiles = true;
-        //    OnPropertyChanged(nameof(HasCopiedFiles));
-        //}
-
-        [RelayCommand]
-        private void CopySelectedItems()
+        /// <summary>
+        /// Deletes all selected items and removes them from Directory items collection if operation was successful
+        /// </summary>
+        /// <param name="isPermanent"> Is delete permanent or recycle </param>
+        private async Task DeleteSelectedAsync(bool isPermanent)
         {
-            //MoveToClipboard(SelectedItems, DataPackageOperation.Copy);
-        }
+            while (SelectedItems.Count > 0)
+            {
+                var item = SelectedItems[0];
+                var hasDeleted = await FileOperations.TryDeleteItem(item, isPermanent);
 
+                if (hasDeleted)
+                {
+                    DirectoryItems.Remove(item);
+                }
 
-        [RelayCommand]
-        private void CutSelectedItems()
-        {
-            //MoveToClipboard(SelectedItems, DataPackageOperation.Move);
-        }
-
-        [RelayCommand]
-        private async Task PasteItems()
-        {
-            //var pastedItems = await manager.PasteFromClipboard();
-            //await AddDirectoryItemsAsync(pastedItems);
-        }
-
-        #endregion
-
-        [RelayCommand]
-        private void ShowDetailsOfSelectedItem()
-        {
-            //await FileOperations.ShowDetails(FileOperations.SelectedItems[0]);
+                SelectedItems.Remove(item);
+            }
         }
 
         public override async void OnNavigatedTo(object parameter)
@@ -170,11 +172,16 @@ namespace FileExplorer.ViewModels.Pages
             else if (parameter is SearchStorageTransferObject transferredSearchData)
             {
                 NavigateStorage(transferredSearchData.Storage);
-                Collections.Items = transferredSearchData.Source;
+                DirectoryItems = transferredSearchData.Source;
             }
             else
             {
                 throw new ArgumentException("Invalid parameter", nameof(parameter));
+            }
+
+            if (Storage is IDirectory directory)
+            {
+                currentDirectory = directory;
             }
         }
 
@@ -199,20 +206,17 @@ namespace FileExplorer.ViewModels.Pages
                         .WithPin(FileOperations.PinCommand, parameter);
                 }
 
-                menu.WithCopy(CopySelectedItemsCommand)
-                    .WithFileOperations(
-                    [
-                        CutSelectedItemsCommand,
-                        FileOperations.BeginRenamingSelectedItemCommand
-
-                    ]).WithDelete(FileOperations.RecycleSelectedItemsCommand);
+                menu.WithRename(FileOperations.BeginRenamingItemCommand, parameter)
+                //.WithCopy(CopySelectedItemsCommand)
+                //.WithCut(CutSelectedItemsCommand);
+                .WithDelete(RecycleOperationCommand);
             }
             else
             {
                 parameter = Storage;
                 menu.WithRefresh(RefreshCommand)
-                    .WithCreate(CreateItemCommand)
-                    .WithPaste(PasteItemsCommand);
+                    .WithCreate(CreateItemCommand);
+                //.WithPaste(PasteItemsCommand);
             }
 
             return menuFactory.Create(menu

@@ -42,7 +42,7 @@
                 <FontIcon FontSize="13" Glyph="&#xE72C;" />
             </Button>
             <Button
-                ToolTipService.ToolTip="Up to directory"
+                ToolTipService.ToolTip="Up to Directory"
                 ToolTipService.Placement="Bottom"
                 Command="{x:Bind ViewModel.NavigateUpDirectoryCommand}"
                 Style="{StaticResource SmallIconButton}">

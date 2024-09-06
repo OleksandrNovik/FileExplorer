@@ -4,7 +4,6 @@ using Models.Contracts.Storage;
 using Models.General;
 using Models.Storage.Abstractions;
 using Models.TabRelated;
-using System.Collections.Generic;
 
 namespace Models.Messages
 {
@@ -56,8 +55,5 @@ namespace Models.Messages
     /// <param name="Storage"> Storage that's being searched </param>
     /// <param name="Options"> Search options </param>
     public record SearchStorageMessage(IStorage Storage, SearchFilter Options);
-
-    public record DirectoryItemsChangedMessage(ICollection<IDirectoryItem> Added, ICollection<IDirectoryItem> Removed);
-
     public record ShowPropertiesMessage(BasicStorageItemProperties Properties);
 }

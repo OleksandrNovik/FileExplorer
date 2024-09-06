@@ -12,7 +12,7 @@ using System.IO;
 namespace FileExplorer.ViewModels.Controls
 {
     /// <summary>
-    /// View model that is responsible for navigation operations in tab (changing opened directory)
+    /// View model that is responsible for navigation operations in tab (changing opened Directory)
     /// </summary>
     public partial class TabNavigationViewModel : ObservableRecipient
     {
@@ -54,7 +54,7 @@ namespace FileExplorer.ViewModels.Controls
             this.navigation = navigation;
             this.router = router;
 
-            // Handler that is called when new tab is opened. New directory from that tab is initialized
+            // Handler that is called when new tab is opened. New Directory from that tab is initialized
             Messenger.Register<TabNavigationViewModel, TabOpenedMessage>(this, (_, message) =>
             {
                 SetViewedStorage(message.TabStorage);
@@ -140,7 +140,7 @@ namespace FileExplorer.ViewModels.Controls
         #endregion
 
         /// <summary>
-        /// Method called when BreadcrumbBar is used to navigate through directory
+        /// Method called when BreadcrumbBar is used to navigate through Directory
         /// </summary>
         /// <param name="lastElementIndex"> index of new last element (that is final folder inside route) </param>
         [RelayCommand]
@@ -176,7 +176,7 @@ namespace FileExplorer.ViewModels.Controls
         }
 
         /// <summary>
-        /// Uses route that user has inputted into text box and navigates to a new directory
+        /// Uses route that user has inputted into text box and navigates to a new Directory
         /// </summary>
         [RelayCommand(CanExecute = nameof(CanUseRouteInput))]
         private void NavigateUsingRouteInput()

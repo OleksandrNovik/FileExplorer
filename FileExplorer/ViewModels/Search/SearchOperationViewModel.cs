@@ -24,7 +24,7 @@ namespace FileExplorer.ViewModels.Search
         private SearchOptions currentSearchOptions;
 
         /// <summary>
-        /// Cached search result, which contains all information about search (found items, root directory etc.)
+        /// Cached search result, which contains all information about search (found items, root Directory etc.)
         /// </summary>
         public CachedSearchResult CachedSearch { get; private set; }
 

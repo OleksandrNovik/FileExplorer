@@ -18,6 +18,8 @@ namespace Helpers.Application
             public const string ShowHiddenFiles = "ShowHiddenFiles";
             public const string HideSystemFiles = "HideSystemFiles";
             public const string ShowFileExtensions = "ShowFileExtensions";
+
+            public const string ViewOptions = "ViewOptions";
         }
 
         //private static FrozenDictionary<string, DateTimeFormatter> dateFormatterFromDateOption =

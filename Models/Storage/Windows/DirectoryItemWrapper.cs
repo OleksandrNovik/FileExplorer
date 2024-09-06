@@ -31,19 +31,21 @@ namespace Models.Storage.Windows
         protected DirectoryItemWrapper(FileSystemInfo info)
         {
             this.info = info;
-            // if file or folder declared as read only we cannot rename them
-            CanRename = (info.Attributes & FileAttributes.ReadOnly) == 0;
+
             InitializeData();
         }
 
         /// <summary>
-        /// When physical item is changed sets new Path and <see cref="StorageWrappers.DirectoryItemWrapper.Name"/> for this wrapper
+        /// When physical item is changed sets new Path and Name for this wrapper
         /// </summary>
         protected void InitializeData()
         {
             Name = info.Name;
             Path = info.FullName;
             Thumbnail.ItemPath = Path;
+
+            // if file or folder declared as read only we cannot rename them
+            CanRename = (info.Attributes & FileAttributes.ReadOnly) == 0;
         }
 
         /// <inheritdoc />

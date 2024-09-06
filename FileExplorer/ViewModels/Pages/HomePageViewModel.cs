@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace FileExplorer.ViewModels.Pages
 {
-    public sealed partial class HomePageViewModel : StorageViewModel
+    public sealed partial class HomePageViewModel : BaseSelectionViewModel
     {
         public ObservableDrivesCollection Drives { get; private set; }
         public List<DirectoryWrapper> Libraries { get; }

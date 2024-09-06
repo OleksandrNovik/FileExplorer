@@ -10,7 +10,7 @@ using Models.Messages;
 namespace FileExplorer.ViewModels.Abstractions
 {
     /// <summary>
-    /// View model that does every operation that is needed to provide functionality to a storage page (directory or drives for example)
+    /// View model that does every operation that is needed to provide functionality to a storage page (Directory or drives for example)
     /// </summary>
     public abstract class StorageViewModel : ContextMenuCreatorViewModel, INavigationAware, ISearchingViewModel
     {

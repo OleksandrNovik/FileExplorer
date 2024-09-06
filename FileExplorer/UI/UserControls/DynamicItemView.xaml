@@ -142,7 +142,7 @@
                                        StretchContentForSingleRow="True"
                                        DesiredWidth="180"
                                        ItemHeight="160"
-                                       ItemsSource="{x:Bind Collections.Items, Mode=OneWay}" 
+                                       ItemsSource="{x:Bind ItemsSource, Mode=OneWay}" 
                                        ItemTemplate="{StaticResource ItemsGridTemplate}"
                                        SelectionMode="Extended">
 
@@ -156,7 +156,7 @@
 
                     <interactivity:Interaction.Behaviors>
 
-                        <collectionBehaviors:MultiSelectionBehavior SelectedItems="{x:Bind Collections.SelectedItems}" />
+                        <collectionBehaviors:MultiSelectionBehavior SelectedItems="{x:Bind SelectedItems}" />
 
                         <contextMenuBehaviors:GridViewContextDialogBehavior />
 
@@ -174,7 +174,7 @@
                 CanUserSortColumns="True" 
                 IsReadOnly="True"
                 SelectionMode="Extended" HorizontalAlignment="Stretch"
-                ItemsSource="{x:Bind Collections.Items, Mode=OneWay}">
+                ItemsSource="{x:Bind ItemsSource, Mode=OneWay}">
 
                 <controls:DataGrid.Resources>
                     <Brush x:Key="TransparentColor">Transparent</Brush>
@@ -203,10 +203,11 @@
                     <interactivity:BehaviorCollection>
 
                         <collectionBehaviors:DirectoryItemDoubleClickBehavior 
-                           Command="{x:Bind FileOperations.OpenCommand}" />
+                           Command="{Binding  Path=OpenCommand, 
+                                        Source={StaticResource FileOperations}}" />
 
                         <dataGridBehaviors:MultipleSelectionDataGridBehavior 
-                            SelectedItems="{x:Bind Collections.SelectedItems}" />
+                            SelectedItems="{x:Bind SelectedItems}" />
 
                     </interactivity:BehaviorCollection>
                 </interactivity:Interaction.Behaviors>
@@ -228,7 +229,7 @@
 
     <Grid>
 
-        <ContentControl HorizontalContentAlignment="Stretch" Visibility="{x:Bind Collections.Items.Count, Mode=OneWay, 
+        <ContentControl HorizontalContentAlignment="Stretch" Visibility="{x:Bind ItemsSource.Count, Mode=OneWay, 
                                     Converter={StaticResource NumberToVisibilityConverter}}">
 
             <interactivity:Interaction.Behaviors>
@@ -240,8 +241,7 @@
         <TextBlock Text="Folder is empty"
                    Margin="0 15 0 0"
                    HorizontalAlignment="Center"
-                   Visibility="{x:Bind Collections.Items.Count, Mode=OneWay, 
+                   Visibility="{x:Bind ItemsSource.Count, Mode=OneWay, 
                         Converter={StaticResource NumberToVisibilityConverter}, ConverterParameter=True}" />
-
     </Grid>
 </UserControl>

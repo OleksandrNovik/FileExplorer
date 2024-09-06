@@ -6,12 +6,12 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace FileExplorer.UI.UserControls
 {
-    public sealed partial class FileOperationsToolbar : UserControl
+    public sealed partial class ViewOptionsSelector : UserControl
     {
-        public FileOperationsViewModel ViewModel { get; }
-        public FileOperationsToolbar()
+        public ViewOptionsViewModel ViewModel { get; }
+        public ViewOptionsSelector()
         {
-            ViewModel = App.GetService<FileOperationsViewModel>();
+            ViewModel = App.GetService<ViewOptionsViewModel>();
             this.InitializeComponent();
         }
     }

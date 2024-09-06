@@ -9,8 +9,11 @@ using FileExplorer.Core.Services.Factories;
 using FileExplorer.Core.Services.General;
 using FileExplorer.Core.Services.Settings;
 using FileExplorer.Services;
+using FileExplorer.ViewModels.Controls;
 using FileExplorer.ViewModels.General;
 using FileExplorer.ViewModels.Informational;
+using FileExplorer.ViewModels.Pages;
+using FileExplorer.ViewModels.Search;
 using FileExplorer.ViewModels.Settings;
 using FileExplorer.Views;
 using Helpers.Application;
@@ -19,14 +22,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.UI.Xaml;
 using System;
-using DirectoryPageViewModel = FileExplorer.ViewModels.Pages.DirectoryPageViewModel;
-using HomePageViewModel = FileExplorer.ViewModels.Pages.HomePageViewModel;
 using Hosting = Microsoft.Extensions.Hosting.Host;
-using SearchOptionsViewModel = FileExplorer.ViewModels.Search.SearchOptionsViewModel;
-using SettingsViewModel = FileExplorer.ViewModels.Settings.SettingsViewModel;
-using ShellPageViewModel = FileExplorer.ViewModels.Pages.ShellPageViewModel;
-using TabNavigationViewModel = FileExplorer.ViewModels.Controls.TabNavigationViewModel;
-
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -57,7 +53,7 @@ namespace FileExplorer
                     services.AddPageAndViewModel<DirectoryPage, DirectoryPageViewModel>();
                     services.AddPageAndViewModel<ShellPage, ShellPageViewModel>();
 
-                    // History and directory navigation services
+                    // History and Directory navigation services
                     services.AddTransient<IHistoryNavigationService, HistoryNavigationService>();
                     services.AddTransient<IDirectoryRouteService, DirectoryRouteService>();
 
@@ -96,7 +92,7 @@ namespace FileExplorer
                     services.AddTransient(_ => GetStaticResource<FileOperationsViewModel>("FileOperations"));
 
                     //ViewOptions
-                    services.AddTransient<ViewOptionsViewModel>();
+                    services.AddTransient(_ => GetStaticResource<ViewOptionsViewModel>("ViewOptions"));
 
                     //GeneralServices
                     services.AddTransient<IStringParser, StringParser>();

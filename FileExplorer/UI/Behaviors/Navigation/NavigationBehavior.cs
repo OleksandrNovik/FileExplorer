@@ -33,7 +33,7 @@ namespace FileExplorer.UI.Behaviors.Navigation
 
         /// <summary>
         /// Extracts path from <see cref="NavigationViewItem"/> if possible,
-        /// which is used to identify directory that we are navigated into
+        /// which is used to identify Directory that we are navigated into
         /// </summary>
         protected override void OnItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
         {
