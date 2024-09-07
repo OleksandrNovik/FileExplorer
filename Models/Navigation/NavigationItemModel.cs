@@ -5,17 +5,14 @@ using System.Threading.Tasks;
 
 namespace Models.Navigation
 {
-    public sealed class NavigationItemModel : BaseThumbnailProvider
+    public sealed class NavigationItemModel : StorageItemProperties
     {
-        public string Name { get; }
-        public string? Path { get; }
         public ObservableCollection<NavigationItemModel>? SubItems { get; set; }
         public bool NoChildren => SubItems is null || SubItems.Count < 1;
         public bool IsPinned { get; set; }
 
         public NavigationItemModel(string name, string? path = null)
         {
-            Thumbnail.ItemPath = path;
             Path = path;
             Name = name;
         }

@@ -19,7 +19,7 @@ namespace FileExplorer.ViewModels.Informational
         private Visibility paneVisibility;
 
         [ObservableProperty]
-        private BasicStorageItemProperties properties;
+        private StorageItemProperties properties;
 
         public ItemPropertiesPanelViewModel()
         {
@@ -28,11 +28,12 @@ namespace FileExplorer.ViewModels.Informational
             Messenger.Register<ItemPropertiesPanelViewModel, ShowPropertiesMessage>(this, (_, message) =>
             {
                 Properties = message.Properties;
+                PaneVisibility = Visibility.Visible;
             });
         }
 
         /// <summary>
-        /// ItemInvokedCommand to close details pane
+        /// Command to close details pane
         /// </summary>
         [RelayCommand]
         private void Close() => PaneVisibility = Visibility.Collapsed;

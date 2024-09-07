@@ -4,8 +4,18 @@ using Microsoft.Xaml.Interactivity;
 
 namespace FileExplorer.UI.Behaviors.Template
 {
-    public abstract class BasePropertyChangeTemplateBehavior : Behavior<ContentControl>
+    public abstract class BasePropertyChangeTemplateBehavior<TProperty> : Behavior<ContentControl>
     {
+        public static readonly DependencyProperty ValueProperty =
+            DependencyProperty.Register(nameof(Value), typeof(TProperty),
+                typeof(BasicFilePropertiesChangedBehavior), new PropertyMetadata(null, OnPropertyChanged));
+
+        public TProperty Value
+        {
+            get => (TProperty)GetValue(ValueProperty);
+            set => SetValue(ValueProperty, value);
+        }
+
         /// <summary>
         /// Template selector that contains logic to select template depending on property 
         /// </summary>
@@ -16,7 +26,7 @@ namespace FileExplorer.UI.Behaviors.Template
         /// </summary>
         protected static void OnPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is BasePropertyChangeTemplateBehavior { AssociatedObject: not null } behavior)
+            if (d is BasePropertyChangeTemplateBehavior<TProperty> { AssociatedObject: not null } behavior)
             {
                 behavior.AssociatedObject.ContentTemplate = behavior.TemplateSelector.SelectTemplate(e.NewValue);
             }

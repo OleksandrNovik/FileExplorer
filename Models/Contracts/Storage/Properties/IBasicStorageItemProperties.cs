@@ -1,9 +1,9 @@
-﻿namespace Models.Contracts.Storage
+﻿namespace Models.Contracts.Storage.Properties
 {
     /// <summary>
     /// Basic properties of every storage item
     /// </summary>
-    public interface IBasicStorageItemProperties : IThumbnailProvider
+    public interface IBasicStorageItemProperties
     {
         /// <summary>
         /// Name of directory item

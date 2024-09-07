@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Models.Contracts.Additional;
 using Models.ModelHelpers;
@@ -8,24 +9,21 @@ using System.Threading.Tasks;
 
 namespace Models.Storage.Additional
 {
-    /// <inheritdoc />
-    public sealed class Thumbnail : IThumbnail
+    public sealed class Thumbnail : ObservableObject, IThumbnail
     {
-        public string ItemPath { get; set; }
-
-        /// <inheritdoc />
+        /// <inheritdoc cref="Source" />
         public BitmapImage? Source { get; private set; }
 
         /// <inheritdoc />
         public int Size { get; private set; }
 
         /// <inheritdoc />
-        public async Task UpdateAsync(int size)
+        public async Task UpdateAsync(string path, int size)
         {
             Size = size;
             Source ??= new BitmapImage();
 
-            var iconBytes = IconHelper.GetThumbnailFromPath(ItemPath, size);
+            var iconBytes = IconHelper.GetThumbnailFromPath(path, size);
 
             if (iconBytes is not null)
             {
@@ -36,12 +34,12 @@ namespace Models.Storage.Additional
             }
         }
 
-        public void Update(int size)
+        public void Update(string path, int size)
         {
             Size = size;
             Source ??= new BitmapImage();
 
-            var iconBytes = IconHelper.GetThumbnailFromPath(ItemPath, size);
+            var iconBytes = IconHelper.GetThumbnailFromPath(path, size);
 
             if (iconBytes is not null)
             {

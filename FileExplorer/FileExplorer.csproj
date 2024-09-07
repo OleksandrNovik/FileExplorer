@@ -43,6 +43,7 @@
     <None Remove="UI\UserControls\DynamicItemVIew.xaml" />
     <None Remove="UI\UserControls\ItemIPropertiesPanel.xaml" />
     <None Remove="UI\UserControls\SearchControl.xaml" />
+    <None Remove="UI\UserControls\StorageProperties\DirectoryItemPropertiesViewer.xaml" />
     <None Remove="UI\UserControls\ViewOptionsSelector.xaml" />
     <None Remove="Views\DirectoryPage.xaml" />
     <None Remove="Views\HomePage.xaml" />
@@ -129,6 +130,9 @@
     <None Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Page Update="UI\UserControls\StorageProperties\DirectoryItemPropertiesViewer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="UI\UserControls\ViewOptionsSelector.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

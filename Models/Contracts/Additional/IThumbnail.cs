@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using Microsoft.UI.Xaml.Media.Imaging;
+using System.ComponentModel;
 using System.Threading.Tasks;
 
 namespace Models.Contracts.Additional
@@ -7,7 +8,7 @@ namespace Models.Contracts.Additional
     /// <summary>
     /// Wrapper for a storage item's thumbnail
     /// </summary>
-    public interface IThumbnail
+    public interface IThumbnail : INotifyPropertyChanged
     {
         /// <summary>
         /// Source image of thumbnail
@@ -18,15 +19,14 @@ namespace Models.Contracts.Additional
         /// Current size of thumbnail
         /// </summary>
         public int Size { get; }
-        public string ItemPath { get; set; }
 
         /// <summary>
         /// Updates thumbnail for an item
         /// </summary>
         /// <param name="size"> Required size of the thumbnail </param>
-        public Task UpdateAsync(int size);
+        public Task UpdateAsync(string path, int size);
 
-        public void Update(int size);
+        public void Update(string path, int size);
 
     }
 }

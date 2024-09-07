@@ -1,5 +1,6 @@
 ﻿#nullable enable
-using Models.Contracts.Storage;
+using Helpers.StorageHelpers;
+using Models.Contracts.Storage.Directory;
 using Models.Storage.Abstractions;
 using Models.Storage.Additional;
 using Models.Storage.Additional.Properties;
@@ -42,10 +43,9 @@ namespace Models.Storage.Windows
         {
             Name = info.Name;
             Path = info.FullName;
-            Thumbnail.ItemPath = Path;
 
             // if file or folder declared as read only we cannot rename them
-            CanRename = (info.Attributes & FileAttributes.ReadOnly) == 0;
+            CanRename = this.HasAttributes(FileAttributes.ReadOnly) is not true;
         }
 
         /// <inheritdoc />
@@ -141,13 +141,12 @@ namespace Models.Storage.Windows
             return newName;
         }
 
-        public override IBasicStorageItemProperties GetBasicProperties()
+        public StorageItemProperties GetBasicProperties()
         {
             return new DirectoryItemBasicProperties(Name, Path)
             {
                 CreationTime = info.CreationTime,
                 ModifiedDate = info.LastWriteTime,
-                Size = Size,
             };
         }
     }

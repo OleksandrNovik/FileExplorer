@@ -21,13 +21,14 @@
     xmlns:converters="using:FileExplorer.UI.Converters"
     xmlns:converters1="using:CommunityToolkit.WinUI.UI.Converters"
     xmlns:template="using:FileExplorer.UI.Behaviors.Template"
+    xmlns:directory="using:Models.Contracts.Storage.Directory"
     mc:Ignorable="d">
 
     <UserControl.Resources>
 
         <converters:HiddenAttributeToOpacityConverter x:Key="HiddenToOpacityConverter" />
 
-        <DataTemplate x:Key="ItemsGridTemplate" x:DataType="storage:IDirectoryItem">
+        <DataTemplate x:Key="ItemsGridTemplate" x:DataType="directory:IDirectoryItem">
             <Grid  Padding="10  20 10 10" 
                    ToolTipService.Placement="Bottom">
 
@@ -87,7 +88,7 @@
         </DataTemplate>
 
 
-        <DataTemplate x:DataType="storage:IDirectoryItem" x:Key="TableThumbnailAndNameEditingCellTemplate">
+        <DataTemplate x:DataType="directory:IDirectoryItem" x:Key="TableThumbnailAndNameEditingCellTemplate">
             <Grid Padding="10">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="20" />
@@ -227,13 +228,17 @@
     </UserControl.Resources>
 
 
-    <Grid>
+    <Grid Background="{ThemeResource TextBoxBackgroundThemeBrush}" 
+          BorderBrush="{ThemeResource ButtonBorderThemeBrush}" 
+          CornerRadius="5"
+          BorderThickness="1"
+          Padding="7 10" Margin="5">
 
         <ContentControl HorizontalContentAlignment="Stretch" Visibility="{x:Bind ItemsSource.Count, Mode=OneWay, 
                                     Converter={StaticResource NumberToVisibilityConverter}}">
 
             <interactivity:Interaction.Behaviors>
-                <template:ViewOptionsChangedBehavior ViewOptions="{x:Bind ViewOptions, Mode=OneWay}"
+                <template:ViewOptionsChangedBehavior Value="{x:Bind ViewOptions, Mode=OneWay}"
                                                       TemplateSelector="{StaticResource DynamicCollectionSelector}"/>
             </interactivity:Interaction.Behaviors>
         </ContentControl>

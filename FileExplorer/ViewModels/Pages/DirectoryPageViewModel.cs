@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FileExplorer.Core.Contracts.Factories;
 using FileExplorer.Core.Contracts.Settings;
@@ -8,6 +9,7 @@ using Helpers.Application;
 using Microsoft.UI.Xaml.Controls;
 using Models;
 using Models.Contracts.Storage;
+using Models.Contracts.Storage.Directory;
 using Models.Messages;
 using Models.ModelHelpers;
 using System;
@@ -28,7 +30,9 @@ namespace FileExplorer.ViewModels.Pages
         /// </summary>
         private readonly ILocalSettingsService localSettings;
         public ConcurrentWrappersCollection DirectoryItems { get; private set; }
-        public bool CanCreateItems => currentDirectory is not null;
+
+        [ObservableProperty]
+        private bool canCreateItems;
 
         public DirectoryPageViewModel(FileOperationsViewModel fileOperations, IMenuFlyoutFactory factory, ILocalSettingsService settingsService)
             : base(fileOperations, factory)
@@ -179,10 +183,8 @@ namespace FileExplorer.ViewModels.Pages
                 throw new ArgumentException("Invalid parameter", nameof(parameter));
             }
 
-            if (Storage is IDirectory directory)
-            {
-                currentDirectory = directory;
-            }
+            currentDirectory = Storage as IDirectory;
+            CanCreateItems = currentDirectory is not null;
         }
 
         [RelayCommand]

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="FileExplorer.UI.UserControls.StorageProperties.DirectoryItemPropertiesViewer"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:FileExplorer.UI.UserControls.StorageProperties"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <ScrollViewer>
+        <StackPanel Padding="10 5">
+
+            <Image Source="{x:Bind  Item.Thumbnail.Source, Mode=OneWay}" Height="130" Width="130"  />
+
+            <TextBlock Text="{x:Bind Item.Name, Mode=OneWay}" Style="{StaticResource TitleTextBlockStyle}" 
+                       HorizontalAlignment="Center" 
+                       Margin="0 6"
+                       FontSize="25"/>
+
+            <TextBlock Text="{x:Bind Item.Name, Mode=OneWay}" Style="{StaticResource BodyTextBlockStyle}" 
+                       HorizontalAlignment="Center" 
+                       Margin="0 6"/>
+
+            <RichTextBlock Style="{StaticResource BodyRichTextBlockStyle}" Margin="0 5">
+                <Paragraph>
+                    <Run Text="Modification date: " />
+                    <LineBreak />
+                    <Run Text="{x:Bind Item.ModifiedDate, Mode=OneWay}" FontWeight="SemiBold"  />
+                </Paragraph>
+            </RichTextBlock>
+
+            <RichTextBlock Style="{StaticResource BodyRichTextBlockStyle}"  Margin="0 5">
+                <Paragraph>
+                    <Run Text="Creation date: " />
+                    <LineBreak />
+                    <Run Text="{x:Bind Item.CreationTime, Mode=OneWay}" FontWeight="SemiBold" />
+                </Paragraph>
+            </RichTextBlock>
+
+            <RichTextBlock Style="{StaticResource BodyRichTextBlockStyle}" 
+                           Margin="0 5"
+                           TextWrapping="NoWrap" TextTrimming="CharacterEllipsis">
+                <Paragraph>
+                    <Run Text="Path: " />
+                    <LineBreak />
+                    <Run Text="{x:Bind Item.Path, Mode=OneWay}" FontWeight="SemiBold" />
+                </Paragraph>
+            </RichTextBlock>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

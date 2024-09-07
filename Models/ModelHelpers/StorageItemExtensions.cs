@@ -1,4 +1,4 @@
-﻿using Models.Contracts.Storage;
+﻿using Models.Contracts.Storage.Directory;
 using System.IO;
 
 namespace Helpers.StorageHelpers

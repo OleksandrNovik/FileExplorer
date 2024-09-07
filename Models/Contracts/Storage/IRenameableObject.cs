@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using Models.Contracts.Storage.Properties;
 
 namespace Models.Contracts.Storage
 {

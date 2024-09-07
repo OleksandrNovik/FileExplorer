@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using FileExplorer.Core.Contracts.Factories;
 using FileExplorer.ViewModels.General;
-using Models.Contracts.Storage;
+using Models.Contracts.Storage.Directory;
 using System.Collections.ObjectModel;
 
 namespace FileExplorer.ViewModels.Abstractions
@@ -29,6 +29,7 @@ namespace FileExplorer.ViewModels.Abstractions
             System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             BeginRenamingSelectedItemCommand.NotifyCanExecuteChanged();
+            ShowDetailsCommand.NotifyCanExecuteChanged();
         }
 
         protected bool HasSelectedItems() => SelectedItems.Count > 0;
@@ -38,5 +39,8 @@ namespace FileExplorer.ViewModels.Abstractions
         /// </summary>
         [RelayCommand(CanExecute = nameof(HasSelectedItems))]
         protected void BeginRenamingSelectedItem() => FileOperations.BeginRenamingItem(SelectedItems[0]);
+
+        [RelayCommand(CanExecute = nameof(HasSelectedItems))]
+        protected void ShowDetails() => FileOperations.ShowDetails(SelectedItems[0]);
     }
 }

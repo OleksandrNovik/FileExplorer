@@ -158,16 +158,8 @@
                     ResizeBehavior="PreviousAndNext" />
 
                 <Grid Column="2">
-
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-
                     <Frame  x:Name="NavigationFrame" />
-                    <userControls:ItemPropertiesPanel Grid.Column="1"  />
-
-                    <userControls:CommandedInfoBar Grid.Column="1" />
+                    <userControls:CommandedInfoBar />
                 </Grid>
 
             </Grid>

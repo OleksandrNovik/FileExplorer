@@ -6,14 +6,8 @@ namespace Models.Storage.Abstractions
     /// <summary>
     /// Abstract class to contain logic that needed to rename item 
     /// </summary>
-    public abstract partial class InteractiveStorageItem : BaseThumbnailProvider, IRenameableObject
+    public abstract partial class InteractiveStorageItem : StorageItemProperties, IRenameableObject
     {
-        /// <summary>
-        /// Item's name that can be changed using UI
-        /// </summary>
-        [ObservableProperty]
-        protected string name;
-
         /// <summary>
         /// Is item currently renamed
         /// </summary>
@@ -25,16 +19,13 @@ namespace Models.Storage.Abstractions
         /// </summary>
         protected string backupName;
 
-        /// <summary>
-        /// Read-only path of item
-        /// </summary>
-        public string Path { get; protected set; }
-
         /// <inheritdoc />
         public bool CanRename { get; protected set; }
-        public abstract void Rename();
 
-        public abstract IBasicStorageItemProperties GetBasicProperties();
+        /// <summary>
+        /// Renames item
+        /// </summary>
+        public abstract void Rename();
 
         /// <summary>
         /// Saves old name into backup and starts renaming item if it was not already renamed

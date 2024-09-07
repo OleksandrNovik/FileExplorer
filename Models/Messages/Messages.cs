@@ -55,5 +55,5 @@ namespace Models.Messages
     /// <param name="Storage"> Storage that's being searched </param>
     /// <param name="Options"> Search options </param>
     public record SearchStorageMessage(IStorage Storage, SearchFilter Options);
-    public record ShowPropertiesMessage(BasicStorageItemProperties Properties);
+    public record ShowPropertiesMessage(StorageItemProperties Properties);
 }

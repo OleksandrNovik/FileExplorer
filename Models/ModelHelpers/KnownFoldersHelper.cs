@@ -1,4 +1,4 @@
-﻿using Models.Contracts.Storage;
+﻿using Models.Contracts.Storage.Directory;
 using Models.Storage.Windows;
 using System.Collections.Generic;
 using System.Linq;

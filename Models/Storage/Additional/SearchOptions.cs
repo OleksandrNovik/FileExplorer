@@ -1,5 +1,5 @@
 ﻿using Models.Contracts;
-using Models.Contracts.Storage;
+using Models.Contracts.Storage.Directory;
 using Models.General;
 using System.Threading;
 

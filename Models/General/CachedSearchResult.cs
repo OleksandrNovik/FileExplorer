@@ -2,6 +2,7 @@
 using Helpers.StorageHelpers;
 using Models.Contracts;
 using Models.Contracts.Storage;
+using Models.Contracts.Storage.Directory;
 using Models.Enums;
 using Models.Storage.Additional;
 using System.Collections.Generic;

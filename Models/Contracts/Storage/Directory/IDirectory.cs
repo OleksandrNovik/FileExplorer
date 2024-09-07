@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Models.Contracts.Storage
+namespace Models.Contracts.Storage.Directory
 {
     /// <summary>
     /// Interface that contains methods for each directory to implement 

@@ -11,6 +11,7 @@ namespace FileExplorer.UI.UserControls
         public ItemPropertiesPanelViewModel ViewModel { get; }
         public ItemPropertiesPanel()
         {
+            DataContext = this;
             ViewModel = App.GetService<ItemPropertiesPanelViewModel>();
             this.InitializeComponent();
         }

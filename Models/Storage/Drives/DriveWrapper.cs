@@ -1,6 +1,8 @@
 ﻿#nullable enable
 using CommunityToolkit.Mvvm.ComponentModel;
 using Models.Contracts.Storage;
+using Models.Contracts.Storage.Directory;
+using Models.Contracts.Storage.Properties;
 using Models.Enums;
 using Models.ModelHelpers;
 using Models.Storage.Abstractions;
@@ -42,10 +44,9 @@ namespace Models.Storage.Drives
             rootDirectory = new DirectoryWrapper(driveInfo.RootDirectory);
             DriveSpace = new DriveSpaceInfo(drive);
 
-            name = drive.VolumeLabel;
+            Name = drive.VolumeLabel;
             Path = rootDirectory.Path;
             friendlyName = driveInfo.GetFriendlyName();
-            Thumbnail.ItemPath = rootDirectory.Path;
         }
 
         public override void Rename()
@@ -54,7 +55,7 @@ namespace Models.Storage.Drives
             FriendlyName = driveInfo.GetFriendlyName();
         }
 
-        public override IBasicStorageItemProperties GetBasicProperties()
+        public IBasicStorageItemProperties GetBasicProperties()
         {
             return new DriveBasicProperties(FriendlyName, Path)
             {

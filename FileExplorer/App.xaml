@@ -24,6 +24,11 @@
                 <Setter Property="Margin" Value="0 0 10 0" />
             </Style>
 
+            <Style TargetType="FrameworkElement" x:Key="PanelItem">
+                <Setter Property="HorizontalAlignment" Value="Center" />
+                <Setter Property="Margin" Value="0 6" />
+            </Style>
+
             <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
 
             <generalViewModels:FileOperationsViewModel x:Key="FileOperations" />

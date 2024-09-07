@@ -1,13 +1,13 @@
 ﻿#nullable enable
+using Models.Contracts.Storage.Properties;
 using Models.Storage.Additional;
 using System;
-using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Models.Contracts.Storage
+namespace Models.Contracts.Storage.Directory
 {
-    public interface IDirectoryItem : IRenameableObject, INotifyPropertyChanged
+    public interface IDirectoryItem : IRenameableObject, IBasicPropertiesProvider, IThumbnailProvider
     {
         public FileAttributes Attributes { get; }
         public DateTime LastAccess { get; }

@@ -3,6 +3,7 @@ using Helpers.General;
 using Helpers.StorageHelpers;
 using Helpers.Win32Helpers;
 using Models.Contracts.Storage;
+using Models.Contracts.Storage.Directory;
 using Models.Enums;
 using Models.General;
 using Models.ModelHelpers;
@@ -63,6 +64,7 @@ namespace Models.Storage.Windows
         private StorageFolder? asStorageFolder;
 
         private readonly DirectoryItemFactory itemFactory = new();
+
         public DirectoryWrapper() { }
         public DirectoryWrapper(DirectoryInfo info) : base(info) { }
         public DirectoryWrapper(string path) : base(new DirectoryInfo(path)) { }

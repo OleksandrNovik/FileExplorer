@@ -127,7 +127,7 @@ namespace Models.Storage.Windows
             // Update thumbnail when file changed it's extension
             if (HasExtensionChanged)
             {
-                Thumbnail.Update(Thumbnail.Size);
+                Thumbnail.Update(Path, Thumbnail.Size);
             }
 
             EndEdit();

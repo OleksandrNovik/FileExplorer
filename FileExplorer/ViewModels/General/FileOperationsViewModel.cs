@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.UI.Xaml.Controls;
 using Models.Contracts.Storage;
+using Models.Contracts.Storage.Directory;
 using Models.Messages;
 using Models.Storage.Abstractions;
 using System;
@@ -138,16 +139,12 @@ namespace FileExplorer.ViewModels.General
         #endregion
 
         [RelayCommand]
-        public void ShowDetails(InteractiveStorageItem item)
+        public void ShowDetails(IDirectoryItem item)
         {
-            //var details = item.GetBasicInfo();
+            var properties = item.GetBasicProperties();
+            properties.UpdateThumbnail(130);
 
-            //if (item is FileWrapper file)
-            //{
-            //    details.TitleInfo = await file.GetFileTypeAsync();
-            //}
-
-            //Messenger.Send(new ShowDetailsMessage(details));
+            Messenger.Send(new ShowPropertiesMessage(properties));
         }
 
         [RelayCommand]

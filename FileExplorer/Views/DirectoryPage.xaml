@@ -32,7 +32,7 @@
 
             <StackPanel Orientation="Horizontal">
                 <DropDownButton  
-                     IsEnabled="{x:Bind ViewModel.CanCreateItems}"
+                     IsEnabled="{x:Bind ViewModel.CanCreateItems, Mode=OneWay}"
                      Style="{StaticResource MenuButton}" 
                      ToolTipService.ToolTip="New File"
                      ToolTipService.Placement="Bottom">
@@ -109,9 +109,11 @@
                     </StackPanel>
                 </DropDownButton>
                 <Button 
-                  Style="{StaticResource MenuButton}" 
-                  ToolTipService.ToolTip="File Details"
-                  ToolTipService.Placement="Bottom">
+                    Command="{x:Bind ViewModel.ShowDetailsCommand}"
+                    Style="{StaticResource MenuButton}" 
+                    ToolTipService.ToolTip="File Details"
+                    ToolTipService.Placement="Bottom">
+
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Margin="0 0 7 0 " VerticalAlignment="Center">Details</TextBlock>
                         <FontIcon FontSize="14" Glyph="&#xE946;" />
@@ -122,9 +124,17 @@
         </Grid>
 
         <Grid Row="1" HorizontalAlignment="Stretch">
+    
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            
             <userControls:DynamicItemView ViewOptions="{Binding Path=Value, Source={StaticResource ViewOptions}, Mode=OneWay}"
                                           ItemsSource="{x:Bind ViewModel.DirectoryItems, Mode=OneWay}" 
-                                          SelectedItems="{x:Bind ViewModel.SelectedItems, Mode=OneWay}" />
+                                          SelectedItems="{x:Bind ViewModel.SelectedItems, Mode=OneWay}"/>
+
+            <userControls:ItemPropertiesPanel Grid.Column="1"  />
         </Grid>
 
         <StackPanel Grid.Row="2" 
@@ -159,8 +169,6 @@
                 Modifiers="Shift" Key="Delete"
                 Command="{x:Bind ViewModel.DeleteOperationCommand}"
             />
-            <!--TODO: HotKey3 Ctrl+A - SelectAll-->
-            <!--<KeyboardAccelerator Modifiers="Control" Key="A" Invoked="SelectAllItems" />-->
         </Grid.KeyboardAccelerators>
     </Grid>
 </Page>

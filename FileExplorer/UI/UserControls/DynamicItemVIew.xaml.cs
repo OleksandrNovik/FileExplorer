@@ -1,7 +1,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Models;
-using Models.Contracts.Storage;
+using Models.Contracts.Storage.Directory;
 using Models.Messages;
 using System.Collections.ObjectModel;
 
