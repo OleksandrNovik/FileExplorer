@@ -6,7 +6,7 @@ namespace Models.Storage.Additional.Properties
     /// <summary>
     /// Contains basic information about drive
     /// </summary>
-    public sealed class DriveBasicProperties : BasicStorageItemProperties
+    public sealed class DriveBasicProperties : StorageItemProperties
     {
         public DriveBasicProperties(string name, string path)
         {

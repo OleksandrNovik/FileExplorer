@@ -139,7 +139,7 @@
         <DataTemplate x:Key="GridTemplate" x:DataType="local:DynamicItemView">
 
             <Grid>
-                <ui:FlexGridView x:Name="DirectoryItemsGrid"
+                <controls:AdaptiveGridView x:Name="DirectoryItemsGrid"
                                        StretchContentForSingleRow="True"
                                        DesiredWidth="180"
                                        ItemHeight="160"
@@ -147,13 +147,13 @@
                                        ItemTemplate="{StaticResource ItemsGridTemplate}"
                                        SelectionMode="Extended">
 
-                    <!--<controls:AdaptiveGridView.ContextFlyout>
+                    <controls:AdaptiveGridView.ContextFlyout>
                         <ui:BuildingMenuFlyout>
                             <interactivity:Interaction.Behaviors>
-                                <contextMenu:MenuFlyoutBuildingBehavior Builder="{x:Bind ViewModel}" />
+                                <contextMenuBehaviors:MenuFlyoutBuildingBehavior Builder="{x:Bind FlyoutBuilder}" />
                             </interactivity:Interaction.Behaviors>
                         </ui:BuildingMenuFlyout>
-                    </controls:AdaptiveGridView.ContextFlyout>-->
+                    </controls:AdaptiveGridView.ContextFlyout>
 
                     <interactivity:Interaction.Behaviors>
 
@@ -162,7 +162,7 @@
                         <contextMenuBehaviors:GridViewContextDialogBehavior />
 
                     </interactivity:Interaction.Behaviors>
-                </ui:FlexGridView>
+                </controls:AdaptiveGridView>
             </Grid>
         </DataTemplate>
 
@@ -176,6 +176,14 @@
                 IsReadOnly="True"
                 SelectionMode="Extended" HorizontalAlignment="Stretch"
                 ItemsSource="{x:Bind ItemsSource, Mode=OneWay}">
+
+                <controls:DataGrid.ContextFlyout>
+                    <ui:BuildingMenuFlyout>
+                        <interactivity:Interaction.Behaviors>
+                            <contextMenuBehaviors:MenuFlyoutBuildingBehavior Builder="{x:Bind FlyoutBuilder}" />
+                        </interactivity:Interaction.Behaviors>
+                    </ui:BuildingMenuFlyout>
+                </controls:DataGrid.ContextFlyout>
 
                 <controls:DataGrid.Resources>
                     <Brush x:Key="TransparentColor">Transparent</Brush>
@@ -210,6 +218,8 @@
                         <dataGridBehaviors:MultipleSelectionDataGridBehavior 
                             SelectedItems="{x:Bind SelectedItems}" />
 
+                        <contextMenuBehaviors:DataGridContextDialogBehavior />
+
                     </interactivity:BehaviorCollection>
                 </interactivity:Interaction.Behaviors>
 
@@ -228,11 +238,7 @@
     </UserControl.Resources>
 
 
-    <Grid Background="{ThemeResource TextBoxBackgroundThemeBrush}" 
-          BorderBrush="{ThemeResource ButtonBorderThemeBrush}" 
-          CornerRadius="5"
-          BorderThickness="1"
-          Padding="7 10" Margin="5">
+    <Grid>
 
         <ContentControl HorizontalContentAlignment="Stretch" Visibility="{x:Bind ItemsSource.Count, Mode=OneWay, 
                                     Converter={StaticResource NumberToVisibilityConverter}}">

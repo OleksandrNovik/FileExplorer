@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Models.Contracts.Storage;
 using Models.Contracts.Storage.Directory;
-using Models.Contracts.Storage.Properties;
 using Models.Enums;
 using Models.ModelHelpers;
 using Models.Storage.Abstractions;
@@ -65,7 +64,7 @@ namespace Models.Storage.Drives
             FriendlyName = driveInfo.GetFriendlyName();
         }
 
-        public IBasicStorageItemProperties GetBasicProperties()
+        public StorageItemProperties GetBasicProperties()
         {
             return new DriveBasicProperties(FriendlyName, Path)
             {

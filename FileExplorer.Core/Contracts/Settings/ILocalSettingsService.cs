@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using Models.Settings;
 using System;
+using System.IO;
 
 namespace FileExplorer.Core.Contracts.Settings
 {
@@ -47,6 +48,12 @@ namespace FileExplorer.Core.Contracts.Settings
         /// </summary>
         /// <returns> Explorer options that system uses </returns>
         public SettingsExplorerModel GetExplorerSettings();
+
+        /// <summary>
+        /// Gets attributes that should be skipped when showing user directory content
+        /// </summary>
+        /// <returns> Attributes to skip </returns>
+        public FileAttributes GetSkippedAttributes();
 
         /// <summary>
         /// Saves explorer options to a local settings

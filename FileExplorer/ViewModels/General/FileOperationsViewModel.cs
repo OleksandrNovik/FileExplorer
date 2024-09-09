@@ -5,6 +5,7 @@ using Helpers;
 using Microsoft.UI.Xaml.Controls;
 using Models.Contracts.Storage;
 using Models.Contracts.Storage.Directory;
+using Models.Contracts.Storage.Properties;
 using Models.Messages;
 using Models.Storage.Abstractions;
 using System;
@@ -140,9 +141,9 @@ namespace FileExplorer.ViewModels.General
         #endregion
 
         [RelayCommand]
-        public void ShowDetails(IDirectoryItem item)
+        public void ShowDetails(IBasicPropertiesProvider propertiesProvider)
         {
-            var properties = item.GetBasicProperties();
+            var properties = propertiesProvider.GetBasicProperties();
             properties.UpdateThumbnail(Constants.ThumbnailSizes.Details);
 
             Messenger.Send(new ShowPropertiesMessage(properties));

@@ -30,20 +30,22 @@ namespace FileExplorer.UI.Behaviors.ContextMenu
         /// </summary>
         private void OnOpening(object sender, object e)
         {
-            AssociatedObject.Items.Clear();
-            var menuItems = Builder.BuildContextMenu(AssociatedObject.Paramter);
-
-            if (menuItems.Count < 1)
+            if (Builder is not null)
             {
-                AssociatedObject.Hide();
-            }
-            else
-            {
-                AssociatedObject.Items.AddRange(menuItems);
-                // Clearing parameter for a flyout
-                AssociatedObject.Paramter = null;
-            }
+                AssociatedObject.Items.Clear();
+                var menuItems = Builder.BuildContextMenu(AssociatedObject.Paramter);
 
+                if (menuItems.Count < 1)
+                {
+                    AssociatedObject.Hide();
+                }
+                else
+                {
+                    AssociatedObject.Items.AddRange(menuItems);
+                    // Clearing parameter for a flyout
+                    AssociatedObject.Paramter = null;
+                }
+            }
         }
     }
 }

@@ -1,11 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using Models.Contracts.Storage.Properties;
+using System.Threading.Tasks;
 
 namespace Models.Contracts.Storage.Directory
 {
     /// <summary>
     /// Interface that contains methods for each directory to implement 
     /// </summary>
-    public interface IDirectory : IStorage
+    public interface IDirectory : IStorage, IBasicPropertiesProvider
     {
 
         /// <summary>

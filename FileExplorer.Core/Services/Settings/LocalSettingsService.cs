@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml;
 using Models.Settings;
 using System;
 using System.Diagnostics;
+using System.IO;
 
 namespace FileExplorer.Core.Services.Settings
 {
@@ -49,6 +50,27 @@ namespace FileExplorer.Core.Services.Settings
         public TEnum? ReadEnum<TEnum>(string key) where TEnum : struct, Enum
         {
             return parser.ParseEnum<TEnum>(key);
+        }
+
+        /// <inheritdoc />
+        public FileAttributes GetSkippedAttributes()
+        {
+            var explorerSettings = GetExplorerSettings();
+
+            // Checking what files are not allowed to be shown
+            FileAttributes rejectedAttributes = 0;
+
+            if (explorerSettings.HideSystemFiles)
+            {
+                rejectedAttributes |= FileAttributes.System;
+            }
+
+            if (!explorerSettings.ShowHiddenFiles)
+            {
+                rejectedAttributes |= FileAttributes.Hidden;
+            }
+
+            return rejectedAttributes;
         }
 
         /// <inheritdoc />

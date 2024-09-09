@@ -108,7 +108,7 @@
                 </Expander.Resources>
 
                 <userControls:DynamicItemView   ViewOptions="{Binding Path=Value, Source={StaticResource ViewOptions}, Mode=OneWay}"
-                                                ItemsSource="{x:Bind ViewModel.RecentItems}"
+                                                ItemsSource="{x:Bind ViewModel.RecentItems, Mode=OneWay}"
                                                 SelectedItems="{x:Bind ViewModel.SelectedItems}"/>
 
                 <interactivity:Interaction.Behaviors>

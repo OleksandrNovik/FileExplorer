@@ -129,10 +129,18 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            
-            <userControls:DynamicItemView ViewOptions="{Binding Path=Value, Source={StaticResource ViewOptions}, Mode=OneWay}"
-                                          ItemsSource="{x:Bind ViewModel.DirectoryItems, Mode=OneWay}" 
-                                          SelectedItems="{x:Bind ViewModel.SelectedItems, Mode=OneWay}"/>
+
+            <Grid Background="{ThemeResource TextBoxBackgroundThemeBrush}" 
+                  BorderBrush="{ThemeResource ButtonBorderThemeBrush}" 
+                  CornerRadius="5"
+                  BorderThickness="1"
+                  Padding="7 10" Margin="5">
+
+                <userControls:DynamicItemView ViewOptions="{Binding Path=Value, Source={StaticResource ViewOptions}, Mode=OneWay}"
+                                              ItemsSource="{x:Bind ViewModel.DirectoryItems, Mode=OneWay}" 
+                                              SelectedItems="{x:Bind ViewModel.SelectedItems, Mode=OneWay}"
+                                              FlyoutBuilder="{x:Bind ViewModel}"/>
+            </Grid>
 
             <userControls:ItemPropertiesPanel Grid.Column="1"  />
         </Grid>

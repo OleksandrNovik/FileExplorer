@@ -128,6 +128,7 @@ namespace Models.Storage.Windows
 
         public IEnumerable<IDirectoryItem> EnumerateItems(FileAttributes rejectedAttributes = 0)
         {
+            //TODO: Handle deleted folder and open tab with that folder
             return EnumerateWrappers(Directory.EnumerateFileSystemEntries(Path), rejectedAttributes);
         }
         public IEnumerable<IStorage> EnumerateSubDirectories()

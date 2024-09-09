@@ -1,3 +1,4 @@
+using FileExplorer.Core.Contracts.Factories;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Models;
@@ -24,6 +25,7 @@ namespace FileExplorer.UI.UserControls
         }
         public ConcurrentWrappersCollection ItemsSource { get; set; }
         public ObservableCollection<IDirectoryItem> SelectedItems { get; set; }
+        public IMenuFlyoutBuilder FlyoutBuilder { get; set; }
 
         public DynamicItemView()
         {

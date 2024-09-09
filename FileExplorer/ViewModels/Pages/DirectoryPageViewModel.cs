@@ -16,7 +16,6 @@ using Models.ModelHelpers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -55,20 +54,7 @@ namespace FileExplorer.ViewModels.Pages
         /// </summary>
         private async Task InitializeDirectoryAsync()
         {
-            var explorerSettings = localSettings.GetExplorerSettings();
-
-            // Checking what files are not allowed to be shown
-            FileAttributes rejectedAttributes = 0;
-
-            if (explorerSettings.HideSystemFiles)
-            {
-                rejectedAttributes |= FileAttributes.System;
-            }
-
-            if (!explorerSettings.ShowHiddenFiles)
-            {
-                rejectedAttributes |= FileAttributes.Hidden;
-            }
+            var rejectedAttributes = localSettings.GetSkippedAttributes();
 
             DirectoryItems = new ConcurrentWrappersCollection(Storage.EnumerateItems(rejectedAttributes));
 
