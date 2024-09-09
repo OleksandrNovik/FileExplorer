@@ -22,19 +22,26 @@
         <Grid Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="1.4*" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
             <TextBlock Text="{x:Bind Drive.FriendlyName, Mode=OneWay}" Style="{StaticResource BodyTextBlockStyle}" FontSize="16" />
 
-            <ProgressBar Grid.Row="1" Value="{x:Bind Drive.DriveSpace.AvailablePercentage, Mode=OneWay}" Height="20" />
+            <Grid Row="1" Visibility="{x:Bind Drive.IsReady, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
 
-            <StackPanel Grid.Row="2" Orientation="Horizontal">
-                <TextBlock Text="{x:Bind Drive.DriveSpace.FreeSpace, Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" />
-                <TextBlock Text="free of" Margin="5 0" Style="{StaticResource CaptionTextBlockStyle}" />
-                <TextBlock Text="{x:Bind Drive.DriveSpace.TotalSpace, Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" />
-            </StackPanel>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1.4*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <ProgressBar Grid.Row="0" Value="{x:Bind Drive.DriveSpace.AvailablePercentage, Mode=OneWay}" Height="20" />
+
+                <StackPanel Grid.Row="1" Orientation="Horizontal">
+                    <TextBlock Text="{x:Bind Drive.DriveSpace.FreeSpace, Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" />
+                    <TextBlock Text="free of" Margin="5 0" Style="{StaticResource CaptionTextBlockStyle}" />
+                    <TextBlock Text="{x:Bind Drive.DriveSpace.TotalSpace, Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" />
+                </StackPanel>
+            </Grid>
         </Grid>
     </Grid>
 </UserControl>

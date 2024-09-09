@@ -1,6 +1,6 @@
 ﻿using FileExplorer.Core.Contracts.Factories;
 using Models.Contracts.Storage;
-using Models.Storage.Drives;
+using Models.ModelHelpers;
 using Models.Storage.Windows;
 using System;
 using System.IO;
@@ -16,7 +16,7 @@ namespace FileExplorer.Core.Services.Factories
 
             if (string.IsNullOrEmpty(key))
             {
-                storage = new ObservableDrivesCollection();
+                storage = DriveHelper.GetAvailableDrives();
             }
             else if (Path.Exists(key))
             {

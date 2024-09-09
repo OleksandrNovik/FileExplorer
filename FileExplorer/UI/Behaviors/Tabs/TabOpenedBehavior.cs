@@ -1,6 +1,6 @@
 ﻿using FileExplorer.UI.Behaviors.BaseBehaviors;
 using Microsoft.UI.Xaml.Controls;
-using Models.Storage.Drives;
+using Models.ModelHelpers;
 using System.Linq;
 
 namespace FileExplorer.UI.Behaviors.Tabs
@@ -41,7 +41,7 @@ namespace FileExplorer.UI.Behaviors.Tabs
 
             if (CommandParameter is null)
             {
-                CommandParameter = new ObservableDrivesCollection();
+                CommandParameter = DriveHelper.GetAvailableDrives();
             }
 
             ExecuteIfCan(Command, CommandParameter);

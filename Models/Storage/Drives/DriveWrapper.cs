@@ -38,13 +38,23 @@ namespace Models.Storage.Drives
         [ObservableProperty]
         private string friendlyName;
 
+        public bool IsReady => driveInfo.IsReady;
+
         public DriveWrapper(DriveInfo drive)
         {
             driveInfo = drive;
             rootDirectory = new DirectoryWrapper(driveInfo.RootDirectory);
-            DriveSpace = new DriveSpaceInfo(drive);
 
-            Name = drive.VolumeLabel;
+            if (driveInfo.IsReady)
+            {
+                DriveSpace = new DriveSpaceInfo(drive);
+                Name = drive.VolumeLabel;
+            }
+            else
+            {
+                Name = driveInfo.Name;
+            }
+
             Path = rootDirectory.Path;
             friendlyName = driveInfo.GetFriendlyName();
         }
@@ -81,6 +91,7 @@ namespace Models.Storage.Drives
         /// </summary>
         public IEnumerable<IDirectoryItem> EnumerateItems(FileAttributes rejectedAttributes = 0)
         {
+            // TODO: if drive is not ready
             return rootDirectory.EnumerateItems(rejectedAttributes);
         }
 

@@ -1,6 +1,8 @@
-﻿using System.Collections.Frozen;
+﻿using Models.Storage.Drives;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Models.ModelHelpers
 {
@@ -25,9 +27,17 @@ namespace Models.ModelHelpers
 
         public static string GetFriendlyName(this DriveInfo drive)
         {
-            string label = string.IsNullOrEmpty(drive.VolumeLabel) ? TypeToLabelMap[drive.DriveType] : drive.VolumeLabel;
+            string volumeLabel = drive.IsReady ? drive.VolumeLabel : string.Empty;
+
+            string label = string.IsNullOrEmpty(volumeLabel) ? TypeToLabelMap[drive.DriveType] : drive.VolumeLabel;
 
             return label + $" ({drive.Name.TrimEnd('\\')})";
+        }
+
+        public static ObservableDrivesCollection GetAvailableDrives()
+        {
+            var availableDrives = DriveInfo.GetDrives().Select(drive => new DriveWrapper(drive));
+            return new ObservableDrivesCollection(availableDrives);
         }
     }
 }

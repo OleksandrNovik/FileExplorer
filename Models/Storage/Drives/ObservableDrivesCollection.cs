@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Models.Storage.Drives
@@ -20,13 +19,8 @@ namespace Models.Storage.Drives
         public IStorage Parent => null;
         public StorageContentType ContentType => StorageContentType.Drives;
 
-        public ObservableDrivesCollection()
+        public ObservableDrivesCollection(IEnumerable<DriveWrapper> availableDrives)
         {
-            //TODO: we can handle not ready drives later
-            var availableDrives = DriveInfo.GetDrives()
-                .Where(drive => drive.IsReady)
-                .Select(drive => new DriveWrapper(drive));
-
             Items.AddRange(availableDrives);
         }
 
