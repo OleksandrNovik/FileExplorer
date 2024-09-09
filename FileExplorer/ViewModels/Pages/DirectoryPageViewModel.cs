@@ -5,6 +5,7 @@ using FileExplorer.Core.Contracts.Factories;
 using FileExplorer.Core.Contracts.Settings;
 using FileExplorer.ViewModels.Abstractions;
 using FileExplorer.ViewModels.General;
+using Helpers;
 using Helpers.Application;
 using Microsoft.UI.Xaml.Controls;
 using Models;
@@ -72,7 +73,7 @@ namespace FileExplorer.ViewModels.Pages
             DirectoryItems = new ConcurrentWrappersCollection(Storage.EnumerateItems(rejectedAttributes));
 
             //TODO change number to a constant
-            await DirectoryItems.UpdateIconsAsync(90, CancellationToken.None);
+            await DirectoryItems.UpdateIconsAsync(Constants.ThumbnailSizes.Big, CancellationToken.None);
 
             SelectedItems.Clear();
         }

@@ -124,7 +124,7 @@ namespace Models.Storage.Windows
         {
             RenamePhysical();
 
-            // Update thumbnail when file changed it's extension
+            // Update thumbnail when file changed its extension
             if (HasExtensionChanged)
             {
                 Thumbnail.Update(Path, Thumbnail.Size);

@@ -94,7 +94,7 @@ namespace FileExplorer.ViewModels.Search
                 Command = SetSizeOptionCommand,
             },
 
-            new MenuFlyoutItemViewModel("Small ",
+            new MenuFlyoutItemViewModel("Tiny ",
                 new RangeChecker<ByteSize>(ByteSizeRange.Small, ExcludingOptions.Within))
             {
                 Command = SetSizeOptionCommand,

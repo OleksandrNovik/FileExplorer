@@ -55,6 +55,12 @@ namespace Models.Storage.Drives
             }
         }
 
+        /// <summary>
+        /// Tries to get drive from collection accessing it by its root path
+        /// </summary>
+        /// <param name="path"> Path to the root directory of drive </param>
+        /// <param name="drive"> Resulting drive parameter </param>
+        /// <returns> True if drive exists, False if there is no such drive in collection </returns>
         public bool TryGetDrive(string path, out DriveWrapper drive)
         {
             drive = Items.FirstOrDefault(d => d.Path == path);

@@ -2,6 +2,7 @@
 using FileExplorer.Core.Contracts.Factories;
 using FileExplorer.ViewModels.Abstractions;
 using FileExplorer.ViewModels.General;
+using Helpers;
 using Microsoft.UI.Xaml.Controls;
 using Models;
 using Models.ModelHelpers;
@@ -31,7 +32,7 @@ namespace FileExplorer.ViewModels.Pages
         {
             foreach (var library in Libraries)
             {
-                library.UpdateThumbnail(80);
+                library.UpdateThumbnail(Constants.ThumbnailSizes.Big);
             }
         }
 
@@ -40,7 +41,7 @@ namespace FileExplorer.ViewModels.Pages
         {
             foreach (var drive in Drives)
             {
-                drive.UpdateThumbnail(80);
+                drive.UpdateThumbnail(Constants.ThumbnailSizes.Medium);
             }
         }
 
@@ -49,7 +50,7 @@ namespace FileExplorer.ViewModels.Pages
         {
             RecentItems = [.. KnownFoldersHelper.TopRecentItems.Take(20)];
             OnPropertyChanged(nameof(RecentItems));
-            await RecentItems.UpdateIconsAsync(90, CancellationToken.None);
+            await RecentItems.UpdateIconsAsync(Constants.ThumbnailSizes.Big, CancellationToken.None);
         }
 
         public override void OnNavigatedTo(object parameter)

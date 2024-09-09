@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using Helpers;
 using Helpers.General;
 using Models.ModelHelpers;
 using Models.Navigation;
@@ -50,7 +51,7 @@ namespace FileExplorer.ViewModels.Controls
             {
                 await ThreadingHelper.EnqueueAsync(async () =>
                 {
-                    await navItem.UpdateThumbnailAsync(15);
+                    await navItem.UpdateThumbnailAsync(Constants.ThumbnailSizes.Tiny);
                 });
             });
         }

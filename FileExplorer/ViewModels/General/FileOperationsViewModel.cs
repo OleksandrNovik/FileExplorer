@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Helpers;
 using Microsoft.UI.Xaml.Controls;
 using Models.Contracts.Storage;
 using Models.Contracts.Storage.Directory;
@@ -142,7 +143,7 @@ namespace FileExplorer.ViewModels.General
         public void ShowDetails(IDirectoryItem item)
         {
             var properties = item.GetBasicProperties();
-            properties.UpdateThumbnail(130);
+            properties.UpdateThumbnail(Constants.ThumbnailSizes.Details);
 
             Messenger.Send(new ShowPropertiesMessage(properties));
         }

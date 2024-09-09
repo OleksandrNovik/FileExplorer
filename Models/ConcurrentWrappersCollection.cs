@@ -1,4 +1,5 @@
-﻿using Helpers.General;
+﻿using Helpers;
+using Helpers.General;
 using Models.Contracts;
 using Models.Contracts.Storage.Directory;
 using System.Collections.Generic;
@@ -33,7 +34,7 @@ namespace Models
                 await ThreadingHelper.EnqueueAsync(async () =>
                 {
                     Add(item);
-                    await item.UpdateThumbnailAsync(90);
+                    await item.UpdateThumbnailAsync(Constants.ThumbnailSizes.Big);
                 });
             }
         }
