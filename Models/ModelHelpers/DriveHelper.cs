@@ -8,6 +8,13 @@ namespace Models.ModelHelpers
 {
     public static class DriveHelper
     {
+        public static ObservableDrivesCollection AvailableDrives { get; }
+        static DriveHelper()
+        {
+            var availableDrives = DriveInfo.GetDrives().Select(drive => new DriveWrapper(drive));
+            AvailableDrives = new ObservableDrivesCollection(availableDrives);
+        }
+
         private static FrozenDictionary<DriveType, string> TypeToLabelMap = new Dictionary<DriveType, string>
         {
             { DriveType.Fixed, "Local drive" },
@@ -32,12 +39,6 @@ namespace Models.ModelHelpers
             string label = string.IsNullOrEmpty(volumeLabel) ? TypeToLabelMap[drive.DriveType] : drive.VolumeLabel;
 
             return label + $" ({drive.Name.TrimEnd('\\')})";
-        }
-
-        public static ObservableDrivesCollection GetAvailableDrives()
-        {
-            var availableDrives = DriveInfo.GetDrives().Select(drive => new DriveWrapper(drive));
-            return new ObservableDrivesCollection(availableDrives);
         }
     }
 }

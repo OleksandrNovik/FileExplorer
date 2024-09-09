@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Models.Storage.Drives
@@ -52,6 +53,13 @@ namespace Models.Storage.Drives
                 });
 
             }
+        }
+
+        public bool TryGetDrive(string path, out DriveWrapper drive)
+        {
+            drive = Items.FirstOrDefault(d => d.Path == path);
+
+            return drive is not null;
         }
     }
 }

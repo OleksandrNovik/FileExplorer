@@ -16,7 +16,11 @@ namespace FileExplorer.Core.Services.Factories
 
             if (string.IsNullOrEmpty(key))
             {
-                storage = DriveHelper.GetAvailableDrives();
+                storage = DriveHelper.AvailableDrives;
+            }
+            else if (DriveHelper.AvailableDrives.TryGetDrive(key, out var drive))
+            {
+                storage = drive;
             }
             else if (Path.Exists(key))
             {

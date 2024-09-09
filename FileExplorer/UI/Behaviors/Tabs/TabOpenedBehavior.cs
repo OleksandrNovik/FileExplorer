@@ -41,7 +41,7 @@ namespace FileExplorer.UI.Behaviors.Tabs
 
             if (CommandParameter is null)
             {
-                CommandParameter = DriveHelper.GetAvailableDrives();
+                CommandParameter = DriveHelper.AvailableDrives;
             }
 
             ExecuteIfCan(Command, CommandParameter);

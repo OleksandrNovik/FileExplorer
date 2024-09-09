@@ -34,7 +34,7 @@ namespace FileExplorer.ViewModels.Controls
                 },
                 new NavigationItemModel("Drives")
                 {
-                    SubItems = null
+                    SubItems = new ObservableCollection<NavigationItemModel>(DriveHelper.AvailableDrives.Select(drive => new NavigationItemModel(drive.FriendlyName, drive.Path)))
                 },
                 new NavigationItemModel("Libraries")
                 {
