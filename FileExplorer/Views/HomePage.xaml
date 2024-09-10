@@ -14,6 +14,8 @@
     xmlns:collections="using:FileExplorer.UI.Behaviors.Collections"
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     xmlns:behaviors="using:FileExplorer.UI.Behaviors"
+    xmlns:buildingContextMenu="using:FileExplorer.UI.BuildingContextMenu"
+    xmlns:contextMenu="using:FileExplorer.UI.Behaviors.ContextMenu"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -33,6 +35,24 @@
                 <TextBlock Grid.Row="1" Text="{x:Bind Name}" HorizontalAlignment="Stretch" />
             </Grid>
         </DataTemplate>
+
+        <buildingContextMenu:BuildingCommandBarFlyout x:Key="DirectoryItemContextMenu">
+
+            <buildingContextMenu:BuildingCommandBarFlyout.PrimaryCommands>
+
+                <AppBarButton Label="Copy">
+                    <AppBarButton.Icon>
+                        <FontIcon Glyph="&#xE8C8;" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+
+            </buildingContextMenu:BuildingCommandBarFlyout.PrimaryCommands>
+
+            <interactivity:Interaction.Behaviors>
+                <contextMenu:ContextMenuBuildingBehavior Builder="{x:Bind ViewModel}" />
+            </interactivity:Interaction.Behaviors>
+        </buildingContextMenu:BuildingCommandBarFlyout>
+
     </Page.Resources>
 
     <ScrollViewer>
@@ -57,12 +77,17 @@
                 <controls:AdaptiveGridView StretchContentForSingleRow="True"
                                            OneRowModeEnabled="True"
                                            DesiredWidth="40"
+                                           ContextFlyout="{StaticResource DirectoryItemContextMenu}"
                                            ItemHeight="130"
                                            ItemsSource="{x:Bind ViewModel.Libraries}"
                                            SelectionMode="Single"
                                            ItemTemplate="{StaticResource LibrariesTemplate}">
+
                     <interactivity:Interaction.Behaviors>
+
                         <collections:DirectoryItemDoubleClickBehavior Command="{x:Bind ViewModel.FileOperations.OpenCommand}" />
+                        <contextMenu:GridViewContextDialogBehavior />
+
                     </interactivity:Interaction.Behaviors>
                 </controls:AdaptiveGridView>
 
@@ -86,8 +111,19 @@
                      SelectionMode="Single"
                      ItemTemplate="{StaticResource DrivesTemplate}">
 
+                    <GridView.ContextFlyout>
+                        <buildingContextMenu:BuildingMenuFlyout>
+                            <interactivity:Interaction.Behaviors>
+                                <contextMenu:ContextMenuBuildingBehavior Builder="{x:Bind ViewModel}" />
+                            </interactivity:Interaction.Behaviors>
+                        </buildingContextMenu:BuildingMenuFlyout>
+                    </GridView.ContextFlyout>
+
                     <interactivity:Interaction.Behaviors>
+
                         <collections:DirectoryItemDoubleClickBehavior Command="{x:Bind ViewModel.FileOperations.OpenCommand}" />
+                        <contextMenu:GridViewContextDialogBehavior />
+
                     </interactivity:Interaction.Behaviors>
                 </GridView>
 
@@ -107,11 +143,12 @@
                     <StaticResource x:Key="ExpanderHeaderBackground" ResourceKey="customExpanderHeaderBackgroundColor" />
                 </Expander.Resources>
 
-                <userControls:DynamicItemView   ViewOptions="{Binding Path=Value, Source={StaticResource ViewOptions}, Mode=OneWay}"
+                <userControls:DynamicItemView  ViewOptions="{Binding Path=Value, Source={StaticResource ViewOptions}, Mode=OneWay}"
                                                 ItemsSource="{x:Bind ViewModel.RecentItems, Mode=OneWay}"
-                                                SelectedItems="{x:Bind ViewModel.SelectedItems}"/>
+                                                SelectedItems="{x:Bind ViewModel.SelectedItems}" 
+                                                ContextMenu="{StaticResource DirectoryItemContextMenu}"/>
 
-                <interactivity:Interaction.Behaviors>
+                    <interactivity:Interaction.Behaviors>
                     <behaviors:InitializeOnExpandingBehavior Command="{x:Bind ViewModel.InitializeRecentItemsCommand}" />
                 </interactivity:Interaction.Behaviors>
             </Expander>

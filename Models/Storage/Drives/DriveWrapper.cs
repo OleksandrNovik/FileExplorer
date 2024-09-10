@@ -103,9 +103,9 @@ namespace Models.Storage.Drives
             return [rootDirectory];
         }
 
-        public async Task<IDirectoryItem> CreateAsync(bool isDirectory)
+        public IDirectoryItem Create(bool isDirectory)
         {
-            return await rootDirectory.CreateAsync(isDirectory);
+            return rootDirectory.Create(isDirectory);
         }
 
         public async Task SearchAsync(SearchOptions searchOptions)

@@ -148,13 +148,11 @@ namespace Models.Storage.Windows
         #region IDirectory logic
 
         /// <inheritdoc />
-        public async Task<IDirectoryItem> CreateAsync(bool isDirectory)
+        public IDirectoryItem Create(bool isDirectory)
         {
             DirectoryItemWrapper element = isDirectory ? new DirectoryWrapper() : new FileWrapper();
 
             element.CreatePhysical(Path);
-
-            await element.UpdateThumbnailAsync(Thumbnail.Size);
 
             return element;
         }

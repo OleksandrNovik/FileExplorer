@@ -58,10 +58,5 @@ namespace FileExplorer.ViewModels.Pages
             Drives = Storage as ObservableDrivesCollection;
             ArgumentNullException.ThrowIfNull(Drives);
         }
-
-        public override IReadOnlyList<MenuFlyoutItemViewModel> BuildMenu(object parameter = null)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

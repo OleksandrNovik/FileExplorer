@@ -11,7 +11,10 @@ using Models;
 using Models.Contracts.Storage;
 using Models.Contracts.Storage.Directory;
 using Models.Messages;
+using Models.ModelHelpers;
+using Models.Storage.Abstractions;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -74,17 +77,13 @@ namespace FileExplorer.ViewModels.Pages
         [RelayCommand]
         private async Task CreateFile()
         {
-            var created = await CreateItemAsync(false);
-            DirectoryItems.Insert(0, created);
-            FileOperations.BeginRenamingItem(created);
+            await CreateItemAsync(false);
         }
 
         [RelayCommand]
         private async Task CreateDirectory()
         {
-            var created = await CreateItemAsync(true);
-            DirectoryItems.Insert(0, created);
-            FileOperations.BeginRenamingItem(created);
+            await CreateItemAsync(true);
         }
 
         /// <summary>
@@ -92,11 +91,15 @@ namespace FileExplorer.ViewModels.Pages
         /// </summary>
         /// <param name="isDirectory"> Is added item a Directory </param>
         [RelayCommand]
-        public async Task<IDirectoryItem> CreateItemAsync(bool isDirectory)
+        public async Task CreateItemAsync(bool isDirectory)
         {
             Debug.Assert(currentDirectory is not null);
+            var created = currentDirectory.Create(isDirectory);
 
-            return await currentDirectory.CreateAsync(isDirectory);
+            await created.UpdateThumbnailAsync(Constants.ThumbnailSizes.Big);
+
+            DirectoryItems.Insert(0, created);
+            FileOperations.BeginRenamingItem(created);
         }
 
         /// <summary>
@@ -176,6 +179,29 @@ namespace FileExplorer.ViewModels.Pages
         {
             //TODO: Fix this later
             await MoveToDirectoryAsync(Storage);
+        }
+
+        public override IReadOnlyList<MenuFlyoutItemViewModel> BuildMenu(object parameter)
+        {
+            IReadOnlyList<MenuFlyoutItemViewModel> menu;
+
+            if (parameter is InteractiveStorageItem)
+            {
+                menu = base.BuildMenu(parameter);
+            }
+            else
+            {
+                var list = new List<MenuFlyoutItemViewModel>();
+
+                list.WithRefresh(RefreshCommand)
+                    .WithCreate(CreateItemCommand);
+
+                //TODO:  Add view and sort options + paste;
+
+                menu = list;
+            }
+
+            return menu;
         }
     }
 }

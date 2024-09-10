@@ -17,6 +17,37 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
+    <Page.Resources>
+        <buildingContextMenu:BuildingCommandBarFlyout x:Key="BuildingFilesFlyout">
+            <buildingContextMenu:BuildingCommandBarFlyout.PrimaryCommands>
+                <AppBarButton Label="Rename" Command="{x:Bind ViewModel.BeginRenamingSelectedItemCommand}">
+                    <AppBarButton.Icon>
+                        <FontIcon Glyph="&#xE8C8;" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+                <AppBarButton Label="Copy">
+                    <AppBarButton.Icon>
+                        <FontIcon Glyph="&#xE8C8;" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+                <AppBarButton Label="Cut">
+                    <AppBarButton.Icon>
+                        <FontIcon Glyph="&#xE8C6;" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+                <AppBarButton Label="Delete">
+                    <AppBarButton.Icon>
+                        <FontIcon Glyph="&#xE74D;" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+            </buildingContextMenu:BuildingCommandBarFlyout.PrimaryCommands>
+
+            <interactivity:Interaction.Behaviors>
+                <contextMenu:ContextMenuBuildingBehavior Builder="{x:Bind ViewModel}" />
+            </interactivity:Interaction.Behaviors>
+        </buildingContextMenu:BuildingCommandBarFlyout>
+    </Page.Resources>
+
     <Grid Padding="15 10" KeyboardAcceleratorPlacementMode="Hidden">
 
         <Grid.RowDefinitions>
@@ -140,40 +171,8 @@
 
                 <userControls:DynamicItemView ViewOptions="{Binding Path=Value, Source={StaticResource ViewOptions}, Mode=OneWay}"
                                               ItemsSource="{x:Bind ViewModel.DirectoryItems, Mode=OneWay}" 
-                                              SelectedItems="{x:Bind ViewModel.SelectedItems, Mode=OneWay}">
-
-                    <userControls:DynamicItemView.ContextMenu>
-                        <buildingContextMenu:BuildingCommandBarFlyout>
-                            <buildingContextMenu:BuildingCommandBarFlyout.PrimaryCommands>
-                                <AppBarButton Label="Rename" Command="{x:Bind ViewModel.BeginRenamingSelectedItemCommand}">
-                                    <AppBarButton.Icon>
-                                        <FontIcon Glyph="&#xE8C8;" />
-                                    </AppBarButton.Icon>
-                                </AppBarButton>
-                                <AppBarButton Label="Copy">
-                                    <AppBarButton.Icon>
-                                        <FontIcon Glyph="&#xE8C8;" />
-                                    </AppBarButton.Icon>
-                                </AppBarButton>
-                                <AppBarButton Label="Cut">
-                                    <AppBarButton.Icon>
-                                        <FontIcon Glyph="&#xE8C6;" />
-                                    </AppBarButton.Icon>
-                                </AppBarButton>
-                                <AppBarButton Label="Delete">
-                                    <AppBarButton.Icon>
-                                        <FontIcon Glyph="&#xE74D;" />
-                                    </AppBarButton.Icon>
-                                </AppBarButton>
-                            </buildingContextMenu:BuildingCommandBarFlyout.PrimaryCommands>
-
-                            <interactivity:Interaction.Behaviors>
-                                <contextMenu:ContextMenuBuildingBehavior Builder="{x:Bind ViewModel}" />
-                            </interactivity:Interaction.Behaviors>
-                        </buildingContextMenu:BuildingCommandBarFlyout>
-                    </userControls:DynamicItemView.ContextMenu>   
-
-                </userControls:DynamicItemView>
+                                              SelectedItems="{x:Bind ViewModel.SelectedItems, Mode=OneWay}"
+                                              ContextMenu="{StaticResource BuildingFilesFlyout}" />
             </Grid>
 
             <userControls:ItemPropertiesPanel Grid.Column="1"  />

@@ -8,11 +8,13 @@ namespace Models.ModelHelpers
 {
     public static class DriveHelper
     {
-        public static ObservableDrivesCollection AvailableDrives { get; }
-        static DriveHelper()
+        public static ObservableDrivesCollection AvailableDrives
         {
-            var availableDrives = DriveInfo.GetDrives().Select(drive => new DriveWrapper(drive));
-            AvailableDrives = new ObservableDrivesCollection(availableDrives);
+            get
+            {
+                var availableDrives = DriveInfo.GetDrives().Select(drive => new DriveWrapper(drive));
+                return new ObservableDrivesCollection(availableDrives);
+            }
         }
 
         private static FrozenDictionary<DriveType, string> TypeToLabelMap = new Dictionary<DriveType, string>
