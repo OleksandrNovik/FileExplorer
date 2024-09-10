@@ -12,6 +12,8 @@
     xmlns:ui="using:FileExplorer.UI"
     xmlns:userControls="using:FileExplorer.UI.UserControls"
     xmlns:messages="using:Models.Messages"
+    xmlns:buildingContextMenu="using:FileExplorer.UI.BuildingContextMenu"
+    xmlns:contextMenu="using:FileExplorer.UI.Behaviors.ContextMenu"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -138,8 +140,40 @@
 
                 <userControls:DynamicItemView ViewOptions="{Binding Path=Value, Source={StaticResource ViewOptions}, Mode=OneWay}"
                                               ItemsSource="{x:Bind ViewModel.DirectoryItems, Mode=OneWay}" 
-                                              SelectedItems="{x:Bind ViewModel.SelectedItems, Mode=OneWay}"
-                                              FlyoutBuilder="{x:Bind ViewModel}"/>
+                                              SelectedItems="{x:Bind ViewModel.SelectedItems, Mode=OneWay}">
+
+                    <userControls:DynamicItemView.ContextMenu>
+                        <buildingContextMenu:BuildingCommandBarFlyout>
+                            <buildingContextMenu:BuildingCommandBarFlyout.PrimaryCommands>
+                                <AppBarButton Label="Rename" Command="{x:Bind ViewModel.BeginRenamingSelectedItemCommand}">
+                                    <AppBarButton.Icon>
+                                        <FontIcon Glyph="&#xE8C8;" />
+                                    </AppBarButton.Icon>
+                                </AppBarButton>
+                                <AppBarButton Label="Copy">
+                                    <AppBarButton.Icon>
+                                        <FontIcon Glyph="&#xE8C8;" />
+                                    </AppBarButton.Icon>
+                                </AppBarButton>
+                                <AppBarButton Label="Cut">
+                                    <AppBarButton.Icon>
+                                        <FontIcon Glyph="&#xE8C6;" />
+                                    </AppBarButton.Icon>
+                                </AppBarButton>
+                                <AppBarButton Label="Delete">
+                                    <AppBarButton.Icon>
+                                        <FontIcon Glyph="&#xE74D;" />
+                                    </AppBarButton.Icon>
+                                </AppBarButton>
+                            </buildingContextMenu:BuildingCommandBarFlyout.PrimaryCommands>
+
+                            <interactivity:Interaction.Behaviors>
+                                <contextMenu:ContextMenuBuildingBehavior Builder="{x:Bind ViewModel}" />
+                            </interactivity:Interaction.Behaviors>
+                        </buildingContextMenu:BuildingCommandBarFlyout>
+                    </userControls:DynamicItemView.ContextMenu>   
+
+                </userControls:DynamicItemView>
             </Grid>
 
             <userControls:ItemPropertiesPanel Grid.Column="1"  />

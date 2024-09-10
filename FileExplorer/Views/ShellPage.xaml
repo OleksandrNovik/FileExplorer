@@ -18,17 +18,18 @@
     xmlns:navigationBehaviors="using:FileExplorer.UI.Behaviors.Navigation"
     xmlns:contextMenu="using:FileExplorer.UI.Behaviors.ContextMenu"
     xmlns:general="using:FileExplorer.UI.Behaviors.General"
+    xmlns:buildingContextMenu="using:FileExplorer.UI.BuildingContextMenu"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Page.Resources>
         <settings:SettingsContentDialog x:Name="SettingsDialog" />
 
-        <ui:BuildingMenuFlyout x:Key="RightClickMenu">
+        <buildingContextMenu:BuildingMenuFlyout x:Key="RightClickMenu">
             <interactivity:Interaction.Behaviors>
-                <contextMenu:MenuFlyoutBuildingBehavior Builder="{x:Bind ViewModel}" />
+                <contextMenu:ContextMenuBuildingBehavior Builder="{x:Bind ViewModel}" />
             </interactivity:Interaction.Behaviors>
-        </ui:BuildingMenuFlyout>
+        </buildingContextMenu:BuildingMenuFlyout>
 
         <DataTemplate x:Key="ExpandedTemplate" x:DataType="navigation:NavigationItemModel">
             <NavigationViewItem SelectsOnInvoked="{x:Bind NoChildren}"

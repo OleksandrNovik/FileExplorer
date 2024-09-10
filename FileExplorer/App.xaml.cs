@@ -69,7 +69,6 @@ namespace FileExplorer
                     services.AddSingleton<ISettingsNavigationService, SettingsNavigationService>();
 
                     // Factories
-                    services.AddTransient<IMenuFlyoutFactory, MenuFlyoutFactory>();
                     services.AddTransient<IStorageFactory, StorageFactory>();
 
                     services.AddTransient<HomePageViewModel>();

@@ -5,10 +5,8 @@ using CommunityToolkit.Mvvm.Messaging;
 using FileExplorer.Core.Contracts;
 using FileExplorer.Core.Contracts.DirectoriesNavigation;
 using FileExplorer.Core.Contracts.Factories;
-using FileExplorer.ViewModels.Abstractions;
 using FileExplorer.ViewModels.General;
 using FileExplorer.ViewModels.Search;
-using Microsoft.UI.Xaml.Controls;
 using Models;
 using Models.Contracts.Storage;
 using Models.Messages;
@@ -23,7 +21,7 @@ using NavigationPaneViewModel = FileExplorer.ViewModels.Controls.NavigationPaneV
 
 namespace FileExplorer.ViewModels.Pages
 {
-    public sealed partial class ShellPageViewModel : ContextMenuCreatorViewModel
+    public sealed partial class ShellPageViewModel : ObservableRecipient, IMenuFlyoutBuilder
     {
         public NavigationPaneViewModel NavigationPaneViewModel { get; } = new();
         public FileOperationsViewModel FileOperationsViewModel { get; }
@@ -34,8 +32,7 @@ namespace FileExplorer.ViewModels.Pages
         [ObservableProperty]
         private ObservableCollection<TabModel> tabs;
 
-        public ShellPageViewModel(IMenuFlyoutFactory factory, ITabService tabService, INavigationService navigationService, FileOperationsViewModel fileOperations)
-            : base(factory)
+        public ShellPageViewModel(ITabService tabService, INavigationService navigationService, FileOperationsViewModel fileOperations)
         {
             TabService = tabService;
             NavigationService = navigationService;
@@ -116,14 +113,13 @@ namespace FileExplorer.ViewModels.Pages
             Messenger.Send(new StorageNavigatedMessage(selectedStorage));
         }
 
-        /// <inheritdoc />
-        public override IList<MenuFlyoutItemBase> BuildContextMenu(object? parameter = null)
+        public IReadOnlyList<MenuFlyoutItemViewModel> BuildMenu(object? parameter = null)
         {
             List<MenuFlyoutItemViewModel> menu = new();
 
             if (parameter is NavigationItemModel navigationModel)
             {
-                if (navigationModel.Path is null)
+                if (string.IsNullOrEmpty(navigationModel.Path))
                     return [];
 
                 var directory = new DirectoryWrapper(navigationModel.Path);
@@ -144,7 +140,7 @@ namespace FileExplorer.ViewModels.Pages
                     .WithDetails(FileOperationsViewModel.ShowDetailsCommand, directory);
             }
 
-            return menuFactory.Create(menu);
+            return menu;
         }
     }
 }

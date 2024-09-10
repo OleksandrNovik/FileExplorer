@@ -2,6 +2,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using Models.Storage.Abstractions;
 
 namespace FileExplorer.UI.Behaviors.ContextMenu
 {
@@ -10,9 +11,8 @@ namespace FileExplorer.UI.Behaviors.ContextMenu
         protected override void OnRightTapped(object sender, RightTappedRoutedEventArgs e)
         {
             var tappedElement = e.OriginalSource as FrameworkElement;
-
             // If grid item was right-clicked
-            if (tappedElement?.DataContext is not null)
+            if (tappedElement?.DataContext is InteractiveStorageItem)
             {
                 // Item is not selected
                 if (!AssociatedObject.SelectedItems.Contains(tappedElement.DataContext))
@@ -22,11 +22,6 @@ namespace FileExplorer.UI.Behaviors.ContextMenu
                     // Select item that user right-clicked on
                     AssociatedObject.SelectedItem = tappedElement.DataContext;
                 }
-            }
-            // If grid itself was right-clicked
-            else if (AssociatedObject.SelectedItems.Count > 0)
-            {
-                AssociatedObject.DeselectAll();
             }
 
             RightClickWithParameter(tappedElement?.DataContext);

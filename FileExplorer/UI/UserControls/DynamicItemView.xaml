@@ -143,17 +143,10 @@
                                        StretchContentForSingleRow="True"
                                        DesiredWidth="180"
                                        ItemHeight="160"
+                                       ContextFlyout="{x:Bind ContextMenu}"
                                        ItemsSource="{x:Bind ItemsSource, Mode=OneWay}" 
                                        ItemTemplate="{StaticResource ItemsGridTemplate}"
                                        SelectionMode="Extended">
-
-                    <controls:AdaptiveGridView.ContextFlyout>
-                        <ui:BuildingMenuFlyout>
-                            <interactivity:Interaction.Behaviors>
-                                <contextMenuBehaviors:MenuFlyoutBuildingBehavior Builder="{x:Bind FlyoutBuilder}" />
-                            </interactivity:Interaction.Behaviors>
-                        </ui:BuildingMenuFlyout>
-                    </controls:AdaptiveGridView.ContextFlyout>
 
                     <interactivity:Interaction.Behaviors>
 
@@ -174,16 +167,9 @@
                 CanUserReorderColumns="False"
                 CanUserSortColumns="True" 
                 IsReadOnly="True"
+                ContextFlyout="{x:Bind ContextMenu}"
                 SelectionMode="Extended" HorizontalAlignment="Stretch"
                 ItemsSource="{x:Bind ItemsSource, Mode=OneWay}">
-
-                <controls:DataGrid.ContextFlyout>
-                    <ui:BuildingMenuFlyout>
-                        <interactivity:Interaction.Behaviors>
-                            <contextMenuBehaviors:MenuFlyoutBuildingBehavior Builder="{x:Bind FlyoutBuilder}" />
-                        </interactivity:Interaction.Behaviors>
-                    </ui:BuildingMenuFlyout>
-                </controls:DataGrid.ContextFlyout>
 
                 <controls:DataGrid.Resources>
                     <Brush x:Key="TransparentColor">Transparent</Brush>

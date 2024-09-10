@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using FileExplorer.Core.Contracts;
-using FileExplorer.Core.Contracts.Factories;
 using FileExplorer.ViewModels.General;
 using FileExplorer.ViewModels.Search;
 using Models.Contracts.Storage;
@@ -12,7 +11,7 @@ namespace FileExplorer.ViewModels.Abstractions
     /// <summary>
     /// View model that does every operation that is needed to provide functionality to a storage page (Directory or drives for example)
     /// </summary>
-    public abstract class StorageViewModel : ContextMenuCreatorViewModel, INavigationAware, ISearchingViewModel
+    public abstract class StorageViewModel : ObservableRecipient, INavigationAware, ISearchingViewModel
     {
         /// <summary>
         /// View model that contains file operation logic
@@ -23,7 +22,7 @@ namespace FileExplorer.ViewModels.Abstractions
         /// Storage that is opened in storage page
         /// </summary>
         public IStorage Storage { get; set; }
-        protected StorageViewModel(FileOperationsViewModel fileOperations, IMenuFlyoutFactory factory) : base(factory)
+        protected StorageViewModel(FileOperationsViewModel fileOperations)
         {
             FileOperations = fileOperations;
             Messenger.Register<StorageViewModel, SearchOperationRequiredMessage>(this, HandleSearchMessage);

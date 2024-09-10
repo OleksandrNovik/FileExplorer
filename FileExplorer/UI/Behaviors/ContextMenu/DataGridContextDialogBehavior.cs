@@ -21,11 +21,6 @@ namespace FileExplorer.UI.Behaviors.ContextMenu
                     AssociatedObject.SelectedItem = tappedElement.DataContext;
                 }
             }
-            // If grid itself was right-clicked
-            else if (AssociatedObject.SelectedItems.Count > 0)
-            {
-                AssociatedObject.SelectedItems.Clear();
-            }
 
             RightClickWithParameter(tappedElement?.DataContext);
         }

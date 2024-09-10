@@ -1,5 +1,5 @@
 ﻿#nullable enable
-using Microsoft.UI.Xaml.Controls;
+using Models;
 using System.Collections.Generic;
 
 namespace FileExplorer.Core.Contracts.Factories
@@ -10,8 +10,8 @@ namespace FileExplorer.Core.Contracts.Factories
     public interface IMenuFlyoutBuilder
     {
         /// <summary>
-        /// Creates enumeration of menu flyout items
+        /// Creates enumeration of menu items metadata 
         /// </summary>
-        public IList<MenuFlyoutItemBase> BuildContextMenu(object? parameter = null);
+        public IReadOnlyList<MenuFlyoutItemViewModel> BuildMenu(object? parameter);
     }
 }

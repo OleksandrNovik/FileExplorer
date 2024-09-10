@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using FileExplorer.UI.BuildingContextMenu.Contracts;
 using Microsoft.UI.Xaml;
 using Microsoft.Xaml.Interactivity;
 
@@ -37,9 +38,9 @@ namespace FileExplorer.UI.Behaviors.ContextMenu
         /// <param name="parameter"> Provided parameter for building </param>
         protected void RightClickWithParameter(object? parameter)
         {
-            if (AssociatedObject.ContextFlyout is BuildingMenuFlyout buildingFlyout)
+            if (AssociatedObject.ContextFlyout is IBuildingContextMenu buildingFlyout)
             {
-                buildingFlyout.Paramter = parameter;
+                buildingFlyout.Parameter = parameter;
             }
         }
     }

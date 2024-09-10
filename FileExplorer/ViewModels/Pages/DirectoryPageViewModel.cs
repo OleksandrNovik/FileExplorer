@@ -1,7 +1,6 @@
 ﻿#nullable enable
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using FileExplorer.Core.Contracts.Factories;
 using FileExplorer.Core.Contracts.Settings;
 using FileExplorer.ViewModels.Abstractions;
 using FileExplorer.ViewModels.General;
@@ -12,9 +11,7 @@ using Models;
 using Models.Contracts.Storage;
 using Models.Contracts.Storage.Directory;
 using Models.Messages;
-using Models.ModelHelpers;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -34,8 +31,8 @@ namespace FileExplorer.ViewModels.Pages
         [ObservableProperty]
         private bool canCreateItems;
 
-        public DirectoryPageViewModel(FileOperationsViewModel fileOperations, IMenuFlyoutFactory factory, ILocalSettingsService settingsService)
-            : base(fileOperations, factory)
+        public DirectoryPageViewModel(FileOperationsViewModel fileOperations, ILocalSettingsService settingsService)
+            : base(fileOperations)
         {
             localSettings = settingsService;
         }
@@ -179,37 +176,6 @@ namespace FileExplorer.ViewModels.Pages
         {
             //TODO: Fix this later
             await MoveToDirectoryAsync(Storage);
-        }
-
-        public override IList<MenuFlyoutItemBase> BuildContextMenu(object? parameter = null)
-        {
-            List<MenuFlyoutItemViewModel> menu = new();
-
-            if (parameter is not null)
-            {
-                menu.WithOpen(FileOperations.OpenCommand, parameter);
-
-                if (parameter is IDirectory)
-                {
-                    menu.WithOpenInNewTab(FileOperations.OpenInNewTabCommand, parameter)
-                        .WithPin(FileOperations.PinCommand, parameter);
-                }
-
-                menu.WithRename(FileOperations.BeginRenamingItemCommand, parameter)
-                //.WithCopy(CopySelectedItemsCommand)
-                //.WithCut(CutSelectedItemsCommand);
-                .WithDelete(RecycleOperationCommand);
-            }
-            else
-            {
-                parameter = Storage;
-                menu.WithRefresh(RefreshCommand)
-                    .WithCreate(CreateItemCommand);
-                //.WithPaste(PasteItemsCommand);
-            }
-
-            return menuFactory.Create(menu
-                .WithDetails(FileOperations.ShowDetailsCommand, parameter));
         }
     }
 }

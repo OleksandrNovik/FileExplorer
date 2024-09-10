@@ -5,15 +5,23 @@ using Models;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FileExplorer.Core.Services.Factories
+namespace FileExplorer.Services.Factories
 {
-    public class MenuFlyoutFactory : IMenuFlyoutFactory
+    /// <summary>
+    /// Factory to create menu items for menu flyout
+    /// </summary>
+    public sealed class MenuFlyoutFactory : IMenuFlyoutFactory<MenuFlyoutItemBase>
     {
-        public List<MenuFlyoutItemBase> Create(List<MenuFlyoutItemViewModel> metadata)
+        /// <inheritdoc />
+        public IReadOnlyList<MenuFlyoutItemBase> Create(IEnumerable<MenuFlyoutItemViewModel> metadata)
         {
             return metadata.Select(CreateSingeItem).ToList();
         }
 
+        /// <summary>
+        /// Creates UI menu element for a single item
+        /// </summary>
+        /// <param name="itemsMetadata"> Data for UI menu item </param>
         private MenuFlyoutItemBase CreateSingeItem(MenuFlyoutItemViewModel itemsMetadata)
         {
             MenuFlyoutItemBase result;

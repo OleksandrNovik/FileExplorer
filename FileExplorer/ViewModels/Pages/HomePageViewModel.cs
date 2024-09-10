@@ -1,9 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Input;
-using FileExplorer.Core.Contracts.Factories;
 using FileExplorer.ViewModels.Abstractions;
 using FileExplorer.ViewModels.General;
 using Helpers;
-using Microsoft.UI.Xaml.Controls;
 using Models;
 using Models.ModelHelpers;
 using Models.Storage.Drives;
@@ -22,7 +20,8 @@ namespace FileExplorer.ViewModels.Pages
         public List<DirectoryWrapper> Libraries { get; }
         public ConcurrentWrappersCollection RecentItems { get; set; }
 
-        public HomePageViewModel(FileOperationsViewModel fileOperations, IMenuFlyoutFactory factory) : base(fileOperations, factory)
+        public HomePageViewModel(FileOperationsViewModel fileOperations)
+            : base(fileOperations)
         {
             Libraries = KnownFoldersHelper.Libraries.ToList();
         }
@@ -60,7 +59,7 @@ namespace FileExplorer.ViewModels.Pages
             ArgumentNullException.ThrowIfNull(Drives);
         }
 
-        public override IList<MenuFlyoutItemBase> BuildContextMenu(object parameter = null)
+        public override IReadOnlyList<MenuFlyoutItemViewModel> BuildMenu(object parameter = null)
         {
             throw new NotImplementedException();
         }
