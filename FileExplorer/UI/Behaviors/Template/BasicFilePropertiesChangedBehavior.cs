@@ -1,6 +1,6 @@
-﻿using Models.Contracts.Storage.Properties;
+﻿using Models.Storage.Abstractions;
 
 namespace FileExplorer.UI.Behaviors.Template
 {
-    public sealed class BasicFilePropertiesChangedBehavior : BasePropertyChangeTemplateBehavior<IBasicStorageItemProperties>;
+    public sealed class BasicFilePropertiesChangedBehavior : BasePropertyChangeTemplateBehavior<StorageItemProperties>;
 }

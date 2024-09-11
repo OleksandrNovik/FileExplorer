@@ -37,6 +37,7 @@
     <None Remove="Images\StoreLogo.png" />
     <None Remove="Images\Wide310x150Logo.scale-200.png" />
     <None Remove="Package.appxmanifest" />
+    <None Remove="UI\UserControls\Charts\PieChart.xaml" />
     <None Remove="UI\UserControls\CommandedInfoBar.xaml" />
     <None Remove="UI\UserControls\DirectoryNavigationPanel.xaml" />
     <None Remove="UI\UserControls\DriveInformationItem.xaml" />
@@ -44,6 +45,7 @@
     <None Remove="UI\UserControls\ItemIPropertiesPanel.xaml" />
     <None Remove="UI\UserControls\SearchControl.xaml" />
     <None Remove="UI\UserControls\StorageProperties\DirectoryItemPropertiesViewer.xaml" />
+    <None Remove="UI\UserControls\StorageProperties\DriveProperties.xaml" />
     <None Remove="UI\UserControls\ViewOptionsSelector.xaml" />
     <None Remove="Views\DirectoryPage.xaml" />
     <None Remove="Views\HomePage.xaml" />
@@ -130,6 +132,9 @@
     <None Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Page Update="UI\UserControls\Charts\PieChart.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="UI\UserControls\StorageProperties\DirectoryItemPropertiesViewer.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -167,5 +172,13 @@
 
   <ItemGroup Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
     <ProjectCapability Include="Msix" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <CustomAdditionalCompileInputs Remove="UI\UserControls\StorageProperties\DriveProperties.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Remove="UI\UserControls\StorageProperties\DriveProperties.xaml" />
   </ItemGroup>
 </Project>

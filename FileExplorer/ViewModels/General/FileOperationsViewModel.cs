@@ -74,14 +74,14 @@ namespace FileExplorer.ViewModels.General
         /// <summary>
         /// Ends renaming item if it is actually possible
         /// </summary>
-        /// <param name="item"> Item that has to be given new name </param>
+        /// <param name="item"> ItemProperties that has to be given new name </param>
         [RelayCommand]
         private async Task EndRenamingItem(IRenameableObject item)
         {
             if (string.IsNullOrWhiteSpace(item.Name))
             {
                 item.CancelEdit();
-                await App.MainWindow.ShowMessageDialogAsync("Item's name cannot be empty", "Empty name is illegal");
+                await App.MainWindow.ShowMessageDialogAsync("ItemProperties's name cannot be empty", "Empty name is illegal");
                 return;
             }
             item.Rename();
@@ -91,7 +91,7 @@ namespace FileExplorer.ViewModels.General
         /// Ends renaming item when it is renamed.
         /// This method is called before any operation with item to be sure it's not renamed while executing operation
         /// </summary>
-        /// <param name="item"> Item that we are checking for renaming </param>
+        /// <param name="item"> ItemProperties that we are checking for renaming </param>
         [RelayCommand]
         public async Task EndRenamingIfNeeded(IRenameableObject item)
         {

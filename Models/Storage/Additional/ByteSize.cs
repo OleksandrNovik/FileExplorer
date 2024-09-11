@@ -15,23 +15,25 @@ namespace Models.Storage.Additional
 
         public static ByteSize Empty => new(0);
 
-        private string fruendlyValue;
+        private long realSize;
+        private string sizeName;
+
         public long InBytes { get; }
 
         public ByteSize(long inBytes)
         {
             InBytes = inBytes;
-            fruendlyValue = Convert(inBytes, ByteUnits.Bytes);
+            Convert(inBytes, ByteUnits.Bytes);
         }
 
         public ByteSize(double value, ByteUnits units)
         {
             var power = (int)units;
             InBytes = (long)(value * Math.Pow(1024, power));
-            fruendlyValue = Convert(value, units);
+            Convert(value, units);
         }
 
-        private string Convert(double value, ByteUnits units)
+        private void Convert(double value, ByteUnits units)
         {
             double converted = value;
             int order = (int)units;
@@ -42,12 +44,13 @@ namespace Models.Storage.Additional
                 converted /= 1024;
             }
 
-            return $"{Math.Floor(converted)} {Sizes[order]}";
+            realSize = (long)Math.Floor(converted);
+            sizeName = Sizes[order];
         }
 
         public override string ToString()
         {
-            return fruendlyValue;
+            return $"{realSize} {sizeName}";
         }
 
 

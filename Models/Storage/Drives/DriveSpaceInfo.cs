@@ -21,6 +21,11 @@ namespace Models.Storage.Drives
         public ByteSize FreeSpace { get; }
 
         /// <summary>
+        /// Space on drive that is used
+        /// </summary>
+        public ByteSize UsedSpace { get; }
+
+        /// <summary>
         /// Size of the drive
         /// </summary>
         public ByteSize TotalSpace { get; }
@@ -38,6 +43,7 @@ namespace Models.Storage.Drives
             SpaceAvailableForUser = new ByteSize(drive.AvailableFreeSpace);
             FreeSpace = new ByteSize(drive.TotalFreeSpace);
             TotalSpace = new ByteSize(drive.TotalSize);
+            UsedSpace = new ByteSize(drive.TotalSize - drive.TotalFreeSpace);
 
             AvailablePercentage = (int)((TotalSpace.InBytes - FreeSpace.InBytes) * 100 / TotalSpace.InBytes);
         }

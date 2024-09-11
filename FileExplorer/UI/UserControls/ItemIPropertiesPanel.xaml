@@ -16,11 +16,12 @@
     <UserControl.Resources>
         <DataTemplate x:Name="DirectoryItemPropertiesView" x:DataType="local:ItemPropertiesPanel">
             <storageProperties:DirectoryItemPropertiesViewer
-                Item="{x:Bind (properties:DirectoryItemBasicProperties)ViewModel.Properties, Mode=OneWay}" />
+                Properties="{x:Bind ViewModel.Properties, Mode=OneWay}" />
         </DataTemplate>
 
-        <DataTemplate x:Name="DrivePropertiesView" x:DataType="properties:DriveBasicProperties">
-            <TextBlock Text="{x:Bind Name}" />
+        <DataTemplate x:Name="DrivePropertiesView" x:DataType="local:ItemPropertiesPanel">
+            <storageProperties:DriveProperties 
+                Properties="{x:Bind ViewModel.Properties, Mode=OneWay}" />
         </DataTemplate>
 
         <contentSelectors:PropertiesPaneTemplateSelector x:Name="TemplateSelector"

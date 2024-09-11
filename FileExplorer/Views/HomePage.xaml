@@ -55,26 +55,32 @@
 
     </Page.Resources>
 
-    <ScrollViewer>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
 
-            <Expander 
+        <ScrollViewer>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Expander 
                 HorizontalContentAlignment="Stretch" 
                 HorizontalAlignment="Stretch" 
                 Header="Libraries" 
                 IsExpanded="True">
 
-                <Expander.Resources>
-                    <SolidColorBrush x:Key="customExpanderHeaderBackgroundColor" Color="Transparent"/>
-                    <StaticResource x:Key="ExpanderHeaderBackground" ResourceKey="customExpanderHeaderBackgroundColor" />
-                </Expander.Resources>
+                    <Expander.Resources>
+                        <SolidColorBrush x:Key="customExpanderHeaderBackgroundColor" Color="Transparent"/>
+                        <StaticResource x:Key="ExpanderHeaderBackground" ResourceKey="customExpanderHeaderBackgroundColor" />
+                    </Expander.Resources>
 
-                <controls:AdaptiveGridView StretchContentForSingleRow="True"
+                    <controls:AdaptiveGridView StretchContentForSingleRow="True"
                                            OneRowModeEnabled="True"
                                            DesiredWidth="40"
                                            ContextFlyout="{StaticResource DirectoryItemContextMenu}"
@@ -83,75 +89,78 @@
                                            SelectionMode="Single"
                                            ItemTemplate="{StaticResource LibrariesTemplate}">
 
+                        <interactivity:Interaction.Behaviors>
+
+                            <collections:DirectoryItemDoubleClickBehavior Command="{x:Bind ViewModel.FileOperations.OpenCommand}" />
+                            <contextMenu:GridViewContextDialogBehavior />
+
+                        </interactivity:Interaction.Behaviors>
+                    </controls:AdaptiveGridView>
+
                     <interactivity:Interaction.Behaviors>
-
-                        <collections:DirectoryItemDoubleClickBehavior Command="{x:Bind ViewModel.FileOperations.OpenCommand}" />
-                        <contextMenu:GridViewContextDialogBehavior />
-
+                        <general:LoadingCommandBehavior Command="{x:Bind ViewModel.InitializeLibrariesThumbnailsCommand}" />
                     </interactivity:Interaction.Behaviors>
-                </controls:AdaptiveGridView>
+                </Expander>
 
-                <interactivity:Interaction.Behaviors>
-                    <general:LoadingCommandBehavior Command="{x:Bind ViewModel.InitializeLibrariesThumbnailsCommand}" />
-                </interactivity:Interaction.Behaviors>
-            </Expander>
-
-            <Expander Grid.Row="1" 
+                <Expander Grid.Row="1" 
                       HorizontalContentAlignment="Left" 
                       HorizontalAlignment="Stretch" 
                       Header="Drives" 
                       IsExpanded="True">
 
-                <Expander.Resources>
-                    <SolidColorBrush x:Key="customExpanderHeaderBackgroundColor" Color="Transparent"/>
-                    <StaticResource x:Key="ExpanderHeaderBackground" ResourceKey="customExpanderHeaderBackgroundColor" />
-                </Expander.Resources>
+                    <Expander.Resources>
+                        <SolidColorBrush x:Key="customExpanderHeaderBackgroundColor" Color="Transparent"/>
+                        <StaticResource x:Key="ExpanderHeaderBackground" ResourceKey="customExpanderHeaderBackgroundColor" />
+                    </Expander.Resources>
 
-                <GridView ItemsSource="{x:Bind ViewModel.Drives}" 
+                    <GridView ItemsSource="{x:Bind ViewModel.Drives}" 
                      SelectionMode="Single"
                      ItemTemplate="{StaticResource DrivesTemplate}">
 
-                    <GridView.ContextFlyout>
-                        <buildingContextMenu:BuildingMenuFlyout>
-                            <interactivity:Interaction.Behaviors>
-                                <contextMenu:ContextMenuBuildingBehavior Builder="{x:Bind ViewModel}" />
-                            </interactivity:Interaction.Behaviors>
-                        </buildingContextMenu:BuildingMenuFlyout>
-                    </GridView.ContextFlyout>
+                        <GridView.ContextFlyout>
+                            <buildingContextMenu:BuildingMenuFlyout>
+                                <interactivity:Interaction.Behaviors>
+                                    <contextMenu:ContextMenuBuildingBehavior Builder="{x:Bind ViewModel}" />
+                                </interactivity:Interaction.Behaviors>
+                            </buildingContextMenu:BuildingMenuFlyout>
+                        </GridView.ContextFlyout>
+
+                        <interactivity:Interaction.Behaviors>
+
+                            <collections:DirectoryItemDoubleClickBehavior Command="{x:Bind ViewModel.FileOperations.OpenCommand}" />
+                            <contextMenu:GridViewContextDialogBehavior />
+
+                        </interactivity:Interaction.Behaviors>
+                    </GridView>
 
                     <interactivity:Interaction.Behaviors>
-
-                        <collections:DirectoryItemDoubleClickBehavior Command="{x:Bind ViewModel.FileOperations.OpenCommand}" />
-                        <contextMenu:GridViewContextDialogBehavior />
-
+                        <general:LoadingCommandBehavior Command="{x:Bind ViewModel.InitializeDrivesThumbnailsCommand}" />
                     </interactivity:Interaction.Behaviors>
-                </GridView>
+                </Expander>
 
-                <interactivity:Interaction.Behaviors>
-                    <general:LoadingCommandBehavior Command="{x:Bind ViewModel.InitializeDrivesThumbnailsCommand}" />
-                </interactivity:Interaction.Behaviors>
-            </Expander>
-
-            <Expander Grid.Row="2" 
+                <Expander Grid.Row="2" 
                       HorizontalContentAlignment="Stretch" 
                       HorizontalAlignment="Stretch" 
                       Header="Recent"
                       IsExpanded="False">
 
-                <Expander.Resources>
-                    <SolidColorBrush x:Key="customExpanderHeaderBackgroundColor" Color="Transparent"/>
-                    <StaticResource x:Key="ExpanderHeaderBackground" ResourceKey="customExpanderHeaderBackgroundColor" />
-                </Expander.Resources>
+                    <Expander.Resources>
+                        <SolidColorBrush x:Key="customExpanderHeaderBackgroundColor" Color="Transparent"/>
+                        <StaticResource x:Key="ExpanderHeaderBackground" ResourceKey="customExpanderHeaderBackgroundColor" />
+                    </Expander.Resources>
 
-                <userControls:DynamicItemView  ViewOptions="{Binding Path=Value, Source={StaticResource ViewOptions}, Mode=OneWay}"
+                    <userControls:DynamicItemView  ViewOptions="{Binding Path=Value, Source={StaticResource ViewOptions}, Mode=OneWay}"
                                                 ItemsSource="{x:Bind ViewModel.RecentItems, Mode=OneWay}"
                                                 SelectedItems="{x:Bind ViewModel.SelectedItems}" 
                                                 ContextMenu="{StaticResource DirectoryItemContextMenu}"/>
 
                     <interactivity:Interaction.Behaviors>
-                    <behaviors:InitializeOnExpandingBehavior Command="{x:Bind ViewModel.InitializeRecentItemsCommand}" />
-                </interactivity:Interaction.Behaviors>
-            </Expander>
-        </Grid>
-    </ScrollViewer>
+                        <behaviors:InitializeOnExpandingBehavior Command="{x:Bind ViewModel.InitializeRecentItemsCommand}" />
+                    </interactivity:Interaction.Behaviors>
+                </Expander>
+            </Grid>
+        </ScrollViewer>
+
+        <userControls:ItemPropertiesPanel Grid.Column="1" Margin="0 20 0 0"  />
+    </Grid>
 </Page>

@@ -1,5 +1,4 @@
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using Models.Storage.Additional.Properties;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -7,7 +6,7 @@ using Models.Storage.Additional.Properties;
 
 namespace FileExplorer.UI.UserControls.StorageProperties
 {
-    public sealed partial class DirectoryItemPropertiesViewer : UserControl
+    public sealed partial class DirectoryItemPropertiesViewer : PropertiesUserControl
     {
         public static readonly DependencyProperty ItemProperty =
             DependencyProperty.Register(nameof(Item), typeof(DirectoryItemBasicProperties),
@@ -22,6 +21,14 @@ namespace FileExplorer.UI.UserControls.StorageProperties
         public DirectoryItemPropertiesViewer()
         {
             this.InitializeComponent();
+        }
+
+        protected override void PropertiesChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (e.NewValue is DirectoryItemBasicProperties properties)
+            {
+                Item = properties;
+            }
         }
     }
 }

@@ -14,7 +14,7 @@ namespace FileExplorer.UI.Behaviors.ContextMenu
             // If grid item was right-clicked
             if (tappedElement?.DataContext is InteractiveStorageItem)
             {
-                // Item is not selected
+                // ItemProperties is not selected
                 if (!AssociatedObject.SelectedItems.Contains(tappedElement.DataContext))
                 {
                     // Clear previously selected items

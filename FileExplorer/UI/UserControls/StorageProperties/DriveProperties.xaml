@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<local:PropertiesUserControl
+    x:Class="FileExplorer.UI.UserControls.StorageProperties.DriveProperties"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:FileExplorer.UI.UserControls.StorageProperties"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:charts="using:FileExplorer.UI.UserControls.Charts"
+    mc:Ignorable="d">
+
+    <Grid>
+        <ScrollViewer>
+            <StackPanel>
+
+                <charts:PieChart x:Name="Chart" Size="130" />
+
+                <TextBlock Text="{x:Bind Drive.Name, Mode=OneWay}" Style="{StaticResource TitleTextBlockStyle}" 
+                           HorizontalAlignment="Center" 
+                           Margin="0 6"
+                           FontSize="25"/>
+
+                <TextBlock Text="{x:Bind Drive.DriveType, Mode=OneWay}" Style="{StaticResource BodyTextBlockStyle}" 
+                           HorizontalAlignment="Center" 
+                           Margin="0 6"/>
+
+                <RichTextBlock Style="{StaticResource BodyRichTextBlockStyle}" Margin="0 5">
+                    <Paragraph>
+                        <Run Text="Format: " />
+                        <Run Text="{x:Bind Drive.DriveFormat, Mode=OneWay}" FontWeight="SemiBold"  />
+                    </Paragraph>
+                </RichTextBlock>
+
+                <Grid Margin="0 6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1.4*" />
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal"  Margin="0 5">
+                            <Rectangle x:Name="UsedRect" Width="25" Height="17" Fill="{ThemeResource SystemAccentColor}" />
+                            <TextBlock Margin="5 0" Text="Used: " />
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal"  Margin="0 5">
+                            <Rectangle x:Name="AvailableRect" Width="25" Height="17" Fill="LightGray" />
+                            <TextBlock Margin="5 0" Text="Available: " />
+                        </StackPanel>
+
+                        <TextBlock Margin="30 5" Text="Total: " />
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="{x:Bind Drive.SpaceInfo.UsedSpace.InBytes}"  Margin="0 5" />
+                        <TextBlock Text="{x:Bind Drive.SpaceInfo.FreeSpace.InBytes}" Margin="0 5" />
+                        <TextBlock Text="{x:Bind Drive.SpaceInfo.TotalSpace.InBytes}" Margin="0 5" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="{x:Bind Drive.SpaceInfo.UsedSpace}" Margin="0 5" />
+                        <TextBlock Text="{x:Bind Drive.SpaceInfo.FreeSpace}" Margin="0 5" />
+                        <TextBlock Text="{x:Bind Drive.SpaceInfo.TotalSpace}" Margin="0 5" />
+                    </StackPanel>
+
+                </Grid>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</local:PropertiesUserControl>
