@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FileExplorer.Core.Contracts.Clipboard;
 using FileExplorer.Core.Contracts.Settings;
 using FileExplorer.ViewModels.Abstractions;
 using FileExplorer.ViewModels.General;
@@ -18,6 +19,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace FileExplorer.ViewModels.Pages
 {
@@ -34,18 +36,32 @@ namespace FileExplorer.ViewModels.Pages
         [ObservableProperty]
         private bool canCreateItems;
 
-        public DirectoryPageViewModel(FileOperationsViewModel fileOperations, ILocalSettingsService settingsService)
-            : base(fileOperations)
+        public DirectoryPageViewModel(FileOperationsViewModel fileOperations, ILocalSettingsService settingsService, IClipboardService clipboardService)
+            : base(fileOperations, clipboardService)
         {
             localSettings = settingsService;
         }
 
+        /// <summary>
+        /// Checks if user can paste inside current directory
+        /// </summary>
+        private bool CanPasteInside() => CanCreateItems && CanPaste();
+
+        /// <inheritdoc />
         protected override void OnSelectedItemsChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             base.OnSelectedItemsChanged(sender, e);
 
             DeleteOperationCommand.NotifyCanExecuteChanged();
             RecycleOperationCommand.NotifyCanExecuteChanged();
+            CutSelectedItemsCommand.NotifyCanExecuteChanged();
+        }
+
+        /// <inheritdoc />
+        protected override void NotifyCanPaste(object? sender, EventArgs args)
+        {
+            base.NotifyCanPaste(sender, args);
+            PasteInsideCommand.NotifyCanExecuteChanged();
         }
 
         /// <summary>
@@ -84,6 +100,25 @@ namespace FileExplorer.ViewModels.Pages
         private async Task CreateDirectory()
         {
             await CreateItemAsync(true);
+        }
+
+        /// <summary>
+        /// Saves selected items to the clipboard with required operation "cut"
+        /// </summary>
+        [RelayCommand(CanExecute = nameof(HasSelectedItems))]
+        private void CutSelectedItems()
+        {
+            clipboard.SetFiles(SelectedItems, DragDropEffects.Move);
+        }
+
+        /// <summary>
+        /// Pastes items from clipboard inside current directory
+        /// </summary>
+        [RelayCommand(CanExecute = nameof(CanPasteInside))]
+        private void PasteInside()
+        {
+            Debug.Assert(currentDirectory is not null);
+            Paste(currentDirectory);
         }
 
         /// <summary>
@@ -152,6 +187,7 @@ namespace FileExplorer.ViewModels.Pages
             }
         }
 
+        /// <inheritdoc />
         public override async void OnNavigatedTo(object parameter)
         {
             base.OnNavigatedTo(parameter);
@@ -171,7 +207,11 @@ namespace FileExplorer.ViewModels.Pages
             }
 
             currentDirectory = Storage as IDirectory;
+
+            // User cannot create files when viewing search result
             CanCreateItems = currentDirectory is not null;
+
+            NotifyCanPaste(this, EventArgs.Empty);
         }
 
         [RelayCommand]
@@ -181,6 +221,7 @@ namespace FileExplorer.ViewModels.Pages
             await MoveToDirectoryAsync(Storage);
         }
 
+        /// <inheritdoc />
         public override IReadOnlyList<MenuFlyoutItemViewModel> BuildMenu(object parameter)
         {
             IReadOnlyList<MenuFlyoutItemViewModel> menu;
@@ -194,9 +235,10 @@ namespace FileExplorer.ViewModels.Pages
                 var list = new List<MenuFlyoutItemViewModel>();
 
                 list.WithRefresh(RefreshCommand)
-                    .WithCreate(CreateItemCommand);
+                    .WithCreate(CreateItemCommand)
+                    .WithPaste(PasteCommand, currentDirectory);
 
-                //TODO:  Add view and sort options + paste;
+                //TODO:  Add view and sort options;
 
                 menu = list;
             }

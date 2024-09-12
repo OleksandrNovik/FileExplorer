@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using FileExplorer.Core.Contracts.Clipboard;
 using FileExplorer.ViewModels.Abstractions;
 using FileExplorer.ViewModels.General;
 using Helpers;
@@ -20,8 +21,8 @@ namespace FileExplorer.ViewModels.Pages
         public List<DirectoryWrapper> Libraries { get; }
         public ConcurrentWrappersCollection RecentItems { get; set; }
 
-        public HomePageViewModel(FileOperationsViewModel fileOperations)
-            : base(fileOperations)
+        public HomePageViewModel(FileOperationsViewModel fileOperations, IClipboardService clipboardService)
+            : base(fileOperations, clipboardService)
         {
             Libraries = KnownFoldersHelper.Libraries.ToList();
         }

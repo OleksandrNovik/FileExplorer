@@ -25,17 +25,17 @@
                         <FontIcon Glyph="&#xE8C8;" />
                     </AppBarButton.Icon>
                 </AppBarButton>
-                <AppBarButton Label="Copy">
+                <AppBarButton Label="Copy" Command="{x:Bind ViewModel.CopySelectedItemsCommand}">
                     <AppBarButton.Icon>
                         <FontIcon Glyph="&#xE8C8;" />
                     </AppBarButton.Icon>
                 </AppBarButton>
-                <AppBarButton Label="Cut">
+                <AppBarButton Label="Cut" Command="{x:Bind ViewModel.CutSelectedItemsCommand}">
                     <AppBarButton.Icon>
                         <FontIcon Glyph="&#xE8C6;" />
                     </AppBarButton.Icon>
                 </AppBarButton>
-                <AppBarButton Label="Delete">
+                <AppBarButton Label="Delete" Command="{x:Bind ViewModel.DeleteOperationCommand}">
                     <AppBarButton.Icon>
                         <FontIcon Glyph="&#xE74D;" />
                     </AppBarButton.Icon>
@@ -87,22 +87,22 @@
                     </DropDownButton.Flyout>
                 </DropDownButton>
 
-                <CommandBar OverflowButtonVisibility="Collapsed" >
-                    <AppBarButton IsCompact="True"
+                <CommandBar OverflowButtonVisibility="Collapsed">
+                    <AppBarButton IsCompact="True" Command="{x:Bind ViewModel.CopySelectedItemsCommand}"
                            ToolTipService.ToolTip="Copy"
                            ToolTipService.Placement="Bottom" MaxWidth="55">
                         <AppBarButton.Icon>
                             <FontIcon FontSize="20" Glyph="&#xE8C8;" />
                         </AppBarButton.Icon>
                     </AppBarButton>
-                    <AppBarButton IsCompact="True"
+                    <AppBarButton IsCompact="True" Command="{x:Bind ViewModel.CutSelectedItemsCommand}"
                            ToolTipService.ToolTip="Cut"
                            ToolTipService.Placement="Bottom" MaxWidth="55">
                         <AppBarButton.Icon>
                             <FontIcon FontSize="20" Glyph="&#xE8C6;" />
                         </AppBarButton.Icon>
                     </AppBarButton>
-                    <AppBarButton IsCompact="True"
+                    <AppBarButton IsCompact="True" Command="{x:Bind ViewModel.PasteInsideCommand}"
                            ToolTipService.ToolTip="Paste"
                            ToolTipService.Placement="Bottom" MaxWidth="55">
                         <AppBarButton.Icon>

@@ -1,9 +1,11 @@
 ﻿using FileExplorer.Core.Contracts;
+using FileExplorer.Core.Contracts.Clipboard;
 using FileExplorer.Core.Contracts.DirectoriesNavigation;
 using FileExplorer.Core.Contracts.Factories;
 using FileExplorer.Core.Contracts.General;
 using FileExplorer.Core.Contracts.Settings;
 using FileExplorer.Core.Services;
+using FileExplorer.Core.Services.Clipboard;
 using FileExplorer.Core.Services.DirectoriesNavigation;
 using FileExplorer.Core.Services.Factories;
 using FileExplorer.Core.Services.General;
@@ -21,6 +23,8 @@ using Helpers.General;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.UI.Xaml;
+using Models.Contracts.ModelServices;
+using Models.Storage.Factories;
 using System;
 using Hosting = Microsoft.Extensions.Hosting.Host;
 
@@ -70,6 +74,7 @@ namespace FileExplorer
 
                     // Factories
                     services.AddTransient<IStorageFactory, StorageFactory>();
+                    services.AddTransient<IWindowsDirectoryItemsFactory, WindowsDirectoryItemsFactory>();
 
                     services.AddTransient<HomePageViewModel>();
                     services.AddTransient<TabNavigationViewModel>();
@@ -79,6 +84,9 @@ namespace FileExplorer
                     services.AddTransient<SettingsPreferencesViewModel>();
                     services.AddTransient<SettingsExplorerViewModel>();
                     services.AddTransient<ILocalSettingsService, LocalSettingsService>();
+
+                    //Clipboard
+                    services.AddTransient<IClipboardService, ClipboardService>();
 
                     // Search
                     services.AddTransient<SearchOptionsViewModel>();

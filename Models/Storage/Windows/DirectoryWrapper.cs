@@ -1,13 +1,14 @@
 ﻿#nullable enable
 using Helpers.General;
 using Helpers.StorageHelpers;
-using Helpers.Win32Helpers;
+using Models.Contracts.ModelServices;
 using Models.Contracts.Storage;
 using Models.Contracts.Storage.Directory;
 using Models.Enums;
 using Models.General;
 using Models.ModelHelpers;
 using Models.Storage.Additional;
+using Models.Storage.Factories;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,49 +22,9 @@ namespace Models.Storage.Windows
 {
     public sealed class DirectoryWrapper : DirectoryItemWrapper, IDirectory
     {
-        private sealed class DirectoryItemFactory
-        {
-            private DirectoryItemWrapper CreateFromShortCut(string shortcutPath)
-            {
-                return null;
-            }
-            public DirectoryItemWrapper? CreateFromPath(string path)
-            {
-                DirectoryItemWrapper? wrapper = null;
-
-                if (IOPath.HasExtension(path))
-                {
-                    // File is shortcut
-                    if (FileExtensionsHelper.IsShortcut(path))
-                    {
-                        var link = Win32Helper.GetLinkItem(path);
-
-                        if (link.FileInfo is DirectoryInfo dir)
-                        {
-                            wrapper = new DirectoryWrapper(dir);
-                        }
-                        else if (link.FileInfo is FileInfo file)
-                        {
-                            wrapper = new FileWrapper(file);
-                        }
-                    }
-                    else
-                    {
-                        wrapper = new FileWrapper(path);
-                    }
-                }
-                else
-                {
-                    wrapper = new DirectoryWrapper(path);
-                }
-
-                return wrapper;
-            }
-        }
-
         private StorageFolder? asStorageFolder;
 
-        private readonly DirectoryItemFactory itemFactory = new();
+        private readonly IWindowsDirectoryItemsFactory factory = new WindowsDirectoryItemsFactory();
 
         public DirectoryWrapper() { }
         public DirectoryWrapper(DirectoryInfo info) : base(info) { }
@@ -168,25 +129,13 @@ namespace Models.Storage.Windows
         {
             foreach (var path in paths)
             {
-                DirectoryItemWrapper wrapper;
-
-                if (File.Exists(path))
-                    wrapper = new FileWrapper(path);
-                else
-                    wrapper = new DirectoryWrapper(path);
+                var wrapper = factory.Create(path);
 
                 // Item has attributes that should be skipped
                 if (wrapper.HasAttributes(skipped))
                     continue;
 
                 yield return wrapper;
-
-                //var item = itemFactory.CreateFromPath(path);
-
-                //if (item is null)
-                //    continue;
-
-                //yield return item;
             }
         }
 
