@@ -7,7 +7,12 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:charts="using:FileExplorer.UI.UserControls.Charts"
+    xmlns:converters="using:FileExplorer.UI.Converters"
     mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <converters:NumberFormatter x:Name="NumberFormatter" />
+    </UserControl.Resources>
 
     <Grid>
         <ScrollViewer>
@@ -53,9 +58,24 @@
                     </StackPanel>
 
                     <StackPanel Grid.Column="1">
-                        <TextBlock Text="{x:Bind Drive.SpaceInfo.UsedSpace.InBytes}"  Margin="0 5" />
-                        <TextBlock Text="{x:Bind Drive.SpaceInfo.FreeSpace.InBytes}" Margin="0 5" />
-                        <TextBlock Text="{x:Bind Drive.SpaceInfo.TotalSpace.InBytes}" Margin="0 5" />
+                        <RichTextBlock Style="{StaticResource BodyRichTextBlockStyle}" Margin="0 5">
+                            <Paragraph>
+                                <Run Text="{x:Bind Drive.SpaceInfo.UsedSpace.InBytes, Converter={StaticResource NumberFormatter}}" />
+                                <Run Text=" B" />
+                            </Paragraph>
+                        </RichTextBlock>
+                        <RichTextBlock Style="{StaticResource BodyRichTextBlockStyle}" Margin="0 5">
+                            <Paragraph>
+                                <Run Text="{x:Bind Drive.SpaceInfo.FreeSpace.InBytes, Converter={StaticResource NumberFormatter}}" />
+                                <Run Text=" B" />
+                            </Paragraph>
+                        </RichTextBlock>
+                        <RichTextBlock Style="{StaticResource BodyRichTextBlockStyle}" Margin="0 5">
+                            <Paragraph>
+                                <Run Text="{x:Bind Drive.SpaceInfo.TotalSpace.InBytes, Converter={StaticResource NumberFormatter}}" />
+                                <Run Text=" B" />
+                            </Paragraph>
+                        </RichTextBlock>
                     </StackPanel>
 
                     <StackPanel Grid.Column="2">
