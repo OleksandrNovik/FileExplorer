@@ -7,11 +7,11 @@ using FileExplorer.Core.Contracts.DirectoriesNavigation;
 using FileExplorer.Core.Contracts.Factories;
 using FileExplorer.Models;
 using FileExplorer.Models.Contracts.Storage;
+using FileExplorer.Models.Contracts.Storage.Directory;
 using FileExplorer.Models.Messages;
 using FileExplorer.Models.ModelHelpers;
 using FileExplorer.Models.Navigation;
 using FileExplorer.Models.Storage.Additional;
-using FileExplorer.Models.Storage.Windows;
 using FileExplorer.Models.TabRelated;
 using FileExplorer.ViewModels.General;
 using FileExplorer.ViewModels.Search;
@@ -23,6 +23,7 @@ namespace FileExplorer.ViewModels.Pages
 {
     public sealed partial class ShellPageViewModel : ObservableRecipient, IMenuFlyoutBuilder
     {
+        private readonly IStorageFactory factory;
         public NavigationPaneViewModel NavigationPaneViewModel { get; } = new();
         public FileOperationsViewModel FileOperationsViewModel { get; }
         public SearchOperationViewModel SearchOperationViewModel { get; } = new();
@@ -32,11 +33,12 @@ namespace FileExplorer.ViewModels.Pages
         [ObservableProperty]
         private ObservableCollection<TabModel> tabs;
 
-        public ShellPageViewModel(ITabService tabService, INavigationService navigationService, FileOperationsViewModel fileOperations)
+        public ShellPageViewModel(ITabService tabService, INavigationService navigationService, IStorageFactory storageFactory, FileOperationsViewModel fileOperations)
         {
             TabService = tabService;
             NavigationService = navigationService;
             tabs = TabService.Tabs;
+            factory = storageFactory;
             FileOperationsViewModel = fileOperations;
 
             Messenger.Register<ShellPageViewModel, TabStorageChangedMessage>(this, (_, message) =>
@@ -122,21 +124,27 @@ namespace FileExplorer.ViewModels.Pages
                 if (string.IsNullOrEmpty(navigationModel.Path))
                     return [];
 
-                var directory = new DirectoryWrapper(navigationModel.Path);
+                var storage = factory.CreateFromKey(navigationModel.Path);
 
-                menu.WithOpen(FileOperationsViewModel.OpenCommand, directory)
-                    .WithOpenInNewTab(FileOperationsViewModel.OpenInNewTabCommand, directory);
+                menu.WithOpen(FileOperationsViewModel.OpenCommand, storage)
+                    .WithOpenInNewTab(FileOperationsViewModel.OpenInNewTabCommand, storage);
 
                 if (navigationModel.IsPinned)
                 {
-                    menu.WithUnpin(FileOperationsViewModel.UnpinCommand, directory);
+                    menu.WithUnpin(FileOperationsViewModel.UnpinCommand, storage);
                 }
                 else
                 {
-                    menu.WithPin(FileOperationsViewModel.PinCommand, directory);
+                    menu.WithPin(FileOperationsViewModel.PinCommand, storage);
                 }
 
-                menu.WithDetails(FileOperationsViewModel.ShowDetailsCommand, directory);
+                if (storage is IDirectoryItem item)
+                {
+                    menu.WithCopy(FileOperationsViewModel.CopyItemsCommand, new[] { item });
+                }
+
+                menu.WithPaste(FileOperationsViewModel.PasteCommand, storage)
+                    .WithDetails(FileOperationsViewModel.ShowDetailsCommand, storage);
             }
 
             return menu;

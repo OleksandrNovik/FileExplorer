@@ -1,16 +1,13 @@
 ﻿#nullable enable
 using CommunityToolkit.Mvvm.Input;
-using FileExplorer.Core.Contracts.Clipboard;
 using FileExplorer.Core.Contracts.Factories;
 using FileExplorer.Models;
 using FileExplorer.Models.Contracts.Storage.Directory;
 using FileExplorer.Models.ModelHelpers;
 using FileExplorer.Models.Storage.Abstractions;
 using FileExplorer.ViewModels.General;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Windows.Forms;
 
 namespace FileExplorer.ViewModels.Abstractions
 {
@@ -20,40 +17,16 @@ namespace FileExplorer.ViewModels.Abstractions
     public abstract partial class BaseSelectionViewModel : StorageViewModel, IMenuFlyoutBuilder
     {
         /// <summary>
-        /// Clipboard service that provides access to the clipboard
-        /// </summary>
-        protected readonly IClipboardService clipboard;
-
-        /// <summary>
         /// Selected items in currently viewed storage
         /// </summary>
         public ObservableCollection<IDirectoryItem> SelectedItems { get; }
 
-        protected BaseSelectionViewModel(FileOperationsViewModel fileOperations, IClipboardService clipboardService) : base(fileOperations)
+        protected BaseSelectionViewModel(FileOperationsViewModel fileOperations) : base(fileOperations)
         {
             SelectedItems = [];
             SelectedItems.CollectionChanged += OnSelectedItemsChanged;
-
-            clipboard = clipboardService;
-            clipboard.FileDropListChanged += NotifyCanPaste;
         }
 
-        #region Can paste
-
-        /// <summary>
-        /// Checks if there is any files inside of clipboard 
-        /// </summary>
-        protected bool CanPaste() => clipboard.HasFiles;
-
-        /// <summary>
-        /// Notifies if user can paste files from the clipboard
-        /// </summary>
-        protected virtual void NotifyCanPaste(object? sender, EventArgs args)
-        {
-            PasteCommand.NotifyCanExecuteChanged();
-        }
-
-        #endregion
 
         #region Has selected items
 
@@ -73,6 +46,15 @@ namespace FileExplorer.ViewModels.Abstractions
             CopySelectedItemsCommand.NotifyCanExecuteChanged();
         }
 
+        /// <summary>
+        /// Saves selected items to the clipboard with required operation "copy"
+        /// </summary>
+        [RelayCommand(CanExecute = nameof(HasSelectedItems))]
+        protected void CopySelectedItems()
+        {
+            FileOperations.CopyItems(SelectedItems);
+        }
+
         #endregion
 
         /// <summary>
@@ -86,40 +68,6 @@ namespace FileExplorer.ViewModels.Abstractions
         /// </summary>
         [RelayCommand(CanExecute = nameof(HasSelectedItems))]
         protected void ShowDetails() => FileOperations.ShowDetails(SelectedItems[0]);
-
-        /// <summary>
-        /// Saves selected items to the clipboard with required operation "copy"
-        /// </summary>
-        [RelayCommand(CanExecute = nameof(HasSelectedItems))]
-        protected void CopySelectedItems()
-        {
-            clipboard.SetFiles(SelectedItems, DragDropEffects.Copy);
-        }
-
-        /// <summary>
-        /// Pastes items from clipboard into the directory
-        /// </summary>
-        /// <param name="directory"> Destination directory </param>
-        [RelayCommand(CanExecute = nameof(CanPaste))]
-        protected void Paste(IDirectory directory)
-        {
-            var data = clipboard.GetFiles();
-
-            if (data is not null)
-            {
-                FileOperations.CopyOperation(data, directory);
-            }
-            else
-            {
-                throw new NullReferenceException("Cannot paste items, since data provided from clipboard is null");
-            }
-        }
-
-        public override void OnNavigatedFrom()
-        {
-            base.OnNavigatedFrom();
-            clipboard.FileDropListChanged -= NotifyCanPaste;
-        }
 
         public virtual IReadOnlyList<MenuFlyoutItemViewModel> BuildMenu(object parameter)
         {
@@ -135,7 +83,7 @@ namespace FileExplorer.ViewModels.Abstractions
                 {
                     menu.WithOpenInNewTab(FileOperations.OpenInNewTabCommand, parameter)
                         .WithPin(FileOperations.PinCommand, parameter)
-                        .WithPaste(PasteCommand, parameter);
+                        .WithPaste(FileOperations.PasteCommand, parameter);
                 }
 
                 // And each item can have show details (or properties) command

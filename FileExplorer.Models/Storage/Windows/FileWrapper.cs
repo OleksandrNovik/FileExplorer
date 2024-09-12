@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using FileExplorer.Models.Contracts.Storage;
+using FileExplorer.Models.Contracts.Storage.Directory;
 using FileExplorer.Models.Storage.Additional;
 using System;
 using System.Diagnostics;
@@ -32,20 +33,24 @@ namespace FileExplorer.Models.Storage.Windows
         }
 
         /// <inheritdoc />
-        public override void Copy(string destination)
+        public override IDirectoryItem Copy(string destination)
         {
             var name = IOPath.GetFileNameWithoutExtension((string?)Name);
             var extenstion = IOPath.GetExtension((string?)Name);
 
             var uniqueName = GenerateUniqueName(destination, $"{name} - Copy{extenstion}");
 
-            CopyPhysical(destination, uniqueName);
+            var newPath = CopyPhysical(destination, uniqueName);
+
+            return new FileWrapper(newPath);
         }
 
-        protected override void CopyPhysical(string destination, string newName)
+        protected override string CopyPhysical(string destination, string newName)
         {
             var newPath = IOPath.Combine(destination, newName);
             File.Copy(Path, newPath);
+
+            return newPath;
         }
 
         /// <inheritdoc />

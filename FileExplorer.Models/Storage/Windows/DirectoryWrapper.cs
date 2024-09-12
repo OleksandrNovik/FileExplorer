@@ -139,23 +139,27 @@ namespace FileExplorer.Models.Storage.Windows
         }
 
         /// <inheritdoc />
-        public override void Copy(string destination)
+        public override IDirectoryItem Copy(string destination)
         {
             var uniqueName = GenerateUniqueName(destination, Name + " - Copy");
 
-            CopyPhysical(destination, uniqueName);
+            var newPath = CopyPhysical(destination, uniqueName);
             var currentPath = IOPath.Combine(destination, uniqueName);
 
             foreach (var item in EnumerateItems())
             {
                 item.Copy(currentPath);
             }
+
+            return new DirectoryWrapper(newPath);
         }
 
-        protected override void CopyPhysical(string destination, string newName)
+        protected override string CopyPhysical(string destination, string newName)
         {
             var newPath = IOPath.Combine(destination, newName);
             Directory.CreateDirectory(newPath);
+
+            return newPath;
         }
 
         /// <inheritdoc />

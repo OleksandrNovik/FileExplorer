@@ -5,6 +5,12 @@ using FileExplorer.Core.Contracts.Clipboard;
 using FileExplorer.Core.Contracts.Settings;
 using FileExplorer.Helpers;
 using FileExplorer.Helpers.Application;
+using FileExplorer.Models;
+using FileExplorer.Models.Contracts.Storage;
+using FileExplorer.Models.Contracts.Storage.Directory;
+using FileExplorer.Models.Messages;
+using FileExplorer.Models.ModelHelpers;
+using FileExplorer.Models.Storage.Abstractions;
 using FileExplorer.ViewModels.Abstractions;
 using FileExplorer.ViewModels.General;
 using Microsoft.UI.Xaml.Controls;
@@ -14,18 +20,17 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using FileExplorer.Models;
-using FileExplorer.Models.Contracts.Storage;
-using FileExplorer.Models.Contracts.Storage.Directory;
-using FileExplorer.Models.Messages;
-using FileExplorer.Models.ModelHelpers;
-using FileExplorer.Models.Storage.Abstractions;
 
 namespace FileExplorer.ViewModels.Pages
 {
     public sealed partial class DirectoryPageViewModel : BaseSelectionViewModel
     {
         private IDirectory? currentDirectory;
+
+        /// <summary>
+        /// Clipboard service that provides access to the clipboard
+        /// </summary>
+        private readonly IClipboardService clipboard;
 
         /// <summary>
         /// Service that gets all necessarily properties from local settings
@@ -37,15 +42,18 @@ namespace FileExplorer.ViewModels.Pages
         private bool canCreateItems;
 
         public DirectoryPageViewModel(FileOperationsViewModel fileOperations, ILocalSettingsService settingsService, IClipboardService clipboardService)
-            : base(fileOperations, clipboardService)
+            : base(fileOperations)
         {
+            clipboard = clipboardService;
             localSettings = settingsService;
+
+            clipboard.FileDropListChanged += NotifyCanPaste;
         }
 
         /// <summary>
         /// Checks if user can paste inside current directory
         /// </summary>
-        private bool CanPasteInside() => CanCreateItems && CanPaste();
+        private bool CanPasteInside() => CanCreateItems && clipboard.HasFiles;
 
         /// <inheritdoc />
         protected override void OnSelectedItemsChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -57,10 +65,8 @@ namespace FileExplorer.ViewModels.Pages
             CutSelectedItemsCommand.NotifyCanExecuteChanged();
         }
 
-        /// <inheritdoc />
-        protected override void NotifyCanPaste(object? sender, EventArgs args)
+        private void NotifyCanPaste(object? sender, EventArgs args)
         {
-            base.NotifyCanPaste(sender, args);
             PasteInsideCommand.NotifyCanExecuteChanged();
         }
 
@@ -115,11 +121,21 @@ namespace FileExplorer.ViewModels.Pages
         /// Pastes items from clipboard inside current directory
         /// </summary>
         [RelayCommand(CanExecute = nameof(CanPasteInside))]
-        private void PasteInside()
+        private async Task PasteInside()
         {
             Debug.Assert(currentDirectory is not null);
-            Paste(currentDirectory);
+            var data = clipboard.GetFiles();
 
+            if (currentDirectory is not null && data is not null)
+            {
+                var items = FileOperations.PasteAndGetItems(data, currentDirectory);
+
+                await DirectoryItems.EnqueueEnumerationAsync(items, CancellationToken.None);
+            }
+            else
+            {
+                throw new ArgumentException("Invalid operation for a current directory");
+            }
         }
 
         /// <summary>
@@ -174,7 +190,9 @@ namespace FileExplorer.ViewModels.Pages
         /// <param name="isPermanent"> Is delete permanent or recycle </param>
         private async Task DeleteSelectedAsync(bool isPermanent)
         {
-            while (SelectedItems.Count > 0)
+            var deleteCount = SelectedItems.Count;
+
+            while (deleteCount > 0)
             {
                 var item = SelectedItems[0];
                 var hasDeleted = await FileOperations.TryDeleteItem(item, isPermanent);
@@ -185,7 +203,14 @@ namespace FileExplorer.ViewModels.Pages
                 }
 
                 SelectedItems.Remove(item);
+                deleteCount--;
             }
+        }
+
+        public override void OnNavigatedFrom()
+        {
+            base.OnNavigatedFrom();
+            clipboard.FileDropListChanged -= NotifyCanPaste;
         }
 
         /// <inheritdoc />
@@ -237,7 +262,7 @@ namespace FileExplorer.ViewModels.Pages
 
                 list.WithRefresh(RefreshCommand)
                     .WithCreate(CreateItemCommand)
-                    .WithPaste(PasteCommand, currentDirectory);
+                    .WithPaste(FileOperations.PasteCommand, currentDirectory);
 
                 //TODO:  Add view and sort options;
 

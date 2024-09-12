@@ -1,6 +1,8 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿#nullable enable
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using FileExplorer.Core.Contracts.Clipboard;
 using FileExplorer.Helpers;
 using FileExplorer.Models.Contracts.Storage;
 using FileExplorer.Models.Contracts.Storage.Directory;
@@ -11,6 +13,7 @@ using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -21,6 +24,23 @@ namespace FileExplorer.ViewModels.General
     /// </summary>
     public sealed partial class FileOperationsViewModel : ObservableRecipient
     {
+        private readonly IClipboardService clipboard;
+        public FileOperationsViewModel()
+        {
+            clipboard = App.GetService<IClipboardService>();
+            clipboard.FileDropListChanged += NotifyCanPaste;
+        }
+
+        /// <summary>
+        /// Checks if there is any files inside of clipboard 
+        /// </summary>
+        private bool CanPaste() => clipboard.HasFiles;
+
+        private void NotifyCanPaste(object? sender, EventArgs args)
+        {
+            PasteCommand.NotifyCanExecuteChanged();
+        }
+
         #region Open
 
         /// <summary>
@@ -83,7 +103,7 @@ namespace FileExplorer.ViewModels.General
             if (string.IsNullOrWhiteSpace(item.Name))
             {
                 item.CancelEdit();
-                await App.MainWindow.ShowMessageDialogAsync("ItemProperties's name cannot be empty", "Empty name is illegal");
+                await App.MainWindow.ShowMessageDialogAsync("Item's name cannot be empty", "Empty name is illegal");
                 return;
             }
             item.Rename();
@@ -162,36 +182,68 @@ namespace FileExplorer.ViewModels.General
         {
 
         }
-        public void CopyOperation(ClipboardFileOperation data, IDirectory destination)
+
+        [RelayCommand]
+        public void CopyItems(IReadOnlyCollection<IDirectoryItem> items)
         {
+            clipboard.SetFiles(items, DragDropEffects.Copy);
+        }
+
+        /// <summary>
+        /// Pastes items from clipboard into the directory
+        /// </summary>
+        /// <param name="destination"> Destination directory </param>
+        [RelayCommand(CanExecute = nameof(CanPaste))]
+        public void Paste(IDirectory destination)
+        {
+            var data = clipboard.GetFiles();
+
+            if (data is not null)
+            {
+                PasteAndGetItems(data, destination);
+            }
+            else
+            {
+                throw new NullReferenceException("Cannot paste items, since data provided from clipboard is null");
+            }
+        }
+
+        public ICollection<IDirectoryItem> PasteAndGetItems(ClipboardFileOperation data, IDirectory destination)
+        {
+            ICollection<IDirectoryItem> operationResult;
+
             // Contains copy flag
             if ((data.Operation & DragDropEffects.Copy) != 0)
             {
-                Copy(data.DirectoryItems, destination.Path);
+                operationResult = Copy(data.DirectoryItems, destination.Path).ToArray();
             }
             // Contains cut flag
             else if ((data.Operation & DragDropEffects.Move) != 0)
             {
-                Move(data.DirectoryItems, destination.Path);
+                operationResult = Move(data.DirectoryItems, destination.Path).ToArray();
             }
             else
             {
                 throw new ArgumentException($"Illegal operation. Value: {data.Operation}", nameof(data.Operation));
             }
+
+            return operationResult;
         }
 
-        private void Copy(IEnumerable<IDirectoryItem> items, string destination)
+        private IEnumerable<IDirectoryItem> Copy(IEnumerable<IDirectoryItem> items, string destination)
         {
             foreach (var item in items)
             {
-                item.Copy(destination);
+                var copy = item.Copy(destination);
+                yield return copy;
             }
         }
-        private void Move(IEnumerable<IDirectoryItem> items, string destination)
+        private IEnumerable<IDirectoryItem> Move(IEnumerable<IDirectoryItem> items, string destination)
         {
             foreach (var item in items)
             {
                 item.Move(destination);
+                yield return item;
             }
         }
     }

@@ -49,9 +49,9 @@ namespace FileExplorer.Models.Storage.Windows
         }
 
         /// <inheritdoc />
-        public abstract void Copy(string destination);
+        public abstract IDirectoryItem Copy(string destination);
 
-        protected abstract void CopyPhysical(string destination, string newName);
+        protected abstract string CopyPhysical(string destination, string newName);
 
         /// <inheritdoc />
         public override void Rename()

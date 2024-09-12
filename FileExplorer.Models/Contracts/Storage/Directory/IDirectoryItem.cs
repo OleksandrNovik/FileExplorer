@@ -17,7 +17,8 @@ namespace FileExplorer.Models.Contracts.Storage.Directory
         /// Copy item from current directory to a destination directory
         /// </summary>
         /// <param name="destination"> Path to the destination directory </param>
-        public void Copy(string destination);
+        /// <returns> Copy of directory item </returns>
+        public IDirectoryItem Copy(string destination);
 
         /// <summary>
         /// Moves item from current directory to destination

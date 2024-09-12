@@ -79,6 +79,11 @@ namespace FileExplorer.Core.Services.Clipboard
                     DirectoryItems = clipboardData.Value.Files.Select(fileFactory.Create),
                     Operation = clipboardData.Value.Operation
                 };
+
+                if ((clipboardData.Value.Operation & DragDropEffects.Move) != 0)
+                {
+                    FormsClipboard.Clear();
+                }
             }
 
             return operationResult;
