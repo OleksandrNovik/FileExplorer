@@ -162,8 +162,7 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <Grid Background="{ThemeResource TextBoxBackgroundThemeBrush}" 
-                  BorderBrush="{ThemeResource ButtonBorderThemeBrush}" 
+            <Grid 
                   CornerRadius="5"
                   BorderThickness="1"
                   Padding="7 10" Margin="5">
