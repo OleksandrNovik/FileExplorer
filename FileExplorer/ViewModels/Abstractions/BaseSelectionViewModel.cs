@@ -2,11 +2,11 @@
 using CommunityToolkit.Mvvm.Input;
 using FileExplorer.Core.Contracts.Clipboard;
 using FileExplorer.Core.Contracts.Factories;
+using FileExplorer.Models;
+using FileExplorer.Models.Contracts.Storage.Directory;
+using FileExplorer.Models.ModelHelpers;
+using FileExplorer.Models.Storage.Abstractions;
 using FileExplorer.ViewModels.General;
-using Models;
-using Models.Contracts.Storage.Directory;
-using Models.ModelHelpers;
-using Models.Storage.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -103,7 +103,16 @@ namespace FileExplorer.ViewModels.Abstractions
         [RelayCommand(CanExecute = nameof(CanPaste))]
         protected void Paste(IDirectory directory)
         {
+            var data = clipboard.GetFiles();
 
+            if (data is not null)
+            {
+                FileOperations.CopyOperation(data, directory);
+            }
+            else
+            {
+                throw new NullReferenceException("Cannot paste items, since data provided from clipboard is null");
+            }
         }
 
         public override void OnNavigatedFrom()

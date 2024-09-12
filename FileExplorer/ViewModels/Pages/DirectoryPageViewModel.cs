@@ -3,23 +3,23 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FileExplorer.Core.Contracts.Clipboard;
 using FileExplorer.Core.Contracts.Settings;
+using FileExplorer.Helpers;
+using FileExplorer.Helpers.Application;
 using FileExplorer.ViewModels.Abstractions;
 using FileExplorer.ViewModels.General;
-using Helpers;
-using Helpers.Application;
 using Microsoft.UI.Xaml.Controls;
-using Models;
-using Models.Contracts.Storage;
-using Models.Contracts.Storage.Directory;
-using Models.Messages;
-using Models.ModelHelpers;
-using Models.Storage.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using FileExplorer.Models;
+using FileExplorer.Models.Contracts.Storage;
+using FileExplorer.Models.Contracts.Storage.Directory;
+using FileExplorer.Models.Messages;
+using FileExplorer.Models.ModelHelpers;
+using FileExplorer.Models.Storage.Abstractions;
 
 namespace FileExplorer.ViewModels.Pages
 {
@@ -119,6 +119,7 @@ namespace FileExplorer.ViewModels.Pages
         {
             Debug.Assert(currentDirectory is not null);
             Paste(currentDirectory);
+
         }
 
         /// <summary>

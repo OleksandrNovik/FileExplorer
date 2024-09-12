@@ -124,8 +124,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FileExplorer.Core\FileExplorer.Core.csproj" />
-    <ProjectReference Include="..\Helpers\Helpers.csproj" />
-    <ProjectReference Include="..\Models\Models.csproj" />
+    <ProjectReference Include="..\FileExplorer.Helpers\FileExplorer.Helpers.csproj" />
+    <ProjectReference Include="..\FileExplorer.Models\FileExplorer.Models.csproj" />
   </ItemGroup>
 
   <ItemGroup>

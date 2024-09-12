@@ -1,5 +1,5 @@
-﻿using FileExplorer.UI.Behaviors.BaseBehaviors;
-using Helpers.General;
+﻿using FileExplorer.Helpers.General;
+using FileExplorer.UI.Behaviors.BaseBehaviors;
 using Microsoft.UI.Xaml.Controls;
 using System.Collections;
 using System.Linq;

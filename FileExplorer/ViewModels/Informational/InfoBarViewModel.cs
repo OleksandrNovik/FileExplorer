@@ -2,9 +2,9 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using FileExplorer.Models.Messages;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Models.Messages;
 using System;
 
 namespace FileExplorer.ViewModels.Informational

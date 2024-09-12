@@ -1,8 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using FileExplorer.Core.Contracts;
 using FileExplorer.Core.Contracts.Settings;
+using FileExplorer.Models.Settings;
 using FileExplorer.Views.Settings.Pages;
-using Models.Settings;
 
 namespace FileExplorer.ViewModels.Settings
 {

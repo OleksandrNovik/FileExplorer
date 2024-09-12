@@ -1,10 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using FileExplorer.Core.Contracts;
+using FileExplorer.Models.Contracts.Storage;
+using FileExplorer.Models.Messages;
 using FileExplorer.ViewModels.General;
 using FileExplorer.ViewModels.Search;
-using Models.Contracts.Storage;
-using Models.Messages;
 
 namespace FileExplorer.ViewModels.Abstractions
 {

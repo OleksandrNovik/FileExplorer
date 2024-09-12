@@ -1,9 +1,9 @@
 ﻿#nullable enable
 using FileExplorer.Core.Contracts.General;
 using FileExplorer.Core.Contracts.Settings;
-using Helpers.Application;
+using FileExplorer.Helpers.Application;
+using FileExplorer.Models.Settings;
 using Microsoft.UI.Xaml;
-using Models.Settings;
 using System;
 using System.Diagnostics;
 using System.IO;

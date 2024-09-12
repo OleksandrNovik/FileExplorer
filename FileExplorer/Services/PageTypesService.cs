@@ -1,7 +1,7 @@
 ﻿#nullable enable
 using FileExplorer.Core.Contracts;
+using FileExplorer.Models.Enums;
 using FileExplorer.Views;
-using Models.Enums;
 using System;
 
 namespace FileExplorer.Services

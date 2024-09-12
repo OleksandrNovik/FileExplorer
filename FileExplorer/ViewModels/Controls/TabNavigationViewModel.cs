@@ -2,9 +2,9 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using FileExplorer.Core.Contracts;
-using Models.Contracts.Storage;
-using Models.Messages;
-using Models.Storage.Windows;
+using FileExplorer.Models.Contracts.Storage;
+using FileExplorer.Models.Messages;
+using FileExplorer.Models.Storage.Windows;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;

@@ -13,12 +13,13 @@
     xmlns:tabRelated="using:Models.TabRelated"
     xmlns:settings="using:FileExplorer.Views.Settings"
     xmlns:helpers="using:FileExplorer.UI.Helpers"
-    xmlns:navigation="using:Models.Navigation"
     xmlns:tabs="using:FileExplorer.UI.Behaviors.Tabs"
     xmlns:navigationBehaviors="using:FileExplorer.UI.Behaviors.Navigation"
     xmlns:contextMenu="using:FileExplorer.UI.Behaviors.ContextMenu"
     xmlns:general="using:FileExplorer.UI.Behaviors.General"
     xmlns:buildingContextMenu="using:FileExplorer.UI.BuildingContextMenu"
+    xmlns:navigation="using:FileExplorer.Models.Navigation"
+    xmlns:tabRelated1="using:FileExplorer.Models.TabRelated"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -85,7 +86,7 @@
                     <Style TargetType="TabViewItem">
                         <Setter Property="HeaderTemplate">
                             <Setter.Value>
-                                <DataTemplate x:DataType="tabRelated:TabModel">
+                                <DataTemplate x:DataType="tabRelated1:TabModel">
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="{x:Bind Title, Mode=OneWay}" />
                                     </StackPanel>

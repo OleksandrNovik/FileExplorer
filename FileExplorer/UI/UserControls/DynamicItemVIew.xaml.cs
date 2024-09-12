@@ -1,9 +1,9 @@
+using FileExplorer.Models;
+using FileExplorer.Models.Contracts.Storage.Directory;
+using FileExplorer.Models.Messages;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
-using Models;
-using Models.Contracts.Storage.Directory;
-using Models.Messages;
 using System.Collections.ObjectModel;
 
 // To learn more about WinUI, the WinUI project structure,

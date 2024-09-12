@@ -1,6 +1,6 @@
-﻿using Microsoft.UI.Xaml;
+﻿using FileExplorer.Models.Storage.Abstractions;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Models.Storage.Abstractions;
 
 namespace FileExplorer.UI.UserControls.StorageProperties
 {

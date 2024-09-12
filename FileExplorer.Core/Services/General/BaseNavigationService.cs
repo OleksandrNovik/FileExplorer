@@ -1,6 +1,6 @@
 ﻿#nullable enable
 using FileExplorer.Core.Contracts;
-using Helpers.Application;
+using FileExplorer.Helpers.Application;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using System;

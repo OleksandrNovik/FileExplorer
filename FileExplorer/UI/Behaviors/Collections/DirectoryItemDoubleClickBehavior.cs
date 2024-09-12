@@ -1,6 +1,6 @@
-﻿using FileExplorer.UI.Behaviors.BaseBehaviors;
+﻿using FileExplorer.Models.Storage.Abstractions;
+using FileExplorer.UI.Behaviors.BaseBehaviors;
 using Microsoft.UI.Xaml.Controls;
-using Models.Storage.Abstractions;
 
 namespace FileExplorer.UI.Behaviors.Collections
 {

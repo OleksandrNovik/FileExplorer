@@ -1,12 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using FileExplorer.Core.Contracts.Clipboard;
+using FileExplorer.Helpers;
+using FileExplorer.Models;
+using FileExplorer.Models.ModelHelpers;
+using FileExplorer.Models.Storage.Drives;
+using FileExplorer.Models.Storage.Windows;
 using FileExplorer.ViewModels.Abstractions;
 using FileExplorer.ViewModels.General;
-using Helpers;
-using Models;
-using Models.ModelHelpers;
-using Models.Storage.Drives;
-using Models.Storage.Windows;
 using System;
 using System.Collections.Generic;
 using System.Linq;

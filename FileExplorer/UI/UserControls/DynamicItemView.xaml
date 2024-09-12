@@ -8,7 +8,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     xmlns:contentSelectors="using:FileExplorer.UI.ContentSelectors"
-    xmlns:storage="using:Models.Contracts.Storage"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:behaviors="using:FileExplorer.UI.Behaviors"
     xmlns:general="using:FileExplorer.UI.Behaviors.General"
@@ -21,7 +20,7 @@
     xmlns:converters="using:FileExplorer.UI.Converters"
     xmlns:converters1="using:CommunityToolkit.WinUI.UI.Converters"
     xmlns:template="using:FileExplorer.UI.Behaviors.Template"
-    xmlns:directory="using:Models.Contracts.Storage.Directory"
+    xmlns:directory="using:FileExplorer.Models.Contracts.Storage.Directory"
     mc:Ignorable="d">
 
     <UserControl.Resources>

@@ -1,8 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.Input;
-using Helpers;
-using Helpers.General;
-using Models.ModelHelpers;
-using Models.Navigation;
+using FileExplorer.Helpers;
+using FileExplorer.Helpers.General;
+using FileExplorer.Models.ModelHelpers;
+using FileExplorer.Models.Navigation;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;

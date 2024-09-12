@@ -1,6 +1,6 @@
-﻿using FileExplorer.UI.Behaviors.BaseBehaviors;
+﻿using FileExplorer.Models.ModelHelpers;
+using FileExplorer.UI.Behaviors.BaseBehaviors;
 using Microsoft.UI.Xaml.Controls;
-using Models.ModelHelpers;
 using System.Linq;
 
 namespace FileExplorer.UI.Behaviors.Tabs

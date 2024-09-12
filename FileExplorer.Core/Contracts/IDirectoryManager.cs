@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.Storage;
-using DirectoryItemWrapper = Models.Storage.Windows.DirectoryItemWrapper;
+using DirectoryItemWrapper = FileExplorer.Models.Storage.Windows.DirectoryItemWrapper;
 
 namespace FileExplorer.Core.Contracts
 {

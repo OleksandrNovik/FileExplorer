@@ -1,9 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using FileExplorer.Core.Contracts;
 using FileExplorer.Core.Contracts.Settings;
+using FileExplorer.Helpers.Application;
+using FileExplorer.Models.Settings;
 using FileExplorer.Views.Settings.Pages;
-using Helpers.Application;
-using Models.Settings;
 using System.Collections.ObjectModel;
 
 namespace FileExplorer.ViewModels.Settings

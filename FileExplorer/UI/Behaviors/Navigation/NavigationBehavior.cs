@@ -3,10 +3,10 @@ using CommunityToolkit.Mvvm.Input;
 using FileExplorer.Core.Contracts;
 using FileExplorer.Core.Contracts.DirectoriesNavigation;
 using FileExplorer.Core.Contracts.Factories;
+using FileExplorer.Models.Enums;
+using FileExplorer.Models.TabRelated;
 using FileExplorer.UI.Helpers;
 using Microsoft.UI.Xaml.Controls;
-using Models.Enums;
-using Models.TabRelated;
 using System.Collections;
 
 namespace FileExplorer.UI.Behaviors.Navigation

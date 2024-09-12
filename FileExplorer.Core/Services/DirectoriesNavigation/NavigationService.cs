@@ -2,8 +2,8 @@
 using FileExplorer.Core.Contracts;
 using FileExplorer.Core.Contracts.DirectoriesNavigation;
 using FileExplorer.Core.Services.General;
-using Models.Enums;
-using Models.TabRelated;
+using FileExplorer.Models.Enums;
+using FileExplorer.Models.TabRelated;
 using System;
 
 namespace FileExplorer.Core.Services.DirectoriesNavigation

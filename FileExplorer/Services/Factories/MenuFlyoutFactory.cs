@@ -1,7 +1,7 @@
 ﻿using FileExplorer.Core.Contracts.Factories;
-using Helpers.General;
+using FileExplorer.Helpers.General;
+using FileExplorer.Models;
 using Microsoft.UI.Xaml.Controls;
-using Models;
 using System.Collections.Generic;
 using System.Linq;
 

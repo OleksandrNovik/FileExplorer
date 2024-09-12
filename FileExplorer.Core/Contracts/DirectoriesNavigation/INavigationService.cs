@@ -1,7 +1,7 @@
 ﻿#nullable enable
 using FileExplorer.Core.Contracts.General;
-using Models.Enums;
-using Models.TabRelated;
+using FileExplorer.Models.Enums;
+using FileExplorer.Models.TabRelated;
 using System;
 
 namespace FileExplorer.Core.Contracts.DirectoriesNavigation

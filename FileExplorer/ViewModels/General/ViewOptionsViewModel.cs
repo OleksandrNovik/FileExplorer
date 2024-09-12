@@ -1,8 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FileExplorer.Core.Contracts.Settings;
-using Helpers.Application;
-using Models.Messages;
+using FileExplorer.Helpers.Application;
+using FileExplorer.Models.Messages;
 
 namespace FileExplorer.ViewModels.General
 {

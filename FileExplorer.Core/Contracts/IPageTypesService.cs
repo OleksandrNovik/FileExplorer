@@ -1,6 +1,6 @@
 ﻿#nullable enable
 using FileExplorer.Core.Contracts.General;
-using Models.Enums;
+using FileExplorer.Models.Enums;
 
 namespace FileExplorer.Core.Contracts
 {

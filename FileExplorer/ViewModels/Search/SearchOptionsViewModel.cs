@@ -2,15 +2,15 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using Models;
-using Models.Enums;
-using Models.General;
-using Models.Messages;
-using Models.Ranges;
-using Models.Storage.Additional;
+using FileExplorer.Models;
+using FileExplorer.Models.Enums;
+using FileExplorer.Models.General;
+using FileExplorer.Models.Messages;
+using FileExplorer.Models.Ranges;
+using FileExplorer.Models.Storage.Additional;
 using System;
 using System.Collections.Generic;
-using PathHelper = Helpers.StorageHelpers.PathHelper;
+using PathHelper = FileExplorer.Helpers.StorageHelpers.PathHelper;
 
 namespace FileExplorer.ViewModels.Search
 {

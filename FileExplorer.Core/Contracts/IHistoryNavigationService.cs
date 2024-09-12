@@ -1,5 +1,5 @@
-﻿using Models.Contracts.Storage;
-using Models.TabRelated;
+﻿using FileExplorer.Models.Contracts.Storage;
+using FileExplorer.Models.TabRelated;
 
 namespace FileExplorer.Core.Contracts
 {

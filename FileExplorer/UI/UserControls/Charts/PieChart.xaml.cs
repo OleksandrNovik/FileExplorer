@@ -1,10 +1,10 @@
 using CommunityToolkit.WinUI.UI.Controls;
-using Helpers.General;
+using FileExplorer.Helpers.General;
+using FileExplorer.Models.Storage.Additional.Charts;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
-using Models.Storage.Additional.Charts;
 using System;
 using System.Collections.Generic;
 using System.Linq;

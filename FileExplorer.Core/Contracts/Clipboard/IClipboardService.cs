@@ -1,6 +1,6 @@
 ﻿#nullable enable
-using Models.Contracts.Storage.Directory;
-using Models.Messages;
+using FileExplorer.Models.Contracts.Storage.Directory;
+using FileExplorer.Models.Messages;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;

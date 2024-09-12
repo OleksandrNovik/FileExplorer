@@ -1,9 +1,9 @@
 ﻿using FileExplorer.Core.Contracts;
-using Models.Storage.Windows;
+using FileExplorer.Models.Storage.Windows;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using DirectoryItemWrapper = Models.Storage.Windows.DirectoryItemWrapper;
+using DirectoryItemWrapper = FileExplorer.Models.Storage.Windows.DirectoryItemWrapper;
 
 namespace FileExplorer.Core.Services
 {

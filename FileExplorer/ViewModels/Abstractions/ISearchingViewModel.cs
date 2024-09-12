@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using Models.Messages;
+using FileExplorer.Models.Messages;
 
 namespace FileExplorer.ViewModels.Abstractions
 {

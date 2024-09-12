@@ -1,7 +1,7 @@
 ﻿#nullable enable
 using FileExplorer.Core.Contracts;
-using Models.Contracts.Storage;
-using Models.TabRelated;
+using FileExplorer.Models.Contracts.Storage;
+using FileExplorer.Models.TabRelated;
 using System.Collections.ObjectModel;
 
 namespace FileExplorer.Core.Services

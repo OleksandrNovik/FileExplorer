@@ -5,16 +5,16 @@ using CommunityToolkit.Mvvm.Messaging;
 using FileExplorer.Core.Contracts;
 using FileExplorer.Core.Contracts.DirectoriesNavigation;
 using FileExplorer.Core.Contracts.Factories;
+using FileExplorer.Models;
+using FileExplorer.Models.Contracts.Storage;
+using FileExplorer.Models.Messages;
+using FileExplorer.Models.ModelHelpers;
+using FileExplorer.Models.Navigation;
+using FileExplorer.Models.Storage.Additional;
+using FileExplorer.Models.Storage.Windows;
+using FileExplorer.Models.TabRelated;
 using FileExplorer.ViewModels.General;
 using FileExplorer.ViewModels.Search;
-using Models;
-using Models.Contracts.Storage;
-using Models.Messages;
-using Models.ModelHelpers;
-using Models.Navigation;
-using Models.Storage.Additional;
-using Models.Storage.Windows;
-using Models.TabRelated;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using NavigationPaneViewModel = FileExplorer.ViewModels.Controls.NavigationPaneViewModel;
@@ -136,8 +136,7 @@ namespace FileExplorer.ViewModels.Pages
                     menu.WithPin(FileOperationsViewModel.PinCommand, directory);
                 }
 
-                menu.WithCopy(FileOperationsViewModel.CopyCommand, directory)
-                    .WithDetails(FileOperationsViewModel.ShowDetailsCommand, directory);
+                menu.WithDetails(FileOperationsViewModel.ShowDetailsCommand, directory);
             }
 
             return menu;

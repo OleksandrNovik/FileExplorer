@@ -1,11 +1,11 @@
 ﻿#nullable enable
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
+using FileExplorer.Models.Contracts.Storage;
+using FileExplorer.Models.General;
+using FileExplorer.Models.Messages;
+using FileExplorer.Models.Storage.Additional;
 using Microsoft.UI.Xaml.Controls;
-using Models.Contracts.Storage;
-using Models.General;
-using Models.Messages;
-using Models.Storage.Additional;
 using System;
 using System.Diagnostics;
 using System.Threading;

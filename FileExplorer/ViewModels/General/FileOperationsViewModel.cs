@@ -1,16 +1,18 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using Helpers;
+using FileExplorer.Helpers;
+using FileExplorer.Models.Contracts.Storage;
+using FileExplorer.Models.Contracts.Storage.Directory;
+using FileExplorer.Models.Contracts.Storage.Properties;
+using FileExplorer.Models.Messages;
+using FileExplorer.Models.Storage.Abstractions;
 using Microsoft.UI.Xaml.Controls;
-using Models.Contracts.Storage;
-using Models.Contracts.Storage.Directory;
-using Models.Contracts.Storage.Properties;
-using Models.Messages;
-using Models.Storage.Abstractions;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace FileExplorer.ViewModels.General
 {
@@ -160,11 +162,37 @@ namespace FileExplorer.ViewModels.General
         {
 
         }
-
-        [RelayCommand]
-        private void Copy(IDirectoryItem item)
+        public void CopyOperation(ClipboardFileOperation data, IDirectory destination)
         {
+            // Contains copy flag
+            if ((data.Operation & DragDropEffects.Copy) != 0)
+            {
+                Copy(data.DirectoryItems, destination.Path);
+            }
+            // Contains cut flag
+            else if ((data.Operation & DragDropEffects.Move) != 0)
+            {
+                Move(data.DirectoryItems, destination.Path);
+            }
+            else
+            {
+                throw new ArgumentException($"Illegal operation. Value: {data.Operation}", nameof(data.Operation));
+            }
+        }
 
+        private void Copy(IEnumerable<IDirectoryItem> items, string destination)
+        {
+            foreach (var item in items)
+            {
+                item.Copy(destination);
+            }
+        }
+        private void Move(IEnumerable<IDirectoryItem> items, string destination)
+        {
+            foreach (var item in items)
+            {
+                item.Move(destination);
+            }
         }
     }
 }

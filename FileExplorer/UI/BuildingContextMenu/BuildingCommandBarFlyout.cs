@@ -1,8 +1,8 @@
 ﻿#nullable enable
 using FileExplorer.Core.Contracts.Factories;
+using FileExplorer.Helpers.General;
 using FileExplorer.Services.Factories;
 using FileExplorer.UI.BuildingContextMenu.Contracts;
-using Helpers.General;
 using Microsoft.UI.Xaml.Controls;
 using System.Collections.Generic;
 

@@ -10,17 +10,18 @@
     xmlns:userControls="using:FileExplorer.UI.UserControls"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:general="using:FileExplorer.UI.Behaviors.General"
-    xmlns:windows="using:Models.Storage.Windows"
     xmlns:collections="using:FileExplorer.UI.Behaviors.Collections"
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     xmlns:behaviors="using:FileExplorer.UI.Behaviors"
     xmlns:buildingContextMenu="using:FileExplorer.UI.BuildingContextMenu"
     xmlns:contextMenu="using:FileExplorer.UI.Behaviors.ContextMenu"
+    xmlns:drives1="using:FileExplorer.Models.Storage.Drives"
+    xmlns:windows="using:FileExplorer.Models.Storage.Windows"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Page.Resources>
-        <DataTemplate x:DataType="drives:DriveWrapper" x:Key="DrivesTemplate">
+        <DataTemplate x:DataType="drives1:DriveWrapper" x:Key="DrivesTemplate">
             <userControls:DriveInformationItem Drive="{x:Bind}" />
         </DataTemplate>
 

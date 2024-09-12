@@ -1,9 +1,9 @@
 ﻿#nullable enable
 using FileExplorer.Core.Contracts.Clipboard;
-using Helpers.Application;
-using Models.Contracts.ModelServices;
-using Models.Contracts.Storage.Directory;
-using Models.Messages;
+using FileExplorer.Helpers.Application;
+using FileExplorer.Models.Contracts.ModelServices;
+using FileExplorer.Models.Contracts.Storage.Directory;
+using FileExplorer.Models.Messages;
 using System;
 using System.Collections.Generic;
 using System.IO;

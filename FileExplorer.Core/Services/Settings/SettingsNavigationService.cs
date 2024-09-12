@@ -2,7 +2,7 @@
 using FileExplorer.Core.Contracts.General;
 using FileExplorer.Core.Contracts.Settings;
 using FileExplorer.Core.Services.General;
-using Helpers.Application;
+using FileExplorer.Helpers.Application;
 
 namespace FileExplorer.Core.Services.Settings
 {
