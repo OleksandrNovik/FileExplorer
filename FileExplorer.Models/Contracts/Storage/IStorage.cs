@@ -23,7 +23,7 @@ namespace FileExplorer.Models.Contracts.Storage
         public string Path { get; }
 
         /// <summary>
-        /// Parent storage
+        /// Directory storage
         /// </summary>
         public IStorage? Parent { get; }
 

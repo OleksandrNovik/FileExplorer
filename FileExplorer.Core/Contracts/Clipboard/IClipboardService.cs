@@ -36,10 +36,14 @@ namespace FileExplorer.Core.Contracts.Clipboard
         /// <param name="value"> String value to save to the clipboard </param>
         public void SetText(string value);
 
+        public void Clear();
+
         /// <summary>
         /// Event to notify listeners that other application changed file drop list
         /// </summary>
 
         public event EventHandler FileDropListChanged;
+
+        public event EventHandler<CutOperationData> CutOperationStarted;
     }
 }

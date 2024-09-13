@@ -48,6 +48,15 @@ namespace FileExplorer.ViewModels.Pages
             localSettings = settingsService;
 
             clipboard.FileDropListChanged += NotifyCanPaste;
+            clipboard.CutOperationStarted += OnCutOperation;
+        }
+
+        private void OnCutOperation(object? sender, CutOperationData e)
+        {
+            if (currentDirectory is not null && e.CutDirectory.Path == currentDirectory.Path)
+            {
+                DirectoryItems.RemovePaths(e.Paths);
+            }
         }
 
         /// <summary>
@@ -211,6 +220,7 @@ namespace FileExplorer.ViewModels.Pages
         {
             base.OnNavigatedFrom();
             clipboard.FileDropListChanged -= NotifyCanPaste;
+            clipboard.CutOperationStarted -= OnCutOperation;
         }
 
         /// <inheritdoc />

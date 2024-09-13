@@ -89,13 +89,13 @@ namespace FileExplorer.Models.Storage.Windows
         public IEnumerable<IDirectoryItem> EnumerateItems(FileAttributes rejectedAttributes = 0)
         {
             //TODO: Handle deleted folder and open tab with that folder
-            return EnumerateWrappers(Directory.EnumerateFileSystemEntries(Path), rejectedAttributes);
+            return EnumerateWrappers(System.IO.Directory.EnumerateFileSystemEntries(Path), rejectedAttributes);
         }
         public IEnumerable<IStorage> EnumerateSubDirectories()
         {
             try
             {
-                return Directory.EnumerateDirectories(Path).Select(path => new DirectoryWrapper(path));
+                return System.IO.Directory.EnumerateDirectories(Path).Select(path => new DirectoryWrapper(path));
             }
             catch
             {
@@ -121,7 +121,7 @@ namespace FileExplorer.Models.Storage.Windows
 
         private IEnumerable<DirectoryItemWrapper> EnumerateItems(EnumerationOptions enumeration, string pattern = "*")
         {
-            return EnumerateWrappers(Directory.EnumerateFileSystemEntries(Path, pattern, enumeration));
+            return EnumerateWrappers(System.IO.Directory.EnumerateFileSystemEntries(Path, pattern, enumeration));
         }
 
         private IEnumerable<DirectoryItemWrapper> EnumerateWrappers(IEnumerable<string> paths, FileAttributes skipped = 0)
@@ -157,7 +157,7 @@ namespace FileExplorer.Models.Storage.Windows
         protected override string CopyPhysical(string destination, string newName)
         {
             var newPath = IOPath.Combine(destination, newName);
-            Directory.CreateDirectory(newPath);
+            System.IO.Directory.CreateDirectory(newPath);
 
             return newPath;
         }
@@ -171,7 +171,7 @@ namespace FileExplorer.Models.Storage.Windows
             // Folder is being moved to the same directory
             if (newPath == Path) return;
 
-            Directory.Move(Path, newPath);
+            System.IO.Directory.Move(Path, newPath);
             info = new DirectoryInfo(newPath);
             InitializeData();
             asStorageFolder = null;
@@ -187,7 +187,7 @@ namespace FileExplorer.Models.Storage.Windows
         /// <inheritdoc />
         public override void Delete()
         {
-            Directory.Delete(Path, true);
+            System.IO.Directory.Delete(Path, true);
         }
 
         /// <inheritdoc />
@@ -195,7 +195,7 @@ namespace FileExplorer.Models.Storage.Windows
         {
             var uniqueName = GenerateUniqueName(destination, "New Folder");
             var newPath = IOPath.Combine(destination, uniqueName);
-            info = Directory.CreateDirectory(newPath);
+            info = System.IO.Directory.CreateDirectory(newPath);
             InitializeData();
         }
 

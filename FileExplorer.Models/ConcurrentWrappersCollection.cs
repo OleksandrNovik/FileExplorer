@@ -4,6 +4,7 @@ using FileExplorer.Models.Contracts;
 using FileExplorer.Models.Contracts.Storage.Directory;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using DirectoryItemWrapper = FileExplorer.Models.Storage.Windows.DirectoryItemWrapper;
@@ -47,6 +48,19 @@ namespace FileExplorer.Models
                 {
                     await item.UpdateThumbnailAsync(size);
                 });
+            }
+        }
+
+        public void RemovePaths(IEnumerable<string> paths)
+        {
+            foreach (var path in paths)
+            {
+                var item = this.FirstOrDefault(i => i.Path == path);
+
+                if (item is not null)
+                {
+                    Remove(item);
+                }
             }
         }
     }

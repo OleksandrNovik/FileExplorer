@@ -86,7 +86,7 @@ namespace FileExplorer
                     services.AddTransient<ILocalSettingsService, LocalSettingsService>();
 
                     //Clipboard
-                    services.AddTransient<IClipboardService, ClipboardService>();
+                    services.AddSingleton<IClipboardService, ClipboardService>();
 
                     // Search
                     services.AddTransient<SearchOptionsViewModel>();

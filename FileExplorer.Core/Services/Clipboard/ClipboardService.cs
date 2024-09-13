@@ -1,16 +1,15 @@
 ﻿#nullable enable
 using FileExplorer.Core.Contracts.Clipboard;
-using FileExplorer.Helpers.Application;
 using FileExplorer.Models.Contracts.ModelServices;
 using FileExplorer.Models.Contracts.Storage.Directory;
 using FileExplorer.Models.Messages;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using Windows.ApplicationModel.DataTransfer;
 using FormsClipboard = System.Windows.Forms.Clipboard;
+using StaticClipboard = FileExplorer.Helpers.Application.StaticClipboard;
 using UWPClipboard = Windows.ApplicationModel.DataTransfer.Clipboard;
 
 
@@ -80,16 +79,28 @@ namespace FileExplorer.Core.Services.Clipboard
                     Operation = clipboardData.Value.Operation
                 };
 
+                var parentDirectory = operationResult.DirectoryItems.FirstOrDefault()?.Directory;
+
+                ArgumentNullException.ThrowIfNull(parentDirectory);
+
                 if ((clipboardData.Value.Operation & DragDropEffects.Move) != 0)
                 {
-                    FormsClipboard.Clear();
+                    var arg = new CutOperationData(parentDirectory, clipboardData.Value.Files.ToArray());
+                    CutOperationStarted?.Invoke(this, arg);
                 }
             }
 
             return operationResult;
         }
 
+        public void Clear()
+        {
+            FormsClipboard.Clear();
+        }
+
         /// <inheritdoc />
         public event EventHandler FileDropListChanged;
+
+        public event EventHandler<CutOperationData> CutOperationStarted;
     }
 }

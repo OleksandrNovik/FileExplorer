@@ -28,8 +28,16 @@ namespace FileExplorer.ViewModels.General
         public FileOperationsViewModel()
         {
             clipboard = App.GetService<IClipboardService>();
+
             clipboard.FileDropListChanged += NotifyCanPaste;
+            clipboard.CutOperationStarted += OnCutOperation;
         }
+
+        private void OnCutOperation(object? sender, CutOperationData e)
+        {
+            clipboard.Clear();
+        }
+
 
         /// <summary>
         /// Checks if there is any files inside of clipboard 

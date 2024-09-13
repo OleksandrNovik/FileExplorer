@@ -9,6 +9,7 @@ namespace FileExplorer.Models.Contracts.Storage.Directory
 {
     public interface IDirectoryItem : IRenameableObject, IBasicPropertiesProvider, IThumbnailProvider
     {
+        public IDirectory? Directory { get; }
         public FileAttributes Attributes { get; }
         public DateTime LastAccess { get; }
         public ByteSize? Size { get; }

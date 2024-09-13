@@ -16,6 +16,7 @@ namespace FileExplorer.Models.Storage.Windows
     public abstract class DirectoryItemWrapper : InteractiveStorageItem, IDirectoryItem
     {
         protected FileSystemInfo info;
+        public IDirectory? Directory => GetParentDirectory();
         public FileAttributes Attributes => info.Attributes;
         public DateTime LastAccess => info.LastAccessTime;
         public ByteSize? Size { get; protected set; }
@@ -108,7 +109,7 @@ namespace FileExplorer.Models.Storage.Windows
         /// <returns> If item is root directory returns null, otherwise returns parent directory for the item </returns>
         public DirectoryWrapper? GetParentDirectory()
         {
-            var directoryInfo = Directory.GetParent(Path);
+            var directoryInfo = System.IO.Directory.GetParent(Path);
             DirectoryWrapper? wrapper = null;
 
             if (directoryInfo != null)
