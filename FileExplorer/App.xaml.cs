@@ -4,12 +4,14 @@ using FileExplorer.Core.Contracts.DirectoriesNavigation;
 using FileExplorer.Core.Contracts.Factories;
 using FileExplorer.Core.Contracts.General;
 using FileExplorer.Core.Contracts.Settings;
+using FileExplorer.Core.Contracts.Storage;
 using FileExplorer.Core.Services;
 using FileExplorer.Core.Services.Clipboard;
 using FileExplorer.Core.Services.DirectoriesNavigation;
 using FileExplorer.Core.Services.Factories;
 using FileExplorer.Core.Services.General;
 using FileExplorer.Core.Services.Settings;
+using FileExplorer.Core.Services.Storage;
 using FileExplorer.Helpers.Application;
 using FileExplorer.Helpers.General;
 using FileExplorer.Models.Contracts.ModelServices;
@@ -78,6 +80,7 @@ namespace FileExplorer
 
                     services.AddTransient<HomePageViewModel>();
                     services.AddTransient<TabNavigationViewModel>();
+                    services.AddTransient<FileNamingTextViewModel>();
 
                     //Settings
                     services.AddTransient<SettingsViewModel>();
@@ -97,12 +100,16 @@ namespace FileExplorer
 
                     //File operations
                     services.AddTransient(_ => GetStaticResource<FileOperationsViewModel>("FileOperations"));
+                    services.AddTransient<StorageItemsNamingViewModel>();
 
                     //ViewOptions
                     services.AddTransient(_ => GetStaticResource<ViewOptionsViewModel>("ViewOptions"));
 
                     //GeneralServices
                     services.AddTransient<IStringParser, StringParser>();
+
+                    //Name validator
+                    services.AddTransient<INameValidator, FileNameValidator>();
 
                 })
                 .Build();

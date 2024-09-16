@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using FileExplorer.Core.Contracts.Storage;
 using FileExplorer.Helpers;
 using FileExplorer.Models;
 using FileExplorer.Models.ModelHelpers;
@@ -20,8 +21,8 @@ namespace FileExplorer.ViewModels.Pages
         public List<DirectoryWrapper> Libraries { get; }
         public ConcurrentWrappersCollection RecentItems { get; set; }
 
-        public HomePageViewModel(FileOperationsViewModel fileOperations)
-            : base(fileOperations)
+        public HomePageViewModel(FileOperationsViewModel fileOperations, INameValidator validator)
+            : base(fileOperations, validator)
         {
             Libraries = KnownFoldersHelper.Libraries.ToList();
         }

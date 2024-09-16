@@ -1,3 +1,4 @@
+using FileExplorer.Core.Contracts.Storage;
 using FileExplorer.Models;
 using FileExplorer.Models.Contracts.Storage.Directory;
 using FileExplorer.Models.Messages;
@@ -26,6 +27,7 @@ namespace FileExplorer.UI.UserControls
         public ConcurrentWrappersCollection ItemsSource { get; set; }
         public ObservableCollection<IDirectoryItem> SelectedItems { get; set; }
         public FlyoutBase ContextMenu { get; set; }
+        public INameValidator NameValidator { get; set; }
 
         public DynamicItemView()
         {

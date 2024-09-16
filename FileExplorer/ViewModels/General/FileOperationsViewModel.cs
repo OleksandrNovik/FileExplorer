@@ -33,6 +33,9 @@ namespace FileExplorer.ViewModels.General
             clipboard.CutOperationStarted += OnCutOperation;
         }
 
+        /// <summary>
+        /// When cut event occurs we remove item drop list from clipboard
+        /// </summary>
         private void OnCutOperation(object? sender, CutOperationData e)
         {
             clipboard.Clear();
@@ -86,7 +89,7 @@ namespace FileExplorer.ViewModels.General
 
         #endregion
 
-        #region Rename
+        #region EndRename
 
         /// <summary>
         /// Begins renaming provided object
@@ -95,10 +98,14 @@ namespace FileExplorer.ViewModels.General
         [RelayCommand]
         public void BeginRenamingItem(IRenameableObject item)
         {
-            item.BeginEdit();
-
-            if (!item.CanRename)
+            if (item.CanRename)
+            {
+                item.BeginEdit();
+            }
+            else
+            {
                 Messenger.Send(new ShowInfoBarMessage(InfoBarSeverity.Informational, "This item cannot be renamed"));
+            }
         }
 
         /// <summary>
@@ -110,11 +117,10 @@ namespace FileExplorer.ViewModels.General
         {
             if (string.IsNullOrWhiteSpace(item.Name))
             {
-                item.CancelEdit();
+                //item.CancelEdit();
                 await App.MainWindow.ShowMessageDialogAsync("Item's name cannot be empty", "Empty name is illegal");
-                return;
             }
-            item.Rename();
+            //item.EndRename();
         }
 
         /// <summary>

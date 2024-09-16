@@ -5,7 +5,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:FileExplorer"
     xmlns:converters="using:CommunityToolkit.WinUI.UI.Converters"
-    xmlns:generalViewModels="using:FileExplorer.ViewModels.General">
+    xmlns:generalViewModels="using:FileExplorer.ViewModels.General"
+    xmlns:viewModels="using:FileExplorer.ViewModels">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -33,6 +34,8 @@
 
             <generalViewModels:FileOperationsViewModel x:Key="FileOperations" />
             <generalViewModels:ViewOptionsViewModel x:Key="ViewOptions" />
+
+            <viewModels:ViewModelsLocator x:Key="Locator" />
 
         </ResourceDictionary>
     </Application.Resources>

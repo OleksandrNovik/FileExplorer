@@ -46,6 +46,7 @@
     <None Remove="UI\UserControls\SearchControl.xaml" />
     <None Remove="UI\UserControls\StorageProperties\DirectoryItemPropertiesViewer.xaml" />
     <None Remove="UI\UserControls\StorageProperties\DriveProperties.xaml" />
+    <None Remove="UI\UserControls\Text\FileNameText.xaml" />
     <None Remove="UI\UserControls\ViewOptionsSelector.xaml" />
     <None Remove="Views\DirectoryPage.xaml" />
     <None Remove="Views\HomePage.xaml" />
@@ -132,6 +133,9 @@
     <None Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Page Update="UI\UserControls\Text\FileNameText.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="UI\UserControls\Charts\PieChart.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

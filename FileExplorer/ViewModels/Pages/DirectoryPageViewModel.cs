@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FileExplorer.Core.Contracts.Clipboard;
 using FileExplorer.Core.Contracts.Settings;
+using FileExplorer.Core.Contracts.Storage;
 using FileExplorer.Helpers;
 using FileExplorer.Helpers.Application;
 using FileExplorer.Models;
@@ -41,8 +42,9 @@ namespace FileExplorer.ViewModels.Pages
         [ObservableProperty]
         private bool canCreateItems;
 
-        public DirectoryPageViewModel(FileOperationsViewModel fileOperations, ILocalSettingsService settingsService, IClipboardService clipboardService)
-            : base(fileOperations)
+        public DirectoryPageViewModel(FileOperationsViewModel fileOperations, ILocalSettingsService settingsService,
+            IClipboardService clipboardService, INameValidator validator)
+            : base(fileOperations, validator)
         {
             clipboard = clipboardService;
             localSettings = settingsService;

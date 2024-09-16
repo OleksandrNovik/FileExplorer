@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<userControls:BehaviorSettingUserControl
+    x:Class="FileExplorer.UI.UserControls.Text.FileNameText"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:FileExplorer.UI.UserControls.Text"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:userControls="using:FileExplorer.UI.UserControls"
+    mc:Ignorable="d">
+
+    <Grid>
+        <StackPanel Visibility="{x:Bind IsEdit, Mode=OneWay, 
+            Converter={StaticResource BoolToVisibilityConverter},
+            ConverterParameter=True}" Orientation="Horizontal">
+
+            <TextBlock Text="{x:Bind ViewModel.Name, Mode=OneWay}" />
+
+            <TextBlock Text="{x:Bind ViewModel.Extension, Mode=OneWay}" 
+                       Visibility="{x:Bind ShowExtension, Mode=OneWay}" />
+
+        </StackPanel>
+
+        <TextBox x:Name="TextBox" Text="{x:Bind ViewModel.EditableName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                 Visibility="{x:Bind IsEdit, Mode=OneWay, 
+                    Converter={StaticResource BoolToVisibilityConverter}}" KeyDown="OnTextBoxKeyDown" />
+
+        <TeachingTip Title="{x:Bind ViewModel.Message, Mode=OneWay}"
+                     IsOpen="{x:Bind ViewModel.IsOpen, Mode=OneWay}" />
+    </Grid>
+</userControls:BehaviorSettingUserControl>

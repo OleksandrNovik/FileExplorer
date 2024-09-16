@@ -1,30 +1,17 @@
 ﻿#nullable enable
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using FileExplorer.Models.Messages;
-using Microsoft.UI.Xaml;
+using FileExplorer.ViewModels.Abstractions;
 using Microsoft.UI.Xaml.Controls;
-using System;
 
 namespace FileExplorer.ViewModels.Informational
 {
     /// <summary>
     /// View model to handle little info bar that provides quick information for user
     /// </summary>
-    public sealed partial class InfoBarViewModel : ObservableRecipient
+    public sealed partial class InfoBarViewModel : BaseMessageShowingViewModel
     {
-        /// <summary>
-        /// Timer that counts down 2 second to auto-close info bar
-        /// </summary>
-        private DispatcherTimer timer;
-
-        /// <summary>
-        /// Is info bar opened
-        /// </summary>
-        [ObservableProperty]
-        private bool isOpen;
-
         /// <summary>
         /// Info bar severity to show what kind of message is displayed
         /// </summary>
@@ -37,19 +24,8 @@ namespace FileExplorer.ViewModels.Informational
         [ObservableProperty]
         private string title;
 
-        /// <summary>
-        /// Info bar message (can be ignored)
-        /// </summary>
-        [ObservableProperty]
-        private string? message;
-
-        public InfoBarViewModel()
+        public InfoBarViewModel() : base(2.2)
         {
-            timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromSeconds(2.2);
-            timer.Tick += CloseAfterTime;
-            isOpen = false;
-
             Messenger.Register<InfoBarViewModel, ShowInfoBarMessage>(this,
                 (_, infoBarMessage) =>
                 {
@@ -59,15 +35,6 @@ namespace FileExplorer.ViewModels.Informational
                     Message = infoBarMessage.Message;
                     Severity = infoBarMessage.Severity;
                 });
-        }
-
-        private void CloseAfterTime(object? sender, object e) => Close();
-
-        [RelayCommand]
-        private void Close()
-        {
-            IsOpen = false;
-            timer.Stop();
         }
     }
 }

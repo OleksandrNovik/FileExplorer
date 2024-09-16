@@ -21,7 +21,7 @@
             <buildingContextMenu:BuildingCommandBarFlyout.PrimaryCommands>
                 <AppBarButton Label="Rename" Command="{x:Bind ViewModel.BeginRenamingSelectedItemCommand}">
                     <AppBarButton.Icon>
-                        <FontIcon Glyph="&#xE8C8;" />
+                        <FontIcon Glyph="&#xE8AC;" />
                     </AppBarButton.Icon>
                 </AppBarButton>
                 <AppBarButton Label="Copy" Command="{x:Bind ViewModel.CopySelectedItemsCommand}">

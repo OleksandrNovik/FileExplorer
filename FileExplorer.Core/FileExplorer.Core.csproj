@@ -15,10 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\Storage\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\FileExplorer.Models\FileExplorer.Models.csproj" />
   </ItemGroup>
 </Project>
