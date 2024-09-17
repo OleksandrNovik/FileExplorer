@@ -3,7 +3,9 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using FileExplorer.Core.Contracts.Clipboard;
+using FileExplorer.Core.Contracts.Settings;
 using FileExplorer.Helpers;
+using FileExplorer.Helpers.Application;
 using FileExplorer.Models.Contracts.Storage;
 using FileExplorer.Models.Contracts.Storage.Directory;
 using FileExplorer.Models.Contracts.Storage.Properties;
@@ -25,9 +27,12 @@ namespace FileExplorer.ViewModels.General
     public sealed partial class FileOperationsViewModel : ObservableRecipient
     {
         private readonly IClipboardService clipboard;
+        private readonly ILocalSettingsService localSettings;
+
         public FileOperationsViewModel()
         {
             clipboard = App.GetService<IClipboardService>();
+            localSettings = App.GetService<ILocalSettingsService>();
 
             clipboard.FileDropListChanged += NotifyCanPaste;
             clipboard.CutOperationStarted += OnCutOperation;
@@ -67,13 +72,31 @@ namespace FileExplorer.ViewModels.General
                     launchable.Launch();
                     break;
                 case IStorage storage:
-                    // Send message for Directory page (new Directory should be opened)
-                    Messenger.Send(new NavigationRequiredMessage(storage));
-                    // Send message to navigation view model to notify that new Directory is opened
-                    Messenger.Send(new StorageNavigatedMessage(storage));
+                    OpenStorage(storage);
                     break;
                 default:
                     throw new ArgumentException("Cannot open provided item. It is not a Directory or file.", nameof(item));
+            }
+        }
+
+        /// <summary>
+        /// Opens storage depending on "Open in new tab" setting value 
+        /// </summary>
+        /// <param name="storage"> Storage to open </param>
+        private void OpenStorage(IStorage storage)
+        {
+            var openInNewTab = localSettings.ReadBool(LocalSettings.Keys.OpenFolderInNewTab);
+
+            if (openInNewTab is true)
+            {
+                OpenInNewTab(storage);
+            }
+            else
+            {
+                // Send message for Directory page (new Directory should be opened)
+                Messenger.Send(new NavigationRequiredMessage(storage));
+                // Send message to navigation view model to notify that new Directory is opened
+                Messenger.Send(new StorageNavigatedMessage(storage));
             }
         }
 
