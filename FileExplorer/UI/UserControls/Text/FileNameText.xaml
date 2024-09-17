@@ -24,8 +24,5 @@
         <TextBox x:Name="TextBox" Text="{x:Bind ViewModel.EditableName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                  Visibility="{x:Bind IsEdit, Mode=OneWay, 
                     Converter={StaticResource BoolToVisibilityConverter}}" KeyDown="OnTextBoxKeyDown" />
-
-        <TeachingTip Title="{x:Bind ViewModel.Message, Mode=OneWay}"
-                     IsOpen="{x:Bind ViewModel.IsOpen, Mode=OneWay}" />
     </Grid>
 </userControls:BehaviorSettingUserControl>

@@ -55,5 +55,16 @@ namespace FileExplorer.Models.Messages
     /// <param name="Storage"> Storage that's being searched </param>
     /// <param name="Options"> Search options </param>
     public record SearchStorageMessage(IStorage Storage, SearchFilter Options);
+
+    /// <summary>
+    /// Message that requires to show properties of some storage item
+    /// </summary>
+    /// <param name="Properties"> Properties to show </param>
     public record ShowPropertiesMessage(StorageItemProperties Properties);
+
+    /// <summary>
+    /// Message to notify listeners that setting "Show file extension" has been changed
+    /// </summary>
+    /// <param name="Value"> New value of setting </param>
+    public record ShowExtensionsChangedMessage(bool Value);
 }

@@ -1,9 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using FileExplorer.Core.Contracts.Settings;
 using FileExplorer.Core.Contracts.Storage;
 using FileExplorer.Helpers.Application;
 using FileExplorer.Models.Contracts.Storage;
+using FileExplorer.Models.Messages;
 using System.Threading.Tasks;
 
 namespace FileExplorer.ViewModels.General
@@ -29,6 +31,11 @@ namespace FileExplorer.ViewModels.General
 
             Validator = validator;
             showExtensions = localSettings.ReadBool(LocalSettings.Keys.ShowFileExtensions) ?? false;
+
+            Messenger.Register<StorageItemsNamingViewModel, ShowExtensionsChangedMessage>(this, (_, message) =>
+            {
+                ShowExtensions = message.Value;
+            });
         }
 
         /// <summary>
