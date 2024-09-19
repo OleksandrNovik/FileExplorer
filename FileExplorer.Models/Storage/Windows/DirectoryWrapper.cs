@@ -91,7 +91,7 @@ namespace FileExplorer.Models.Storage.Windows
             //TODO: Handle deleted folder and open tab with that folder
             return EnumerateWrappers(System.IO.Directory.EnumerateFileSystemEntries(Path), rejectedAttributes);
         }
-        public IEnumerable<IStorage> EnumerateSubDirectories()
+        public IEnumerable<IStorage> EnumerateSubDirectories(FileAttributes rejectedAttributes = 0)
         {
             try
             {
@@ -136,6 +136,11 @@ namespace FileExplorer.Models.Storage.Windows
 
                 yield return wrapper;
             }
+        }
+
+        public IEnumerable<IDirectoryItem> EnumerateFiles(FileAttributes rejectedAttributes = FileAttributes.None)
+        {
+            return EnumerateWrappers(System.IO.Directory.EnumerateFiles(Path), rejectedAttributes);
         }
 
         /// <inheritdoc />
@@ -216,6 +221,5 @@ namespace FileExplorer.Models.Storage.Windows
 
             return asStorageFolder;
         }
-
     }
 }

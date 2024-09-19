@@ -95,12 +95,9 @@ namespace FileExplorer.Models.Storage.Drives
         }
 
 
-        /// <summary>
-        /// Returns <see cref="rootDirectory"/> of drive
-        /// </summary>
-        public IEnumerable<IStorage> EnumerateSubDirectories()
+        public IEnumerable<IStorage> EnumerateSubDirectories(FileAttributes rejectedAttributes = 0)
         {
-            return [rootDirectory];
+            return rootDirectory.EnumerateSubDirectories(rejectedAttributes);
         }
 
         public IDirectoryItem Create(bool isDirectory)
@@ -111,6 +108,11 @@ namespace FileExplorer.Models.Storage.Drives
         public async Task SearchAsync(SearchOptions searchOptions)
         {
             await rootDirectory.SearchAsync(searchOptions);
+        }
+
+        public IEnumerable<IDirectoryItem> EnumerateFiles(FileAttributes rejectedAttributes = FileAttributes.None)
+        {
+            return rootDirectory.EnumerateFiles(rejectedAttributes);
         }
     }
 }

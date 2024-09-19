@@ -105,6 +105,7 @@ namespace FileExplorer.Core.Services.Settings
                 ShowConfirmationMessage = ReadBool(LocalSettings.Keys.ShowConfirmationMessage) ?? defaultPreferences.ShowConfirmationMessage,
                 OpenFolderInNewTab = ReadBool(LocalSettings.Keys.OpenFolderInNewTab) ?? defaultPreferences.OpenFolderInNewTab,
                 Language = ReadString(LocalSettings.Keys.Language) ?? defaultPreferences.Language,
+                FoldersFirst = ReadBool(LocalSettings.Keys.FoldersFirst) ?? defaultPreferences.FoldersFirst,
             };
         }
 
@@ -115,6 +116,7 @@ namespace FileExplorer.Core.Services.Settings
             WriteSetting(LocalSettings.Keys.ShowConfirmationMessage, preferences.ShowConfirmationMessage);
             WriteSetting(LocalSettings.Keys.OpenFolderInNewTab, preferences.OpenFolderInNewTab);
             WriteSetting(LocalSettings.Keys.Language, preferences.Language);
+            WriteSetting(LocalSettings.Keys.FoldersFirst, preferences.FoldersFirst);
         }
     }
 }

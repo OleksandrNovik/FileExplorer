@@ -28,6 +28,8 @@ namespace FileExplorer.ViewModels.Pages
     {
         private IDirectory? currentDirectory;
 
+        private readonly IStorageSortingService sortingService;
+
         /// <summary>
         /// Clipboard service that provides access to the clipboard
         /// </summary>
@@ -42,12 +44,13 @@ namespace FileExplorer.ViewModels.Pages
         [ObservableProperty]
         private bool canCreateItems;
 
-        public DirectoryPageViewModel(FileOperationsViewModel fileOperations, ILocalSettingsService settingsService,
+        public DirectoryPageViewModel(FileOperationsViewModel fileOperations, IStorageSortingService directorySorter, ILocalSettingsService settingsService,
             IClipboardService clipboardService, INameValidator validator)
             : base(fileOperations, validator)
         {
             clipboard = clipboardService;
             localSettings = settingsService;
+            sortingService = directorySorter;
 
             clipboard.FileDropListChanged += NotifyCanPaste;
             clipboard.CutOperationStarted += OnCutOperation;
@@ -87,11 +90,10 @@ namespace FileExplorer.ViewModels.Pages
         /// </summary>
         private async Task InitializeDirectoryAsync()
         {
-            var rejectedAttributes = localSettings.GetSkippedAttributes();
+            var sorted = sortingService.SortByKey(Storage as IDirectory, item => item.Name);
 
-            DirectoryItems = new ConcurrentWrappersCollection(Storage.EnumerateItems(rejectedAttributes));
+            DirectoryItems = new ConcurrentWrappersCollection(sorted);
 
-            //TODO change number to a constant
             await DirectoryItems.UpdateIconsAsync(Constants.ThumbnailSizes.Big, CancellationToken.None);
 
             SelectedItems.Clear();

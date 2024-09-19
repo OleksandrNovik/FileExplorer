@@ -79,11 +79,16 @@ public sealed class CachedSearchResult : IStorage
     /// <summary>
     /// Returns empty enumeration, because search cannot have subdirectories
     /// </summary>
-    public IEnumerable<IStorage> EnumerateSubDirectories() => [];
+    public IEnumerable<IStorage> EnumerateSubDirectories(FileAttributes rejectedAttributes = 0) => [];
 
     public async Task SearchAsync(SearchOptions searchOptions)
     {
         await RootCatalog.SearchAsync(searchOptions);
+    }
+
+    public IEnumerable<IDirectoryItem> EnumerateFiles(FileAttributes rejectedAttributes = FileAttributes.None)
+    {
+        return RootCatalog.EnumerateFiles(rejectedAttributes);
     }
 
     #endregion

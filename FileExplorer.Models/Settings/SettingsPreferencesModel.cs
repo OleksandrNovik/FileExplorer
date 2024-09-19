@@ -1,6 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using FileExplorer.Helpers.Application;
-using FileExplorer.Models.Contracts;
 using Microsoft.UI.Xaml;
 
 namespace FileExplorer.Models.Settings
@@ -8,7 +6,7 @@ namespace FileExplorer.Models.Settings
     /// <summary>
     /// Model that stores and saves settings for preferences page in settings window 
     /// </summary>
-    public sealed partial class SettingsPreferencesModel : ObservableObject, ISettingsModel
+    public sealed partial class SettingsPreferencesModel : ObservableObject
     {
         public static SettingsPreferencesModel Default => new()
         {
@@ -16,6 +14,7 @@ namespace FileExplorer.Models.Settings
             ShowConfirmationMessage = false,
             OpenFolderInNewTab = false,
             Language = "English",
+            FoldersFirst = true,
         };
         public ElementTheme Theme { get; set; }
 
@@ -28,13 +27,7 @@ namespace FileExplorer.Models.Settings
         [ObservableProperty]
         private bool openFolderInNewTab;
 
-        /// <inheritdoc />
-        public void SaveSettings()
-        {
-            LocalSettings.WriteSetting(LocalSettings.Keys.Theme, Theme.ToString());
-            LocalSettings.WriteSetting(LocalSettings.Keys.ShowConfirmationMessage, ShowConfirmationMessage.ToString());
-            LocalSettings.WriteSetting(LocalSettings.Keys.OpenFolderInNewTab, OpenFolderInNewTab.ToString());
-            LocalSettings.WriteSetting(LocalSettings.Keys.Language, Language);
-        }
+        [ObservableProperty]
+        private bool foldersFirst;
     }
 }

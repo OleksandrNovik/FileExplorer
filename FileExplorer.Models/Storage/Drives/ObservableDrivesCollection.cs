@@ -37,7 +37,7 @@ namespace FileExplorer.Models.Storage.Drives
             }
         }
 
-        public IEnumerable<IStorage> EnumerateSubDirectories() => this;
+        public IEnumerable<IStorage> EnumerateSubDirectories(FileAttributes rejectedAttributes = 0) => this;
 
         public async Task SearchAsync(SearchOptions searchOptions)
         {
@@ -66,6 +66,17 @@ namespace FileExplorer.Models.Storage.Drives
             drive = Items.FirstOrDefault(d => d.Path == path);
 
             return drive is not null;
+        }
+
+        public IEnumerable<IDirectoryItem> EnumerateFiles(FileAttributes rejectedAttributes = 0)
+        {
+            foreach (var drive in this)
+            {
+                foreach (var item in drive.EnumerateFiles(rejectedAttributes))
+                {
+                    yield return item;
+                }
+            }
         }
     }
 }

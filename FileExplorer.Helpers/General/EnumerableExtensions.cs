@@ -2,23 +2,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace FileExplorer.Helpers.General
 {
     public static class EnumerableExtensions
     {
-        /// <summary>
-        /// Executes action for each item in enumerable
-        /// </summary>
-        /// <typeparam name="T"> Type of item </typeparam>
-        /// <param name="enumerable"> Enumerable for operation </param>
-        /// <param name="action"> Action that needs to be executed for each item </param>
-        public static void ForEach<T>(this IEnumerable<T> enumerable, Action<T> action)
+        public static OrderedParallelQuery<T> Order<T, TKey>(this ParallelQuery<T> query, Func<T, TKey> sortFunc, bool isDescending)
         {
-            foreach (var item in enumerable)
-            {
-                action(item);
-            }
+            return isDescending ? query.OrderByDescending(sortFunc) : query.OrderBy(sortFunc);
         }
 
         /// <summary>

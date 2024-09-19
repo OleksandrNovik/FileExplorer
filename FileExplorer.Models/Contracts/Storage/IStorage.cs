@@ -36,12 +36,15 @@ namespace FileExplorer.Models.Contracts.Storage
         /// <summary>
         /// Enumerates all items in the storage 
         /// </summary>
-        /// <param name="rejectedAttributes"> Attributes that should be skipped (by default none files are skipped) </param>
+        /// <param name="rejectedAttributes"> Attributes that should be skipped (by default no item is skipped) </param>
         public IEnumerable<IDirectoryItem> EnumerateItems(FileAttributes rejectedAttributes = 0);
+
+        public IEnumerable<IDirectoryItem> EnumerateFiles(FileAttributes rejectedAttributes = 0);
 
         /// <summary>
         /// Enumerates sub-storages of storage
         /// </summary>
-        public IEnumerable<IStorage> EnumerateSubDirectories();
+        /// <param name="rejectedAttributes"> Attributes that should be skipped (by default no item is skipped) </param>
+        public IEnumerable<IStorage> EnumerateSubDirectories(FileAttributes rejectedAttributes = 0);
     }
 }

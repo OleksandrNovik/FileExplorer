@@ -108,8 +108,9 @@ namespace FileExplorer
                     //GeneralServices
                     services.AddTransient<IStringParser, StringParser>();
 
-                    //Name validator
+                    //Storage services
                     services.AddTransient<INameValidator, FileNameValidator>();
+                    services.AddTransient<IStorageSortingService, StorageSortingService>();
 
                 })
                 .Build();

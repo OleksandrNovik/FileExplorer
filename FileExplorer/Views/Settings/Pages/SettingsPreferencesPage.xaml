@@ -71,6 +71,19 @@
 
             </controls:SettingsCard>
 
+
+            <controls:SettingsCard
+                Header="List and sort directories before files">
+                <controls:SettingsCard.HeaderIcon>
+                    <FontIcon FontSize="14" Glyph="&#xF12B;" />
+                </controls:SettingsCard.HeaderIcon>
+
+                <controls:SettingsCard.Content>
+                    <ToggleSwitch IsOn="{x:Bind ViewModel.PageSettings.FoldersFirst, Mode=TwoWay}" />
+                </controls:SettingsCard.Content>
+
+            </controls:SettingsCard>
+
         </StackPanel>
     </Grid>
 </Page>

@@ -14,6 +14,7 @@ namespace FileExplorer.Helpers.Application
             public const string ShowConfirmationMessage = "ShowConfirmationMessage";
             public const string OpenFolderInNewTab = "OpenFolderInNewTab";
             public const string Language = "Language";
+            public const string FoldersFirst = "FoldersFirst";
 
             public const string ShowHiddenFiles = "ShowHiddenFiles";
             public const string HideSystemFiles = "HideSystemFiles";
