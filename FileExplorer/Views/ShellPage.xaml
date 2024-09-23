@@ -10,7 +10,6 @@
     xmlns:ui="using:FileExplorer.UI"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:behaviors="using:FileExplorer.UI.Behaviors"
-    xmlns:tabRelated="using:Models.TabRelated"
     xmlns:settings="using:FileExplorer.Views.Settings"
     xmlns:helpers="using:FileExplorer.UI.Helpers"
     xmlns:tabs="using:FileExplorer.UI.Behaviors.Tabs"
@@ -79,7 +78,7 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="150" />
             </Grid.ColumnDefinitions>
-            <TabView TabItemsSource="{x:Bind ViewModel.Tabs, Mode=OneWay}" 
+            <TabView TabItemsSource="{x:Bind ViewModel.TabService.Tabs, Mode=OneWay}" 
                      Loaded="OnTabViewLoaded"
                      CanReorderTabs="True">
                 <TabView.Resources>

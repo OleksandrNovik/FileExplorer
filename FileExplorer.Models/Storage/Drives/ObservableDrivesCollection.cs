@@ -13,11 +13,27 @@ using System.Threading.Tasks;
 
 namespace FileExplorer.Models.Storage.Drives
 {
+    /// <summary>
+    /// Collection of drives that is shown in the home page
+    /// </summary>
     public class ObservableDrivesCollection : ObservableCollection<DriveWrapper>, IStorage
     {
+        /// <summary>
+        /// Name of collection is "Home" to represent home page
+        /// </summary>
         public string Name => "Home";
+
+        /// <summary>
+        /// Path to home page
+        /// </summary>
         public string Path => string.Empty;
+
+        /// <summary>
+        /// No parent for a home page
+        /// </summary>
         public IStorage Parent => null;
+
+        /// <inheritdoc />
         public StorageContentType ContentType => StorageContentType.Drives;
 
         public ObservableDrivesCollection(IEnumerable<DriveWrapper> availableDrives)
@@ -25,7 +41,7 @@ namespace FileExplorer.Models.Storage.Drives
             Items.AddRange(availableDrives);
         }
 
-
+        /// <inheritdoc />
         public IEnumerable<IDirectoryItem> EnumerateItems(FileAttributes rejectedAttributes = 0)
         {
             foreach (var drive in this)
@@ -37,8 +53,10 @@ namespace FileExplorer.Models.Storage.Drives
             }
         }
 
+        /// <inheritdoc />
         public IEnumerable<IStorage> EnumerateSubDirectories(FileAttributes rejectedAttributes = 0) => this;
 
+        /// <inheritdoc />
         public async Task SearchAsync(SearchOptions searchOptions)
         {
             using var enumerator = new StorageCollectionEnumerator(this);
@@ -68,6 +86,7 @@ namespace FileExplorer.Models.Storage.Drives
             return drive is not null;
         }
 
+        /// <inheritdoc />
         public IEnumerable<IDirectoryItem> EnumerateFiles(FileAttributes rejectedAttributes = 0)
         {
             foreach (var drive in this)

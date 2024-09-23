@@ -16,28 +16,46 @@ using FileExplorer.Models.TabRelated;
 using FileExplorer.ViewModels.General;
 using FileExplorer.ViewModels.Search;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using NavigationPaneViewModel = FileExplorer.ViewModels.Controls.NavigationPaneViewModel;
 
 namespace FileExplorer.ViewModels.Pages
 {
     public sealed partial class ShellPageViewModel : ObservableRecipient, IMenuFlyoutBuilder
     {
+        /// <summary>
+        /// Factory to create storage from path
+        /// </summary>
         private readonly IStorageFactory factory;
-        public NavigationPaneViewModel NavigationPaneViewModel { get; } = new();
-        public FileOperationsViewModel FileOperationsViewModel { get; }
-        public SearchOperationViewModel SearchOperationViewModel { get; } = new();
-        public ITabService TabService { get; }
-        public INavigationService NavigationService { get; }
 
-        [ObservableProperty]
-        private ObservableCollection<TabModel> tabs;
+        /// <summary>
+        /// View model to control navigation pane items of window
+        /// </summary>
+        public NavigationPaneViewModel NavigationPaneViewModel { get; } = new();
+
+        /// <summary>
+        /// View model that contains most of common file operations
+        /// </summary>
+        public FileOperationsViewModel FileOperationsViewModel { get; }
+
+        /// <summary>
+        /// View model that executes search of provided directory
+        /// </summary>
+        public SearchOperationViewModel SearchOperationViewModel { get; } = new();
+
+        /// <summary>
+        /// Service that contains logic to manipulate tabs  
+        /// </summary>
+        public ITabService TabService { get; }
+
+        /// <summary>
+        /// Navigation service to provide page-to-page navigation using navigation menu or by opening directory
+        /// </summary>
+        public INavigationService NavigationService { get; }
 
         public ShellPageViewModel(ITabService tabService, INavigationService navigationService, IStorageFactory storageFactory, FileOperationsViewModel fileOperations)
         {
             TabService = tabService;
             NavigationService = navigationService;
-            tabs = TabService.Tabs;
             factory = storageFactory;
             FileOperationsViewModel = fileOperations;
 
@@ -100,7 +118,7 @@ namespace FileExplorer.ViewModels.Pages
         [RelayCommand]
         private void RemoveTab(TabModel item)
         {
-            Tabs.Remove(item);
+            TabService.Tabs.Remove(item);
         }
 
         [RelayCommand]

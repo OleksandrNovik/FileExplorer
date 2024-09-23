@@ -60,6 +60,7 @@ namespace FileExplorer.Models.Storage.Drives
 
         public override void Rename()
         {
+            // TODO: Renaming can only be executed from admin
             driveInfo.VolumeLabel = Name;
             FriendlyName = driveInfo.GetFriendlyName();
         }

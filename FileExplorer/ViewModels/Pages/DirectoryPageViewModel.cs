@@ -45,8 +45,8 @@ namespace FileExplorer.ViewModels.Pages
         private bool canCreateItems;
 
         public DirectoryPageViewModel(FileOperationsViewModel fileOperations, IStorageSortingService directorySorter, ILocalSettingsService settingsService,
-            IClipboardService clipboardService, INameValidator validator)
-            : base(fileOperations, validator)
+            IClipboardService clipboardService)
+            : base(fileOperations)
         {
             clipboard = clipboardService;
             localSettings = settingsService;
@@ -90,7 +90,7 @@ namespace FileExplorer.ViewModels.Pages
         /// </summary>
         private async Task InitializeDirectoryAsync()
         {
-            var sorted = sortingService.SortByKey(Storage as IDirectory, item => item.Name);
+            var sorted = sortingService.SortByKey(Storage, item => item.Name);
 
             DirectoryItems = new ConcurrentWrappersCollection(sorted);
 

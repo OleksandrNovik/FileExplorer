@@ -16,8 +16,14 @@ namespace FileExplorer.UI.Behaviors.Navigation
     /// </summary>
     public class NavigationBehavior : BaseNavigationBehavior<StorageContentType>
     {
+        /// <summary>
+        /// Command that is executed when navigation item is invoked
+        /// </summary>
         public IRelayCommand? ItemInvokedCommand { get; set; }
 
+        /// <summary>
+        /// Storage factory to create storage from navigation path
+        /// </summary>
         private readonly IStorageFactory factory;
         public NavigationBehavior() : base(
             App.GetService<INavigationService>(),
@@ -52,10 +58,14 @@ namespace FileExplorer.UI.Behaviors.Navigation
             }
         }
 
+        /// <summary>
+        /// Selects item in navigation menu when tab is opened
+        /// </summary>
         private void OnTabOpened(object? sender, TabModel openTab)
         {
             AssociatedObject.SelectedItem = openTab.Selected;
 
+            // If selected item is not in menu, selects first menu item (home)
             if (openTab.Selected is null && AssociatedObject.MenuItemsSource is IList source)
             {
                 AssociatedObject.SelectedItem = source[0];
