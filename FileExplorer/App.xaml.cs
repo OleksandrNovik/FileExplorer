@@ -80,6 +80,7 @@ namespace FileExplorer
 
                     services.AddTransient<HomePageViewModel>();
                     services.AddTransient<TabNavigationViewModel>();
+                    services.AddTransient<StorageSortingViewModel>();
                     services.AddTransient<FileNamingTextViewModel>();
 
                     //Settings

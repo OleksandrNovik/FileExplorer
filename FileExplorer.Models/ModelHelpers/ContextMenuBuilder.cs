@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using CommunityToolkit.Mvvm.Input;
+using FileExplorer.Helpers;
 using System.Collections.Generic;
 
 namespace FileExplorer.Models.ModelHelpers
@@ -32,7 +33,7 @@ namespace FileExplorer.Models.ModelHelpers
         public static List<MenuFlyoutItemViewModel> WithOpen(this List<MenuFlyoutItemViewModel> menu,
             IRelayCommand command, object? commandParameter = null)
         {
-            return menu.FromCommandData(new CommandData("Open", "\uED25", command, commandParameter));
+            return menu.FromCommandData(new CommandData("Open", Constants.FluentIcons.Open, command, commandParameter));
         }
 
         /// <summary>
@@ -44,7 +45,7 @@ namespace FileExplorer.Models.ModelHelpers
         public static List<MenuFlyoutItemViewModel> WithOpenInNewTab(this List<MenuFlyoutItemViewModel> menu,
             IRelayCommand command, object? commandParameter = null)
         {
-            return menu.FromCommandData(new CommandData("Open in new tab", "\uE8B4", command, commandParameter));
+            return menu.FromCommandData(new CommandData("Open in new tab", Constants.FluentIcons.OpenInNewTab, command, commandParameter));
         }
 
         /// <summary>
@@ -57,7 +58,7 @@ namespace FileExplorer.Models.ModelHelpers
         {
             var menuItem = new MenuFlyoutItemViewModel("Create")
             {
-                IconGlyph = "\uE710",
+                IconGlyph = Constants.FluentIcons.Create,
                 Items =
                 [
                     new MenuFlyoutItemViewModel("File").WithCommand(command, false),
@@ -79,7 +80,7 @@ namespace FileExplorer.Models.ModelHelpers
         public static List<MenuFlyoutItemViewModel> WithRefresh(this List<MenuFlyoutItemViewModel> menu,
             IRelayCommand command, object? commandParameter = null)
         {
-            return menu.FromCommandData(new CommandData("Refresh", "\uE72C", command, commandParameter));
+            return menu.FromCommandData(new CommandData("Refresh", Constants.FluentIcons.Refresh, command, commandParameter));
         }
 
         /// <summary>
@@ -91,7 +92,7 @@ namespace FileExplorer.Models.ModelHelpers
         public static List<MenuFlyoutItemViewModel> WithPaste(this List<MenuFlyoutItemViewModel> menu,
             IRelayCommand command, object? commandParameter = null)
         {
-            return menu.FromCommandData(new CommandData("Paste", "\uE77F", command, commandParameter));
+            return menu.FromCommandData(new CommandData("Paste", Constants.FluentIcons.Paste, command, commandParameter));
         }
 
         /// <summary>
@@ -103,7 +104,7 @@ namespace FileExplorer.Models.ModelHelpers
         public static List<MenuFlyoutItemViewModel> WithDetails(this List<MenuFlyoutItemViewModel> menu,
             IRelayCommand command, object? commandParameter = null)
         {
-            return menu.FromCommandData(new CommandData("Details", "\uE946", command, commandParameter));
+            return menu.FromCommandData(new CommandData("Details", Constants.FluentIcons.Details, command, commandParameter));
         }
 
         /// <summary>
@@ -115,7 +116,7 @@ namespace FileExplorer.Models.ModelHelpers
         public static List<MenuFlyoutItemViewModel> WithRename(this List<MenuFlyoutItemViewModel> menu,
             IRelayCommand command, object? commandParameter = null)
         {
-            return menu.FromCommandData(new CommandData("Rename", "\uE8AC", command, commandParameter));
+            return menu.FromCommandData(new CommandData("Rename", Constants.FluentIcons.Rename, command, commandParameter));
         }
 
 
@@ -128,7 +129,7 @@ namespace FileExplorer.Models.ModelHelpers
         public static List<MenuFlyoutItemViewModel> WithCut(this List<MenuFlyoutItemViewModel> menu,
             IRelayCommand command, object? commandParameter = null)
         {
-            return menu.FromCommandData(new CommandData("Cut", "\uE8C6", command, commandParameter));
+            return menu.FromCommandData(new CommandData("Cut", Constants.FluentIcons.Cut, command, commandParameter));
         }
 
         /// <summary>
@@ -140,7 +141,7 @@ namespace FileExplorer.Models.ModelHelpers
         public static List<MenuFlyoutItemViewModel> WithCopy(this List<MenuFlyoutItemViewModel> menu,
             IRelayCommand command, object? commandParameter = null)
         {
-            return menu.FromCommandData(new CommandData("Copy", "\uE8C8", command, commandParameter));
+            return menu.FromCommandData(new CommandData("Copy", Constants.FluentIcons.Copy, command, commandParameter));
         }
 
         /// <summary>
@@ -152,7 +153,7 @@ namespace FileExplorer.Models.ModelHelpers
         public static List<MenuFlyoutItemViewModel> WithDelete(this List<MenuFlyoutItemViewModel> menu,
             IRelayCommand command, object? commandParameter = null)
         {
-            return menu.FromCommandData(new CommandData("Delete", "\uE74D", command, commandParameter));
+            return menu.FromCommandData(new CommandData("Delete", Constants.FluentIcons.Delete, command, commandParameter));
         }
 
 
@@ -165,7 +166,7 @@ namespace FileExplorer.Models.ModelHelpers
         public static List<MenuFlyoutItemViewModel> WithPin(this List<MenuFlyoutItemViewModel> menu,
             IRelayCommand command, object? commandParameter = null)
         {
-            return menu.FromCommandData(new CommandData("Pin", "\uE840", command, commandParameter));
+            return menu.FromCommandData(new CommandData("Pin", Constants.FluentIcons.Pin, command, commandParameter));
         }
 
         /// <summary>
@@ -177,7 +178,7 @@ namespace FileExplorer.Models.ModelHelpers
         public static List<MenuFlyoutItemViewModel> WithUnpin(this List<MenuFlyoutItemViewModel> menu,
             IRelayCommand command, object? commandParameter = null)
         {
-            return menu.FromCommandData(new CommandData("Unpin", "\uE77A", command, commandParameter));
+            return menu.FromCommandData(new CommandData("Unpin", Constants.FluentIcons.Unpin, command, commandParameter));
         }
 
         /// <summary>

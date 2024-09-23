@@ -19,12 +19,20 @@ namespace FileExplorer.UI.UserControls
             DependencyProperty.Register(nameof(ViewOptions), typeof(ViewOptions),
                 typeof(DynamicItemView), new PropertyMetadata(ViewOptions.GridView));
 
+        public static DependencyProperty ItemsSourceProperty =
+            DependencyProperty.Register(nameof(ItemsSource), typeof(ConcurrentWrappersCollection),
+                typeof(DynamicItemView), new PropertyMetadata(null));
+
         public ViewOptions ViewOptions
         {
             get => (ViewOptions)GetValue(ViewOptionsProperty);
             set => SetValue(ViewOptionsProperty, value);
         }
-        public ConcurrentWrappersCollection ItemsSource { get; set; }
+        public ConcurrentWrappersCollection ItemsSource
+        {
+            get => (ConcurrentWrappersCollection)GetValue(ItemsSourceProperty);
+            set => SetValue(ItemsSourceProperty, value);
+        }
         public ObservableCollection<IDirectoryItem> SelectedItems { get; set; }
         public FlyoutBase ContextMenu { get; set; }
         public INameValidator NameValidator { get; set; }
