@@ -1,9 +1,11 @@
 ﻿#nullable enable
 using FileExplorer.Models.Contracts.Storage;
+using FileExplorer.Models.Contracts.Storage.Directory;
 using FileExplorer.Models.General;
 using FileExplorer.Models.Storage.Abstractions;
 using FileExplorer.Models.TabRelated;
 using Microsoft.UI.Xaml.Controls;
+using System.Collections.Generic;
 
 namespace FileExplorer.Models.Messages
 {
@@ -67,4 +69,6 @@ namespace FileExplorer.Models.Messages
     /// </summary>
     /// <param name="Value"> New value of setting </param>
     public record ShowExtensionsChangedMessage(bool Value);
+
+    public record SortExecutedMessage(ICollection<IDirectoryItem> Sorted);
 }

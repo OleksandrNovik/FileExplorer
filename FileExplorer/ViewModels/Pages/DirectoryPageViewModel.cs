@@ -1,9 +1,9 @@
 ﻿#nullable enable
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using FileExplorer.Core.Contracts.Clipboard;
 using FileExplorer.Core.Contracts.Settings;
-using FileExplorer.Core.Contracts.Storage;
 using FileExplorer.Helpers;
 using FileExplorer.Helpers.Application;
 using FileExplorer.Models;
@@ -26,9 +26,10 @@ namespace FileExplorer.ViewModels.Pages
 {
     public sealed partial class DirectoryPageViewModel : BaseSelectionViewModel
     {
+
         private IDirectory? currentDirectory;
 
-        private readonly IStorageSortingService sortingService;
+        private readonly StorageSortingViewModel sorting;
 
         /// <summary>
         /// Clipboard service that provides access to the clipboard
@@ -39,21 +40,30 @@ namespace FileExplorer.ViewModels.Pages
         /// Service that gets all necessarily properties from local settings
         /// </summary>
         private readonly ILocalSettingsService localSettings;
-        public ConcurrentWrappersCollection DirectoryItems { get; private set; }
+
+        [ObservableProperty]
+        private ConcurrentWrappersCollection directoryItems;
 
         [ObservableProperty]
         private bool canCreateItems;
 
-        public DirectoryPageViewModel(FileOperationsViewModel fileOperations, IStorageSortingService directorySorter, ILocalSettingsService settingsService,
+        public DirectoryPageViewModel(FileOperationsViewModel fileOperations, StorageSortingViewModel directorySorter, ILocalSettingsService settingsService,
             IClipboardService clipboardService)
             : base(fileOperations)
         {
             clipboard = clipboardService;
             localSettings = settingsService;
-            sortingService = directorySorter;
+            sorting = directorySorter;
 
             clipboard.FileDropListChanged += NotifyCanPaste;
             clipboard.CutOperationStarted += OnCutOperation;
+
+            Messenger.Register<DirectoryPageViewModel, SortExecutedMessage>(this, OnSortExecuted);
+        }
+
+        private async void OnSortExecuted(DirectoryPageViewModel _, SortExecutedMessage message)
+        {
+            await InitializeDirectoryItemsAsync(message.Sorted);
         }
 
         private void OnCutOperation(object? sender, CutOperationData e)
@@ -88,11 +98,14 @@ namespace FileExplorer.ViewModels.Pages
         /// Method that should be called every time we navigate to a new Directory
         /// It initializes collections of data in view model
         /// </summary>
-        private async Task InitializeDirectoryAsync()
+        private void InitializeDirectoryAsync()
         {
-            var sorted = sortingService.SortByKey(Storage, item => item.Name);
+            sorting.SortByNameCommand.Execute(Storage);
+        }
 
-            DirectoryItems = new ConcurrentWrappersCollection(sorted);
+        private async Task InitializeDirectoryItemsAsync(ICollection<IDirectoryItem> items)
+        {
+            DirectoryItems = new ConcurrentWrappersCollection(items);
 
             await DirectoryItems.UpdateIconsAsync(Constants.ThumbnailSizes.Big, CancellationToken.None);
 
@@ -103,10 +116,10 @@ namespace FileExplorer.ViewModels.Pages
         /// Changes current storage and initializes its items
         /// </summary>
         /// <param name="storage"> Given storage that is opened </param>
-        private async Task MoveToDirectoryAsync(IStorage storage)
+        private void MoveToDirectoryAsync(IStorage storage)
         {
             Storage = storage;
-            await InitializeDirectoryAsync();
+            InitializeDirectoryAsync();
         }
 
         [RelayCommand]
@@ -228,13 +241,13 @@ namespace FileExplorer.ViewModels.Pages
         }
 
         /// <inheritdoc />
-        public override async void OnNavigatedTo(object parameter)
+        public override void OnNavigatedTo(object parameter)
         {
             base.OnNavigatedTo(parameter);
 
             if (Storage is not null)
             {
-                await MoveToDirectoryAsync(Storage);
+                MoveToDirectoryAsync(Storage);
             }
             else if (parameter is SearchStorageTransferObject transferredSearchData)
             {
@@ -258,7 +271,7 @@ namespace FileExplorer.ViewModels.Pages
         private async Task Refresh()
         {
             //TODO: Fix this later
-            await MoveToDirectoryAsync(Storage);
+            MoveToDirectoryAsync(Storage);
         }
 
         /// <inheritdoc />
@@ -277,6 +290,8 @@ namespace FileExplorer.ViewModels.Pages
                 list.WithRefresh(RefreshCommand)
                     .WithCreate(CreateItemCommand)
                     .WithPaste(FileOperations.PasteCommand, currentDirectory);
+
+                list.Add(sorting.BuildSortOptions(currentDirectory));
 
                 //TODO:  Add view and sort options;
 
