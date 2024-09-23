@@ -23,6 +23,7 @@
     <PackageCertificateKeyFile>FileExplorer_TemporaryKey.pfx</PackageCertificateKeyFile>
 	  <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
+    <EnableNETAnalyzers>True</EnableNETAnalyzers>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Images\LockScreenLogo.scale-200.png" />

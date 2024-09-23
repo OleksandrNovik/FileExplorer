@@ -9,6 +9,7 @@ using System.Linq;
 
 namespace FileExplorer.Core.Services.Storage
 {
+
     public sealed class StorageSortingService : IStorageSortingService
     {
         private readonly ILocalSettingsService localSettings;
@@ -40,18 +41,19 @@ namespace FileExplorer.Core.Services.Storage
                 var folders = directory.EnumerateSubDirectories(skippedAttributes)
                                        .AsParallel()
                                        .OfType<IDirectoryItem>()
-                                       .Order(sortFunc, isDescending);
+                                       .Sort(sortFunc, isDescending);
 
                 var files = directory.EnumerateFiles(skippedAttributes)
                                      .AsParallel()
-                                     .Order(sortFunc, isDescending);
+                                     .Sort(sortFunc, isDescending);
 
                 result = folders.Concat(files);
 
             }
             else
             {
-                result = directory.EnumerateItems().AsParallel().Order(sortFunc, isDescending);
+                result = directory.EnumerateItems().AsParallel()
+                                  .Sort(sortFunc, isDescending);
             }
 
             return result;

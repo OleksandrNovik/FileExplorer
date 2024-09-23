@@ -8,7 +8,7 @@ namespace FileExplorer.Helpers.General
 {
     public static class EnumerableExtensions
     {
-        public static OrderedParallelQuery<T> Order<T, TKey>(this ParallelQuery<T> query, Func<T, TKey> sortFunc, bool isDescending)
+        public static OrderedParallelQuery<T> Sort<T, TKey>(this ParallelQuery<T> query, Func<T, TKey> sortFunc, bool isDescending)
         {
             return isDescending ? query.OrderByDescending(sortFunc) : query.OrderBy(sortFunc);
         }
