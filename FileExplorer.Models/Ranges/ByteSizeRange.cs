@@ -43,7 +43,10 @@ namespace FileExplorer.Models.Ranges
         /// </summary>
         public static ByteSizeRange Giant => new(Huge.End, Huge.End);
 
+        /// <inheritdoc />
         public ByteSize Start { get; }
+
+        /// <inheritdoc />
         public ByteSize End { get; }
 
         public ByteSizeRange(ByteSize start, ByteSize end)
@@ -51,6 +54,8 @@ namespace FileExplorer.Models.Ranges
             Start = start;
             End = end;
         }
+
+        /// <inheritdoc />
         public bool Satisfies(ByteSize? value, ExcludingOptions options)
         {
             return options switch

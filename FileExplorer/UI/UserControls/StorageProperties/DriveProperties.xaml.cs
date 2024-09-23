@@ -1,4 +1,4 @@
-using FileExplorer.Models.Storage.Additional.Charts;
+using FileExplorer.Models.Additional.Charts;
 using FileExplorer.Models.Storage.Additional.Properties;
 using Microsoft.UI.Xaml;
 

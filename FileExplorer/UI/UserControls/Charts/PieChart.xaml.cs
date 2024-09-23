@@ -1,6 +1,6 @@
 using CommunityToolkit.WinUI.UI.Controls;
 using FileExplorer.Helpers.General;
-using FileExplorer.Models.Storage.Additional.Charts;
+using FileExplorer.Models.Additional.Charts;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;

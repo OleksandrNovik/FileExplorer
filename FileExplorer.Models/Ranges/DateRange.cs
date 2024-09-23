@@ -44,7 +44,10 @@ namespace FileExplorer.Models.Ranges
 
         public static DateRange LastYearRange => ThisYearRange.AddYears(-1);
 
+        /// <inheritdoc />
         public DateTime Start { get; }
+
+        /// <inheritdoc />
         public DateTime End { get; }
         public DateRange(DateTime start, DateTime end)
         {
@@ -52,6 +55,7 @@ namespace FileExplorer.Models.Ranges
             End = end;
         }
 
+        /// <inheritdoc />
         public bool Satisfies(DateTime value, ExcludingOptions options)
         {
             return options switch
@@ -63,17 +67,31 @@ namespace FileExplorer.Models.Ranges
             };
         }
 
-
+        /// <summary>
+        /// Adds days to the start and the end of range
+        /// </summary>
+        /// <param name="days"> Number of days to add </param>
+        /// <returns> New range with needed boundaries </returns>
         public DateRange AddDays(int days)
         {
             return new DateRange(Start.AddDays(days), End.AddDays(days));
         }
 
+        /// <summary>
+        /// Adds months to the start and the end of range
+        /// </summary>
+        /// <param name="months"> Number of months to add </param>
+        /// <returns> New range with needed boundaries </returns>
         public DateRange AddMonths(int months)
         {
             return new DateRange(Start.AddMonths(months), End.AddMonths(months));
         }
 
+        /// <summary>
+        /// Adds years to the start and the end of range
+        /// </summary>
+        /// <param name="years"> Number of years to add </param>
+        /// <returns> New range with needed boundaries </returns>
         public DateRange AddYears(int years)
         {
             return new DateRange(Start.AddYears(years), End.AddYears(years));

@@ -1,7 +1,6 @@
 ﻿#nullable enable
 using CommunityToolkit.Mvvm.Input;
 using FileExplorer.Core.Contracts.Factories;
-using FileExplorer.Core.Contracts.Storage;
 using FileExplorer.Models;
 using FileExplorer.Models.Contracts.Storage.Directory;
 using FileExplorer.Models.ModelHelpers;
@@ -22,12 +21,9 @@ namespace FileExplorer.ViewModels.Abstractions
         /// </summary>
         public ObservableCollection<IDirectoryItem> SelectedItems { get; }
 
-        public INameValidator Validator { get; }
-
-        protected BaseSelectionViewModel(FileOperationsViewModel fileOperations, INameValidator validator) : base(fileOperations)
+        protected BaseSelectionViewModel(FileOperationsViewModel fileOperations) : base(fileOperations)
         {
             SelectedItems = [];
-            Validator = validator;
 
             SelectedItems.CollectionChanged += OnSelectedItemsChanged;
         }
