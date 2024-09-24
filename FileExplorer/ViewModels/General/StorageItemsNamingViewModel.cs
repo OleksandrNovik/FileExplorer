@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using FileExplorer.Core.Contracts;
 using FileExplorer.Core.Contracts.Settings;
 using FileExplorer.Core.Contracts.Storage;
 using FileExplorer.Helpers.Application;
@@ -17,6 +18,8 @@ namespace FileExplorer.ViewModels.General
         /// </summary>
         private readonly ILocalSettingsService localSettings;
 
+        private readonly IMessageDialogService dialogService;
+
         /// <summary>
         /// Validator for names 
         /// </summary>
@@ -28,10 +31,10 @@ namespace FileExplorer.ViewModels.General
         [ObservableProperty]
         private bool showExtensions;
 
-        public StorageItemsNamingViewModel(ILocalSettingsService settingsService, INameValidator validator)
+        public StorageItemsNamingViewModel(ILocalSettingsService settingsService, INameValidator validator, IMessageDialogService messageDialogService)
         {
             localSettings = settingsService;
-
+            dialogService = messageDialogService;
             Validator = validator;
             showExtensions = localSettings.ReadBool(LocalSettings.Keys.ShowFileExtensions) ?? false;
 
@@ -60,7 +63,7 @@ namespace FileExplorer.ViewModels.General
         {
             if (Validator.IsInvalid(item.Name))
             {
-                await App.MainWindow.ShowMessageDialogAsync(
+                await dialogService.ShowMessageAsync(
                     $"Name contains illegal characters: {Validator.IlleagalCharacters}. Or this name is special name that is reserved.",
                     $"Name \"{item.Name}\" is invalid.");
 

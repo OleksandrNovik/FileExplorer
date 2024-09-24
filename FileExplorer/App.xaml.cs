@@ -113,6 +113,7 @@ namespace FileExplorer
                     services.AddTransient<INameValidator, FileNameValidator>();
                     services.AddTransient<IStorageSortingService, StorageSortingService>();
 
+                    services.AddTransient<IMessageDialogService, MessageDialogService>();
                 })
                 .Build();
 

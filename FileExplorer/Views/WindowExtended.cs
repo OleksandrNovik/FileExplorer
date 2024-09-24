@@ -7,13 +7,13 @@ namespace FileExplorer.Views
 {
     public class WindowExtended : WindowEx
     {
-        public async Task ShowCustomDialog(ContentDialog dialog)
+        public async Task ShowCustomDialogAsync(ContentDialog dialog)
         {
             dialog.XamlRoot = Content.XamlRoot;
             await dialog.ShowAsync();
         }
 
-        public async Task<ContentDialogResult> ShowYesNoDialog(string content, string title)
+        public async Task<ContentDialogResult> ShowConfirmationDialogAsync(string content, string title)
         {
             var dialog = new ContentDialog
             {

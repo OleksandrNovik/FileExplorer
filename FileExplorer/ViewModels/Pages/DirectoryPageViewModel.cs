@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using FileExplorer.Core.Contracts;
 using FileExplorer.Core.Contracts.Clipboard;
 using FileExplorer.Core.Contracts.Settings;
 using FileExplorer.Helpers;
@@ -31,6 +32,8 @@ namespace FileExplorer.ViewModels.Pages
 
         private readonly StorageSortingViewModel sorting;
 
+        private readonly IMessageDialogService dialogService;
+
         /// <summary>
         /// Clipboard service that provides access to the clipboard
         /// </summary>
@@ -47,15 +50,18 @@ namespace FileExplorer.ViewModels.Pages
         [ObservableProperty]
         private bool canCreateItems;
 
-        public DirectoryPageViewModel(FileOperationsViewModel fileOperations, StorageSortingViewModel directorySorter, ILocalSettingsService settingsService,
+        public DirectoryPageViewModel(
+            FileOperationsViewModel fileOperations,
+            StorageSortingViewModel directorySorter,
+            IMessageDialogService messageDialogService,
+            ILocalSettingsService settingsService,
             IClipboardService clipboardService)
             : base(fileOperations)
         {
             clipboard = clipboardService;
             localSettings = settingsService;
             sorting = directorySorter;
-
-            DirectoryItems = [];
+            dialogService = messageDialogService;
 
             clipboard.FileDropListChanged += NotifyCanPaste;
             clipboard.CutOperationStarted += OnCutOperation;
@@ -205,7 +211,8 @@ namespace FileExplorer.ViewModels.Pages
                 var content =
                     $"Do you really want to delete {(SelectedItems.Count > 1 ? "selected items" : $"\"{SelectedItems[0].Path}\""
                         )} permanently?";
-                var result = await App.MainWindow.ShowYesNoDialog(content, "Deleting items");
+
+                var result = await dialogService.ShowConfirmationMessageAsync(content, "Deleting items");
 
                 if (result == ContentDialogResult.Secondary) return;
             }

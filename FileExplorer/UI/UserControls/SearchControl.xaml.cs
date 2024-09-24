@@ -20,7 +20,7 @@ namespace FileExplorer.UI.UserControls
 
         private async void OnSettingsButtonClick(object sender, RoutedEventArgs e)
         {
-            await App.MainWindow.ShowCustomDialog(new SettingsContentDialog());
+            await App.MainWindow.ShowCustomDialogAsync(new SettingsContentDialog());
         }
     }
 }
