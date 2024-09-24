@@ -4,11 +4,14 @@ namespace FileExplorer.ViewModels
 {
     public sealed class ViewModelsLocator
     {
-        public ViewModelsLocator()
+        static ViewModelsLocator()
         {
-            StorageNamingViewModel = App.GetService<StorageItemsNamingViewModel>();
+            StorageNaming = App.GetService<StorageItemsNamingViewModel>();
+            FileOperations = App.GetService<FileOperationsViewModel>();
+            ViewOptions = App.GetService<ViewOptionsViewModel>();
         }
-
-        public StorageItemsNamingViewModel StorageNamingViewModel { get; }
+        public static StorageItemsNamingViewModel StorageNaming { get; }
+        public static FileOperationsViewModel FileOperations { get; }
+        public static ViewOptionsViewModel ViewOptions { get; }
     }
 }

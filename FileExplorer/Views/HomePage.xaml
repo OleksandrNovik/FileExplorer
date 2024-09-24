@@ -150,7 +150,7 @@
                         <StaticResource x:Key="ExpanderHeaderBackground" ResourceKey="customExpanderHeaderBackgroundColor" />
                     </Expander.Resources>
 
-                    <userControls:DynamicItemView  ViewOptions="{Binding Path=Value, Source={StaticResource ViewOptions}, Mode=OneWay}"
+                    <userControls:DynamicItemView  ViewOptions="{Binding Path=ViewOptions.Value, Source={StaticResource Locator}, Mode=OneWay}"
                                                 ItemsSource="{x:Bind ViewModel.RecentItems, Mode=OneWay}"
                                                 SelectedItems="{x:Bind ViewModel.SelectedItems}" 
                                                 ContextMenu="{StaticResource DirectoryItemContextMenu}"/>

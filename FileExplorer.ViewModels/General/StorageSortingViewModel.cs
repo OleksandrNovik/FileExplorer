@@ -38,25 +38,34 @@ namespace FileExplorer.ViewModels.General
             this.sortingService = sortingService;
         }
 
+        public ICollection<IDirectoryItem> SortByDefault(IDirectory storage)
+        {
+            // TODO: Save default sorting value
+            return Sort(storage, SortingOptions.Name);
+        }
+
         [RelayCommand]
         private void SortByName(IDirectory directory)
         {
-            Sort(directory, SortingOptions.Name);
+            var items = Sort(directory, SortingOptions.Name);
+            Messenger.Send(new SortExecutedMessage(items));
         }
 
         [RelayCommand]
         private void SortByDate(IDirectory directory)
         {
-            Sort(directory, SortingOptions.AccessDate);
+            var items = Sort(directory, SortingOptions.AccessDate);
+            Messenger.Send(new SortExecutedMessage(items));
         }
 
         [RelayCommand]
         private void SortBySize(IDirectory directory)
         {
-            Sort(directory, SortingOptions.Size);
+            var items = Sort(directory, SortingOptions.Size);
+            Messenger.Send(new SortExecutedMessage(items));
         }
 
-        private void Sort<TKey>(IDirectory directory, SortProperty<IDirectoryItem, TKey> property)
+        private ICollection<IDirectoryItem> Sort<TKey>(IDirectory directory, SortProperty<IDirectoryItem, TKey> property)
         {
             ICollection<IDirectoryItem> sorted;
 
@@ -69,7 +78,7 @@ namespace FileExplorer.ViewModels.General
                 sorted = sortingService.SortByKeyDescending(directory, property.Func);
             }
             CurrentProperty = property;
-            Messenger.Send(new SortExecutedMessage(sorted));
+            return sorted;
         }
 
         public MenuFlyoutItemViewModel BuildSortOptions(IDirectory directory)

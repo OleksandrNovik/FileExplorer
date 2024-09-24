@@ -3,13 +3,12 @@ using FileExplorer.Core.Contracts;
 using FileExplorer.Core.Contracts.Settings;
 using FileExplorer.Helpers.Application;
 using FileExplorer.Models.Settings;
-using FileExplorer.Views.Settings.Pages;
 using System.Collections.ObjectModel;
 
 namespace FileExplorer.ViewModels.Settings
 {
     /// <summary>
-    /// View model for <see cref="SettingsPreferencesPage"/>
+    /// View model for SettingsPreferencesPage
     /// </summary>
     public sealed partial class SettingsPreferencesViewModel : ObservableObject, INavigationAware
     {

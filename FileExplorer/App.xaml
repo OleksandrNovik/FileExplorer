@@ -32,9 +32,6 @@
 
             <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
 
-            <generalViewModels:FileOperationsViewModel x:Key="FileOperations" />
-            <generalViewModels:ViewOptionsViewModel x:Key="ViewOptions" />
-
             <viewModels:ViewModelsLocator x:Key="Locator" />
 
         </ResourceDictionary>

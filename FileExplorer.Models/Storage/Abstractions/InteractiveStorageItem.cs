@@ -22,6 +22,9 @@ namespace FileExplorer.Models.Storage.Abstractions
         /// <inheritdoc />
         public bool CanRename { get; protected set; }
 
+        [ObservableProperty]
+        private string contentType;
+
         /// <summary>
         /// Renames item
         /// </summary>

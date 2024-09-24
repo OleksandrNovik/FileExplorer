@@ -5,12 +5,11 @@ using FileExplorer.Core.Contracts.Settings;
 using FileExplorer.Helpers.Application;
 using FileExplorer.Models.Messages;
 using FileExplorer.Models.Settings;
-using FileExplorer.Views.Settings.Pages;
 
 namespace FileExplorer.ViewModels.Settings
 {
     /// <summary>
-    /// View model for <see cref="SettingsExplorerPage"/>
+    /// View model for SettingsExplorerPage
     /// </summary>
     public sealed class SettingsExplorerViewModel : ObservableRecipient, INavigationAware
     {

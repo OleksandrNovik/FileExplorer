@@ -167,7 +167,7 @@
                   BorderThickness="1"
                   Padding="7 10" Margin="5">
 
-                <userControls:DynamicItemView ViewOptions="{Binding Path=Value, Source={StaticResource ViewOptions}, Mode=OneWay}"
+                <userControls:DynamicItemView ViewOptions="{Binding Path=ViewOptions.Value, Source={StaticResource Locator}, Mode=OneWay}"
                                               ItemsSource="{x:Bind ViewModel.DirectoryItems, Mode=OneWay}" 
                                               SelectedItems="{x:Bind ViewModel.SelectedItems, Mode=OneWay}"
                                               ContextMenu="{StaticResource BuildingFilesFlyout}" />

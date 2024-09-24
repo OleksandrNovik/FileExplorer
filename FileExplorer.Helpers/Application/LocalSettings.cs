@@ -64,18 +64,5 @@ namespace FileExplorer.Helpers.Application
 
             return setting;
         }
-
-
-        //public static DateTimeFormatter GetSelectedTimeFormatter(string formatterOption)
-        //{
-        //    bool found = dateFormatterFromDateOption.TryGetValue(formatterOption, out var dateTimeFormatter);
-
-        //    if (!found)
-        //    {
-        //        dateTimeFormatter = dateFormatterFromDateOption.First().Value;
-        //    }
-
-        //    return dateTimeFormatter;
-        //}
     }
 }

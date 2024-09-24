@@ -11,10 +11,8 @@ using FileExplorer.Models.Contracts.Storage.Directory;
 using FileExplorer.Models.Contracts.Storage.Properties;
 using FileExplorer.Models.Messages;
 using FileExplorer.Models.Storage.Abstractions;
-using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -29,10 +27,16 @@ namespace FileExplorer.ViewModels.General
         private readonly IClipboardService clipboard;
         private readonly ILocalSettingsService localSettings;
 
-        public FileOperationsViewModel()
+        private readonly StorageItemsNamingViewModel namingViewModel;
+
+        public FileOperationsViewModel(
+            IClipboardService clipboardService,
+            ILocalSettingsService localSettingsService,
+            StorageItemsNamingViewModel namingViewModel)
         {
-            clipboard = App.GetService<IClipboardService>();
-            localSettings = App.GetService<ILocalSettingsService>();
+            clipboard = clipboardService;
+            this.namingViewModel = namingViewModel;
+            localSettings = localSettingsService;
 
             clipboard.FileDropListChanged += NotifyCanPaste;
             clipboard.CutOperationStarted += OnCutOperation;
@@ -121,30 +125,9 @@ namespace FileExplorer.ViewModels.General
         [RelayCommand]
         public void BeginRenamingItem(IRenameableObject item)
         {
-            if (item.CanRename)
-            {
-                item.BeginEdit();
-            }
-            else
-            {
-                Messenger.Send(new ShowInfoBarMessage(InfoBarSeverity.Informational, "This item cannot be renamed"));
-            }
+            namingViewModel.BeginRenamingItemCommand.Execute(item);
         }
 
-        /// <summary>
-        /// Ends renaming item if it is actually possible
-        /// </summary>
-        /// <param name="item"> ItemProperties that has to be given new name </param>
-        [RelayCommand]
-        private async Task EndRenamingItem(IRenameableObject item)
-        {
-            if (string.IsNullOrWhiteSpace(item.Name))
-            {
-                //item.CancelEdit();
-                await App.MainWindow.ShowMessageDialogAsync("Item's name cannot be empty", "Empty name is illegal");
-            }
-            //item.EndRename();
-        }
 
         /// <summary>
         /// Ends renaming item when it is renamed.
@@ -152,11 +135,11 @@ namespace FileExplorer.ViewModels.General
         /// </summary>
         /// <param name="item"> ItemProperties that we are checking for renaming </param>
         [RelayCommand]
-        public async Task EndRenamingIfNeeded(IRenameableObject item)
+        public async Task ForceRenamingAsync(IRenameableObject item)
         {
             if (item.IsRenamed)
             {
-                await EndRenamingItem(item);
+                await namingViewModel.EndRenamingItemCommand.ExecuteAsync(item);
             }
         }
 
@@ -169,32 +152,18 @@ namespace FileExplorer.ViewModels.General
         /// </summary>
         /// <param name="item"> Wrapper item to delete </param>
         /// <param name="isPermanent"> Is item being deleted permanently or not </param>
-        /// <returns> true if item is successfully deleted, otherwise - false </returns>
-        public async Task<bool> TryDeleteItem(IDirectoryItem item, bool isPermanent)
+        public async Task DeleteItem(IDirectoryItem item, bool isPermanent)
         {
-            bool hasDeleted;
-            await EndRenamingIfNeeded(item);
+            await ForceRenamingAsync(item);
 
-            try
+            if (isPermanent)
             {
-                if (isPermanent)
-                {
-                    item.Delete();
-                }
-                else
-                {
-                    await item.RecycleAsync();
-                }
-
-                hasDeleted = true;
+                item.Delete();
             }
-            catch (IOException e)
+            else
             {
-                await App.MainWindow.ShowMessageDialogAsync(e.Message, "File cannot be deleted");
-                hasDeleted = false;
+                await item.RecycleAsync();
             }
-
-            return hasDeleted;
         }
 
         #endregion
@@ -221,8 +190,12 @@ namespace FileExplorer.ViewModels.General
         }
 
         [RelayCommand]
-        public void CopyItems(IReadOnlyCollection<IDirectoryItem> items)
+        public async Task CopyItemsAsync(IReadOnlyCollection<IDirectoryItem> items)
         {
+            foreach (var item in items)
+            {
+                await ForceRenamingAsync(item);
+            }
             clipboard.SetFiles(items, DragDropEffects.Copy);
         }
 

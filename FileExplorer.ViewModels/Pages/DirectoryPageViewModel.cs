@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using FileExplorer.Core.Contracts;
 using FileExplorer.Core.Contracts.Clipboard;
 using FileExplorer.Core.Contracts.Settings;
 using FileExplorer.Helpers;
@@ -18,6 +19,7 @@ using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -30,6 +32,8 @@ namespace FileExplorer.ViewModels.Pages
         private IDirectory? currentDirectory;
 
         private readonly StorageSortingViewModel sorting;
+
+        private readonly IMessageDialogService dialogService;
 
         /// <summary>
         /// Clipboard service that provides access to the clipboard
@@ -47,13 +51,18 @@ namespace FileExplorer.ViewModels.Pages
         [ObservableProperty]
         private bool canCreateItems;
 
-        public DirectoryPageViewModel(FileOperationsViewModel fileOperations, StorageSortingViewModel directorySorter, ILocalSettingsService settingsService,
+        public DirectoryPageViewModel(
+            FileOperationsViewModel fileOperations,
+            StorageSortingViewModel directorySorter,
+            IMessageDialogService messageDialogService,
+            ILocalSettingsService settingsService,
             IClipboardService clipboardService)
             : base(fileOperations)
         {
             clipboard = clipboardService;
             localSettings = settingsService;
             sorting = directorySorter;
+            dialogService = messageDialogService;
 
             clipboard.FileDropListChanged += NotifyCanPaste;
             clipboard.CutOperationStarted += OnCutOperation;
@@ -98,9 +107,10 @@ namespace FileExplorer.ViewModels.Pages
         /// Method that should be called every time we navigate to a new Directory
         /// It initializes collections of data in view model
         /// </summary>
-        private void InitializeDirectoryAsync()
+        private async Task InitializeDirectoryAsync()
         {
-            sorting.SortByNameCommand.Execute(Storage);
+            var sorted = sorting.SortByDefault(Storage as IDirectory);
+            await InitializeDirectoryItemsAsync(sorted);
         }
 
         private async Task InitializeDirectoryItemsAsync(ICollection<IDirectoryItem> items)
@@ -116,10 +126,10 @@ namespace FileExplorer.ViewModels.Pages
         /// Changes current storage and initializes its items
         /// </summary>
         /// <param name="storage"> Given storage that is opened </param>
-        private void MoveToDirectoryAsync(IStorage storage)
+        private async Task MoveToDirectoryAsync(IStorage storage)
         {
             Storage = storage;
-            InitializeDirectoryAsync();
+            await InitializeDirectoryAsync();
         }
 
         [RelayCommand]
@@ -138,8 +148,12 @@ namespace FileExplorer.ViewModels.Pages
         /// Saves selected items to the clipboard with required operation "cut"
         /// </summary>
         [RelayCommand(CanExecute = nameof(HasSelectedItems))]
-        private void CutSelectedItems()
+        private async Task CutSelectedItems()
         {
+            foreach (var item in SelectedItems)
+            {
+                await FileOperations.ForceRenamingAsync(item);
+            }
             clipboard.SetFiles(SelectedItems, DragDropEffects.Move);
         }
 
@@ -202,7 +216,8 @@ namespace FileExplorer.ViewModels.Pages
                 var content =
                     $"Do you really want to delete {(SelectedItems.Count > 1 ? "selected items" : $"\"{SelectedItems[0].Path}\""
                         )} permanently?";
-                var result = await App.MainWindow.ShowYesNoDialog(content, "Deleting items");
+
+                var result = await dialogService.ShowConfirmationMessageAsync(content, "Deleting items");
 
                 if (result == ContentDialogResult.Secondary) return;
             }
@@ -221,15 +236,22 @@ namespace FileExplorer.ViewModels.Pages
             while (deleteCount > 0)
             {
                 var item = SelectedItems[0];
-                var hasDeleted = await FileOperations.TryDeleteItem(item, isPermanent);
 
-                if (hasDeleted)
+                try
                 {
-                    DirectoryItems.Remove(item);
-                }
+                    await FileOperations.DeleteItem(item, isPermanent);
 
-                SelectedItems.Remove(item);
-                deleteCount--;
+                    DirectoryItems.Remove(item);
+                    SelectedItems.Remove(item);
+                }
+                catch (IOException e)
+                {
+                    await dialogService.ShowMessageAsync(e.Message, "File cannot be deleted");
+                }
+                finally
+                {
+                    deleteCount--;
+                }
             }
         }
 
@@ -241,13 +263,13 @@ namespace FileExplorer.ViewModels.Pages
         }
 
         /// <inheritdoc />
-        public override void OnNavigatedTo(object parameter)
+        public override async void OnNavigatedTo(object parameter)
         {
             base.OnNavigatedTo(parameter);
 
             if (Storage is not null)
             {
-                MoveToDirectoryAsync(Storage);
+                await MoveToDirectoryAsync(Storage);
             }
             else if (parameter is SearchStorageTransferObject transferredSearchData)
             {
@@ -271,7 +293,7 @@ namespace FileExplorer.ViewModels.Pages
         private async Task Refresh()
         {
             //TODO: Fix this later
-            MoveToDirectoryAsync(Storage);
+            await MoveToDirectoryAsync(Storage);
         }
 
         /// <inheritdoc />

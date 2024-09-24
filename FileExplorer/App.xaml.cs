@@ -100,11 +100,11 @@ namespace FileExplorer
                     services.AddTransient<InfoBarViewModel>();
 
                     //File operations
-                    services.AddTransient(_ => GetStaticResource<FileOperationsViewModel>("FileOperations"));
+                    services.AddSingleton<FileOperationsViewModel>();
                     services.AddTransient<StorageItemsNamingViewModel>();
 
                     //ViewOptions
-                    services.AddTransient(_ => GetStaticResource<ViewOptionsViewModel>("ViewOptions"));
+                    services.AddSingleton<ViewOptionsViewModel>();
 
                     //GeneralServices
                     services.AddTransient<IStringParser, StringParser>();
@@ -113,6 +113,7 @@ namespace FileExplorer
                     services.AddTransient<INameValidator, FileNameValidator>();
                     services.AddTransient<IStorageSortingService, StorageSortingService>();
 
+                    services.AddTransient<IMessageDialogService, MessageDialogService>();
                 })
                 .Build();
 

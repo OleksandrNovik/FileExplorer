@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using FileExplorer.Models.Contracts.Storage;
 using FileExplorer.Models.Contracts.Storage.Directory;
+using FileExplorer.Models.ModelHelpers.Storage;
 using FileExplorer.Models.Storage.Additional;
 using System;
 using System.Diagnostics;
@@ -108,6 +109,8 @@ namespace FileExplorer.Models.Storage.Windows
 
             return parent;
         }
+
+        [Obsolete]
         public async Task<string> GetFileTypeAsync()
         {
             var storageFile = await AsStorageFileAsync();
@@ -119,14 +122,7 @@ namespace FileExplorer.Models.Storage.Windows
         {
             if (asStorageFile is null)
             {
-                try
-                {
-                    asStorageFile = await StorageFile.GetFileFromPathAsync(Path);
-                }
-                catch
-                {
-                    asStorageFile = await StorageFile.GetFileFromPathAsync(@"D:\Навчальння\chistyi-cod.pdf");
-                }
+                asStorageFile = await StorageFile.GetFileFromPathAsync(Path);
             }
 
             return asStorageFile;
@@ -140,6 +136,7 @@ namespace FileExplorer.Models.Storage.Windows
             if (HasExtensionChanged)
             {
                 Thumbnail.Update(Path, Thumbnail.Size);
+                ContentType = this.GetItemType();
             }
 
             EndEdit();

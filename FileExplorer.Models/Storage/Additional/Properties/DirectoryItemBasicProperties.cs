@@ -14,14 +14,20 @@ namespace FileExplorer.Models.Storage.Additional.Properties
             Name = name;
             Path = path;
         }
+
+        /// <summary>
+        /// Content type of directory item
+        /// </summary>
+        public string ContentType { get; init; }
+
         /// <summary>
         /// Last time directory item was modified
         /// </summary>
-        public DateTime ModifiedDate { get; set; }
+        public DateTime ModifiedDate { get; init; }
 
         /// <summary>
         /// When directory item was created 
         /// </summary>
-        public DateTime CreationTime { get; set; }
+        public DateTime CreationTime { get; init; }
     }
 }
