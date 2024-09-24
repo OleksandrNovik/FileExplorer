@@ -53,7 +53,7 @@ namespace FileExplorer.ViewModels.Abstractions
         [RelayCommand(CanExecute = nameof(HasSelectedItems))]
         protected void CopySelectedItems()
         {
-            FileOperations.CopyItems(SelectedItems);
+            FileOperations.CopyItemsAsync(SelectedItems);
         }
 
         #endregion

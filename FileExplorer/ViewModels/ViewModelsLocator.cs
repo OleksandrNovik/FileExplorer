@@ -6,9 +6,12 @@ namespace FileExplorer.ViewModels
     {
         static ViewModelsLocator()
         {
-            StorageNamingViewModel = App.GetService<StorageItemsNamingViewModel>();
+            StorageNaming = App.GetService<StorageItemsNamingViewModel>();
+            FileOperations = App.GetService<FileOperationsViewModel>();
+            ViewOptions = App.GetService<ViewOptionsViewModel>();
         }
-
-        public static StorageItemsNamingViewModel StorageNamingViewModel { get; }
+        public static StorageItemsNamingViewModel StorageNaming { get; }
+        public static FileOperationsViewModel FileOperations { get; }
+        public static ViewOptionsViewModel ViewOptions { get; }
     }
 }

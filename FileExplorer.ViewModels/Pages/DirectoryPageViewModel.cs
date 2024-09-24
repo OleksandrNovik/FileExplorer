@@ -19,6 +19,7 @@ using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -147,8 +148,12 @@ namespace FileExplorer.ViewModels.Pages
         /// Saves selected items to the clipboard with required operation "cut"
         /// </summary>
         [RelayCommand(CanExecute = nameof(HasSelectedItems))]
-        private void CutSelectedItems()
+        private async Task CutSelectedItems()
         {
+            foreach (var item in SelectedItems)
+            {
+                await FileOperations.ForceRenamingAsync(item);
+            }
             clipboard.SetFiles(SelectedItems, DragDropEffects.Move);
         }
 
@@ -231,15 +236,22 @@ namespace FileExplorer.ViewModels.Pages
             while (deleteCount > 0)
             {
                 var item = SelectedItems[0];
-                var hasDeleted = await FileOperations.TryDeleteItem(item, isPermanent);
 
-                if (hasDeleted)
+                try
                 {
-                    DirectoryItems.Remove(item);
-                }
+                    await FileOperations.DeleteItem(item, isPermanent);
 
-                SelectedItems.Remove(item);
-                deleteCount--;
+                    DirectoryItems.Remove(item);
+                    SelectedItems.Remove(item);
+                }
+                catch (IOException e)
+                {
+                    await dialogService.ShowMessageAsync(e.Message, "File cannot be deleted");
+                }
+                finally
+                {
+                    deleteCount--;
+                }
             }
         }
 

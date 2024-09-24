@@ -47,7 +47,7 @@
 
                     <text:FileNameText FileName="{x:Bind Name, Mode=TwoWay}"
                                        IsEdit="{x:Bind IsRenamed, Mode=OneWay}"
-                                       ShowExtension="{Binding Path=StorageNamingViewModel.ShowExtensions, 
+                                       ShowExtension="{Binding Path=StorageNaming.ShowExtensions, 
                                                             Mode=OneWay, Source={StaticResource Locator}}">
                         
                         <text:FileNameText.TextBoxBehaviors>
@@ -58,7 +58,7 @@
 
                                 <communityToolkitBehaviors:KeyDownTriggerBehavior Key="Enter">
                                     <core:InvokeCommandAction 
-                                        Command="{Binding Path=StorageNamingViewModel.EndRenamingItemCommand, 
+                                        Command="{Binding Path=StorageNaming.EndRenamingItemCommand, 
                                              Source={StaticResource Locator}}"
                                         CommandParameter="{x:Bind}" />
                                 </communityToolkitBehaviors:KeyDownTriggerBehavior>
@@ -70,7 +70,7 @@
                 </Grid>
 
                 <interactivity:Interaction.Behaviors>
-                    <general:DoubleClickBehavior Command="{Binding Path=OpenCommand, Source={StaticResource FileOperations}}" 
+                    <general:DoubleClickBehavior Command="{Binding Path=FileOperations.OpenCommand, Source={StaticResource Locator}}" 
                                                           CommandParameter="{x:Bind}"  />
                 </interactivity:Interaction.Behaviors>
             </Grid>
@@ -88,43 +88,9 @@
                 <Image Source="{x:Bind Thumbnail.Source, Mode=OneWay}"
                        Opacity="{x:Bind Attributes, Converter={StaticResource HiddenToOpacityConverter}}"/>
 
-                <!--<local:EditableText Grid.Column="2" VerticalAlignment="Center"
-                                          Text="{x:Bind Name, Mode=TwoWay}"
-                                          IsEdited="{x:Bind IsRenamed, Mode=OneWay}">
-
-                    <local:EditableText.TextBoxBehaviors>
-                        <interactivity:BehaviorCollection>
-
-                            <behaviors:FocusOnConditionBehavior
-                                Condition="{x:Bind IsRenamed, Mode=TwoWay}" />
-
-                            <general:LostFocusBehavior 
-                                Command="{Binding Path=EndRenamingIfNeededCommand, 
-                                            Source={StaticResource FileOperations}}"
-                                CommandParameter="{x:Bind}" />
-
-                            <communityToolkitBehaviors:KeyDownTriggerBehavior Key="Enter">
-                                <core:InvokeCommandAction 
-                                    Command="{Binding Path=EndRenamingItemCommand, 
-                                            Source={StaticResource FileOperations}}"
-                                    CommandParameter="{x:Bind}" />
-                            </communityToolkitBehaviors:KeyDownTriggerBehavior>
-
-                            <communityToolkitBehaviors:KeyDownTriggerBehavior Key="Escape">
-                                <core:InvokeCommandAction 
-                                    Command="{Binding Path=EndRenamingItemCommand, 
-                                            Source={StaticResource FileOperations}}"
-                                    CommandParameter="{x:Bind}" />
-                            </communityToolkitBehaviors:KeyDownTriggerBehavior>
-
-                        </interactivity:BehaviorCollection>
-                    </local:EditableText.TextBoxBehaviors>
-
-                </local:EditableText>-->
-
                 <text:FileNameText Grid.Column="2" FileName="{x:Bind Name, Mode=TwoWay}"
                                    IsEdit="{x:Bind IsRenamed, Mode=OneWay}"
-                                   ShowExtension="{Binding Path=StorageNamingViewModel.ShowExtensions, 
+                                   ShowExtension="{Binding Path=StorageNaming.ShowExtensions, 
                                         Mode=OneWay, Source={StaticResource Locator}}" />
             </Grid>
         </DataTemplate>
@@ -192,8 +158,8 @@
                     <interactivity:BehaviorCollection>
 
                         <collectionBehaviors:DirectoryItemDoubleClickBehavior 
-                           Command="{Binding  Path=OpenCommand, 
-                                        Source={StaticResource FileOperations}}" />
+                           Command="{Binding  Path=FileOperations.OpenCommand, 
+                                        Source={StaticResource Locator}}" />
 
                         <dataGridBehaviors:MultipleSelectionDataGridBehavior 
                             SelectedItems="{x:Bind SelectedItems}" />

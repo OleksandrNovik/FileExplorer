@@ -13,9 +13,9 @@ namespace FileExplorer.ViewModels.General
 
         private readonly ILocalSettingsService localSettings;
 
-        public ViewOptionsViewModel()
+        public ViewOptionsViewModel(ILocalSettingsService localSettingsService)
         {
-            localSettings = App.GetService<ILocalSettingsService>();
+            localSettings = localSettingsService;
 
             var settingsValue = localSettings.ReadEnum<ViewOptions>(LocalSettings.Keys.ViewOptions);
             value = settingsValue ?? ViewOptions.GridView;

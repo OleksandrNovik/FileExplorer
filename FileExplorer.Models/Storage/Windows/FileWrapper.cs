@@ -108,6 +108,8 @@ namespace FileExplorer.Models.Storage.Windows
 
             return parent;
         }
+
+        [Obsolete]
         public async Task<string> GetFileTypeAsync()
         {
             var storageFile = await AsStorageFileAsync();
@@ -119,14 +121,7 @@ namespace FileExplorer.Models.Storage.Windows
         {
             if (asStorageFile is null)
             {
-                try
-                {
-                    asStorageFile = await StorageFile.GetFileFromPathAsync(Path);
-                }
-                catch
-                {
-                    asStorageFile = await StorageFile.GetFileFromPathAsync(@"D:\Навчальння\chistyi-cod.pdf");
-                }
+                asStorageFile = await StorageFile.GetFileFromPathAsync(Path);
             }
 
             return asStorageFile;
