@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace FileExplorer.Models.ModelHelpers
+namespace FileExplorer.Models.ModelHelpers.Storage
 {
     public static class DriveHelper
     {

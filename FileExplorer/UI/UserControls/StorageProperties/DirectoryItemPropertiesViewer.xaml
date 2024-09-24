@@ -18,7 +18,7 @@
                        Margin="0 6"
                        FontSize="25"/>
 
-            <TextBlock Text="{x:Bind Item.Name, Mode=OneWay}" Style="{StaticResource BodyTextBlockStyle}" 
+            <TextBlock Text="{x:Bind Item.ContentType, Mode=OneWay}" Style="{StaticResource BodyTextBlockStyle}" 
                        HorizontalAlignment="Center" 
                        Margin="0 6"/>
 

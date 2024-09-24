@@ -13,6 +13,7 @@ namespace FileExplorer.Models.Contracts.Storage.Directory
         public FileAttributes Attributes { get; }
         public DateTime LastAccess { get; }
         public ByteSize? Size { get; }
+        public string ContentType { get; }
 
         /// <summary>
         /// Copy item from current directory to a destination directory

@@ -1,6 +1,6 @@
 ﻿#nullable enable
 using FileExplorer.Models.Contracts.Storage.Directory;
-using FileExplorer.Models.ModelHelpers;
+using FileExplorer.Models.ModelHelpers.Storage;
 using FileExplorer.Models.Storage.Abstractions;
 using FileExplorer.Models.Storage.Additional;
 using FileExplorer.Models.Storage.Additional.Properties;
@@ -35,6 +35,7 @@ namespace FileExplorer.Models.Storage.Windows
             this.info = info;
 
             InitializeData();
+            ContentType = this.GetItemType();
         }
 
         /// <summary>
@@ -150,6 +151,7 @@ namespace FileExplorer.Models.Storage.Windows
             {
                 CreationTime = info.CreationTime,
                 ModifiedDate = info.LastWriteTime,
+                ContentType = ContentType
             };
         }
     }

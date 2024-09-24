@@ -1,6 +1,6 @@
 ﻿using FileExplorer.Core.Contracts.Factories;
 using FileExplorer.Models.Contracts.Storage;
-using FileExplorer.Models.ModelHelpers;
+using FileExplorer.Models.ModelHelpers.Storage;
 using FileExplorer.Models.Storage.Windows;
 using System;
 using System.IO;

@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using FileExplorer.Models.Contracts.Storage;
 using FileExplorer.Models.Contracts.Storage.Directory;
+using FileExplorer.Models.ModelHelpers.Storage;
 using FileExplorer.Models.Storage.Additional;
 using System;
 using System.Diagnostics;
@@ -135,6 +136,7 @@ namespace FileExplorer.Models.Storage.Windows
             if (HasExtensionChanged)
             {
                 Thumbnail.Update(Path, Thumbnail.Size);
+                ContentType = this.GetItemType();
             }
 
             EndEdit();

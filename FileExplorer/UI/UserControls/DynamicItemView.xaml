@@ -28,6 +28,13 @@
 
         <converters:HiddenAttributeToOpacityConverter x:Key="HiddenToOpacityConverter" />
 
+        <DataTemplate x:Key="ContentTypeTemplate" x:DataType="directory:IDirectoryItem">
+            <TextBlock 
+                Padding="5 0" 
+                TextTrimming="CharacterEllipsis"
+                Text="{x:Bind ContentType, Mode=OneWay}" VerticalAlignment="Center" />
+        </DataTemplate>
+
         <DataTemplate x:Key="ItemsGridTemplate" x:DataType="directory:IDirectoryItem">
             <Grid  Padding="10  20 10 10" 
                    ToolTipService.Placement="Bottom">
@@ -144,9 +151,13 @@
                         Header="Change date" 
                         Binding="{Binding Path=LastAccess, Mode=OneWay}"  />
 
-                    <controls:DataGridTextColumn 
+                    <!--<controls:DataGridTextColumn 
                         Header="Type" 
-                        Binding="{Binding Path=LastAccess, Mode=OneWay}"  />
+                        Binding="{Binding Path=ContentType, Mode=OneWay}"  />-->
+
+                    <controls:DataGridTemplateColumn 
+                        Header="Type"
+                        CellTemplate="{StaticResource ContentTypeTemplate}" />
 
                     <controls:DataGridTextColumn
                         Header="Size" Width="*"

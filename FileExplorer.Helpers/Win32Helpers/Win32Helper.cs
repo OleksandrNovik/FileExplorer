@@ -3,6 +3,7 @@ using FileExplorer.Helpers.Imaging;
 using System;
 using System.Drawing;
 using System.IO;
+using System.Runtime.InteropServices;
 using Vanara.PInvoke;
 using Vanara.Windows.Shell;
 
@@ -36,6 +37,22 @@ namespace FileExplorer.Helpers.Win32Helpers
             }
 
             return linkItemData;
+        }
+
+        /// <summary>
+        /// Gets file's type by its path and attributes
+        /// </summary>
+        public static string GetItemType(string path, FileAttributes attributes)
+        {
+            var shInfo = new Shell32.SHFILEINFO();
+            Shell32.SHGetFileInfo(
+                path,
+                attributes,
+                ref shInfo,
+                Marshal.SizeOf(shInfo),
+                Shell32.SHGFI.SHGFI_USEFILEATTRIBUTES | Shell32.SHGFI.SHGFI_TYPENAME);
+
+            return shInfo.szTypeName;
         }
 
         /// <summary>

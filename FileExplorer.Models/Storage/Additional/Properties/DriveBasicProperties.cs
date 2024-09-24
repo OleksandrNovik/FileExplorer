@@ -17,17 +17,17 @@ namespace FileExplorer.Models.Storage.Additional.Properties
         /// <summary>
         /// Information about drive's space
         /// </summary>
-        public DriveSpaceInfo SpaceInfo { get; set; }
+        public DriveSpaceInfo SpaceInfo { get; init; }
 
         /// <summary>
         /// Type of drive in string
         /// </summary>
-        public string DriveType { get; set; }
+        public string DriveType { get; init; }
 
         /// <summary>
         /// File system format of drive
         /// </summary>
-        public string DriveFormat { get; set; }
+        public string DriveFormat { get; init; }
 
     }
 }
