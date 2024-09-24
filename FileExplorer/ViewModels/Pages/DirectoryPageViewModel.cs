@@ -55,6 +55,8 @@ namespace FileExplorer.ViewModels.Pages
             localSettings = settingsService;
             sorting = directorySorter;
 
+            DirectoryItems = [];
+
             clipboard.FileDropListChanged += NotifyCanPaste;
             clipboard.CutOperationStarted += OnCutOperation;
 
@@ -98,9 +100,10 @@ namespace FileExplorer.ViewModels.Pages
         /// Method that should be called every time we navigate to a new Directory
         /// It initializes collections of data in view model
         /// </summary>
-        private void InitializeDirectoryAsync()
+        private async Task InitializeDirectoryAsync()
         {
-            sorting.SortByNameCommand.Execute(Storage);
+            var sorted = sorting.SortByDefault(Storage as IDirectory);
+            await InitializeDirectoryItemsAsync(sorted);
         }
 
         private async Task InitializeDirectoryItemsAsync(ICollection<IDirectoryItem> items)
@@ -116,10 +119,10 @@ namespace FileExplorer.ViewModels.Pages
         /// Changes current storage and initializes its items
         /// </summary>
         /// <param name="storage"> Given storage that is opened </param>
-        private void MoveToDirectoryAsync(IStorage storage)
+        private async Task MoveToDirectoryAsync(IStorage storage)
         {
             Storage = storage;
-            InitializeDirectoryAsync();
+            await InitializeDirectoryAsync();
         }
 
         [RelayCommand]
@@ -241,13 +244,13 @@ namespace FileExplorer.ViewModels.Pages
         }
 
         /// <inheritdoc />
-        public override void OnNavigatedTo(object parameter)
+        public override async void OnNavigatedTo(object parameter)
         {
             base.OnNavigatedTo(parameter);
 
             if (Storage is not null)
             {
-                MoveToDirectoryAsync(Storage);
+                await MoveToDirectoryAsync(Storage);
             }
             else if (parameter is SearchStorageTransferObject transferredSearchData)
             {
@@ -271,7 +274,7 @@ namespace FileExplorer.ViewModels.Pages
         private async Task Refresh()
         {
             //TODO: Fix this later
-            MoveToDirectoryAsync(Storage);
+            await MoveToDirectoryAsync(Storage);
         }
 
         /// <inheritdoc />
