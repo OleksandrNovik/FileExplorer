@@ -68,7 +68,7 @@ namespace FileExplorer.Models.Storage.Windows
                     // Any item that is used at provided date range
                     .Where(item => options.AccessDateChecker.Satisfies(item.LastAccess))
                     // Any file types that satisfy filter
-                    .Where(item => options.ExtensionFilter.Invoke(item.Name));
+                    .Where(item => options.ExtensionFilter.Satisfies(item.Name));
 
                 if (options.SearchName is not null)
                 {

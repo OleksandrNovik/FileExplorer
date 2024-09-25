@@ -24,9 +24,9 @@ namespace FileExplorer.ViewModels.Search
         public SearchOptionsViewModel(ISearchOptionsMenuBuilder menuBuilder)
         {
             this.menuBuilder = menuBuilder;
-            Options = SearchFilter.Default;
+            Filter = SearchFilter.Default;
 
-            IsNestedSearch = Options.IsNestedSearch;
+            IsNestedSearch = Filter.IsNestedSearch;
 
             Messenger.Register<SearchOptionsViewModel, StopSearchMessage>(this,
                 (_, message) =>
@@ -34,79 +34,127 @@ namespace FileExplorer.ViewModels.Search
                     IsSearchRunning = false;
                 });
         }
+
+        /// <summary>
+        /// Filter options for date
+        /// </summary>
         public IEnumerable<MenuFlyoutItemViewModel> DateSearchOptions => menuBuilder.Build<DateTime>(SetDateOptionCommand);
+
+        /// <summary>
+        /// Filter options for size
+        /// </summary>
         public IEnumerable<MenuFlyoutItemViewModel> SizeSearchOptions => menuBuilder.Build<ByteSize>(SetSizeOptionCommand);
 
+        /// <summary>
+        /// Filter options for type
+        /// </summary>
+        public IEnumerable<MenuFlyoutItemViewModel> FileTypeOptions => menuBuilder.Build<string>(SetTypeOptionCommand);
+
+        /// <summary>
+        /// Current search query
+        /// </summary>
         [ObservableProperty]
         private string searchQuery;
-        public SearchFilter Options { get; private set; }
 
+        /// <summary>
+        /// Current search filter
+        /// </summary>
+        public SearchFilter Filter { get; private set; }
+
+        /// <summary>
+        /// Is search run through subdirectories
+        /// </summary>
         [ObservableProperty]
         private bool isNestedSearch;
 
+        /// <summary>
+        /// Is search currently running
+        /// </summary>
         [ObservableProperty]
         private bool isSearchRunning;
 
+        /// <summary>
+        /// Sets value for file's access date checker
+        /// </summary>
         [RelayCommand]
-        private void SetDateOption(RangeChecker<DateTime> checker)
+        private void SetDateOption(PredicateChecker<DateTime> checker)
         {
-            Options.AccessDateChecker = checker;
+            Filter.AccessDateChecker = checker;
             StopSearch();
         }
 
+        /// <summary>
+        /// Sets value for file's size checker
+        /// </summary>
         [RelayCommand]
-        private void SetSizeOption(RangeChecker<ByteSize> checker)
+        private void SetSizeOption(PredicateChecker<ByteSize> checker)
         {
-            Options.SizeChecker = checker;
+            Filter.SizeChecker = checker;
             StopSearch();
         }
 
+        /// <summary>
+        /// Sets value for file's type checker
+        /// </summary>
         [RelayCommand]
-        private void SetTypeOption(Predicate<string> extensionFilter)
+        private void SetTypeOption(PredicateChecker<string> checker)
         {
-            Options.ExtensionFilter = extensionFilter;
+            Filter.ExtensionFilter = checker;
             StopSearch();
         }
 
+        /// <summary>
+        /// Resets search filter
+        /// </summary>
         [RelayCommand]
         private void ResetOptions()
         {
-            Options = SearchFilter.Default;
-            IsNestedSearch = Options.IsNestedSearch;
+            Filter = SearchFilter.Default;
+            IsNestedSearch = Filter.IsNestedSearch;
             StopSearch();
         }
 
+        /// <summary>
+        /// Initiates new search with currently selected options
+        /// </summary>
         [RelayCommand]
         private void InitiateSearch()
         {
             ExtractQueryString();
-            Options.IsNestedSearch = IsNestedSearch;
-            Messenger.Send(new SearchOperationRequiredMessage(Options));
+            Filter.IsNestedSearch = IsNestedSearch;
+            Messenger.Send(new SearchOperationRequiredMessage(Filter));
             IsSearchRunning = true;
             //TODO: React to a search completed message
         }
 
+
         private void ExtractQueryString()
         {
-            Options.OriginalSearchQuery = SearchQuery;
-            Options.SearchPattern = PathHelper.CreatePattern(SearchQuery);
+            Filter.OriginalSearchQuery = SearchQuery;
+            Filter.SearchPattern = PathHelper.CreatePattern(SearchQuery);
 
             // If we cannot generate more precise pattern we should search by name
-            if (Options.SearchPattern == "*")
+            if (Filter.SearchPattern == "*")
             {
-                Options.SearchName = SearchQuery;
+                Filter.SearchName = SearchQuery;
             }
             else
             {
-                Options.SearchName = null;
+                Filter.SearchName = null;
             }
         }
 
+        /// <summary>
+        /// If nested search property is changing stops currently running search
+        /// </summary>
         partial void OnIsNestedSearchChanging(bool value)
         {
             StopSearch();
         }
 
+        /// <summary>
+        /// Stop search if it is running
+        /// </summary>
         [RelayCommand]
         private void StopSearch()
         {

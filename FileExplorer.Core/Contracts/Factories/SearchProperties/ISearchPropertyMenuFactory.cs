@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using FileExplorer.Models;
-using System;
 using System.Collections.Generic;
 
 namespace FileExplorer.Core.Contracts.Factories.SearchProperties
@@ -10,7 +9,6 @@ namespace FileExplorer.Core.Contracts.Factories.SearchProperties
     /// </summary>
     /// <typeparam name="TProperty"> Option type </typeparam>
     public interface ISearchPropertyMenuFactory<TProperty>
-        where TProperty : IComparable<TProperty>
     {
         /// <summary>
         /// Builds menu for a certain search option property 

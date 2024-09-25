@@ -8,7 +8,7 @@ using System.Collections.Generic;
 namespace FileExplorer.Core.Services.Factories.SearchProperties
 {
     /// <summary>
-    /// Factory for <see cref="DateTime" /> preoperty of search options
+    /// Factory for <see cref="DateTime" /> property of search options
     /// </summary>
     public sealed class DateMenuBuilder : BasePropertyBuilder<DateTime>
     {

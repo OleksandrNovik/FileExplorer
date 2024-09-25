@@ -1,4 +1,4 @@
-﻿using FileExplorer.Models.Contracts;
+﻿using FileExplorer.Models.Contracts.Ranges;
 
 namespace FileExplorer.Models.Enums;
 

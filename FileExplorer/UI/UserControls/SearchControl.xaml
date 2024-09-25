@@ -3,13 +3,12 @@
     x:Class="FileExplorer.UI.UserControls.SearchControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:FileExplorer.UI.UserControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:behaviors="using:CommunityToolkit.WinUI.UI.Behaviors"
+    xmlns:toolkitBehaviors="using:CommunityToolkit.WinUI.UI.Behaviors"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
-    xmlns:behaviors1="using:FileExplorer.UI.Behaviors"
+    xmlns:behaviors="using:FileExplorer.UI.Behaviors"
     mc:Ignorable="d">
 
     <UserControl.Resources>
@@ -33,7 +32,7 @@
                 </MenuFlyoutSubItem.Icon>
 
                 <interactivity:Interaction.Behaviors>
-                    <behaviors1:InitializeWithItemsBehavior MenuSubItems="{x:Bind ViewModel.DateSearchOptions}" />
+                    <behaviors:InitializeWithItemsBehavior MenuSubItems="{x:Bind ViewModel.DateSearchOptions}" />
                 </interactivity:Interaction.Behaviors>
             </MenuFlyoutSubItem>
 
@@ -42,9 +41,9 @@
                     <FontIcon FontSize="14" Glyph="&#xE97C;" />
                 </MenuFlyoutSubItem.Icon>
 
-                <MenuFlyoutSubItem.Items>
-                    <MenuFlyoutItem Text="Types"  />
-                </MenuFlyoutSubItem.Items>
+                <interactivity:Interaction.Behaviors>
+                    <behaviors:InitializeWithItemsBehavior MenuSubItems="{x:Bind ViewModel.FileTypeOptions}" />
+                </interactivity:Interaction.Behaviors>
             </MenuFlyoutSubItem>
 
             <MenuFlyoutSubItem Text="Size">
@@ -53,7 +52,7 @@
                 </MenuFlyoutSubItem.Icon>
 
                 <interactivity:Interaction.Behaviors>
-                    <behaviors1:InitializeWithItemsBehavior MenuSubItems="{x:Bind ViewModel.SizeSearchOptions}" />
+                    <behaviors:InitializeWithItemsBehavior MenuSubItems="{x:Bind ViewModel.SizeSearchOptions}" />
                 </interactivity:Interaction.Behaviors>
             </MenuFlyoutSubItem>
 
@@ -73,9 +72,9 @@
                                         UpdateSourceTrigger=PropertyChanged}">
             <interactivity:Interaction.Behaviors>
 
-                <behaviors:KeyDownTriggerBehavior Key="Enter">
+                <toolkitBehaviors:KeyDownTriggerBehavior Key="Enter">
                     <core:InvokeCommandAction  Command="{x:Bind ViewModel.InitiateSearchCommand}" />
-                </behaviors:KeyDownTriggerBehavior>
+                </toolkitBehaviors:KeyDownTriggerBehavior>
 
             </interactivity:Interaction.Behaviors>
         </TextBox>

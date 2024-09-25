@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using FileExplorer.Models.Contracts;
+using FileExplorer.Models.Contracts.Ranges;
 using FileExplorer.Models.Enums;
 using FileExplorer.Models.Storage.Additional;
 using System;

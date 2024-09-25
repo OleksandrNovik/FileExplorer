@@ -34,6 +34,7 @@ namespace FileExplorer.Helpers
             // Adding factories to build menu for a certain property
             services.AddTransient<ISearchPropertyMenuFactory<ByteSize>, SizeMenuBuilder>();
             services.AddTransient<ISearchPropertyMenuFactory<DateTime>, DateMenuBuilder>();
+            services.AddTransient<ISearchPropertyMenuFactory<string>, FileTypeMenuBuilder>();
         }
     }
 }

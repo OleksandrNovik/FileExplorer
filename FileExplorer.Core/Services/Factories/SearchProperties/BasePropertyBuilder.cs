@@ -2,13 +2,11 @@
 using FileExplorer.Core.Contracts.Factories.SearchProperties;
 using FileExplorer.Models;
 using FileExplorer.Models.Ranges;
-using System;
 using System.Collections.Generic;
 
 namespace FileExplorer.Core.Services.Factories.SearchProperties
 {
     public abstract class BasePropertyBuilder<TProperty> : ISearchPropertyMenuFactory<TProperty>
-        where TProperty : IComparable<TProperty>
     {
         public virtual IList<MenuFlyoutItemViewModel> Build(IRelayCommand command)
         {
@@ -17,7 +15,7 @@ namespace FileExplorer.Core.Services.Factories.SearchProperties
                 new("Any")
                 {
                     Command = command,
-                    CommandParameter = RangeChecker<TProperty>.CreateForAnyValue()
+                    CommandParameter = PredicateChecker<TProperty>.Any
                 }
             };
 

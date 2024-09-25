@@ -1,7 +1,7 @@
 ﻿using FileExplorer.Models.Enums;
 using System;
 
-namespace FileExplorer.Models.Contracts;
+namespace FileExplorer.Models.Contracts.Ranges;
 
 /// <summary>
 /// General interface for any range to fulfill

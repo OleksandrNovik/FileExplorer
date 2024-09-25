@@ -14,12 +14,12 @@ namespace FileExplorer.Models.General
         public static SearchFilter Default => new()
         {
             IsNestedSearch = true,
-            AccessDateChecker = RangeChecker<DateTime>.CreateForAnyValue(),
-            ExtensionFilter = _ => true,
+            AccessDateChecker = PredicateChecker<DateTime>.Any,
+            ExtensionFilter = PredicateChecker<string>.Any,
             SearchPattern = "*",
             SearchName = null,
             OriginalSearchQuery = "",
-            SizeChecker = RangeChecker<ByteSize>.CreateForAnyValue()
+            SizeChecker = PredicateChecker<ByteSize>.Any
         };
 
         /// <summary>
@@ -30,14 +30,17 @@ namespace FileExplorer.Models.General
         /// <summary>
         /// Range that LastAccessDate of file needs to be in to satisfy search request 
         /// </summary>
-        public RangeChecker<DateTime> AccessDateChecker { get; set; }
-
-        public RangeChecker<ByteSize> SizeChecker { get; set; }
+        public PredicateChecker<DateTime> AccessDateChecker { get; set; }
 
         /// <summary>
-        /// Function that filters out any files that does not have searched extension
+        /// Checker for size of directory item
         /// </summary>
-        public Predicate<string> ExtensionFilter { get; set; }
+        public PredicateChecker<ByteSize> SizeChecker { get; set; }
+
+        /// <summary>
+        /// Checker that filters out any files that does not have searched extension
+        /// </summary>
+        public PredicateChecker<string> ExtensionFilter { get; set; }
 
         /// <summary>
         /// Pattern that file name needs to follow to satisfy search condition 
