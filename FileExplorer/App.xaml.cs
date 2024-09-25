@@ -12,6 +12,7 @@ using FileExplorer.Core.Services.Factories;
 using FileExplorer.Core.Services.General;
 using FileExplorer.Core.Services.Settings;
 using FileExplorer.Core.Services.Storage;
+using FileExplorer.Helpers;
 using FileExplorer.Helpers.Application;
 using FileExplorer.Helpers.General;
 using FileExplorer.Models.Contracts.ModelServices;
@@ -114,6 +115,8 @@ namespace FileExplorer
                     services.AddTransient<IStorageSortingService, StorageSortingService>();
 
                     services.AddTransient<IMessageDialogService, MessageDialogService>();
+
+                    services.AddSearchMenuBuilders();
                 })
                 .Build();
 

@@ -2,8 +2,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using FileExplorer.Core.Contracts.Factories.SearchProperties;
 using FileExplorer.Models;
-using FileExplorer.Models.Enums;
 using FileExplorer.Models.General;
 using FileExplorer.Models.Messages;
 using FileExplorer.Models.Ranges;
@@ -16,8 +16,14 @@ namespace FileExplorer.ViewModels.Search
 {
     public sealed partial class SearchOptionsViewModel : ObservableRecipient
     {
-        public SearchOptionsViewModel()
+        /// <summary>
+        /// Builder for search filter menu options
+        /// </summary>
+        private readonly ISearchOptionsMenuBuilder menuBuilder;
+
+        public SearchOptionsViewModel(ISearchOptionsMenuBuilder menuBuilder)
         {
+            this.menuBuilder = menuBuilder;
             Options = SearchFilter.Default;
 
             IsNestedSearch = Options.IsNestedSearch;
@@ -28,101 +34,8 @@ namespace FileExplorer.ViewModels.Search
                     IsSearchRunning = false;
                 });
         }
-        public IEnumerable<MenuFlyoutItemViewModel> DateSearchOptions => new List<MenuFlyoutItemViewModel>
-        {
-            new MenuFlyoutItemViewModel("Any")
-            {
-                Command = SetDateOptionCommand,
-                CommandParameter = RangeChecker<DateTime>.CreateForAnyValue()
-            },
-            new MenuFlyoutItemViewModel("Today")
-            {
-                Command = SetDateOptionCommand,
-                CommandParameter = new RangeChecker<DateTime>(DateRange.TodayRange, ExcludingOptions.Within)
-            },
-            new MenuFlyoutItemViewModel("Yesterday")
-            {
-                Command = SetDateOptionCommand,
-                CommandParameter = new RangeChecker<DateTime>(DateRange.YesterdayRange, ExcludingOptions.Within)
-            },
-            new MenuFlyoutItemViewModel("This week")
-            {
-                Command = SetDateOptionCommand,
-                CommandParameter = new RangeChecker<DateTime>(DateRange.ThisWeekRange, ExcludingOptions.Within)
-            },
-            new MenuFlyoutItemViewModel("Last week")
-            {
-                Command = SetDateOptionCommand,
-                CommandParameter = new RangeChecker<DateTime>(DateRange.LastWeekRange, ExcludingOptions.Within)
-            },
-            new MenuFlyoutItemViewModel("This month")
-            {
-                Command = SetDateOptionCommand,
-                CommandParameter = new RangeChecker<DateTime>(DateRange.ThisMonthRange, ExcludingOptions.Within)
-            },
-            new MenuFlyoutItemViewModel("Last month")
-            {
-                Command = SetDateOptionCommand,
-                CommandParameter = new RangeChecker<DateTime>(DateRange.LastMonthRange, ExcludingOptions.Within),
-            },
-            new MenuFlyoutItemViewModel("This year")
-            {
-                Command = SetDateOptionCommand,
-                CommandParameter = new RangeChecker<DateTime>(DateRange.ThisYearRange, ExcludingOptions.Within),
-            },
-            new MenuFlyoutItemViewModel("Last year")
-            {
-                Command = SetDateOptionCommand,
-                CommandParameter = new RangeChecker<DateTime>(DateRange.LastYearRange, ExcludingOptions.Within),
-            },
-        };
-        public IEnumerable<MenuFlyoutItemViewModel> SizeSearchOptions => new List<MenuFlyoutItemViewModel>
-        {
-            new MenuFlyoutItemViewModel("Any")
-            {
-                Command = SetSizeOptionCommand,
-                CommandParameter = RangeChecker<ByteSize>.CreateForAnyValue()
-            },
-            new MenuFlyoutItemViewModel("Empty ",
-                new RangeChecker<ByteSize>(ByteSizeRange.Empty, ExcludingOptions.Less))
-            {
-                Command = SetSizeOptionCommand,
-            },
-            new MenuFlyoutItemViewModel("Tiny ",
-                new RangeChecker<ByteSize>(ByteSizeRange.Tiny, ExcludingOptions.Within))
-            {
-                Command = SetSizeOptionCommand,
-            },
-
-            new MenuFlyoutItemViewModel("Tiny ",
-                new RangeChecker<ByteSize>(ByteSizeRange.Small, ExcludingOptions.Within))
-            {
-                Command = SetSizeOptionCommand,
-            },
-
-            new MenuFlyoutItemViewModel("Medium ",
-                new RangeChecker<ByteSize>(ByteSizeRange.Medium, ExcludingOptions.Within))
-            {
-                Command = SetSizeOptionCommand,
-            },
-
-            new MenuFlyoutItemViewModel("Large ",
-                new RangeChecker<ByteSize>(ByteSizeRange.Large, ExcludingOptions.Within))
-            {
-                Command = SetSizeOptionCommand,
-            },
-
-            new MenuFlyoutItemViewModel("Huge ",
-                new RangeChecker<ByteSize>(ByteSizeRange.Huge, ExcludingOptions.Within))
-            {
-                Command = SetSizeOptionCommand,
-            },
-            new MenuFlyoutItemViewModel("Giant ",
-                new RangeChecker<ByteSize>(ByteSizeRange.Giant, ExcludingOptions.More))
-            {
-                Command = SetSizeOptionCommand,
-            },
-        };
+        public IEnumerable<MenuFlyoutItemViewModel> DateSearchOptions => menuBuilder.Build<DateTime>(SetDateOptionCommand);
+        public IEnumerable<MenuFlyoutItemViewModel> SizeSearchOptions => menuBuilder.Build<ByteSize>(SetSizeOptionCommand);
 
         [ObservableProperty]
         private string searchQuery;
