@@ -1,6 +1,5 @@
 ﻿#nullable enable
 using FileExplorer.Helpers.Imaging;
-using System;
 using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -13,30 +12,32 @@ namespace FileExplorer.Helpers.Win32Helpers
     {
         public sealed class LinkTargetData
         {
+            public bool IsFolder { get; internal set; }
             public FileSystemInfo? FileInfo { get; internal set; }
         }
-        public static LinkTargetData GetLinkItem(string path)
+        public static LinkTargetData? GetLinkItem(string path)
         {
             // TODO: Link can have run as admin and other properties too
-            using var link = new ShellLink(path, LinkResolution.NoUIWithMsgPump, default, TimeSpan.FromMilliseconds(100));
-            var linkItemData = new LinkTargetData();
-
             try
             {
-                var targetPath = Environment.ExpandEnvironmentVariables(link.TargetPath) ?? "";
+                using var link = new ShellLink(path);
+
+                var linkItemData = new LinkTargetData();
+
+                var targetPath = link.TargetPath;
 
                 if (Path.Exists(targetPath))
                 {
-                    linkItemData.FileInfo = link.Target.IsFolder ?
-                        new DirectoryInfo(targetPath) :
-                        new FileInfo(targetPath);
+                    linkItemData.FileInfo = link.IsFolder ? new DirectoryInfo(targetPath) : new FileInfo(targetPath);
+                    linkItemData.IsFolder = link.IsFolder;
                 }
+
+                return linkItemData;
             }
             catch
             {
+                return null;
             }
-
-            return linkItemData;
         }
 
         /// <summary>

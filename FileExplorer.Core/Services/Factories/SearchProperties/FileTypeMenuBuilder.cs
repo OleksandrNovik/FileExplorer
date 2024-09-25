@@ -13,9 +13,18 @@ namespace FileExplorer.Core.Services.Factories.SearchProperties
     {
         protected override IEnumerable<MenuFlyoutItemViewModel> CompleteMenu(IRelayCommand command)
         {
-            // TODO: Complete types list
             return
             [
+                new MenuFlyoutItemViewModel("Documents")
+                {
+                    Command = command,
+                    CommandParameter = new PredicateChecker<string>(FileExtensionsHelper.IsDocument)
+                },
+                new MenuFlyoutItemViewModel("Executable")
+                {
+                    Command = command,
+                    CommandParameter = new PredicateChecker<string>(FileExtensionsHelper.IsExecutable)
+                },
                 new MenuFlyoutItemViewModel("Images")
                 {
                     Command = command,
@@ -30,6 +39,11 @@ namespace FileExplorer.Core.Services.Factories.SearchProperties
                 {
                     Command = command,
                     CommandParameter = new PredicateChecker<string>(FileExtensionsHelper.IsVideo)
+                },
+                new MenuFlyoutItemViewModel("Archive")
+                {
+                    Command = command,
+                    CommandParameter = new PredicateChecker<string>(FileExtensionsHelper.IsArchive)
                 }
             ];
         }

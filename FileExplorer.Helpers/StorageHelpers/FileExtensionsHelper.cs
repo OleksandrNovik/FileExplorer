@@ -30,6 +30,22 @@ namespace FileExplorer.Helpers.StorageHelpers
                 ".mpg", ".mp2", ".mpeg", ".mpe", ".mpv", ".mkv", ".ogg", ".avi", ".wmv", ".mov", ".qt");
         }
 
+        public static bool IsExecutable(string path)
+        {
+            return HasExtension(path, ".exe", ".bat", ".sh", ".msi", ".app", ".apk", ".bin");
+        }
+
+        public static bool IsDocument(string path)
+        {
+            return HasExtension(path, ".pdf", ".doc", ".docx", ".xls", ".xlsx",
+                ".ppt", ".pptx", ".txt", ".rtf", ".odt");
+        }
+
+        public static bool IsArchive(string path)
+        {
+            return HasExtension(path, ".zip", ".rar", ".7z", ".tar", ".gz", ".bz2", ".xz", ".iso");
+        }
+
         public static bool IsShortcut(string path)
         {
             return HasExtension(path, ".lnk");

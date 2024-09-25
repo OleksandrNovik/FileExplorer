@@ -9,6 +9,7 @@
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:behaviors="using:FileExplorer.UI.Behaviors"
+    xmlns:text="using:FileExplorer.UI.Behaviors.Text"
     mc:Ignorable="d">
 
     <UserControl.Resources>
@@ -66,18 +67,16 @@
             <ColumnDefinition Width="40" />
             <ColumnDefinition Width="40" />
         </Grid.ColumnDefinitions>
-        <TextBox VerticalAlignment="Center" TextWrapping="Wrap"
-                     Padding="5  2"
-                     Text="{x:Bind ViewModel.SearchQuery, Mode=TwoWay, 
-                                        UpdateSourceTrigger=PropertyChanged}">
+
+        <AutoSuggestBox VerticalAlignment="Center" 
+                        Padding="5 2"
+                        Text="{x:Bind ViewModel.SearchQuery, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+
             <interactivity:Interaction.Behaviors>
-
-                <toolkitBehaviors:KeyDownTriggerBehavior Key="Enter">
-                    <core:InvokeCommandAction  Command="{x:Bind ViewModel.InitiateSearchCommand}" />
-                </toolkitBehaviors:KeyDownTriggerBehavior>
-
+                <text:SearchBoxBehavior Command="{x:Bind ViewModel.InitiateSearchCommand}" />
             </interactivity:Interaction.Behaviors>
-        </TextBox>
+        </AutoSuggestBox>
+
         <Grid Column="0" Padding="12  0">
             <FontIcon HorizontalAlignment="Right" FontSize="14" Glyph="&#xE721;" />
         </Grid>

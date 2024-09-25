@@ -13,6 +13,12 @@ namespace FileExplorer.Helpers.General
         {
             dispatcher = DispatcherQueue.GetForCurrentThread();
         }
+
+        public static bool TryEnqueue(Action action)
+        {
+            return dispatcher.TryEnqueue(new DispatcherQueueHandler(action));
+        }
+
         /// <summary>
         /// Runs asynchronous call on UI thread
         /// </summary>

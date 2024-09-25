@@ -1,4 +1,7 @@
-﻿using FileExplorer.Models.Contracts.ModelServices;
+﻿using FileExplorer.Helpers.General;
+using FileExplorer.Helpers.StorageHelpers;
+using FileExplorer.Helpers.Win32Helpers;
+using FileExplorer.Models.Contracts.ModelServices;
 using FileExplorer.Models.Storage.Windows;
 using System.IO;
 
@@ -12,7 +15,17 @@ namespace FileExplorer.Models.Storage.Factories
 
             if (File.Exists(path))
             {
+                if (FileExtensionsHelper.IsShortcut(path))
+                {
+                    ThreadingHelper.TryEnqueue(() =>
+                    {
+                        Win32Helper.GetLinkItem(path);
+                    });
+                }
+
                 wrapper = new FileWrapper(path);
+
+
             }
             else if (Directory.Exists(path))
             {

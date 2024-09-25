@@ -73,7 +73,7 @@ namespace FileExplorer.Models.Storage.Windows
                 if (options.SearchName is not null)
                 {
                     found = found.Where(item =>
-                        StringExtensions.ContainsPattern(item.Name, options.SearchName));
+                        item.Name.ContainsPattern(options.SearchName));
                 }
 
                 return found.ToArray();
